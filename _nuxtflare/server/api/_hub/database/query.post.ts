@@ -11,6 +11,7 @@ export default eventHandler(async (event) => {
   useDatabase()
   const client = useDatabaseClient()
   
+  console.log(client)
   try {
     if (method === 'run')
 			return client.prepare(sql).run(params)

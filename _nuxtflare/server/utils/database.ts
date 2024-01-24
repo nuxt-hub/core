@@ -25,14 +25,14 @@ export const useDatabase = () => {
       _db = drizzleHTTP(async (sql, params, method) => {
         // https://orm.drizzle.team/docs/get-started-sqlite#http-proxy
         try {
-          const rows = await ofetch('/api/db/query', {
+          const rows = await ofetch('/api/_hub/database/query', {
             baseURL: process.env.NUXT_HUB_URL,
             method: 'POST',
             body: { sql, params, method }
           })
           return { rows }
         } catch (err) {
-          console.error('Error from remote database', err)
+          console.error('Error from remote database', { sql, params, method }, err.data)
           return { rows: [] }
         }
       })
