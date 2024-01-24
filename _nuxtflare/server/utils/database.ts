@@ -8,7 +8,7 @@ import { ofetch } from 'ofetch'
 import Database from 'better-sqlite3'
 import { join } from 'pathe'
 
-// export * as tables from '~/server/database/schema'
+export * as tables from '~/server/database/schema'
 
 let _db: DrizzleD1Database | BetterSQLite3Database | SqliteRemoteDatabase | null = null
 let _client: any = null
@@ -30,11 +30,13 @@ export const useDatabase = () => {
             method: 'POST',
             body: { sql, params, method }
           })
-          console.log(method, rows)
           if (method === 'run') return rows
           return { rows }
-        } catch (err) {
-          console.error('Error from remote database', { sql, params, method }, err.data)
+        } catch (err: any) {
+          if (['begin', 'commit'].includes(sql)) {
+            return { rows: [] }
+          }
+          console.error('Error from remote database:', err.data.message, '\n', { sql, params, method })
           return { rows: [] }
         }
       })
