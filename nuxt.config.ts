@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   // extends: '@nuxt/ui-pro',
   extends: [
     // '/Users/atinux/Projects/nuxt/ui-pro',
-    './_nuxtflare'
+    './_nuxthub'
   ],
   modules: [
     '@nuxt/ui',
