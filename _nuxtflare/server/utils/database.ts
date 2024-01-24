@@ -30,6 +30,8 @@ export const useDatabase = () => {
             method: 'POST',
             body: { sql, params, method }
           })
+          console.log(method, rows)
+          if (method === 'run') return rows
           return { rows }
         } catch (err) {
           console.error('Error from remote database', { sql, params, method }, err.data)
