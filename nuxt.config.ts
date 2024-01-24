@@ -2,7 +2,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   // extends: '@nuxt/ui-pro',
   extends: [
-    '/Users/atinux/Projects/nuxt/ui-pro',
+    // '/Users/atinux/Projects/nuxt/ui-pro',
     './_nuxtflare'
   ],
   modules: [

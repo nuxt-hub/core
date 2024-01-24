@@ -3,6 +3,6 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
 
 export default defineNitroPlugin(async () => {
   if (process.dev) {
-    // migrate(useDatabase() as BetterSQLite3Database, { migrationsFolder: 'server/database/migrations' })
+    migrate(useDatabase() as BetterSQLite3Database, { migrationsFolder: 'server/database/migrations' })
   }
 })
