@@ -11,7 +11,7 @@ export default eventHandler(async (event) => {
   const session = await requireUserSession(event)
 
   // List todos for the current user
-  const todo = await useDB().update(tables.todos).set({
+  const todo = await useDatabase().update(tables.todos).set({
     completed
   }).where(and(
     eq(tables.todos.id, id),
