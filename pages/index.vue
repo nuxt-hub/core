@@ -28,13 +28,20 @@ const { loggedIn } = useUserSession()
         color="black"
         external
       />
-      <UButton
-        v-else
-        to="/todos"
-        icon="i-heroicons-list-bullet"
-        label="Go to Todos"
-        color="black"
-      />
+      <div v-else class="space-x-2">
+        <UButton
+          to="/todos"
+          icon="i-heroicons-list-bullet"
+          label="Go to Todos"
+          color="black"
+        />
+        <UButton
+          to="/notes"
+          icon="i-heroicons-pencil-square"
+          label="Go to Notes"
+          color="black"
+        />
+      </div>
     </template>
     <p class="font-medium">
       Welcome to Nuxt Todos Edge.
