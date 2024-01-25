@@ -28,7 +28,10 @@ export const useDatabase = () => {
           const rows = await ofetch('/api/_hub/database/query', {
             baseURL: process.env.NUXT_HUB_URL,
             method: 'POST',
-            body: { sql, params, method }
+            body: { sql, params, method },
+            headers: {
+              Authorization: `Bearer ${process.env.NUXT_HUB_SECRET_KEY}`
+            }
           })
           if (method === 'run') return rows
           return { rows }
@@ -43,7 +46,7 @@ export const useDatabase = () => {
     } else if (isDev) {
       // local sqlite in development
       console.log('Using local database...')
-      _client = new Database(join(process.cwd(), './db.sqlite'))
+      _client = new Database(join(process.cwd(), './.hub/db.sqlite'))
       _db = drizzle(_client)
     } else {
       throw new Error('No database configured for production')
@@ -54,7 +57,7 @@ export const useDatabase = () => {
 
 export const useDatabaseClient = () => {
   if (!_client) {
-    throw new Error('No client configured')
+    useDatabase()
   }
   return _client
 }

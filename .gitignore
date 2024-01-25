@@ -10,3 +10,4 @@ dist
 .vercel
 .netlify
 db.sqlite-*
+.hub
