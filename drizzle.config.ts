@@ -6,6 +6,6 @@ export default {
   schema: 'server/database/schema.ts',
   driver: 'better-sqlite',
   dbCredentials: {
-    url: join(process.cwd(), './db.sqlite')
+    url: join(process.cwd(), './.hub/db.sqlite')
   }
 } satisfies Config

@@ -8,7 +8,6 @@ export default eventHandler(async (event) => {
   }).parse)
 
   // Make sure the client is initialized first
-  useDatabase()
   const client = useDatabaseClient()
 
   if (process.dev) {
@@ -26,6 +25,11 @@ export default eventHandler(async (event) => {
       })
     }
   }
+
+  // await verifyHubSecretKey(event)
+  // TODO: Validate header for authorization through hub.nuxt.com
+  // const [, secretKey] = (getHeader(event, 'authorization') || '').split(' ')
+
   try {
     if (method === 'run') {
       const { meta } = await client.prepare(sql).bind(...params).run()
