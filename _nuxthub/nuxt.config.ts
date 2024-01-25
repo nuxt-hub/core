@@ -5,7 +5,15 @@ export default defineNuxtConfig({
   modules: [
     async function (options, nuxt) {
       if (!nuxt.options.dev) return
-      await mkdir(join(process.cwd(), './.hub'))
+      try {
+        await mkdir(join(process.cwd(), './.hub'))
+      } catch (e: any) {
+        if (e.errno === -17) {
+          // File already exists
+        } else {
+          throw e
+        }
+      }
     }
-  ]  
+  ]
 })
