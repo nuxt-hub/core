@@ -41,6 +41,12 @@ const { loggedIn } = useUserSession()
           label="Go to Notes"
           color="black"
         />
+        <UButton
+          to="/storage"
+          icon="i-heroicons-document"
+          label="Go to Storage"
+          color="black"
+        />
       </div>
     </template>
     <p class="font-medium">
