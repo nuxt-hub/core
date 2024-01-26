@@ -136,25 +136,45 @@ const items = [[{
       >
         <span class="flex-1 font-medium">{{ entry.key }}</span>
 
-        <span v-if="editedEntryKey !== entry.key" class="flex-1 font-medium">{{ entry.value }}</span>
-        <UInput v-else v-model="editedEntryValue" name="editedValue" variant="none" size="xl" autofocus :padded="false" class="flex-1" @keypress.enter="updateEntry(entry)" />
 
-        <UButton
-          v-if="editedEntryKey !== entry.key"
-          variant="ghost"
-          size="2xs"
-          icon="i-heroicons-pencil"
-          class="flex-shrink-0"
-          @click="editEntry(entry)"
-        />
-        <UButton
-          v-else
-          variant="ghost"
-          size="2xs"
-          icon="i-heroicons-x-mark"
-          class="flex-shrink-0"
-          @click="editedEntryKey = null"
-        />
+        <div class="flex-1 flex items-center">
+          <span v-if="editedEntryKey !== entry.key" class="flex-1 font-medium">{{ entry.value }}</span>
+          <UInput
+            v-else
+            v-model="editedEntryValue"
+            name="editedValue"
+            variant="none"
+            size="xl"
+            autofocus
+            :padded="false"
+            class="flex-1"
+            @keydown.enter="updateEntry(entry)"
+            @keydown.esc="editedEntryKey = null"
+          />
+
+          <UButton
+            v-if="editedEntryKey !== entry.key"
+            variant="ghost"
+            size="2xs"
+            icon="i-heroicons-pencil"
+            class="flex-shrink-0"
+            @click="editEntry(entry)"
+          />
+          <div v-else class="flex-shrink-0 flex gap-1">
+            <UButton
+              variant="ghost"
+              size="2xs"
+              icon="i-heroicons-check"
+              @click="updateEntry(entry)"
+            />
+            <UButton
+              variant="ghost"
+              size="2xs"
+              icon="i-heroicons-x-mark"
+              @click="editedEntryKey = null"
+            />
+          </div>
+        </div>
 
         <UButton
           color="red"
