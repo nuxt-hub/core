@@ -2,7 +2,7 @@ export default eventHandler(async (event) => {
   const session = await requireUserSession(event)
 
   // List files for the current user
-  const storage = await useBucket(String(session.user!.id))
+  const storage = await useBucket(event)
 
   console.log('storage', storage)
 
