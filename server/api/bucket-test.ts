@@ -1,7 +1,7 @@
 import { R2ListOptions } from '@cloudflare/workers-types/experimental'
 
 export default eventHandler(async (event) => {
-  const bucket = useBucket(event)
+  const bucket = useBucket()
 
   await bucket.put('test2.txt', 'Hello World!', {
     httpMetadata: {

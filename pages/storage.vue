@@ -115,7 +115,7 @@ const items = [[{
         :key="index"
         class="flex items-center gap-4 py-2"
       >
-        <span class="flex-1 font-medium">{{ file }}</span>
+        <span class="flex-1 font-medium">{{ file.key }}</span>
       </li>
     </ul>
   </UCard>

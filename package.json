@@ -20,7 +20,6 @@
     "drizzle-kit": "^0.20.13",
     "drizzle-orm": "^0.29.3",
     "h3-zod": "^0.5.3",
-    "nitro-cloudflare-dev": "^0.0.7",
     "nuxt": "^3.9.3",
     "nuxt-auth-utils": "^0.0.14",
     "utf-8-validate": "^6.0.3",

@@ -18,7 +18,7 @@ export function useKV (prefix?: string) {
         })
       })
     } else if (import.meta.dev && process.env.NUXT_HUB_URL) {
-      console.log('Using remote KV...')
+      console.log('Using remote KV namespace...')
       // Use https://unstorage.unjs.io/drivers/http
       _kv = createStorage({
         driver: httpDriver({
@@ -30,7 +30,7 @@ export function useKV (prefix?: string) {
       })
     } else if (import.meta.dev) {
       // local kv in development
-      console.log('Using local KV...')
+      console.log('Using local KV namespace...')
       _kv = createStorage({
         driver: fsDriver({ base: join(process.cwd(), './.hub/kv') })
       })

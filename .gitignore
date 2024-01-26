@@ -11,4 +11,3 @@ dist
 .netlify
 db.sqlite-*
 .hub
-.wrangler/state/v3

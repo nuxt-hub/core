@@ -44,7 +44,7 @@ export function useDatabase () {
       })
     } else if (import.meta.dev) {
       // local sqlite in development
-      console.log('Using local database...')
+      console.log('Using D1 local database...')
       _client = new Database(join(process.cwd(), './.hub/db.sqlite'))
       _db = drizzle(_client)
     } else {

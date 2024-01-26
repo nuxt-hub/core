@@ -32,9 +32,6 @@ dependencies:
   h3-zod:
     specifier: ^0.5.3
     version: 0.5.3(h3@1.10.0)(zod@3.22.4)
-  nitro-cloudflare-dev:
-    specifier: ^0.0.7
-    version: 0.0.7
   nuxt:
     specifier: ^3.9.3
     version: 3.9.3(bufferutil@4.0.8)(eslint@8.56.0)(typescript@5.3.3)(utf-8-validate@6.0.3)(vite@5.0.11)
@@ -5703,13 +5700,6 @@ packages:
 
   /next-tick@1.1.0:
     resolution: {integrity: sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==}
-    dev: false
-
-  /nitro-cloudflare-dev@0.0.7:
-    resolution: {integrity: sha512-zZAXuVvMUEHZ75abrZoBDfwl8PnuJyofWRczfXJO72VYmbC/vgTDPUTlbefTPjOVh+LX4dTGPwg7EADNMwDfNA==}
-    dependencies:
-      consola: 3.2.3
-      pkg-types: 1.0.3
     dev: false
 
   /nitropack@2.8.1:
