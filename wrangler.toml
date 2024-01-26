@@ -1,9 +1,0 @@
-d1_databases = [
-  { binding = "DB", database_name = "nuxthub-demo", database_id = "hello-world" },
-]
-kv_namespaces = [
-  { binding = "KV", id = "nuxthub-demo" },
-]
-r2_buckets = [
-  { binding = "BUCKET", bucket_name = "nuxthub-demo" },
-]

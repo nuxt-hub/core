@@ -2,9 +2,10 @@ export default eventHandler(async (event) => {
   const session = await requireUserSession(event)
 
   // List files for the current user
-  const storage = await useBucket(event)
 
-  console.log('storage', storage)
+  const res = await useBucket().list()
+
+  return res.objects
 
   // const keys = await storage.getKeys()
   // // const items = await storage.getItems(keys)
@@ -12,5 +13,5 @@ export default eventHandler(async (event) => {
   //   const value = await storage.getItem(key)
   //   return { path: key, content: value }
   // }))
-  return []
+  // return []
 })
