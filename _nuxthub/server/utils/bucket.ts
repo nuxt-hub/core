@@ -12,7 +12,7 @@ export function useBucket (name: string = '') {
     console.log('Using R2 local (proxy for useBucket() is not yet supported)')
   }
   // @ts-ignore
-  const binding = globalThis[bucketName]
+  const binding = process.env[bucketName] || globalThis.__env__?.[bucketName] || globalThis[bucketName]
   if (!binding) {
     throw createError(`Missing Cloudflare R2 binding ${bucketName}`)
   }
