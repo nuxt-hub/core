@@ -9,6 +9,10 @@ export function useBucket (event: H3Event, name: string = '') {
     return _buckets[bucketName]
   }
 
+  if (process.env.NUXT_HUB_URL) {
+    console.log('Using local bucket as proxy for useBucket() is not yet supported')
+  }
+
   // TODO: move to globalThis.__env__ or process.env
   const cfEnv = event.context.cloudflare?.env
   if (!cfEnv) {
