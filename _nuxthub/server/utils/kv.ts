@@ -8,9 +8,8 @@ import { joinURL } from 'ufo'
 
 let _kv: Storage
 
-export const useKV = (prefix?: string) => {
+export function useKV (prefix?: string) {
   if (!_kv) {
-    const isDev = process.env.NODE_ENV === 'development'
     if (process.env.KV) {
       // kv in production
       _kv = createStorage({
@@ -18,7 +17,7 @@ export const useKV = (prefix?: string) => {
           binding: process.env.KV
         })
       })
-    } else if (isDev && process.env.NUXT_HUB_URL) {
+    } else if (import.meta.dev && process.env.NUXT_HUB_URL) {
       console.log('Using remote KV...')
       // Use https://unstorage.unjs.io/drivers/http
       _kv = createStorage({
@@ -29,7 +28,7 @@ export const useKV = (prefix?: string) => {
           }
         })
       })
-    } else if (isDev) {
+    } else if (import.meta.dev) {
       // local kv in development
       console.log('Using local KV...')
       _kv = createStorage({

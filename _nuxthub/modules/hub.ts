@@ -14,9 +14,9 @@ export default defineNuxtModule({
     const { resolve } = createResolver(import.meta.url)
 
     // Add Server utils based on environment
-    nuxt.options.nitro.imports = nuxt.options.nitro.imports || {}
-    nuxt.options.nitro.imports.dirs = nuxt.options.nitro.imports.dirs || []
-    nuxt.options.nitro.imports.dirs.push(resolve(`../server/_utils/${nuxt.options.dev ? 'dev' : 'prod'}/`))
+    // nuxt.options.nitro.imports = nuxt.options.nitro.imports || {}
+    // nuxt.options.nitro.imports.dirs = nuxt.options.nitro.imports.dirs || []
+    // nuxt.options.nitro.imports.dirs.push(resolve(`../server/_utils/${nuxt.options.dev ? 'dev' : 'prod'}/`))
 
     // Production mode
     if (!nuxt.options.dev) {

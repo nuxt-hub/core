@@ -13,14 +13,13 @@ export * as tables from '~/server/database/schema'
 let _db: DrizzleD1Database | BetterSQLite3Database | SqliteRemoteDatabase | null = null
 let _client: any = null
 
-export const useDatabase = () => {
+export function useDatabase () {
   if (!_db) {
-    const isDev = process.env.NODE_ENV === 'development'
     if (process.env.DB) {
       // d1 in production
       _client = process.env.DB
       _db = drizzleD1(_client)
-    } else if (isDev && process.env.NUXT_HUB_URL) {
+    } else if (import.meta.dev && process.env.NUXT_HUB_URL) {
       console.log('Using D1 remote database...')
       _db = drizzleHTTP(async (sql, params, method) => {
         // https://orm.drizzle.team/docs/get-started-sqlite#http-proxy
@@ -43,7 +42,7 @@ export const useDatabase = () => {
           return { rows: [] }
         }
       })
-    } else if (isDev) {
+    } else if (import.meta.dev) {
       // local sqlite in development
       console.log('Using local database...')
       _client = new Database(join(process.cwd(), './.hub/db.sqlite'))
@@ -55,7 +54,7 @@ export const useDatabase = () => {
   return _db
 }
 
-export const useDatabaseClient = () => {
+export function useDatabaseClient () {
   if (!_client) {
     useDatabase()
   }
