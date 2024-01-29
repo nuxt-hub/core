@@ -14,7 +14,10 @@ const { data: storage } = await useFetch('/api/storage')
 
 async function addFile () {
   const key = newFileKey.value.trim().replace(/\s/g, '-')
-  if (!key || !newFileValue.value) { return }
+  if (!key || !newFileValue.value) {
+    toast.add({ title: `Missing ${!key ? 'key' : 'file'}.`, color: 'red' })
+    return
+  }
 
   loading.value = true
 
@@ -54,6 +57,9 @@ function onFileSelect (e) {
   const files = [...(target.files || [])]
   if (files.length) {
     newFileValue.value = files[0]
+    if (!newFileKey.value.trim()) {
+      newFileKey.value = files[0].name
+    }
   }
 
   // Clear the input value so that the same file can be uploaded again
