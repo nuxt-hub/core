@@ -19,12 +19,12 @@ async function addFile () {
   loading.value = true
 
   try {
+    const formData = new FormData()
+    formData.append('data', new Blob([JSON.stringify({ key })], {type: 'application/json'}))
+    formData.append('file', newFileValue.value)
     const file = await $fetch('/api/storage', {
       method: 'PUT',
-      body: {
-        key,
-        value
-      }
+      body: formData
     })
     const fileIndex = storage.value.findIndex(e => e.key === file.key)
     if (fileIndex !== -1) {
