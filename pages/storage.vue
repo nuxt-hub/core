@@ -23,7 +23,7 @@ async function addFile () {
 
   try {
     const formData = new FormData()
-    formData.append('data', new Blob([JSON.stringify({ key })], {type: 'application/json'}))
+    formData.append('data', new Blob([JSON.stringify({ key })], { type: 'application/json' }))
     formData.append('file', newFileValue.value)
     const file = await $fetch('/api/storage', {
       method: 'PUT',
@@ -122,6 +122,7 @@ const items = [[{
         class="flex items-center gap-4 py-2"
       >
         <span class="flex-1 font-medium">{{ file.key }}</span>
+        <span class="flex-1 font-medium">{{ file.httpMetadata?.contentType || '-' }}</span>
       </li>
     </ul>
   </UCard>
