@@ -27,12 +27,15 @@ export function useBucket (name: string = '') {
 }
 
 export function useBlob (name: string = '') {
-  const isProxy = import.meta.dev && process.env.NUXT_HUB_URL
+  const proxy = import.meta.dev && process.env.NUXT_HUB_URL
 
   return {
     async list (options: R2ListOptions = {}) {
-      if (isProxy) {
-        // TODO
+      if (proxy) {
+        const query: Record<string, any> = {}
+        if (name) { query.name = name }
+
+        return $fetch<R2Object[]>('/api/_hub/bucket', { baseURL: proxy, method: 'GET', query })
       } else {
         const bucket = useBucket(name)
 
@@ -61,8 +64,11 @@ export function useBlob (name: string = '') {
       }
     },
     async get (key: string) {
-      if (isProxy) {
-        // TODO
+      if (proxy) {
+        const query: Record<string, any> = {}
+        if (name) { query.name = name }
+
+        return $fetch<void>(`/api/_hub/bucket/${key}`, { baseURL: proxy, method: 'GET', query })
       } else {
         const bucket = useBucket(name)
         const object = await bucket.get(key)
@@ -78,7 +84,7 @@ export function useBlob (name: string = '') {
       }
     },
     async put (file: MultiPartData) {
-      if (isProxy) {
+      if (proxy) {
         // TODO
       } else {
         const bucket = useBucket(name)
@@ -96,8 +102,11 @@ export function useBlob (name: string = '') {
       }
     },
     async delete (key: string) {
-      if (isProxy) {
-        // TODO
+      if (proxy) {
+        const query: Record<string, any> = {}
+        if (name) { query.name = name }
+
+        return $fetch<void>(`/api/_hub/bucket/${key}`, { baseURL: proxy, method: 'DELETE', query })
       } else {
         const bucket = useBucket(name)
 
@@ -106,6 +115,17 @@ export function useBlob (name: string = '') {
     }
   }
 }
+
+// Final intentions
+// export default hub.blob.uploadHandler({
+//   async authorize (event) {
+//     await requireUserSession(event)
+//   },
+//   contentType: ['image/jpg'],
+//   maxFileSize: '16MB',
+//   bucket: '',
+//   prefix: ''
+// })
 
 function getContentType (pathOrExtension?: string) {
   return (pathOrExtension && mime.getType(pathOrExtension)) || 'application/octet-stream'
