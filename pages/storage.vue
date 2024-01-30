@@ -120,7 +120,7 @@ const items = [[{
         }"
         class="overflow-hidden relative"
       >
-        <img v-if="file.httpMetadata?.contentType?.startsWith('image/') && file.body" :src="`data:${file.httpMetadata.contentType};base64,${(file.body)}`" class="h-36 w-full object-cover">
+        <!-- <img v-if="file.httpMetadata?.contentType?.startsWith('image/')" :src="`/api/storage/${file.key}`" class="h-36 w-full object-cover"> -->
         <div class="h-36 w-full flex items-center justify-center p-2 text-center">
           {{ file.key }}
         </div>
