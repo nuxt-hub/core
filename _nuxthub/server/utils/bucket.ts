@@ -84,13 +84,15 @@ export function useBlob (name: string = '') {
         const bucket = useBucket(name)
 
         const type = file.type || getContentType(file.filename)
-        const extension = getExtension(type)
-        // TODO: ensure filename unicity
-        const filename = [randomUUID(), extension].filter(Boolean).join('.')
+        // TODO: ensure key unicity
+        const key = randomUUID()
         const httpMetadata = { contentType: type }
-        const customMetadata = getMetadata(type, file.data)
+        const customMetadata: Record<string, any> = {
+          ...getMetadata(type, file.data),
+          filename: file.filename
+        }
 
-        return await bucket.put(filename, toArrayBuffer(file.data), { httpMetadata, customMetadata })
+        return await bucket.put(key, toArrayBuffer(file.data), { httpMetadata, customMetadata })
       }
     },
     async delete (key: string) {
@@ -107,10 +109,6 @@ export function useBlob (name: string = '') {
 
 function getContentType (pathOrExtension?: string) {
   return (pathOrExtension && mime.getType(pathOrExtension)) || 'application/octet-stream'
-}
-
-function getExtension (type?: string) {
-  return (type && mime.getExtension(type)) || ''
 }
 
 function getMetadata (type: string, buffer: Buffer) {
