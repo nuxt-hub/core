@@ -1,14 +1,101 @@
-# Nuxt Todo List on the Edge
+# NuxtHub Demo
 
-A demonstration using [Nuxt](https://nuxt.com) with server-side rendering on the edge, authentication and database querying using SQLite in production.
+A demonstration using [Nuxt](https://nuxt.com) as a fullstack framework on the edge.
 
-## Features
+## Blob
 
-- [Server-Side Rendering on the Edge](https://nuxt.com/blog/nuxt-on-the-edge)
-- Authentication backed-in using [nuxt-auth-utils](https://github.com/Atinux/nuxt-auth-utils)
-- Leverage SQLite as database with migrations using [drizzle ORM](https://orm.drizzle.team/)
-- User interface made with [Nuxt UI](https://ui.nuxt.com)
-- Embed [Drizzle Studio](https://orm.drizzle.team/drizzle-studio/overview/) in the [Nuxt DevTools](https://devtools.nuxt.com)
+### Upload a blob
+
+```ts
+const blob = await useBlob().put('my-file.txt', 'Hello World!', {
+  contentType: 'text/plain' // optional, will be inferred from the file extension
+  addRandomSuffix: true // optional, will add a suffix to the filename to avoid collisions
+})
+/*
+{
+  pathname: 'my-file-12345.txt',
+  contentType: 'text/plain',
+  size: 12,
+  uploadedAt: '2021-08-12T15:00:00.000Z'
+}
+*/
+```
+
+### Usage with file upload
+
+```ts
+export default eventHandler(async (event) => {
+  const form = await readFormData(event)
+  const file = form.get('file')
+
+  return useBlob().put(file.name, file)
+})
+```
+
+### List blobs
+
+```ts
+// Get a blob object
+const { blobs, cursor, hasMore } = await useBlob().list({
+  limit: 10, // optional, default to 1000
+  prefix: 'my-dir', // optional, will only list blobs starting with `my-dir`
+})
+```
+
+#### Pagination
+
+```ts
+const blob = useBlob()
+let blobs = []
+let hasMore = true
+let cursor
+
+while (hasMore) {
+  const result = await blob.list({
+    cursor,
+  })
+  blobs.push(...result.blobs)
+  hasMore = result.hasMore
+  cursor = result.cursor
+}
+```
+
+### Get blob metadata
+
+```ts
+const blob = await useBlob().head('my-file.txt')
+```
+
+### Delete a blob
+
+```ts
+await useBlob().delete('my-file.txt')
+```
+
+It returns a void response. A delete action is always successful if the blob url exists. A delete action won't throw if the blob url doesn't exists.
+
+### Serve a blob
+
+```ts
+// server/routes/[...pathname].get.ts
+export default eventHandler(event => {
+  const pathname = event.context.params.pathname
+  return useBlob().serve(event, pathname)
+})
+```
+
+## Key-Value Storage
+
+- useKV() -> process.env.KV binding
+- useConfig() -> process.env.KV with `_config` key
+
+- useKV().setItem('public/')
+
+### Get a value
+
+```ts
+const value = await useKV().get('my-key')
+```
 
 ## Live demos
 
