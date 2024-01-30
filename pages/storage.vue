@@ -122,10 +122,11 @@ const items = [[{
       >
         <!-- <img v-if="file.httpMetadata?.contentType?.startsWith('image/')" :src="`/api/storage/${file.key}`" class="h-36 w-full object-cover"> -->
         <div class="h-36 w-full flex items-center justify-center p-2 text-center">
-          {{ file.key }}
+          {{ file.customMetadata?.filename }}
         </div>
         <div class="flex flex-col gap-1 p-2 border-t border-gray-200 dark:border-gray-800">
-          <span class="text-sm font-medium">{{ file.key }}</span>
+          <span class="text-sm font-medium">{{ file.customMetadata?.filename }}</span>
+          <span class="text-sm line-clamp-2">{{ file.key }}</span>
           <div class="flex items-center justify-between gap-1">
             <span class="text-xs truncate">{{ file.httpMetadata?.contentType || '-' }}</span>
             <span class="text-xs">{{ file.size ? `${Math.round(file.size / Math.pow(1024, 2) * 100) / 100}MB` : '-' }}</span>
