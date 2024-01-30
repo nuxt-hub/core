@@ -11,10 +11,5 @@ export default defineNuxtConfig({
   ],
   ui: {
     icons: ['heroicons', 'simple-icons']
-  },
-  nitro: {
-    experimental: {
-      asyncContext: true
-    }
   }
 })
