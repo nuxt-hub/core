@@ -68,7 +68,7 @@ export function useBlob (name: string = '') {
         const query: Record<string, any> = {}
         if (name) { query.name = name }
 
-        return $fetch<void>(`/api/_hub/bucket/${key}`, { baseURL: proxy, method: 'GET', query })
+        return $fetch<any>(`/api/_hub/bucket/${key}`, { baseURL: proxy, method: 'GET', query })
       } else {
         const bucket = useBucket(name)
         const object = await bucket.get(key)
