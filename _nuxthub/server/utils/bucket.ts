@@ -68,7 +68,7 @@ export function useBlob (name: string = '') {
         const query: Record<string, any> = {}
         if (name) { query.name = name }
 
-        return $fetch<any>(`/api/_hub/bucket/${key}`, { baseURL: proxy, method: 'GET', query })
+        return $fetch<ReadableStreamDefaultReader<any>>(`/api/_hub/bucket/${key}`, { baseURL: proxy, method: 'GET', query })
       } else {
         const bucket = useBucket(name)
         const object = await bucket.get(key)
@@ -77,8 +77,8 @@ export function useBlob (name: string = '') {
           throw createError({ message: 'File not found', statusCode: 404 })
         }
 
-        setHeader(useEvent(), 'Content-Type', object.httpMetadata!.contentType!)
-        setHeader(useEvent(), 'Content-Length', object.size)
+        // setHeader(useEvent(), 'Content-Type', object.httpMetadata!.contentType!)
+        // setHeader(useEvent(), 'Content-Length', object.size)
 
         return object.body.getReader()
       }
