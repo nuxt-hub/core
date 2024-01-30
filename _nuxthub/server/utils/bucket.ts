@@ -1,4 +1,4 @@
-import type { R2Bucket, R2ListOptions, ReadableStreamDefaultReader } from '@cloudflare/workers-types/experimental'
+import type { R2Bucket, R2ListOptions } from '@cloudflare/workers-types/experimental'
 import mime from 'mime'
 import { imageMeta } from 'image-meta'
 import { defu } from 'defu'
@@ -49,8 +49,12 @@ export async function serveFiles (bucket: R2Bucket, options: R2ListOptions = {})
   return listed.objects
 }
 
-export function getContentType (key: string) {
-  return mime.getType(key) || 'application/octet-stream'
+export function getContentType (pathOrExtension?: string) {
+  return (pathOrExtension && mime.getType(pathOrExtension)) || 'application/octet-stream'
+}
+
+export function getExtension (type?: string) {
+  return (type && mime.getExtension(type)) || ''
 }
 
 export function getMetadata (type: string, buffer: Buffer) {
@@ -61,33 +65,11 @@ export function getMetadata (type: string, buffer: Buffer) {
   }
 }
 
-export async function processStream(
-  reader: ReadableStreamDefaultReader<Uint8Array>
-): Promise<Uint8Array> {
-  let { value, done } = await reader.read()
-
-  const results: Array<Uint8Array> = []
-
-  while (!done && value) {
-    const newRead = await reader.read()
-
-    results.push(value)
-
-    value = newRead.value
-    done = newRead.done
+export function toArrayBuffer (buffer: Buffer) {
+  const arrayBuffer = new ArrayBuffer(buffer.length)
+  const view = new Uint8Array(arrayBuffer)
+  for (let i = 0; i < buffer.length; ++i) {
+    view[i] = buffer[i]
   }
-
-  const result = new Uint8Array(
-    // total size
-    results.reduce((acc, value) => acc + value.length, 0)
-  )
-
-  // Create a new array with total length and merge all source arrays.
-  let offset = 0
-  results.forEach((item) => {
-    result.set(item, offset)
-    offset += item.length
-  })
-
-  return result
+  return arrayBuffer
 }
