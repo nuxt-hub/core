@@ -1,5 +1,3 @@
-import { randomUUID } from 'uncrypto'
-
 export default eventHandler(async (event) => {
   await requireUserSession(event)
 
@@ -10,17 +8,14 @@ export default eventHandler(async (event) => {
   if (!files) {
     throw createError({ statusCode: 400, message: 'Missing files' })
   }
+
+  const { put } = useBlob()
+
   const objects = []
 
   try {
     for (const file of files) {
-      const type = file.type || getContentType(file.filename)
-      const extension = getExtension(type)
-      // TODO: ensure filename unicity
-      const filename = [randomUUID(), extension].filter(Boolean).join('.')
-      const httpMetadata = { contentType: type }
-      const customMetadata = getMetadata(type, file.data)
-      const object = await useBucket().put(filename, toArrayBuffer(file.data), { httpMetadata, customMetadata })
+      const object = await put(file)
       objects.push(object)
     }
   } catch (e: any) {
