@@ -30,10 +30,8 @@ async function addTodo () {
       newTodoInput.value?.input?.focus()
     })
   } catch (err) {
-    if (err.data?.data?.issues) {
-      const title = err.data.data.issues.map(issue => issue.message).join('\n')
-      toast.add({ title, color: 'red' })
-    }
+    const title = err.data?.data?.issues?.map(issue => issue.message).join('\n') || err.message()
+    toast.add({ title, color: 'red' })
   }
   loading.value = false
 }
