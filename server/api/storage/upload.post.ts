@@ -1,6 +1,6 @@
 export default eventHandler(async (event) => {
   console.log('before')
-  const form = await readFormDataFixed(event)
+  const form = await readFormData(event)
   console.log('getting file')
   const file = form.get('file') as Blob
   console.log('after')
