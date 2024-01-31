@@ -8,7 +8,7 @@ import { joinURL } from 'ufo'
 
 let _kv: Storage
 
-export function useKV (prefix?: string) {
+export function useKV () {
   if (!_kv) {
     if (process.env.KV) {
       // kv in production
@@ -37,10 +37,6 @@ export function useKV (prefix?: string) {
     } else {
       throw new Error('No KV configured for production')
     }
-  }
-
-  if (prefix) {
-    return prefixStorage(_kv, prefix)
   }
 
   return _kv
