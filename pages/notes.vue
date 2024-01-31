@@ -41,7 +41,7 @@ async function addEntry () {
       newEntryKeyInput.value?.input?.focus()
     })
   } catch (err) {
-    const title = err.data?.data?.issues?.map(issue => issue.message).join('\n') || err.message()
+    const title = err.data?.data?.issues?.map(issue => issue.message).join('\n') || err.message
     toast.add({ title, color: 'red' })
   }
   loading.value = false

@@ -29,7 +29,7 @@ async function addFile () {
     toast.add({ title: 'Files created.' })
     newFilesValue.value = []
   } catch (err: any) {
-    const title = err.data?.data?.issues?.map((issue: any) => issue.message).join('\n') || err.message()
+    const title = err.data?.data?.issues?.map((issue: any) => issue.message).join('\n') || err.message
     toast.add({ title, color: 'red' })
   }
   loading.value = false
@@ -51,7 +51,7 @@ async function deleteFile (pathname: string) {
     storage.value = storage.value!.filter(t => t.pathname !== pathname)
     toast.add({ title: `File "${pathname}" deleted.` })
   } catch (err: any) {
-    const title = err.data?.data?.issues?.map((issue: any) => issue.message).join('\n') || err.message()
+    const title = err.data?.data?.issues?.map((issue: any) => issue.message).join('\n') || err.message
     toast.add({ title, color: 'red' })
   }
 }
