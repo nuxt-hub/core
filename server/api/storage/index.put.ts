@@ -1,10 +1,7 @@
 export default eventHandler(async (event) => {
   await requireUserSession(event)
 
-  let files = (await readMultipartFormData(event) || [])
-
-  // Filter only files
-  files = files.filter((file) => Boolean(file.filename))
+  const files = await readFiles(event)
   if (!files) {
     throw createError({ statusCode: 400, message: 'Missing files' })
   }

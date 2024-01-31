@@ -147,3 +147,10 @@ function toArrayBuffer (buffer: Buffer) {
   }
   return arrayBuffer
 }
+
+export async function readFiles (event: H3Event<EventHandlerRequest>) {
+  const files = (await readMultipartFormData(event) || [])
+
+  // Filter only files
+  return files.filter((file) => Boolean(file.filename))
+}
