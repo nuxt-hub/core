@@ -8,7 +8,8 @@
     "preview": "nuxt preview",
     "migrate": "drizzle-kit generate:sqlite",
     "lint": "eslint .",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "logs": "wrangler pages deployment tail"
   },
   "dependencies": {
     "@cloudflare/workers-types": "^4.20240117.0",
