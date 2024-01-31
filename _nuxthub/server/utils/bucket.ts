@@ -1,7 +1,7 @@
 import type { R2Bucket, R2ListOptions } from '@cloudflare/workers-types/experimental'
-import type { EventHandlerRequest, H3Event } from 'h3'
+import type { BlobObject } from '~/_nuxthub/types'
 import mime from 'mime'
-import { imageMeta } from 'image-meta'
+// import { imageMeta } from 'image-meta'
 import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
 import { parse } from 'pathe'
@@ -36,7 +36,7 @@ export function useBlob () {
       if (proxy) {
         const query: Record<string, any> = {}
 
-        return $fetch<R2Object[]>('/api/_hub/bucket', { baseURL: proxy, method: 'GET', query })
+        return $fetch<BlobObject[]>('/api/_hub/bucket', { baseURL: proxy, method: 'GET', query })
       } else {
         const bucket = useBucket()
 
@@ -132,35 +132,19 @@ function getContentType (pathOrExtension?: string) {
   return (pathOrExtension && mime.getType(pathOrExtension)) || 'application/octet-stream'
 }
 
-export function getMetadata (filename: string, buffer: Buffer) {
-  const metadata: Record<string, any> = {
-    contentType: getContentType(filename)
-  }
+// function getMetadata (filename: string, buffer: Buffer) {
+//   const metadata: Record<string, any> = {
+//     contentType: getContentType(filename)
+//   }
 
-  if (metadata.contentType.startsWith('image/')) {
-    Object.assign(metadata, imageMeta(buffer))
-  }
+//   if (metadata.contentType.startsWith('image/')) {
+//     Object.assign(metadata, imageMeta(buffer))
+//   }
 
-  return metadata
-}
+//   return metadata
+// }
 
-export function toArrayBuffer (buffer: Buffer) {
-  const arrayBuffer = new ArrayBuffer(buffer.length)
-  const view = new Uint8Array(arrayBuffer)
-  for (let i = 0; i < buffer.length; ++i) {
-    view[i] = buffer[i]
-  }
-  return arrayBuffer
-}
-
-export async function readFiles (event: H3Event<EventHandlerRequest>) {
-  const files = (await readMultipartFormData(event) || [])
-
-  // Filter only files
-  return files.filter((file) => Boolean(file.filename))
-}
-
-function mapR2ObjectToBlob (object: R2Object) {
+function mapR2ObjectToBlob (object: R2Object): BlobObject {
   return {
     pathname: object.key,
     contentType: object.httpMetadata?.contentType,
