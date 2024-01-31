@@ -6,5 +6,5 @@ export default eventHandler(async (event) => {
     key: z.string().min(1)
   })
 
-  return useBlob().get(key)
+  return useBlob().serve(event, key)
 })
