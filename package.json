@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "nuxi dev",
-    "build": "nuxi build",
+    "build": "nuxi build --preset cloudflare_pages",
     "preview": "nuxt preview",
     "migrate": "drizzle-kit generate:sqlite",
     "lint": "eslint .",
