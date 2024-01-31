@@ -1,4 +1,4 @@
-export interface BlobObject {
+declare interface BlobObject {
   pathname: string
   contentType: string | undefined
   size: number

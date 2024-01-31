@@ -1,5 +1,4 @@
 import type { R2Bucket, R2ListOptions } from '@cloudflare/workers-types/experimental'
-import type { BlobObject } from '~/_nuxthub/types'
 import mime from 'mime'
 // import { imageMeta } from 'image-meta'
 import { defu } from 'defu'
