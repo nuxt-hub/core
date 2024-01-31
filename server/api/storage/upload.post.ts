@@ -9,7 +9,7 @@ export default eventHandler(async (event) => {
     throw createError({ status: 400, message: 'No file provided' })
   }
 
-  if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
+  if (!file.type.startsWith('image/')) {
     throw createError({ status: 400, message: 'File must be an image' })
   }
 
