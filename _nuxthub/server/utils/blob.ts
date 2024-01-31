@@ -104,12 +104,12 @@ export function useBlob () {
     },
     async head (pathname: string) {
       if (proxyURL) {
-        const body = await $fetch<void>(joinURL('/api/_hub/blob', pathname), {
+        const { headers } = await $fetch.raw<void>(joinURL('/api/_hub/blob', pathname), {
           baseURL: proxyURL,
           method: 'HEAD'
         })
-        console.log('head body', body)
-        return
+        console.log('head headers', headers.get('x-blob'))
+        return JSON.parse(headers.get('x-blob') || '{}') as BlobObject
       }
       // Use R2 binding
       const object = await bucket.head(pathname)
@@ -122,12 +122,10 @@ export function useBlob () {
     },
     async delete (pathname: string) {
       if (proxyURL) {
-        const body = await $fetch<void>(`/api/_hub/blob/${pathname}`, {
+        await $fetch<void>(`/api/_hub/blob/${pathname}`, {
           baseURL: proxyURL,
           method: 'DELETE',
         })
-
-        console.log('delete body', body)
         return
       }
       // Use R2 binding
