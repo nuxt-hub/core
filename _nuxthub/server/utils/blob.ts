@@ -1,17 +1,18 @@
 import type { R2Bucket, R2ListOptions } from '@cloudflare/workers-types/experimental'
 import mime from 'mime'
 // import { imageMeta } from 'image-meta'
+import type { H3Event } from 'h3'
 import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
 import { parse } from 'pathe'
 import { joinURL } from 'ufo'
 
-const _blobs: Record<string, R2Bucket> = {}
+const _r2_buckets: Record<string, R2Bucket> = {}
 
-function _useBlob () {
+function _useBucket () {
   const name = 'BLOB'
-  if (_blobs[name]) {
-    return _blobs[name]
+  if (_r2_buckets[name]) {
+    return _r2_buckets[name]
   }
 
   // @ts-ignore
@@ -19,96 +20,97 @@ function _useBlob () {
   if (!binding) {
     throw createError(`Missing Cloudflare R2 binding ${name}`)
   }
-  _blobs[name] = binding as R2Bucket
+  _r2_buckets[name] = binding as R2Bucket
 
-  return _blobs[name]
+  return _r2_buckets[name]
 }
 
 export function useBlob () {
-  const proxy = import.meta.dev && process.env.NUXT_HUB_URL
+  const proxyURL = import.meta.dev && process.env.NUXT_HUB_URL
+  let bucket: R2Bucket
+  if (!proxyURL) {
+    bucket = _useBucket()
+  }
 
   return {
-    async list (options: R2ListOptions = {}) {
-      if (proxy) {
-        const query: Record<string, any> = {}
-
-        return $fetch<BlobObject[]>('/api/_hub/blob', { baseURL: proxy, method: 'GET', query })
-      } else {
-        const blob = _useBlob()
-
-        const resolvedOptions = defu(options, {
-          limit: 500,
-          include: ['httpMetadata' as const, 'customMetadata' as const],
+    async list (options: BlobListOptions = { limit: 1000 }) {
+      if (proxyURL) {
+        return $fetch<BlobObject[]>('/api/_hub/blob', {
+          baseURL: proxyURL,
+          method: 'GET',
+          query: options
         })
-
-        // https://developers.cloudflare.com/r2/api/workers/workers-api-reference/#r2listoptions
-        const listed = await blob.list(resolvedOptions)
-        let truncated = listed.truncated
-        let cursor = listed.truncated ? listed.cursor : undefined
-
-        while (truncated) {
-          const next = await blob.list({
-            ...options,
-            cursor: cursor,
-          })
-          listed.objects.push(...next.objects)
-
-          truncated = next.truncated
-          cursor = next.truncated ? next.cursor : undefined
-        }
-
-        return listed.objects.map(mapR2ObjectToBlob)
       }
+      // Use R2 binding
+      const resolvedOptions = defu(options, {
+        limit: 500,
+        include: ['httpMetadata' as const, 'customMetadata' as const],
+      })
+
+      // https://developers.cloudflare.com/r2/api/workers/workers-api-reference/#r2listoptions
+      const listed = await bucket.list(resolvedOptions)
+      let truncated = listed.truncated
+      let cursor = listed.truncated ? listed.cursor : undefined
+
+      while (truncated) {
+        const next = await bucket.list({
+          ...options,
+          cursor: cursor,
+        })
+        listed.objects.push(...next.objects)
+
+        truncated = next.truncated
+        cursor = next.truncated ? next.cursor : undefined
+      }
+
+      return listed.objects.map(mapR2ObjectToBlob)
     },
-    async get (key: string) {
-      if (proxy) {
-        const query: Record<string, any> = {}
-
-        return $fetch<ReadableStreamDefaultReader<any>>(`/api/_hub/blob/${key}`, { baseURL: proxy, method: 'GET', query })
-      } else {
-        const blob = _useBlob()
-        const object = await blob.get(key)
-
-        if (!object) {
-          throw createError({ message: 'File not found', statusCode: 404 })
-        }
-
-        // FIXME
-        setHeader(useEvent(), 'Content-Type', object.httpMetadata!.contentType!)
-        setHeader(useEvent(), 'Content-Length', object.size)
-
-        return object.body.getReader()
+    async serve (event: H3Event, pathname: string) {
+      if (proxyURL) {
+        return $fetch<ReadableStreamDefaultReader<any>>(`/api/_hub/blob/${pathname}`, {
+          baseURL: proxyURL,
+          method: 'GET'
+        })
       }
+      // Use R2 binding
+      const object = await bucket.get(pathname)
+
+      if (!object) {
+        throw createError({ message: 'File not found', statusCode: 404 })
+      }
+
+      setHeader(event, 'Content-Type', object.httpMetadata?.contentType || getContentType(pathname))
+      setHeader(event, 'Content-Length', object.size)
+
+      return object.body
     },
     async put (pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: { contentType?: string, addRandomSuffix?: boolean, [key: string]: any } = { addRandomSuffix: true }) {
-      if (proxy) {
+      if (proxyURL) {
         // TODO
-      } else {
-        const blob = _useBlob()
-        const { contentType: optionsContentType, addRandomSuffix, ...customMetadata } = options
-        const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
-
-        const { dir, ext, name: filename } = parse(pathname)
-        let key = pathname
-        if (addRandomSuffix) {
-          key = joinURL(dir === '.' ? '' : dir, `${filename}-${randomUUID().split('-')[0]}${ext}`)
-        }
-
-        const object = await blob.put(key, body as any, { httpMetadata: { contentType }, customMetadata })
-
-        return mapR2ObjectToBlob(object)
+        return console.warn('useBlob().put() Not implemented')
       }
+      // Use R2 binding
+      const { contentType: optionsContentType, addRandomSuffix, ...customMetadata } = options
+      const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
+
+      const { dir, ext, name: filename } = parse(pathname)
+      let key = pathname
+      if (addRandomSuffix) {
+        key = joinURL(dir === '.' ? '' : dir, `${filename}-${randomUUID().split('-')[0]}${ext}`)
+      }
+
+      const object = await bucket.put(key, body as any, { httpMetadata: { contentType }, customMetadata })
+
+      return mapR2ObjectToBlob(object)
     },
     async delete (key: string) {
-      if (proxy) {
+      if (proxyURL) {
         const query: Record<string, any> = {}
 
-        return $fetch<void>(`/api/_hub/blob/${key}`, { baseURL: proxy, method: 'DELETE', query })
-      } else {
-        const blob = _useBlob()
-
-        return await blob.delete(key)
+        return $fetch<void>(`/api/_hub/blob/${key}`, { baseURL: proxyURL, method: 'DELETE', query })
       }
+      // Use R2 binding
+      return await bucket.delete(key)
     }
   }
 }
@@ -138,6 +140,22 @@ function getContentType (pathOrExtension?: string) {
 //   }
 
 //   return metadata
+// }
+
+// export async function readFiles (event: any) {
+//   const files = (await readMultipartFormData(event) || [])
+
+//   // Filter only files
+//   return files.filter((file) => Boolean(file.filename))
+// }
+
+// export function toArrayBuffer (buffer: Buffer) {
+//   const arrayBuffer = new ArrayBuffer(buffer.length)
+//   const view = new Uint8Array(arrayBuffer)
+//   for (let i = 0; i < buffer.length; ++i) {
+//     view[i] = buffer[i]
+//   }
+//   return arrayBuffer
 // }
 
 function mapR2ObjectToBlob (object: R2Object): BlobObject {

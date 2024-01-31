@@ -120,8 +120,8 @@ const items = [[{
         }"
         class="overflow-hidden relative"
       >
-        <!-- <img v-if="file.httpMetadata?.contentType?.startsWith('image/')" :src="`/api/storage/${file.key}`" class="h-36 w-full object-cover"> -->
-        <div class="h-36 w-full flex items-center justify-center p-2 text-center">
+        <img v-if="file.contentType?.startsWith('image/')" :src="`/api/storage/${file.pathname}`" class="h-36 w-full object-cover">
+        <div v-else class="h-36 w-full flex items-center justify-center p-2 text-center">
           <UIcon name="i-heroicons-document" class="w-8 h-8" />
         </div>
         <div class="flex flex-col gap-1 p-2 border-t border-gray-200 dark:border-gray-800">
