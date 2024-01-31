@@ -125,11 +125,14 @@ const items = [[{
           <UIcon name="i-heroicons-document" class="w-8 h-8" />
         </div>
         <div class="flex flex-col gap-1 p-2 border-t border-gray-200 dark:border-gray-800">
-          <span class="text-sm font-medium line-clamp-2">{{ file.key }}</span>
-          <span class="text-sm line-clamp-1">{{ file.customMetadata?.filename }}</span>
+          <span class="text-sm font-medium">{{ file.key }}</span>
           <div class="flex items-center justify-between gap-1">
             <span class="text-xs truncate">{{ file.httpMetadata?.contentType || '-' }}</span>
             <span class="text-xs">{{ file.size ? `${Math.round(file.size / Math.pow(1024, 2) * 100) / 100}MB` : '-' }}</span>
+          </div>
+          <div v-for="[key, value] of Object.entries(file.customMetadata || {})" :key="key" class="flex items-center justify-between gap-1">
+            <span class="text-xs">{{ key }}</span>
+            <span class="text-xs truncate">{{ value }}</span>
           </div>
         </div>
 
