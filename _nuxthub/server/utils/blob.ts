@@ -66,6 +66,7 @@ export function useBlob () {
       return listed.objects.map(mapR2ObjectToBlob)
     },
     async serve (event: H3Event, pathname: string) {
+      pathname = decodeURI(pathname)
       if (proxyURL) {
         return $fetch<ReadableStreamDefaultReader<any>>(`/api/_hub/blob/${pathname}`, {
           baseURL: proxyURL,
@@ -85,6 +86,7 @@ export function useBlob () {
       return object.body
     },
     async put (pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: { contentType?: string, addRandomSuffix?: boolean, [key: string]: any } = { addRandomSuffix: true }) {
+      pathname = decodeURI(pathname)
       if (proxyURL) {
         // TODO
         return console.warn('useBlob().put() Not implemented')
@@ -103,6 +105,7 @@ export function useBlob () {
       return mapR2ObjectToBlob(object)
     },
     async head (pathname: string) {
+      pathname = decodeURI(pathname)
       if (proxyURL) {
         const { headers } = await $fetch.raw<void>(joinURL('/api/_hub/blob', pathname), {
           baseURL: proxyURL,
@@ -121,6 +124,7 @@ export function useBlob () {
       return mapR2ObjectToBlob(object)
     },
     async delete (pathname: string) {
+      pathname = decodeURI(pathname)
       if (proxyURL) {
         await $fetch<void>(`/api/_hub/blob/${pathname}`, {
           baseURL: proxyURL,
