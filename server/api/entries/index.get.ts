@@ -1,8 +1,8 @@
 export default eventHandler(async (event) => {
-  const session = await requireUserSession(event)
+  await requireUserSession(event)
 
   // List entries for the current user
-  const storage = await useKV(String(session.user!.id))
+  const storage = await useKV()
 
   const keys = await storage.getKeys()
   // const items = await storage.getItems(keys)
