@@ -12,10 +12,10 @@
     "logs": "wrangler pages deployment tail"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "^4.20240117.0",
-    "@iconify-json/simple-icons": "^1.1.89",
-    "@libsql/client": "^0.3.6",
-    "@nuxt/ui": "^2.12.3",
+    "@cloudflare/workers-types": "^4.20240129.0",
+    "@iconify-json/simple-icons": "^1.1.90",
+    "@libsql/client": "^0.4.3",
+    "@nuxt/ui": "^2.13.0",
     "better-sqlite3": "^9.3.0",
     "bufferutil": "^4.0.8",
     "drizzle-kit": "^0.20.13",
@@ -23,10 +23,10 @@
     "h3-zod": "^0.5.3",
     "image-meta": "^0.2.0",
     "mime": "^4.0.1",
-    "nuxt": "^3.9.3",
-    "nuxt-auth-utils": "^0.0.14",
+    "nuxt": "^3.10.0",
+    "nuxt-auth-utils": "^0.0.15",
     "utf-8-validate": "^6.0.3",
-    "wrangler": "^3.24.0",
+    "wrangler": "^3.25.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -34,5 +34,9 @@
     "@nuxt/eslint-config": "^0.2.0",
     "eslint": "^8.56.0",
     "typescript": "5.3.3"
+  },
+  "resolutions": {
+    "nitropack": "npm:nitropack-nightly@latest",
+    "h3": "npm:h3-nightly@latest"
   }
 }
