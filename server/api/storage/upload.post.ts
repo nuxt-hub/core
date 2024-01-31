@@ -1,6 +1,9 @@
 export default eventHandler(async (event) => {
-  const form = await readFormData(event)
+  console.log('before')
+  const form = await readFormDataFixed(event)
+  console.log('getting file')
   const file = form.get('file') as Blob
+  console.log('after')
 
   if (!file || !file.size) {
     throw createError({ status: 400, message: 'No file provided' })
