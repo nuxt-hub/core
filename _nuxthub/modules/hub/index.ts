@@ -68,5 +68,5 @@ kv_namespaces = [
   { binding = "KV", id = "default" },
 ]
 r2_buckets = [
-  { binding = "BUCKET", bucket_name = "default" },
+  { binding = "BLOB", bucket_name = "default" },
 ]`

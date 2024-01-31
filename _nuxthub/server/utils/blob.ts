@@ -7,25 +7,22 @@ import { randomUUID } from 'uncrypto'
 import { parse } from 'pathe'
 import { joinURL } from 'ufo'
 
-const _buckets: Record<string, R2Bucket> = {}
+const _blobs: Record<string, R2Bucket> = {}
 
-function useBucket () {
-  const bucketName = 'BUCKET'
-  if (_buckets[bucketName]) {
-    return _buckets[bucketName]
+function _useBlob () {
+  const name = 'BLOB'
+  if (_blobs[name]) {
+    return _blobs[name]
   }
 
-  if (process.env.NUXT_HUB_URL) {
-    console.log('Using R2 local (proxy for useBucket() is not yet supported)')
-  }
   // @ts-ignore
-  const binding = process.env[bucketName] || globalThis.__env__?.[bucketName] || globalThis[bucketName]
+  const binding = process.env[name] || globalThis.__env__?.[name] || globalThis[name]
   if (!binding) {
-    throw createError(`Missing Cloudflare R2 binding ${bucketName}`)
+    throw createError(`Missing Cloudflare R2 binding ${name}`)
   }
-  _buckets[bucketName] = binding as R2Bucket
+  _blobs[name] = binding as R2Bucket
 
-  return _buckets[bucketName]
+  return _blobs[name]
 }
 
 export function useBlob () {
@@ -36,9 +33,9 @@ export function useBlob () {
       if (proxy) {
         const query: Record<string, any> = {}
 
-        return $fetch<BlobObject[]>('/api/_hub/bucket', { baseURL: proxy, method: 'GET', query })
+        return $fetch<BlobObject[]>('/api/_hub/blob', { baseURL: proxy, method: 'GET', query })
       } else {
-        const bucket = useBucket()
+        const blob = _useBlob()
 
         const resolvedOptions = defu(options, {
           limit: 500,
@@ -46,12 +43,12 @@ export function useBlob () {
         })
 
         // https://developers.cloudflare.com/r2/api/workers/workers-api-reference/#r2listoptions
-        const listed = await bucket.list(resolvedOptions)
+        const listed = await blob.list(resolvedOptions)
         let truncated = listed.truncated
         let cursor = listed.truncated ? listed.cursor : undefined
 
         while (truncated) {
-          const next = await bucket.list({
+          const next = await blob.list({
             ...options,
             cursor: cursor,
           })
@@ -68,10 +65,10 @@ export function useBlob () {
       if (proxy) {
         const query: Record<string, any> = {}
 
-        return $fetch<ReadableStreamDefaultReader<any>>(`/api/_hub/bucket/${key}`, { baseURL: proxy, method: 'GET', query })
+        return $fetch<ReadableStreamDefaultReader<any>>(`/api/_hub/blob/${key}`, { baseURL: proxy, method: 'GET', query })
       } else {
-        const bucket = useBucket()
-        const object = await bucket.get(key)
+        const blob = _useBlob()
+        const object = await blob.get(key)
 
         if (!object) {
           throw createError({ message: 'File not found', statusCode: 404 })
@@ -88,9 +85,9 @@ export function useBlob () {
       if (proxy) {
         // TODO
       } else {
-        const bucket = useBucket()
-        const fileContentType = (body as Blob).type || getContentType(pathname)
-        const { contentType, addRandomSuffix, ...customMetadata } = options
+        const blob = _useBlob()
+        const { contentType: optionsContentType, addRandomSuffix, ...customMetadata } = options
+        const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
 
         const { dir, ext, name: filename } = parse(pathname)
         let key = pathname
@@ -98,7 +95,7 @@ export function useBlob () {
           key = joinURL(dir === '.' ? '' : dir, `${filename}-${randomUUID().split('-')[0]}${ext}`)
         }
 
-        const object = await bucket.put(key, body as any, { httpMetadata: { contentType: contentType || fileContentType }, customMetadata })
+        const object = await blob.put(key, body as any, { httpMetadata: { contentType }, customMetadata })
 
         return mapR2ObjectToBlob(object)
       }
@@ -107,11 +104,11 @@ export function useBlob () {
       if (proxy) {
         const query: Record<string, any> = {}
 
-        return $fetch<void>(`/api/_hub/bucket/${key}`, { baseURL: proxy, method: 'DELETE', query })
+        return $fetch<void>(`/api/_hub/blob/${key}`, { baseURL: proxy, method: 'DELETE', query })
       } else {
-        const bucket = useBucket()
+        const blob = _useBlob()
 
-        return await bucket.delete(key)
+        return await blob.delete(key)
       }
     }
   }
