@@ -7,12 +7,10 @@ export default eventHandler(async (event) => {
   }
 
   const { put } = useBlob()
-
   const objects = []
-
   try {
     for (const file of files) {
-      const object = await put(file)
+      const object = await put(file.filename!, toArrayBuffer(file.data), { addRandomSuffix: true, ...getMetadata(file.filename!, file.data) })
       objects.push(object)
     }
   } catch (e: any) {

@@ -45,11 +45,11 @@ function onFileSelect (e: any) {
   target.value = ''
 }
 
-async function deleteFile (key: string) {
+async function deleteFile (pathname: string) {
   try {
-    await useFetch(`/api/storage/${key}`, { method: 'DELETE' })
-    storage.value = storage.value!.filter(t => t.key !== key)
-    toast.add({ title: `File "${key}" deleted.` })
+    await useFetch(`/api/storage/${pathname}`, { method: 'DELETE' })
+    storage.value = storage.value!.filter(t => t.pathname !== pathname)
+    toast.add({ title: `File "${pathname}" deleted.` })
   } catch (err: any) {
     const title = err.data?.data?.issues?.map((issue: any) => issue.message).join('\n') || err.message()
     toast.add({ title, color: 'red' })
@@ -111,7 +111,7 @@ const items = [[{
     <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
       <UCard
         v-for="file of storage"
-        :key="file.key"
+        :key="file.pathname"
         :ui="{
           body: {
             base: 'space-y-0',
@@ -125,18 +125,18 @@ const items = [[{
           <UIcon name="i-heroicons-document" class="w-8 h-8" />
         </div>
         <div class="flex flex-col gap-1 p-2 border-t border-gray-200 dark:border-gray-800">
-          <span class="text-sm font-medium">{{ file.key }}</span>
+          <span class="text-sm font-medium">{{ file.pathname }}</span>
           <div class="flex items-center justify-between gap-1">
-            <span class="text-xs truncate">{{ file.httpMetadata?.contentType || '-' }}</span>
+            <span class="text-xs truncate">{{ file.contentType || '-' }}</span>
             <span class="text-xs">{{ file.size ? `${Math.round(file.size / Math.pow(1024, 2) * 100) / 100}MB` : '-' }}</span>
           </div>
-          <div v-for="[key, value] of Object.entries(file.customMetadata || {})" :key="key" class="flex items-center justify-between gap-1">
+          <!-- <div v-for="[key, value] of Object.entries(file.customMetadata || {})" :key="key" class="flex items-center justify-between gap-1">
             <span class="text-xs">{{ key }}</span>
             <span class="text-xs truncate">{{ value }}</span>
-          </div>
+          </div> -->
         </div>
 
-        <UButton icon="i-heroicons-x-mark" variant="link" color="primary" class="absolute top-0 right-0" @click="deleteFile(file.key)" />
+        <UButton icon="i-heroicons-x-mark" variant="link" color="primary" class="absolute top-0 right-0" @click="deleteFile(file.pathname)" />
       </UCard>
     </div>
   </UCard>

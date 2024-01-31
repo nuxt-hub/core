@@ -1,14 +1,16 @@
 import type { R2Bucket, R2ListOptions } from '@cloudflare/workers-types/experimental'
-import type { MultiPartData } from 'h3'
+import type { EventHandlerRequest, H3Event } from 'h3'
 import mime from 'mime'
 import { imageMeta } from 'image-meta'
 import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
+import { parse } from 'pathe'
+import { joinURL } from 'ufo'
 
 const _buckets: Record<string, R2Bucket> = {}
 
-export function useBucket (name: string = '') {
-  const bucketName = name ? `BUCKET_${name.toUpperCase()}` : 'BUCKET'
+function useBucket () {
+  const bucketName = 'BUCKET'
   if (_buckets[bucketName]) {
     return _buckets[bucketName]
   }
@@ -26,18 +28,17 @@ export function useBucket (name: string = '') {
   return _buckets[bucketName]
 }
 
-export function useBlob (name: string = '') {
+export function useBlob () {
   const proxy = import.meta.dev && process.env.NUXT_HUB_URL
 
   return {
     async list (options: R2ListOptions = {}) {
       if (proxy) {
         const query: Record<string, any> = {}
-        if (name) { query.name = name }
 
         return $fetch<R2Object[]>('/api/_hub/bucket', { baseURL: proxy, method: 'GET', query })
       } else {
-        const bucket = useBucket(name)
+        const bucket = useBucket()
 
         const resolvedOptions = defu(options, {
           limit: 500,
@@ -60,55 +61,55 @@ export function useBlob (name: string = '') {
           cursor = next.truncated ? next.cursor : undefined
         }
 
-        return listed.objects
+        return listed.objects.map(mapR2ObjectToBlob)
       }
     },
     async get (key: string) {
       if (proxy) {
         const query: Record<string, any> = {}
-        if (name) { query.name = name }
 
         return $fetch<ReadableStreamDefaultReader<any>>(`/api/_hub/bucket/${key}`, { baseURL: proxy, method: 'GET', query })
       } else {
-        const bucket = useBucket(name)
+        const bucket = useBucket()
         const object = await bucket.get(key)
 
         if (!object) {
           throw createError({ message: 'File not found', statusCode: 404 })
         }
 
-        // setHeader(useEvent(), 'Content-Type', object.httpMetadata!.contentType!)
-        // setHeader(useEvent(), 'Content-Length', object.size)
+        // FIXME
+        setHeader(useEvent(), 'Content-Type', object.httpMetadata!.contentType!)
+        setHeader(useEvent(), 'Content-Length', object.size)
 
         return object.body.getReader()
       }
     },
-    async put (file: MultiPartData) {
+    async put (pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: { contentType?: string, addRandomSuffix?: boolean, [key: string]: any } = { addRandomSuffix: true }) {
       if (proxy) {
         // TODO
       } else {
-        const bucket = useBucket(name)
+        const bucket = useBucket()
+        const fileContentType = (body as Blob).type || getContentType(pathname)
+        const { contentType, addRandomSuffix, ...customMetadata } = options
 
-        const type = file.type || getContentType(file.filename)
-        // TODO: ensure key unicity
-        const key = randomUUID()
-        const httpMetadata = { contentType: type }
-        const customMetadata: Record<string, any> = {
-          ...getMetadata(type, file.data),
-          filename: file.filename
+        const { dir, ext, name: filename } = parse(pathname)
+        let key = pathname
+        if (addRandomSuffix) {
+          key = joinURL(dir === '.' ? '' : dir, `${filename}-${randomUUID().split('-')[0]}${ext}`)
         }
 
-        return await bucket.put(key, toArrayBuffer(file.data), { httpMetadata, customMetadata })
+        const object = await bucket.put(key, body as any, { httpMetadata: { contentType: contentType || fileContentType }, customMetadata })
+
+        return mapR2ObjectToBlob(object)
       }
     },
     async delete (key: string) {
       if (proxy) {
         const query: Record<string, any> = {}
-        if (name) { query.name = name }
 
         return $fetch<void>(`/api/_hub/bucket/${key}`, { baseURL: proxy, method: 'DELETE', query })
       } else {
-        const bucket = useBucket(name)
+        const bucket = useBucket()
 
         return await bucket.delete(key)
       }
@@ -131,15 +132,19 @@ function getContentType (pathOrExtension?: string) {
   return (pathOrExtension && mime.getType(pathOrExtension)) || 'application/octet-stream'
 }
 
-function getMetadata (type: string, buffer: Buffer) {
-  if (type.startsWith('image/')) {
-    return imageMeta(buffer) as Record<string, any>
-  } else {
-    return {}
+export function getMetadata (filename: string, buffer: Buffer) {
+  const metadata: Record<string, any> = {
+    contentType: getContentType(filename)
   }
+
+  if (metadata.contentType.startsWith('image/')) {
+    Object.assign(metadata, imageMeta(buffer))
+  }
+
+  return metadata
 }
 
-function toArrayBuffer (buffer: Buffer) {
+export function toArrayBuffer (buffer: Buffer) {
   const arrayBuffer = new ArrayBuffer(buffer.length)
   const view = new Uint8Array(arrayBuffer)
   for (let i = 0; i < buffer.length; ++i) {
@@ -153,4 +158,13 @@ export async function readFiles (event: H3Event<EventHandlerRequest>) {
 
   // Filter only files
   return files.filter((file) => Boolean(file.filename))
+}
+
+function mapR2ObjectToBlob (object: R2Object) {
+  return {
+    pathname: object.key,
+    contentType: object.httpMetadata?.contentType,
+    size: object.size,
+    uploadedAt: object.uploaded,
+  }
 }

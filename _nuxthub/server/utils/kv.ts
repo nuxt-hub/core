@@ -1,5 +1,5 @@
 import type { Storage } from 'unstorage'
-import { createStorage, prefixStorage } from 'unstorage'
+import { createStorage } from 'unstorage'
 import fsDriver from 'unstorage/drivers/fs'
 import httpDriver from 'unstorage/drivers/http'
 import cloudflareKVBindingDriver from 'unstorage/drivers/cloudflare-kv-binding'
