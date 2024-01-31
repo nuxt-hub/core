@@ -94,23 +94,44 @@ export function useBlob () {
       const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
 
       const { dir, ext, name: filename } = parse(pathname)
-      let key = pathname
       if (addRandomSuffix) {
-        key = joinURL(dir === '.' ? '' : dir, `${filename}-${randomUUID().split('-')[0]}${ext}`)
+        pathname = joinURL(dir === '.' ? '' : dir, `${filename}-${randomUUID().split('-')[0]}${ext}`)
       }
 
-      const object = await bucket.put(key, body as any, { httpMetadata: { contentType }, customMetadata })
+      const object = await bucket.put(pathname, body as any, { httpMetadata: { contentType }, customMetadata })
 
       return mapR2ObjectToBlob(object)
     },
-    async delete (key: string) {
+    async head (pathname: string) {
       if (proxyURL) {
-        const query: Record<string, any> = {}
-
-        return $fetch<void>(`/api/_hub/blob/${key}`, { baseURL: proxyURL, method: 'DELETE', query })
+        const body = await $fetch<void>(joinURL('/api/_hub/blob', pathname), {
+          baseURL: proxyURL,
+          method: 'HEAD'
+        })
+        console.log('head body', body)
+        return
       }
       // Use R2 binding
-      return await bucket.delete(key)
+      const object = await bucket.head(pathname)
+
+      if (!object) {
+        throw createError({ message: 'Blob not found', statusCode: 404 })
+      }
+
+      return mapR2ObjectToBlob(object)
+    },
+    async delete (pathname: string) {
+      if (proxyURL) {
+        const body = await $fetch<void>(`/api/_hub/blob/${pathname}`, {
+          baseURL: proxyURL,
+          method: 'DELETE',
+        })
+
+        console.log('delete body', body)
+        return
+      }
+      // Use R2 binding
+      return await bucket.delete(pathname)
     }
   }
 }
