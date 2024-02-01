@@ -1,4 +1,4 @@
-import type { R2Bucket, R2ListOptions } from '@cloudflare/workers-types/experimental'
+import type { R2Bucket } from '@cloudflare/workers-types/experimental'
 import mime from 'mime'
 // import { imageMeta } from 'image-meta'
 import type { H3Event } from 'h3'
@@ -85,14 +85,21 @@ export function useBlob () {
 
       return object.body
     },
-    async put (pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: { contentType?: string, addRandomSuffix?: boolean, [key: string]: any } = { addRandomSuffix: true }) {
+    async put (pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: { contentType?: string, contentLength?: string, addRandomSuffix?: boolean, [key: string]: any } = { addRandomSuffix: true }) {
       pathname = decodeURI(pathname)
       if (proxyURL) {
-        // TODO
-        return console.warn('useBlob().put() Not implemented')
+        const { contentType, contentLength, ...query } = options
+        return await $fetch<BlobObject>(joinURL('/api/_hub/blob', pathname), {
+          baseURL: proxyURL,
+          method: 'PUT',
+          // duplex: 'half',
+          // responseType: 'stream',
+          body,
+          query
+        })
       }
       // Use R2 binding
-      const { contentType: optionsContentType, addRandomSuffix, ...customMetadata } = options
+      const { contentType: optionsContentType, contentLength, addRandomSuffix, ...customMetadata } = options
       const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
 
       const { dir, ext, name: filename } = parse(pathname)
@@ -100,7 +107,16 @@ export function useBlob () {
         pathname = joinURL(dir === '.' ? '' : dir, `${filename}-${randomUUID().split('-')[0]}${ext}`)
       }
 
-      const object = await bucket.put(pathname, body as any, { httpMetadata: { contentType }, customMetadata })
+      const httpMetadata: Record<string, string> = { contentType }
+      if (contentLength) {
+        httpMetadata.contentLength = contentLength
+        // httpMetadata['content-length'] = contentLength
+        // httpMetadata['Content-Length'] = contentLength
+      }
+
+      console.log('Pushing object on remote server...')
+      const object = await bucket.put(pathname, body as any, { httpMetadata, customMetadata })
+      console.log('Object pushed on remote server!')
 
       return mapR2ObjectToBlob(object)
     },
