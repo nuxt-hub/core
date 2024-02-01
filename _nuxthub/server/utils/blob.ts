@@ -111,7 +111,6 @@ export function useBlob () {
           baseURL: proxyURL,
           method: 'HEAD'
         })
-        console.log('head headers', headers.get('x-blob'))
         return JSON.parse(headers.get('x-blob') || '{}') as BlobObject
       }
       // Use R2 binding
