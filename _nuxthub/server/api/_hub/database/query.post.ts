@@ -1,5 +1,3 @@
-import { z } from 'zod'
-
 export default eventHandler(async (event) => {
   const { sql, params, method } = await readValidatedBody(event, z.object({
     sql: z.string(),
