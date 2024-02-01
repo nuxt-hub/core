@@ -20,7 +20,6 @@
     "bufferutil": "^4.0.8",
     "drizzle-kit": "^0.20.13",
     "drizzle-orm": "^0.29.3",
-    "h3-zod": "^0.5.3",
     "image-meta": "^0.2.0",
     "mime": "^4.0.1",
     "nuxt": "^3.10.0",
