@@ -89,11 +89,13 @@ export function useBlob () {
       pathname = decodeURI(pathname)
       if (proxyURL) {
         const { contentType, contentLength, ...query } = options
+        const headers: Record<string, string> = {}
+        if (contentType) { headers['content-type'] = contentType }
+        if (contentLength) { headers['content-length'] = contentLength }
         return await $fetch<BlobObject>(joinURL('/api/_hub/blob', pathname), {
           baseURL: proxyURL,
           method: 'PUT',
-          // duplex: 'half',
-          // responseType: 'stream',
+          headers,
           body,
           query
         })
@@ -112,9 +114,7 @@ export function useBlob () {
         httpMetadata.contentLength = contentLength
       }
 
-      console.log('Pushing object on remote server...')
       const object = await bucket.put(pathname, body as any, { httpMetadata, customMetadata })
-      console.log('Object pushed on remote server!')
 
       return mapR2ObjectToBlob(object)
     },
