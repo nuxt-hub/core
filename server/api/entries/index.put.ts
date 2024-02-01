@@ -1,5 +1,3 @@
-import { z } from 'zod'
-
 export default eventHandler(async (event) => {
   await requireUserSession(event)
   const { key, value } = await readValidatedBody(event, z.object({
