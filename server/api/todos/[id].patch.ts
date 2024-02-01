@@ -1,20 +1,19 @@
 import { eq, and } from 'drizzle-orm'
-import { useValidatedParams, useValidatedBody, z, zh } from 'h3-zod'
 
 export default eventHandler(async (event) => {
   const session = await requireUserSession(event)
-  const { id } = await useValidatedParams(event, {
-    id: zh.intAsString
-  })
-  const { completed } = await useValidatedBody(event, {
+  const { id } = await getValidatedRouterParams(event, z.object({
+    id: z.string().min(0)
+  }).parse)
+  const { completed } = await readValidatedBody(event, z.object({
     completed: z.number().int().min(0).max(1)
-  })
+  }).parse)
 
   // List todos for the current user
   const todo = await useDatabase().update(tables.todos).set({
     completed
   }).where(and(
-    eq(tables.todos.id, id),
+    eq(tables.todos.id, Number(id)),
     eq(tables.todos.userId, session.user.id)
   )).returning().get()
 
