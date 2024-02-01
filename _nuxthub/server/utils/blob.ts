@@ -110,8 +110,6 @@ export function useBlob () {
       const httpMetadata: Record<string, string> = { contentType }
       if (contentLength) {
         httpMetadata.contentLength = contentLength
-        // httpMetadata['content-length'] = contentLength
-        // httpMetadata['Content-Length'] = contentLength
       }
 
       console.log('Pushing object on remote server...')
