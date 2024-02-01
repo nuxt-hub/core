@@ -1,4 +1,5 @@
 import type { R2Bucket } from '@cloudflare/workers-types/experimental'
+import { ofetch } from 'ofetch'
 import mime from 'mime'
 // import { imageMeta } from 'image-meta'
 import type { H3Event } from 'h3'
@@ -35,7 +36,7 @@ export function useBlob () {
   return {
     async list (options: BlobListOptions = { limit: 1000 }) {
       if (proxyURL) {
-        return $fetch<BlobObject[]>('/api/_hub/blob', {
+        return ofetch<BlobObject[]>('/api/_hub/blob', {
           baseURL: proxyURL,
           method: 'GET',
           query: options
@@ -68,7 +69,7 @@ export function useBlob () {
     async serve (event: H3Event, pathname: string) {
       pathname = decodeURI(pathname)
       if (proxyURL) {
-        return $fetch<ReadableStreamDefaultReader<any>>(`/api/_hub/blob/${pathname}`, {
+        return ofetch<ReadableStreamDefaultReader<any>>(`/api/_hub/blob/${pathname}`, {
           baseURL: proxyURL,
           method: 'GET'
         })
@@ -92,7 +93,7 @@ export function useBlob () {
         const headers: Record<string, string> = {}
         if (contentType) { headers['content-type'] = contentType }
         if (contentLength) { headers['content-length'] = contentLength }
-        return await $fetch<BlobObject>(joinURL('/api/_hub/blob', pathname), {
+        return await ofetch<BlobObject>(joinURL('/api/_hub/blob', pathname), {
           baseURL: proxyURL,
           method: 'PUT',
           headers,
@@ -121,7 +122,7 @@ export function useBlob () {
     async head (pathname: string) {
       pathname = decodeURI(pathname)
       if (proxyURL) {
-        const { headers } = await $fetch.raw<void>(joinURL('/api/_hub/blob', pathname), {
+        const { headers } = await ofetch.raw<void>(joinURL('/api/_hub/blob', pathname), {
           baseURL: proxyURL,
           method: 'HEAD'
         })
@@ -139,7 +140,7 @@ export function useBlob () {
     async delete (pathname: string) {
       pathname = decodeURI(pathname)
       if (proxyURL) {
-        await $fetch<void>(`/api/_hub/blob/${pathname}`, {
+        await ofetch<void>(`/api/_hub/blob/${pathname}`, {
           baseURL: proxyURL,
           method: 'DELETE',
         })
