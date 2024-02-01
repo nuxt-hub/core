@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
   // const updated = await db.update(todos).set({ text: 'Bonjour' }).where(eq(todos.id, inserted.id)).returning()
   const all = await db.select().from(todos).limit(3)
   // const deleted = await db.delete(todos).where(eq(todos.id, all[0].id))
-  
+
   return {
     // tables,
     // todo,
