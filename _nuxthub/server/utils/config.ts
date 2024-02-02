@@ -24,7 +24,7 @@ export async function _fetchConfig() {
   return _config
 }
 
-export function useConfig() {
+export function getConfig() {
   if (!_config) {
     throw createError('Please run _fetchConfig() in order to use useConfig()')
   }
