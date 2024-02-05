@@ -19,7 +19,9 @@
     "build": "nuxi build --preset cloudflare_pages _demo",
     "preview": "nuxt preview _dmeo",
     "lint": "eslint .",
-    "logs": "wrangler pages deployment tail"
+    "logs": "wrangler pages deployment tail",
+    "prepublishOnly": "pnpm lint",
+    "release": "release-it"
   },
   "dependencies": {
     "@cloudflare/workers-types": "^4.20240129.0",
@@ -33,6 +35,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@nuxt/eslint-config": "^0.2.0",
     "eslint": "^8.56.0",
     "release-it": "^17.0.3",
     "typescript": "^5.3.3",

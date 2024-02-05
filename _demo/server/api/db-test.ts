@@ -1,7 +1,6 @@
-import { sql, eq } from 'drizzle-orm'
 import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async () => {
   const db = useDatabase()
 
   const tables = await db.all(sql`
@@ -27,7 +26,7 @@ export default defineEventHandler(async (event) => {
   // const deleted = await db.delete(todos).where(eq(todos.id, all[0].id))
 
   return {
-    // tables,
+    tables,
     // todo,
     // inserted,
     // updated,

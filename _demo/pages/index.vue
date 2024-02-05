@@ -10,11 +10,11 @@ const { auth } = useHub()
       </h3>
       <UButton
         v-if="!auth.user"
-        @click="auth.loginWith('github')"
         icon="i-simple-icons-github"
         label="Login with GitHub"
         color="black"
         external
+        @click="auth.loginWith('github')"
       />
       <div v-else class="space-x-2">
         <UButton
