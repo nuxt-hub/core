@@ -1,13 +1,16 @@
 import { defineNuxtModule, createResolver, logger } from 'nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
+import { randomUUID } from 'uncrypto'
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
+import { findWorkspaceDir } from 'pkg-types'
 
 export default defineNuxtModule({
   meta: {
     name: 'hub'
   },
   async setup (_options, nuxt) {
+    const rootDir = nuxt.options.rootDir
     const { resolve } = createResolver(import.meta.url)
 
     // Production mode
@@ -25,7 +28,7 @@ export default defineNuxtModule({
 
     // Local development without remote connection
     // Create the .hub/ directory
-    const hubDir = join(nuxt.options.rootDir, './.hub')
+    const hubDir = join(rootDir, './.hub')
     try {
       await mkdir(hubDir)
     } catch (e: any) {
@@ -35,11 +38,12 @@ export default defineNuxtModule({
         throw e
       }
     }
+    const workspaceDir = await findWorkspaceDir(rootDir)
     // Add it to .gitignore
-    const gitignorePath = join(nuxt.options.rootDir, './.gitignore')
-    const gitignore = await readFile(gitignorePath, 'utf-8')
+    const gitignorePath = join(workspaceDir , '.gitignore')
+    const gitignore = await readFile(gitignorePath, 'utf-8').catch(() => '')
     if (!gitignore.includes('.hub')) {
-      await writeFile(gitignorePath, gitignore + '\n.hub', 'utf-8')
+      await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}.hub`, 'utf-8')
     }
 
     // Generate the wrangler.toml file
@@ -52,6 +56,17 @@ export default defineNuxtModule({
     // Add server plugin
     nuxt.options.nitro.plugins = nuxt.options.nitro.plugins || []
     nuxt.options.nitro.plugins.push(resolve('./runtime/server/plugins/cloudflare.dev'))
+
+    // Generate the session password
+    if (!process.env.NUXT_SESSION_PASSWORD) {
+      process.env.NUXT_SESSION_PASSWORD = randomUUID().replace(/-/g, '')
+      // Add it to .env
+      const envPath = join(rootDir, '.env')
+      const envContent = await readFile(envPath, 'utf-8').catch(() => '')
+      if (!envContent.includes('NUXT_SESSION_PASSWORD')) {
+        await writeFile(envPath, `${envContent ? envContent + '\n' : envContent}NUXT_SESSION_PASSWORD=${process.env.NUXT_SESSION_PASSWORD}`, 'utf-8')
+      }
+    }
   }
 })
 

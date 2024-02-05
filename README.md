@@ -1,6 +1,14 @@
-# NuxtHub Demo
+# NuxtHub
 
-A demonstration using [Nuxt](https://nuxt.com) as a fullstack framework on the edge.
+The Nuxt Toolkit to create full-stack applications on the Edge.
+
+## Features
+
+- Session management with secured & sealed cookie sessions
+- Create and query typed collections with `useDatabase()`
+- Access key-value storage with `useKV()`
+- Store files with `useBlob()`
+- Edge configuration available with `getConfig()` and `useConfig()` (vue app)
 
 ## Blob
 
