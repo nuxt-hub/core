@@ -5,6 +5,9 @@ import { drizzle as drizzleHTTP } from 'drizzle-orm/sqlite-proxy'
 import type { SqliteRemoteDatabase } from 'drizzle-orm/sqlite-proxy'
 import { ofetch } from 'ofetch'
 
+export { sql } from 'drizzle-orm'
+
+// TODO: generate #hub/database/schema from the database
 export * as tables from '~/server/database/schema'
 
 let _db: DrizzleD1Database | BetterSQLite3Database | SqliteRemoteDatabase
@@ -13,7 +16,6 @@ let _client: D1Database
 export function useDatabase () {
   if (!_db) {
     if (import.meta.dev && process.env.NUXT_HUB_URL) {
-      console.log('Using D1 remote database...')
       _db = drizzleHTTP(async (sql, params, method) => {
         // https://orm.drizzle.team/docs/get-started-sqlite#http-proxy
         try {
@@ -40,7 +42,6 @@ export function useDatabase () {
       if (binding) {
         _client = binding as D1Database
         _db = drizzleD1(_client)
-        import.meta.dev && console.log('Using D1 local database...')
       } else {
         throw createError('Missing Cloudflare D1 binding DB')
       }

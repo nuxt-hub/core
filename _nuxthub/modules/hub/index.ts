@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver } from 'nuxt/kit'
+import { defineNuxtModule, createResolver, logger } from 'nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
@@ -10,11 +10,6 @@ export default defineNuxtModule({
   async setup (_options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
 
-    // Add Server utils based on environment
-    // nuxt.options.nitro.imports = nuxt.options.nitro.imports || {}
-    // nuxt.options.nitro.imports.dirs = nuxt.options.nitro.imports.dirs || []
-    // nuxt.options.nitro.imports.dirs.push(resolve(`../server/_utils/${nuxt.options.dev ? 'dev' : 'prod'}/`))
-
     // Production mode
     if (!nuxt.options.dev) {
       return
@@ -22,8 +17,10 @@ export default defineNuxtModule({
 
     if (process.env.NUXT_HUB_URL) {
       // TODO: check on hub.nuxt.com if the project is connected
-      // return
-      // return once we support Proxy for all providers (R2 missing now)
+      logger.info(`Using remote hub from \`${process.env.NUXT_HUB_URL}\``)
+      return
+    } else {
+      logger.info('Using local hub from bindings')
     }
 
     // Local development without remote connection
@@ -52,9 +49,6 @@ export default defineNuxtModule({
       configPath: wranglerPath,
       persistDir: hubDir
     })
-    // Make sure runtime is transpiled
-    // nuxt.options.nitro.externals.inline = nuxt.options.nitro.externals.inline || []
-    // nuxt.options.nitro.externals.inline.push(resolve('./runtime/server'))
     // Add server plugin
     nuxt.options.nitro.plugins = nuxt.options.nitro.plugins || []
     nuxt.options.nitro.plugins.push(resolve('./runtime/server/plugins/cloudflare.dev'))

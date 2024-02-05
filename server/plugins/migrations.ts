@@ -1,5 +1,3 @@
-import { sql } from 'drizzle-orm'
-
 export default defineNitroPlugin(() => {
   if (import.meta.dev) {
     onHubReady(async () => {
