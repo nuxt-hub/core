@@ -1,24 +1,14 @@
 import type { Storage } from 'unstorage'
 import { createStorage } from 'unstorage'
-import fsDriver from 'unstorage/drivers/fs'
 import httpDriver from 'unstorage/drivers/http'
 import cloudflareKVBindingDriver from 'unstorage/drivers/cloudflare-kv-binding'
-import { join } from 'pathe'
 import { joinURL } from 'ufo'
 
 let _kv: Storage
 
 export function useKV () {
   if (!_kv) {
-    // TODO: same as database
-    if (process.env.KV) {
-      // kv in production
-      _kv = createStorage({
-        driver: cloudflareKVBindingDriver({
-          binding: process.env.KV
-        })
-      })
-    } else if (import.meta.dev && process.env.NUXT_HUB_URL) {
+    if (import.meta.dev && process.env.NUXT_HUB_URL) {
       console.log('Using KV remote namespace...')
       // Use https://unstorage.unjs.io/drivers/http
       _kv = createStorage({
@@ -29,14 +19,17 @@ export function useKV () {
           }
         })
       })
-    } else if (import.meta.dev) {
-      // local kv in development
-      console.log('Using KV local namespace...')
-      _kv = createStorage({
-        driver: fsDriver({ base: join(process.cwd(), './.hub/kv') })
-      })
     } else {
-      throw new Error('No KV configured for production')
+      const binding = process.env.KV || globalThis.__env__?.KV || globalThis.KV
+      if (binding) {
+        _kv = createStorage({
+          driver: cloudflareKVBindingDriver({
+            binding
+          })
+        })
+      } else {
+        throw createError('Missing Cloudflare binding KV')
+      }
     }
   }
 
