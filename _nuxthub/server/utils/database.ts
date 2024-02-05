@@ -1,13 +1,9 @@
 import type { D1Database } from '@cloudflare/workers-types/experimental'
 import { drizzle as drizzleD1, DrizzleD1Database } from 'drizzle-orm/d1'
-import { drizzle } from 'drizzle-orm/better-sqlite3'
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
 import { drizzle as drizzleHTTP } from 'drizzle-orm/sqlite-proxy'
 import type { SqliteRemoteDatabase } from 'drizzle-orm/sqlite-proxy'
 import { ofetch } from 'ofetch'
-// @ts-ignore
-import Database from 'better-sqlite3'
-import { join } from 'pathe'
 
 export * as tables from '~/server/database/schema'
 
