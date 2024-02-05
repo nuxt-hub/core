@@ -30,10 +30,7 @@ export function useBlob () {
   const proxyURL = import.meta.dev && process.env.NUXT_HUB_URL
   let bucket: R2Bucket
   if (!proxyURL) {
-    import.meta.dev && console.log('Using Blob local storage...')
     bucket = _useBucket()
-  } else {
-    import.meta.dev && console.log('Using Blob remote storage...')
   }
 
   return {
