@@ -1,3 +1,4 @@
+import type { D1Database } from '@cloudflare/workers-types/experimental'
 import { drizzle as drizzleD1, DrizzleD1Database } from 'drizzle-orm/d1'
 import { drizzle } from 'drizzle-orm/better-sqlite3'
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
@@ -10,16 +11,12 @@ import { join } from 'pathe'
 
 export * as tables from '~/server/database/schema'
 
-let _db: DrizzleD1Database | BetterSQLite3Database | SqliteRemoteDatabase | null = null
-let _client: any = null
+let _db: DrizzleD1Database | BetterSQLite3Database | SqliteRemoteDatabase
+let _client: D1Database
 
 export function useDatabase () {
   if (!_db) {
-    if (process.env.DB) {
-      // d1 in production
-      _client = process.env.DB
-      _db = drizzleD1(_client)
-    } else if (import.meta.dev && process.env.NUXT_HUB_URL) {
+    if (import.meta.dev && process.env.NUXT_HUB_URL) {
       console.log('Using D1 remote database...')
       _db = drizzleHTTP(async (sql, params, method) => {
         // https://orm.drizzle.team/docs/get-started-sqlite#http-proxy
@@ -42,13 +39,15 @@ export function useDatabase () {
           return { rows: [] }
         }
       })
-    } else if (import.meta.dev) {
-      // local sqlite in development
-      console.log('Using D1 local database...')
-      _client = new Database(join(process.cwd(), './.hub/db.sqlite'))
-      _db = drizzle(_client)
     } else {
-      throw new Error('No database configured for production')
+      const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
+      if (binding) {
+        _client = binding as D1Database
+        _db = drizzleD1(_client)
+        import.meta.dev && console.log('Using D1 local database...')
+      } else {
+        throw createError('Missing Cloudflare D1 binding DB')
+      }
     }
   }
   return _db

@@ -8,26 +8,6 @@ export default eventHandler(async (event) => {
   // Make sure the client is initialized first
   const client = useDatabaseClient()
 
-  if (process.dev) {
-    try {
-      if (method === 'run')
-        return client.prepare(sql).run(params)
-      if (method === 'all' || method === 'values')
-        return client.prepare(sql).raw().all(params)
-      // method = 'get'
-      return client.prepare(sql).raw().get(params)
-    } catch (e: any) {
-      throw createError({
-        statusCode: 500,
-        message: `Database error: ${e.message}`
-      })
-    }
-  }
-
-  // await verifyHubSecretKey(event)
-  // TODO: Validate header for authorization through hub.nuxt.com
-  // const [, secretKey] = (getHeader(event, 'authorization') || '').split(' ')
-
   try {
     if (method === 'run') {
       const { meta } = await client.prepare(sql).bind(...params).run()
