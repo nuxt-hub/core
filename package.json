@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-hub",
+  "name": "@atinux/nuxthub",
   "private": false,
   "type": "module",
   "main": "nuxt.config.ts",
