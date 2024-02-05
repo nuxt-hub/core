@@ -12,11 +12,13 @@ export default eventHandler(async event => {
     throw createError({ statusCode: 400, message: 'Could not resolve this provider.' })
   }
 
+  // TODO: handle redirect with ?redirect query param (must start with /)
   return oauth[handlerName as OAuthHandler]({
     config: oauthConfig as any,
     async onSuccess(event, { user }) {
+      // TODO: handle user creation in database with provider
       await setUserSession(event, { user })
-      return sendRedirect(event, '/todos')
+      return sendRedirect(event, config.oauth.redirect)
     }
   })(event)
 })

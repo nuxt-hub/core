@@ -14,38 +14,39 @@ let _db: DrizzleD1Database | BetterSQLite3Database | SqliteRemoteDatabase
 let _client: D1Database
 
 export function useDatabase () {
-  if (!_db) {
-    if (import.meta.dev && process.env.NUXT_HUB_URL) {
-      _db = drizzleHTTP(async (sql, params, method) => {
-        // https://orm.drizzle.team/docs/get-started-sqlite#http-proxy
-        try {
-          const rows = await ofetch('/api/_hub/database/query', {
-            baseURL: process.env.NUXT_HUB_URL,
-            method: 'POST',
-            body: { sql, params, method },
-            headers: {
-              Authorization: `Bearer ${process.env.NUXT_HUB_SECRET_KEY}`
-            }
-          })
-          if (method === 'run') return rows
-          return { rows }
-        } catch (err: any) {
-          if (['begin', 'commit'].includes(sql)) {
-            return { rows: [] }
+  if (_db) {
+    return _db
+  }
+  if (import.meta.dev && process.env.NUXT_HUB_URL) {
+    _db = drizzleHTTP(async (sql, params, method) => {
+      // https://orm.drizzle.team/docs/get-started-sqlite#http-proxy
+      try {
+        const rows = await ofetch('/api/_hub/database/query', {
+          baseURL: process.env.NUXT_HUB_URL,
+          method: 'POST',
+          body: { sql, params, method },
+          headers: {
+            Authorization: `Bearer ${process.env.NUXT_HUB_SECRET_KEY}`
           }
-          console.error('Error from remote database:', err.data.message, '\n', { sql, params, method })
+        })
+        if (method === 'run') return rows
+        return { rows }
+      } catch (err: any) {
+        if (['begin', 'commit'].includes(sql)) {
           return { rows: [] }
         }
-      })
-    } else {
-      const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
-      if (binding) {
-        _client = binding as D1Database
-        _db = drizzleD1(_client)
-      } else {
-        throw createError('Missing Cloudflare D1 binding DB')
+        console.error('Error from remote database:', err.data.message, '\n', { sql, params, method })
+        return { rows: [] }
       }
-    }
+    })
+    return _db
+  }
+  const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
+  if (binding) {
+    _client = binding as D1Database
+    _db = drizzleD1(_client)
+  } else {
+    throw createError('Missing Cloudflare D1 binding DB')
   }
   return _db
 }
