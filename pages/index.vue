@@ -22,7 +22,7 @@ const { loggedIn } = useUserSession()
       </h3>
       <UButton
         v-if="!loggedIn"
-        to="/api/auth/github"
+        to="/api/auth/providers/github"
         icon="i-simple-icons-github"
         label="Login with GitHub"
         color="black"

@@ -1,3 +1,7 @@
 export default eventHandler(async (event) => {
-  event.context.config = await _fetchConfig()
+  const config = await _fetchConfig(event)
+
+  event.context.hub = {
+    config
+  }
 })
