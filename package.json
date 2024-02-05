@@ -6,7 +6,6 @@
     "dev": "nuxi dev",
     "build": "nuxi build --preset cloudflare_pages",
     "preview": "nuxt preview",
-    "migrate": "drizzle-kit generate:sqlite",
     "lint": "eslint .",
     "postinstall": "nuxt prepare",
     "logs": "wrangler pages deployment tail"
@@ -16,16 +15,14 @@
     "@iconify-json/simple-icons": "^1.1.90",
     "@libsql/client": "^0.4.3",
     "@nuxt/ui": "^2.13.0",
-    "better-sqlite3": "^9.3.0",
     "bufferutil": "^4.0.8",
-    "drizzle-kit": "^0.20.13",
     "drizzle-orm": "^0.29.3",
     "image-meta": "^0.2.0",
     "mime": "^4.0.1",
     "nuxt": "^3.10.0",
     "nuxt-auth-utils": "^0.0.15",
     "utf-8-validate": "^6.0.3",
-    "wrangler": "^3.25.0",
+    "wrangler": "^3.26.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {

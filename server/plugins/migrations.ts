@@ -1,8 +1,16 @@
-import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
-import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
+import { sql } from 'drizzle-orm'
 
-export default defineNitroPlugin(async () => {
-  if (process.dev) {
-    migrate(useDatabase() as BetterSQLite3Database, { migrationsFolder: 'server/database/migrations' })
+export default defineNitroPlugin(() => {
+  if (import.meta.dev) {
+    onHubReady(async () => {
+      const db = useDatabase()
+      await db.run(sql`CREATE TABLE IF NOT EXISTS todos (
+        id integer PRIMARY KEY NOT NULL,
+        user_id integer NOT NULL,
+        title text NOT NULL,
+        completed integer DEFAULT 0 NOT NULL,
+        created_at integer NOT NULL
+      );`)
+    })
   }
 })
