@@ -17,7 +17,7 @@
     "dev:prepare": "nuxt prepare _demo",
     "dev": "nuxi dev _demo",
     "build": "nuxi build --preset cloudflare_pages _demo",
-    "preview": "nuxt preview _dmeo",
+    "preview": "nuxt preview _demo",
     "lint": "eslint .",
     "logs": "wrangler pages deployment tail",
     "prepublishOnly": "pnpm lint",
