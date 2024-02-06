@@ -15,9 +15,10 @@ export default eventHandler(async event => {
   // TODO: handle redirect with ?redirect query param (must start with /)
   return oauth[handlerName as OAuthHandler]({
     config: oauthConfig as any,
-    async onSuccess(event, { user }) {
-      // TODO: handle user creation in database with provider
-      await setUserSession(event, { user })
+    async onSuccess(event, result) {
+      const sessionData = {}
+      await hubHooks.callHook('auth:provider', provider, result, sessionData)
+      await setUserSession(event, sessionData)
       return sendRedirect(event, config.oauth.redirect)
     }
   })(event)
