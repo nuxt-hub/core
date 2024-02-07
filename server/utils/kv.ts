@@ -6,8 +6,8 @@ import { joinURL } from 'ufo'
 
 let _kv: Storage
 
-export function useKV () {
-  if (_kv) {
+export function useKV() {
+  if (_kv && !process.env.NUXT_HUB_FRESH) {
     return _kv
   }
   if (import.meta.dev && process.env.NUXT_HUB_URL) {

@@ -13,8 +13,8 @@ export * as tables from '~/server/database/schema'
 let _db: DrizzleD1Database | BetterSQLite3Database | SqliteRemoteDatabase
 let _client: D1Database
 
-export function useDatabase () {
-  if (_db) {
+export function useDatabase() {
+  if (_db && !process.env.NUXT_HUB_FRESH) {
     return _db
   }
   if (import.meta.dev && process.env.NUXT_HUB_URL) {
@@ -51,8 +51,8 @@ export function useDatabase () {
   return _db
 }
 
-export function useDatabaseClient () {
-  if (!_client) {
+export function useDatabaseClient() {
+  if (!_client || process.env.NUXT_HUB_FRESH) {
     useDatabase()
   }
   return _client

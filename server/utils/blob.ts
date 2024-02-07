@@ -10,9 +10,9 @@ import { joinURL } from 'ufo'
 
 const _r2_buckets: Record<string, R2Bucket> = {}
 
-function _useBucket () {
+function _useBucket() {
   const name = 'BLOB'
-  if (_r2_buckets[name]) {
+  if (_r2_buckets[name] && !process.env.NUXT_HUB_FRESH) {
     return _r2_buckets[name]
   }
 
@@ -26,7 +26,7 @@ function _useBucket () {
   return _r2_buckets[name]
 }
 
-export function useBlob () {
+export function useBlob() {
   const proxyURL = import.meta.dev && process.env.NUXT_HUB_URL
   let bucket: R2Bucket
   if (!proxyURL) {
@@ -34,7 +34,7 @@ export function useBlob () {
   }
 
   return {
-    async list (options: BlobListOptions = { limit: 1000 }) {
+    async list(options: BlobListOptions = { limit: 1000 }) {
       if (proxyURL) {
         return ofetch<BlobObject[]>('/api/_hub/blob', {
           baseURL: proxyURL,
@@ -66,7 +66,7 @@ export function useBlob () {
 
       return listed.objects.map(mapR2ObjectToBlob)
     },
-    async serve (event: H3Event, pathname: string) {
+    async serve(event: H3Event, pathname: string) {
       pathname = decodeURI(pathname)
       if (proxyURL) {
         return ofetch<ReadableStreamDefaultReader<any>>(`/api/_hub/blob/${pathname}`, {
@@ -86,7 +86,7 @@ export function useBlob () {
 
       return object.body
     },
-    async put (pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: { contentType?: string, contentLength?: string, addRandomSuffix?: boolean, [key: string]: any } = { addRandomSuffix: true }) {
+    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: { contentType?: string, contentLength?: string, addRandomSuffix?: boolean, [key: string]: any } = { addRandomSuffix: true }) {
       pathname = decodeURI(pathname)
       if (proxyURL) {
         const { contentType, contentLength, ...query } = options
@@ -119,7 +119,7 @@ export function useBlob () {
 
       return mapR2ObjectToBlob(object)
     },
-    async head (pathname: string) {
+    async head(pathname: string) {
       pathname = decodeURI(pathname)
       if (proxyURL) {
         const { headers } = await ofetch.raw<void>(joinURL('/api/_hub/blob', pathname), {
@@ -137,7 +137,7 @@ export function useBlob () {
 
       return mapR2ObjectToBlob(object)
     },
-    async delete (pathname: string) {
+    async delete(pathname: string) {
       pathname = decodeURI(pathname)
       if (proxyURL) {
         await ofetch<void>(`/api/_hub/blob/${pathname}`, {
@@ -163,7 +163,7 @@ export function useBlob () {
 //   prefix: ''
 // })
 
-function getContentType (pathOrExtension?: string) {
+function getContentType(pathOrExtension?: string) {
   return (pathOrExtension && mime.getType(pathOrExtension)) || 'application/octet-stream'
 }
 
@@ -195,7 +195,7 @@ function getContentType (pathOrExtension?: string) {
 //   return arrayBuffer
 // }
 
-function mapR2ObjectToBlob (object: R2Object): BlobObject {
+function mapR2ObjectToBlob(object: R2Object): BlobObject {
   return {
     pathname: object.key,
     contentType: object.httpMetadata?.contentType,
