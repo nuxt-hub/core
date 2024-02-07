@@ -8,7 +8,7 @@ export default eventHandler(async (event) => {
   const { command } = await getValidatedRouterParams(event, z.object({
     command: z.enum(['first', 'all', 'raw', 'run', 'dump', 'exec', 'batch'])
   }).parse)
-  const db = useDatabaseClient()
+  const db = useDatabase()
 
   if (command === 'exec') {
     const { query } = await readValidatedBody(event, z.object({

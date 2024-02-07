@@ -9,6 +9,7 @@
   "dependencies": {
     "@iconify-json/simple-icons": "^1.1.90",
     "@nuxt/ui": "^2.13.0",
+    "drizzle-orm": "^0.29.3",
     "nuxt": "^3.10.0",
     "nuxt-hub": "latest"
   },
