@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { auth } = useHub()
+const { user } = useUserSession()
 </script>
 
 <template>
@@ -9,32 +10,13 @@ const { auth } = useHub()
         Todo List
       </h3>
       <UButton
-        v-if="!auth.user"
-        icon="i-simple-icons-github"
-        label="Login with GitHub"
-        color="black"
-        external
+        v-if="!user" icon="i-simple-icons-github" label="Login with GitHub" color="black" external
         @click="auth.loginWith('github')"
       />
       <div v-else class="space-x-2">
-        <UButton
-          to="/todos"
-          icon="i-heroicons-list-bullet"
-          label="Go to Todos"
-          color="black"
-        />
-        <UButton
-          to="/notes"
-          icon="i-heroicons-pencil-square"
-          label="Go to Notes"
-          color="black"
-        />
-        <UButton
-          to="/storage"
-          icon="i-heroicons-document"
-          label="Go to Storage"
-          color="black"
-        />
+        <UButton to="/todos" icon="i-heroicons-list-bullet" label="Go to Todos" color="black" />
+        <UButton to="/notes" icon="i-heroicons-pencil-square" label="Go to Notes" color="black" />
+        <UButton to="/storage" icon="i-heroicons-document" label="Go to Storage" color="black" />
       </div>
     </template>
     <p class="font-medium">
