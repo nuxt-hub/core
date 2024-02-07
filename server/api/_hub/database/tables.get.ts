@@ -34,11 +34,23 @@ export default eventHandler(async () => {
       .then(res => res.map(({ results }) => results as { name: string; type: string }[])),
   ])
 
-  return tables.map(({ name }, i) => ({
-    name,
-    columns: columns[i],
-    primaryKeys: primaryKeys[i],
-    indexes: indexes[i],
-    count: count[i]
+  return Promise.all(tables.map(async ({ name }, i) => {
+    const tableIndexes = indexes[i]
+
+    if (tableIndexes.length) {
+      const tableIndexesColumns = await db.batch(tableIndexes.map(({ name }) => db.prepare(`PRAGMA index_info("${name}")`)))
+        .then(res => res.map(({ results }) => results))
+      tableIndexes.forEach((index, i) => {
+        index.columns = tableIndexesColumns[i].map(c => c.name)
+      })
+    }
+
+    return {
+      name,
+      columns: columns[i],
+      primaryKeys: primaryKeys[i],
+      indexes: tableIndexes,
+      count: count[i]
+    }
   }))
 })
