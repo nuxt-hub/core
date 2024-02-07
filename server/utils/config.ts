@@ -9,7 +9,7 @@ import { joinURL } from 'ufo'
 let _configKV: Storage
 
 export function useConfigKV() {
-  if (_configKV && !process.env.NUXT_HUB_FRESH) {
+  if (_configKV) {
     return _configKV
   }
   if (import.meta.dev && process.env.NUXT_HUB_URL) {
@@ -27,7 +27,7 @@ export function useConfigKV() {
   // @ts-ignore
   const binding = process.env.CONFIG || globalThis.__env__?.CONFIG || globalThis.CONFIG
   if (!binding) {
-    throw createError('Missing Cloudflare binding CONFIG')
+    throw createError('Missing Cloudflare binding CONFIG (KV)')
   }
   _configKV = createStorage({
     driver: cloudflareKVBindingDriver({

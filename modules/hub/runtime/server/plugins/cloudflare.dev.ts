@@ -11,6 +11,12 @@ export default defineNitroPlugin(async (nitroApp) => {
       ...event.context.cloudflare,
       env: proxy.bindings,
     }
+    // Also inject globally
+    Object.keys(proxy.bindings).forEach((key) => {
+      if (!globalThis[key]) {
+        globalThis[key] = proxy.bindings[key]
+      }
+    })
   })
 
   // Dispose proxy when Nitro is closed
