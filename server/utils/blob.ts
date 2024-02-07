@@ -12,7 +12,7 @@ const _r2_buckets: Record<string, R2Bucket> = {}
 
 function _useBucket() {
   const name = 'BLOB'
-  if (_r2_buckets[name] && !process.env.NUXT_HUB_FRESH) {
+  if (_r2_buckets[name]) {
     return _r2_buckets[name]
   }
 
