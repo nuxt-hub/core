@@ -11,16 +11,7 @@ export function useKV() {
     return _kv
   }
   if (import.meta.dev && process.env.NUXT_HUB_URL) {
-    // Use https://unstorage.unjs.io/drivers/http
-    _kv = createStorage({
-      driver: httpDriver({
-        base: joinURL(process.env.NUXT_HUB_URL, '/api/_hub/kv/'),
-        headers: {
-          Authorization: `Bearer ${process.env.NUXT_HUB_SECRET_KEY}`
-        }
-      })
-    })
-    return _kv
+    return useProxyKV(process.env.NUXT_HUB_URL, process.env.NUXT_HUB_SECRET_KEY)
   }
   const binding = process.env.KV || globalThis.__env__?.KV || globalThis.KV
   if (binding) {
@@ -29,8 +20,18 @@ export function useKV() {
         binding
       })
     })
-  } else {
-    throw createError('Missing Cloudflare binding KV')
+    return _kv
   }
-  return _kv
+  throw createError('Missing Cloudflare KV binding (KV)')
+}
+
+export function useProxyKV(projectUrl: string, secretKey?: string) {
+  return createStorage({
+    driver: httpDriver({
+      base: joinURL(projectUrl, '/api/_hub/kv/'),
+      headers: {
+        Authorization: `Bearer ${secretKey}`
+      }
+    })
+  })
 }

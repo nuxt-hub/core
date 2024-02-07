@@ -5,7 +5,7 @@ export default eventHandler(async (event) => {
   }).parse)
 
   // List todos for the current user
-  const todo = await useDatabase().insert(tables.todos).values({
+  const todo = await useDB().insert(tables.todos).values({
     userId: session.user.id,
     title,
     createdAt: new Date()

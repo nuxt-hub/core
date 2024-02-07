@@ -18,31 +18,21 @@ function _useBucket() {
 
   // @ts-ignore
   const binding = process.env[name] || globalThis.__env__?.[name] || globalThis[name]
-  if (!binding) {
-    throw createError(`Missing Cloudflare R2 binding ${name}`)
+  if (binding) {
+    _r2_buckets[name] = binding as R2Bucket
+    return _r2_buckets[name]
   }
-  _r2_buckets[name] = binding as R2Bucket
-
-  return _r2_buckets[name]
+  throw createError(`Missing Cloudflare ${name} binding (R2)`)
 }
 
 export function useBlob() {
-  const proxyURL = import.meta.dev && process.env.NUXT_HUB_URL
-  let bucket: R2Bucket
-  if (!proxyURL) {
-    bucket = _useBucket()
+  if (import.meta.dev && process.env.NUXT_HUB_URL) {
+    return useProxyBlob(process.env.NUXT_HUB_URL, process.env.NUXT_HUB_SECRET_KEY)
   }
+  const bucket = _useBucket()
 
   return {
     async list(options: BlobListOptions = { limit: 1000 }) {
-      if (proxyURL) {
-        return ofetch<BlobObject[]>('/api/_hub/blob', {
-          baseURL: proxyURL,
-          method: 'GET',
-          query: options
-        })
-      }
-      // Use R2 binding
       const resolvedOptions = defu(options, {
         limit: 500,
         include: ['httpMetadata' as const, 'customMetadata' as const],
@@ -67,15 +57,7 @@ export function useBlob() {
       return listed.objects.map(mapR2ObjectToBlob)
     },
     async serve(event: H3Event, pathname: string) {
-      pathname = decodeURI(pathname)
-      if (proxyURL) {
-        return ofetch<ReadableStreamDefaultReader<any>>(`/api/_hub/blob/${pathname}`, {
-          baseURL: proxyURL,
-          method: 'GET'
-        })
-      }
-      // Use R2 binding
-      const object = await bucket.get(pathname)
+      const object = await bucket.get(decodeURI(pathname))
 
       if (!object) {
         throw createError({ message: 'File not found', statusCode: 404 })
@@ -88,20 +70,6 @@ export function useBlob() {
     },
     async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: { contentType?: string, contentLength?: string, addRandomSuffix?: boolean, [key: string]: any } = { addRandomSuffix: true }) {
       pathname = decodeURI(pathname)
-      if (proxyURL) {
-        const { contentType, contentLength, ...query } = options
-        const headers: Record<string, string> = {}
-        if (contentType) { headers['content-type'] = contentType }
-        if (contentLength) { headers['content-length'] = contentLength }
-        return await ofetch<BlobObject>(joinURL('/api/_hub/blob', pathname), {
-          baseURL: proxyURL,
-          method: 'PUT',
-          headers,
-          body,
-          query
-        })
-      }
-      // Use R2 binding
       const { contentType: optionsContentType, contentLength, addRandomSuffix, ...customMetadata } = options
       const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
 
@@ -120,16 +88,7 @@ export function useBlob() {
       return mapR2ObjectToBlob(object)
     },
     async head(pathname: string) {
-      pathname = decodeURI(pathname)
-      if (proxyURL) {
-        const { headers } = await ofetch.raw<void>(joinURL('/api/_hub/blob', pathname), {
-          baseURL: proxyURL,
-          method: 'HEAD'
-        })
-        return JSON.parse(headers.get('x-blob') || '{}') as BlobObject
-      }
-      // Use R2 binding
-      const object = await bucket.head(pathname)
+      const object = await bucket.head(decodeURI(pathname))
 
       if (!object) {
         throw createError({ message: 'Blob not found', statusCode: 404 })
@@ -138,16 +97,54 @@ export function useBlob() {
       return mapR2ObjectToBlob(object)
     },
     async delete(pathname: string) {
-      pathname = decodeURI(pathname)
-      if (proxyURL) {
-        await ofetch<void>(`/api/_hub/blob/${pathname}`, {
-          baseURL: proxyURL,
-          method: 'DELETE',
-        })
-        return
-      }
-      // Use R2 binding
-      return await bucket.delete(pathname)
+      return await bucket.delete(decodeURI(pathname))
+    }
+  }
+}
+
+export function useProxyBlob(projectUrl: string, secretKey?: string) {
+  const blobAPI = ofetch.create({
+    baseURL: joinURL(projectUrl, '/api/_hub/blob'),
+    headers: {
+      Authorization: `Bearer ${secretKey}`
+    }
+  })
+
+  return {
+    async list(options: BlobListOptions = { limit: 1000 }) {
+      return blobAPI<BlobObject[]>('/', {
+        method: 'GET',
+        query: options
+      })
+    },
+    async serve(_event: H3Event, pathname: string) {
+      return blobAPI<ReadableStreamDefaultReader<any>>(decodeURI(pathname), {
+        method: 'GET'
+      })
+    },
+    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: { contentType?: string, contentLength?: string, addRandomSuffix?: boolean, [key: string]: any } = { addRandomSuffix: true }) {
+      const { contentType, contentLength, ...query } = options
+      const headers: Record<string, string> = {}
+      if (contentType) { headers['content-type'] = contentType }
+      if (contentLength) { headers['content-length'] = contentLength }
+      return await blobAPI<BlobObject>(decodeURI(pathname), {
+        method: 'PUT',
+        headers,
+        body,
+        query
+      })
+    },
+    async head(pathname: string) {
+      const { headers } = await blobAPI.raw<void>(decodeURI(pathname), {
+        method: 'HEAD'
+      })
+      return JSON.parse(headers.get('x-blob') || '{}') as BlobObject
+    },
+    async delete(pathname: string) {
+      await blobAPI<void>(decodeURI(pathname), {
+        method: 'DELETE',
+      })
+      return
     }
   }
 }

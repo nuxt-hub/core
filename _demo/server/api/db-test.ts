@@ -1,7 +1,7 @@
 import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core'
 
 export default defineEventHandler(async () => {
-  const db = useDatabase()
+  const db = useDB()
 
   const tables = await db.all(sql`
     SELECT

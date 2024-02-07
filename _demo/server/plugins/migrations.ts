@@ -1,7 +1,8 @@
 export default defineNitroPlugin(() => {
   if (import.meta.dev) {
     onHubReady(async () => {
-      const db = useDatabase()
+      const db = useDB()
+
       await db.run(sql`CREATE TABLE IF NOT EXISTS todos (
         id integer PRIMARY KEY NOT NULL,
         user_id integer NOT NULL,

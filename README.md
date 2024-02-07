@@ -4,11 +4,10 @@ The Nuxt Toolkit to create full-stack applications on the Edge.
 
 ## Features
 
-- Session management with secured & sealed cookie sessions
-- Create and query typed collections with `useDatabase()`
+- Session management with `useAuth(event)`
+- Query an SQLite database with `useDatabase()`
 - Access key-value storage with `useKV()`
 - Store files with `useBlob()`
-- Edge configuration available with `getConfig()` and `useConfig()` (vue app)
 
 ## Blob
 
@@ -95,7 +94,6 @@ export default eventHandler(event => {
 ## Key-Value Storage
 
 - useKV() -> process.env.KV binding
-- useConfig() -> process.env.KV with `_config` key
 
 - useKV().setItem('public/')
 

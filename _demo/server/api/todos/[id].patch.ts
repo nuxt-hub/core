@@ -10,7 +10,7 @@ export default eventHandler(async (event) => {
   }).parse)
 
   // List todos for the current user
-  const todo = await useDatabase().update(tables.todos).set({
+  const todo = await useDB().update(tables.todos).set({
     completed
   }).where(and(
     eq(tables.todos.id, Number(id)),

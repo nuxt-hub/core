@@ -7,7 +7,7 @@ export default eventHandler(async (event) => {
   }).parse)
 
   // List todos for the current user
-  const deletedTodo = await useDatabase().delete(tables.todos).where(and(
+  const deletedTodo = await useDB().delete(tables.todos).where(and(
     eq(tables.todos.id, Number(id)),
     eq(tables.todos.userId, session.user.id)
   )).returning().get()
