@@ -20,6 +20,9 @@ export default eventHandler(async () => {
     return !isInternal
   })
 
+  if (!tables.length) {
+    return []
+  }
   const [columns, count, primaryKeys, indexes] = await Promise.all([
     db.batch(tables.map(({ name }) => db.prepare(`PRAGMA table_info("${name}")`)))
       .then(res => res.map(({ results }) => results as { name: string; type: string, notnull: number, dflt_value: null | string, pk: number }[])),
