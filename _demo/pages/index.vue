@@ -11,7 +11,7 @@ const { user } = useUserSession()
       </h3>
       <UButton
         v-if="!user" icon="i-simple-icons-github" label="Login with GitHub" color="black" external
-        @click="auth.loginWith('github')"
+        @click="auth.loginWith('github', { redirectSuccess: '/todos' })"
       />
       <div v-else class="space-x-2">
         <UButton to="/todos" icon="i-heroicons-list-bullet" label="Go to Todos" color="black" />
