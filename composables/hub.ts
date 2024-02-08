@@ -6,8 +6,8 @@ export function useHub() {
     config,
     auth: {
       ...session,
-      loginWith(provider: string) {
-        window.location.href = `/api/auth/providers/${provider}`
+      loginWith(provider: string, { redirectSuccess } = {}) {
+        window.location.href = `/api/auth/providers/${provider}?${redirectSuccess ? `redirectSuccess=${redirectSuccess}` : ''}`
       },
       logout() {
         return session.clear()
