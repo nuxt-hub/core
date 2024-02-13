@@ -19,6 +19,7 @@
     "build": "nuxi build --preset cloudflare_pages _demo",
     "preview": "nuxt preview _demo",
     "lint": "eslint .",
+    "typecheck": "nuxt typecheck",
     "logs": "wrangler pages deployment tail",
     "prepublishOnly": "pnpm lint",
     "release": "release-it"
