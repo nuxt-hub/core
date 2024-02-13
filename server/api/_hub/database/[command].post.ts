@@ -23,7 +23,7 @@ export default eventHandler(async (event) => {
     const { query, params, colName } = await readValidatedBody(event, z.object({
       query: z.string().min(1).max(1e6).trim(),
       params: z.any().array(),
-      colName: z.string().optional()
+      colName: z.string()
     }).parse)
     return db.prepare(query).bind(...params).first(colName)
   }
