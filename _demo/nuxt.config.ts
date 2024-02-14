@@ -4,8 +4,7 @@ export default defineNuxtConfig({
     '..'
   ],
   modules: [
-    '@nuxt/ui',
-    'nuxt-auth-utils'
+    '@nuxt/ui'
   ],
   ui: {
     icons: ['heroicons', 'simple-icons']
