@@ -79,4 +79,8 @@ kv_namespaces = [
 ]
 r2_buckets = [
   { binding = "BLOB", bucket_name = "default" },
-]`
+]
+analytics_engine_datasets = [
+  { binding = "ANALYTICS", dataset = "default" }
+]
+`
