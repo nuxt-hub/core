@@ -6,9 +6,7 @@ export default eventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'No file provided' })
   }
 
-  if (!file.type.startsWith('image/')) {
-    throw createError({ statusCode: 400, message: 'File must be an image' })
-  }
+  ensureBlob(file, { maxSize: '1MB', types: ['image' ]})
 
-  return useBlob().put(`images/${file.name}`, file)
+  return useBlob().put(`images/${file.name}`, file, { addRandomSuffix: false })
 })

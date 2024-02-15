@@ -26,6 +26,8 @@
   },
   "dependencies": {
     "@cloudflare/workers-types": "^4.20240208.0",
+    "@sindresorhus/slugify": "^2.2.1",
+    "@uploadthing/mime-types": "^0.2.2",
     "mime": "^4.0.1",
     "nuxt-auth-utils": "^0.0.16",
     "pkg-types": "^1.0.3",
