@@ -1,7 +1,7 @@
+import type { extensions } from '@uploadthing/mime-types'
 import type { R2Bucket } from '@cloudflare/workers-types/experimental'
 import { ofetch } from 'ofetch'
 import mime from 'mime'
-// import { imageMeta } from 'image-meta'
 import type { H3Event } from 'h3'
 import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
@@ -149,48 +149,9 @@ export function useProxyBlob(projectUrl: string, secretKey?: string) {
   }
 }
 
-// Final intentions
-// export default hub.blob.uploadHandler({
-//   async authorize (event) {
-//     await requireUserSession(event)
-//   },
-//   contentType: ['image/jpg'],
-//   maxFileSize: '16MB',
-//   bucket: '',
-//   prefix: ''
-// })
-
 function getContentType(pathOrExtension?: string) {
   return (pathOrExtension && mime.getType(pathOrExtension)) || 'application/octet-stream'
 }
-
-// function getMetadata (filename: string, buffer: Buffer) {
-//   const metadata: Record<string, any> = {
-//     contentType: getContentType(filename)
-//   }
-
-//   if (metadata.contentType.startsWith('image/')) {
-//     Object.assign(metadata, imageMeta(buffer))
-//   }
-
-//   return metadata
-// }
-
-// export async function readFiles (event: any) {
-//   const files = (await readMultipartFormData(event) || [])
-
-//   // Filter only files
-//   return files.filter((file) => Boolean(file.filename))
-// }
-
-// export function toArrayBuffer (buffer: Buffer) {
-//   const arrayBuffer = new ArrayBuffer(buffer.length)
-//   const view = new Uint8Array(arrayBuffer)
-//   for (let i = 0; i < buffer.length; ++i) {
-//     view[i] = buffer[i]
-//   }
-//   return arrayBuffer
-// }
 
 function mapR2ObjectToBlob(object: R2Object): BlobObject {
   return {
@@ -198,5 +159,59 @@ function mapR2ObjectToBlob(object: R2Object): BlobObject {
     contentType: object.httpMetadata?.contentType,
     size: object.size,
     uploadedAt: object.uploaded,
+  }
+}
+
+// Credits from shared utils of https://github.com/pingdotgg/uploadthing
+type PowOf2 = 1 | 2 | 4 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024;
+type SizeUnit = 'B' | 'KB' | 'MB' | 'GB';
+type BlobSize = `${PowOf2}${SizeUnit}`;
+type BlobType = 'image' | 'video' | 'audio' | 'pdf' | 'text' | 'blob' | keyof typeof extensions
+const FILESIZE_UNITS = ['B', 'KB', 'MB', 'GB']
+type FileSizeUnit = (typeof FILESIZE_UNITS)[number];
+
+function fileSizeToBytes(input: string) {
+  const regex = new RegExp(
+    `^(\\d+)(\\.\\d+)?\\s*(${FILESIZE_UNITS.join('|')})$`,
+    'i',
+  )
+  const match = input.match(regex)
+
+  if (!match) {
+    throw createError({ statusCode: 400, message: `Invalid file size format: ${input}` })
+  }
+
+  const sizeValue = parseFloat(match[1])
+  const sizeUnit = match[3].toUpperCase() as FileSizeUnit
+
+  if (!FILESIZE_UNITS.includes(sizeUnit)) {
+    throw createError({ statusCode: 400, message: `Invalid file size unit: ${sizeUnit}` })
+  }
+  const bytes = sizeValue * Math.pow(1024, FILESIZE_UNITS.indexOf(sizeUnit))
+  return Math.floor(bytes)
+}
+
+export function ensureBlob(blob: Blob, options: { maxSize?: BlobSize, types?: BlobType[] }) {
+  if (!options.maxSize && !options.types?.length) {
+    throw createError({
+      statusCode: 400,
+      message: 'ensureBlob() requires at least one of maxSize or types to be set.'
+    })
+  }
+  if (options.maxSize) {
+    const maxFileSizeBytes = fileSizeToBytes(options.maxSize)
+    if (blob.size > maxFileSizeBytes) {
+      throw createError({
+        statusCode: 400,
+        message: `File size must be less than ${options.maxSize}`
+      })
+    }
+  }
+  const blobShortType = blob.type.split('/')[0]
+  if (options.types?.length && !options.types.includes(blob.type as BlobType) && !options.types.includes(blobShortType as BlobType)) {
+    throw createError({
+      statusCode: 400,
+      message: `File type is invalid, must be: ${options.types.join(', ')}`
+    })
   }
 }
