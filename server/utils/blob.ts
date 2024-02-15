@@ -1,4 +1,5 @@
 import type { extensions } from '@uploadthing/mime-types'
+import slugify from '@sindresorhus/slugify'
 import type { R2Bucket } from '@cloudflare/workers-types/experimental'
 import { ofetch } from 'ofetch'
 import mime from 'mime'
@@ -75,7 +76,9 @@ export function useBlob() {
 
       const { dir, ext, name: filename } = parse(pathname)
       if (addRandomSuffix) {
-        pathname = joinURL(dir === '.' ? '' : dir, `${filename}-${randomUUID().split('-')[0]}${ext}`)
+        pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}-${randomUUID().split('-')[0]}${ext}`)
+      } else {
+        pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}${ext}`)
       }
 
       const httpMetadata: Record<string, string> = { contentType }
