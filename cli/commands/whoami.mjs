@@ -11,13 +11,13 @@ export default defineCommand({
   async setup() {
     const config = loadConfig()
     if (!config.token) {
-      consola.log('Not currently logged in.')
+      consola.info('Not currently logged in.')
       return
     }
 
-    const user = await $api('/user')
+    const user = await $api('/user').catch(() => null)
     if (!user?.name) {
-      consola.log('Not currently logged in.')
+      consola.info('Not currently logged in.')
       return
     }
     consola.info(`Logged in as \`${user.name}\``)

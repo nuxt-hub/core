@@ -8,7 +8,7 @@ import { ofetch } from 'ofetch'
 
 const CONFIG_DIR = XDGAppPaths('com.nuxt.hub.cli').dataDirs()[0]
 const CONFIG_PATH = join(CONFIG_DIR, 'auth.json')
-export const NUXT_HUB_URL = process.env.NUXT_HUB_URL || 'http://nuxthub-admin.pages.dev'
+export const NUXT_HUB_URL = process.env.NUXT_HUB_URL || 'https://nuxthub-admin.pages.dev'
 
 export function loadConfig() {
   try {
