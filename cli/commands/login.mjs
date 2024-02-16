@@ -6,7 +6,6 @@ import { getRandomPort } from 'get-port-please'
 import { listen } from 'listhen'
 import { withQuery, joinURL } from 'ufo'
 import { NUXT_HUB_URL } from '../utils.mjs'
-import whoami from './whoami.mjs'
 
 export default defineCommand({
   meta: {
@@ -19,7 +18,10 @@ export default defineCommand({
     }
     const config = loadConfig()
     if (config.token) {
-      return runCommand(whoami, {})
+      const user = await $api('/user').catch(() => null)
+      if (user?.name) {
+        return consola.info(`Already logged in as \`${user.name}\``)
+      }
     }
     // Create server for OAuth flow
     let listener
@@ -32,7 +34,11 @@ export default defineCommand({
       const token = getQuery(event).token
 
       if (token) {
-        const user = await $api('/user').catch(() => null)
+        const user = await $api('/user', {
+          headers: {
+            Authorization: `token ${token}`
+          }
+        }).catch(() => null)
         if (user?.name) {
           writeConfig({ token })
           consola.success('Authenticated successfully!')
