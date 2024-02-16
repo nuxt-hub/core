@@ -10,8 +10,8 @@ export function useKV() {
   if (_kv) {
     return _kv
   }
-  if (import.meta.dev && process.env.NUXT_HUB_URL) {
-    return useProxyKV(process.env.NUXT_HUB_URL, process.env.NUXT_HUB_SECRET_KEY)
+  if (import.meta.dev && process.env.NUXT_HUB_PROJECT_URL) {
+    return useProxyKV(process.env.NUXT_HUB_PROJECT_URL, process.env.NUXT_HUB_PROJECT_SECRET_KEY)
   }
   const binding = process.env.KV || globalThis.__env__?.KV || globalThis.KV
   if (binding) {
