@@ -25,8 +25,8 @@ importers:
         specifier: ^4.0.1
         version: 4.0.1
       nuxt-auth-utils:
-        specifier: ^0.0.16
-        version: 0.0.16
+        specifier: ^0.0.17
+        version: 0.0.17
       pkg-types:
         specifier: ^1.0.3
         version: 1.0.3
@@ -6942,8 +6942,8 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
 
-  /nuxt-auth-utils@0.0.16:
-    resolution: {integrity: sha512-I1R43UkRI/ZOlHPg90Nn9wnfY56AxSydj2QOZgiRLoLUe+FKPKf0gRz/j6giFWvtpinW8/7NXtmc0j18lvxKgA==}
+  /nuxt-auth-utils@0.0.17:
+    resolution: {integrity: sha512-JQj9uLilLVu5XkHnK/hg07x+6TwdNl+KpFD8VO8l+K0RSUUcuYcB0fIS+DVa8rGlN6uc8KKsZkH45P9puUdqIQ==}
     dependencies:
       '@nuxt/kit': 3.10.2
       defu: 6.1.4
