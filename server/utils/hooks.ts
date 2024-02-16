@@ -8,7 +8,7 @@ export interface HubHooks {
 export const hubHooks = createHooks<HubHooks>()
 
 export function onHubReady (cb: HubHooks['bindings:ready']) {
-  if (import.meta.dev && !process.env.NUXT_HUB_URL) {
+  if (import.meta.dev && !process.env.NUXT_HUB_PROJECT_URL) {
     return hubHooks.hookOnce('bindings:ready', cb)
   }
   cb()

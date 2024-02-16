@@ -20,8 +20,8 @@ function _useDataset() {
 }
 
 export function useAnalytics() {
-  if (import.meta.dev && process.env.NUXT_HUB_URL) {
-    return useProxyAnalytics(process.env.NUXT_HUB_URL, process.env.NUXT_HUB_SECRET_KEY)
+  if (import.meta.dev && process.env.NUXT_HUB_PROJECT_URL) {
+    return useProxyAnalytics(process.env.NUXT_HUB_PROJECT_URL, process.env.NUXT_HUB_PROJECT_SECRET_KEY)
   }
   const dataset = _useDataset()
 

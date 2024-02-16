@@ -18,9 +18,9 @@ export default defineNuxtModule({
       return
     }
 
-    if (process.env.NUXT_HUB_URL) {
+    if (process.env.NUXT_HUB_PROJECT_URL) {
       // TODO: check on hub.nuxt.com if the project is connected
-      logger.info(`Using remote hub from \`${process.env.NUXT_HUB_URL}\``)
+      logger.info(`Using remote hub from \`${process.env.NUXT_HUB_PROJECT_URL}\``)
       return
     } else {
       logger.info('Using local hub from bindings')
