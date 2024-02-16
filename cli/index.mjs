@@ -5,6 +5,7 @@ import { colors } from 'consola/utils'
 import login from './commands/login.mjs'
 import logout from './commands/logout.mjs'
 import whoami from './commands/whoami.mjs'
+import deploy from './commands/deploy.mjs'
 
 const main = defineCommand({
   meta: {
@@ -17,6 +18,7 @@ const main = defineCommand({
     }
   },
   subCommands: {
+    deploy,
     login,
     logout,
     whoami
