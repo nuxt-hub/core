@@ -1,7 +1,6 @@
 import { consola } from 'consola'
 import { defineCommand } from 'citty'
-import { loadConfig, writeConfig } from '../utils.mjs'
-import { $api } from '../utils.mjs'
+import { $api, fetchUser, loadUserConfig, writeUserConfig } from '../utils/index.mjs'
 
 export default defineCommand({
   meta: {
@@ -9,16 +8,16 @@ export default defineCommand({
     description: 'Logout the current authenticated user.',
   },
   async setup() {
-    const config = loadConfig()
-    if (!config.token) {
+    const user = await fetchUser()
+    if (!user) {
       consola.info('Not currently logged in.')
       return
     }
 
-    writeConfig({
-      ...config,
-      token: ''
-    })
+    const config = loadUserConfig()
+    delete config.hub.userToken
+    writeUserConfig(config)
+
     await $api('/user/token', {
       method: 'DELETE'
     }).catch(() => {})
