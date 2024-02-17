@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const { auth } = useHub()
 const { user } = useUserSession()
 </script>
 
@@ -10,8 +9,7 @@ const { user } = useUserSession()
         Todo List
       </h3>
       <UButton
-        v-if="!user" icon="i-simple-icons-github" label="Login with GitHub" color="black" external
-        @click="auth.loginWith('github', { redirectSuccess: '/todos' })"
+        v-if="!user" icon="i-simple-icons-github" label="Login with GitHub" color="black" external to="/auth/github"
       />
       <div v-else class="space-x-2">
         <UButton to="/todos" icon="i-heroicons-list-bullet" label="Go to Todos" color="black" />

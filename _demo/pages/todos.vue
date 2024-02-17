@@ -7,7 +7,7 @@ const newTodo = ref('')
 const newTodoInput = ref(null)
 
 const toast = useToast()
-const { user, logout } = useHub().auth
+const { user, clear } = useUserSession()
 const { data: todos } = await useFetch('/api/todos')
 
 async function addTodo () {
@@ -55,7 +55,7 @@ async function deleteTodo (todo) {
 const items = [[{
   label: 'Logout',
   icon: 'i-heroicons-arrow-left-on-rectangle',
-  click: logout
+  click: clear
 }]]
 </script>
 
