@@ -1,11 +1,10 @@
 import { consola } from 'consola'
-import { defineCommand, runCommand } from 'citty'
-import { loadConfig, isHeadless, writeConfig, $api } from '../utils.mjs'
+import { defineCommand } from 'citty'
+import { isHeadless, fetchUser, updateUserConfig, $api, NUXT_HUB_URL } from '../utils/index.mjs'
 import { createApp, eventHandler, toNodeListener, getQuery } from 'h3'
 import { getRandomPort } from 'get-port-please'
 import { listen } from 'listhen'
 import { withQuery, joinURL } from 'ufo'
-import { NUXT_HUB_URL } from '../utils.mjs'
 
 export default defineCommand({
   meta: {
@@ -16,12 +15,9 @@ export default defineCommand({
     if (isHeadless()) {
       throw new Error('nuxthub login is not supported in Docker or SSH yet.')
     }
-    const config = loadConfig()
-    if (config.token) {
-      const user = await $api('/user').catch(() => null)
-      if (user?.name) {
-        return consola.info(`Already logged in as \`${user.name}\``)
-      }
+    const user = await fetchUser()
+    if (user) {
+      return consola.info(`Already logged in as \`${user.name}\``)
     }
     // Create server for OAuth flow
     let listener
@@ -41,7 +37,7 @@ export default defineCommand({
             }
           }).catch(() => null)
           if (user?.name) {
-            writeConfig({ token })
+            updateUserConfig({ hub: { userToken: token } })
             consola.success('Authenticated successfully!')
 
             resolve()
