@@ -12,9 +12,9 @@ export const $api = ofetch.create({
       options.headers.Authorization = `Bearer ${loadUserConfig().hub?.userToken || ''}`
     }
   },
-  onResponseError(ctx) {
-    if (ctx.response._data?.message) {
-      consola.error(ctx.response._data?.message)
+  onResponseError({ response }) {
+    if (response.status !== 401 && response._data?.message) {
+      consola.error(response._data?.message)
       process.exit(1)
     }
   }
