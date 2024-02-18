@@ -8,9 +8,52 @@ import { readUser } from 'rc9'
 import { $fetch } from 'ofetch'
 import { joinURL } from 'ufo'
 
-export default defineNuxtModule({
+const log = logger.withScope('nuxt:hub')
+
+export interface ModuleOptions {
+  /**
+   * Set to `true` to use the local bindings
+   * @default false
+   */
+  local?: boolean
+  /**
+   * The URL of the NuxtHub platform
+   * @default 'https://hub.nuxt.com'
+   */
+  url?: string
+  /**
+   * The ID of the project on the NuxtHub platform
+   * Available when using the NuxtHub platform using `nuxthub link`
+   * @default process.env.NUXT_HUB_PROJECT_ID
+   */
+  projectId?: string
+  /**
+   * The user token to access the NuxtHub platform
+   * Available when using the NuxtHub platform using `nuxthub login`
+   * @default process.env.NUXT_HUB_USER_TOKEN
+   */
+  userToken?: string
+  /**
+   * The URL of the deployed project
+   * Available when not using the NuxtHub platform
+   * A projectSecretKey must be defined as well
+   * @default process.env.NUXT_HUB_PROJECT_URL
+   */
+  projectUrl?: string
+  /**
+   * The secret key defined in the deployed project as env variable
+   * Available when not using the NuxtHub platform
+   * @default process.env.NUXT_HUB_PROJECT_SECRET_KEY
+   */
+  projectSecretKey?: string
+}
+
+export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'hub'
+  },
+  defaults: {
+    local: false
   },
   async setup (options, nuxt) {
     const rootDir = nuxt.options.rootDir
@@ -37,32 +80,37 @@ export default defineNuxtModule({
     }
 
     // Check if the project is linked to a NuxtHub project
-    if (hub.projectId && /^\d+$/.test(String(hub.projectId))) {
+    if (!hub.local && hub.projectId && /^\d+$/.test(String(hub.projectId))) {
       const project = await $fetch(`/api/projects/${hub.projectId}`, {
         baseURL: hub.url,
         headers: {
           authorization: `Bearer ${hub.userToken}`
         }
       }).catch(() => {
-        logger.warn('Failed to fetch NuxtHub linked project, make sure to run `nuxthub link` again.')
+        log.warn('Failed to fetch NuxtHub linked project, make sure to run `nuxthub link` again.')
         return null
       })
       if (project) {
         const adminUrl = joinURL(hub.url, project.teamSlug, project.slug)
-        logger.info(`Connected to NuxtHub project \`${adminUrl}\``)
+        log.info(`Linked to \`${adminUrl}\``)
         hub.projectUrl = project.url
         if (!hub.projectUrl) {
-          logger.warn(`NuxtHub project \`${project.slug}\` is not deployed yet, make sure to deploy it using \`nuxthub deploy\` or add the deployed URL to the project settings.`)
+          log.warn(`NuxtHub project \`${project.slug}\` is not deployed yet, make sure to deploy it using \`nuxthub deploy\` or add the deployed URL to the project settings.`)
         }
       }
     }
 
-    if (hub.projectUrl) {
-      // TODO: check on hub.nuxt.com if the project is connected
-      logger.info(`Using remote hub from \`${hub.projectUrl}\``)
+    if (hub.projectUrl && !hub.local) {
+      await $fetch('/api/_hub/', {
+        baseURL: hub.projectUrl,
+        headers: {
+          authorization: `Bearer ${hub.projectSecretKey || hub.userToken}`
+        }
+      })
+      log.info(`Using remote primitives from \`${hub.projectUrl}\``)
       return
     } else {
-      logger.info('Using local hub from bindings')
+      log.info('Using local primitives from `.hub/`')
     }
 
     // Local development without remote connection

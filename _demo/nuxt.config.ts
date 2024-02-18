@@ -8,5 +8,8 @@ export default defineNuxtConfig({
   ],
   ui: {
     icons: ['heroicons', 'simple-icons']
+  },
+  hub: {
+    // local: true
   }
 })

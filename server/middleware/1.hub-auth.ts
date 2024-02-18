@@ -27,7 +27,7 @@ export default eventHandler(async (event) => {
   }
 
   // Hosted on NuxtHub
-  if (/^\d+$/.test(hub.projectId as string)) {
+  if (hub.projectId && /^\d+$/.test(String(hub.projectId))) {
     // Here the secretKey is a user token
     await $fetch(`/api/projects/${hub.projectId}`, {
       baseURL: hub.url,
