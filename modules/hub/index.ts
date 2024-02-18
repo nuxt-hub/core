@@ -102,6 +102,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     if (hub.projectUrl && !hub.local) {
       await $fetch('/api/_hub/', {
+        method: 'HEAD',
         baseURL: hub.projectUrl,
         headers: {
           authorization: `Bearer ${hub.projectSecretKey || hub.userToken}`
