@@ -13,7 +13,6 @@ export default defineNuxtModule({
     name: 'hub'
   },
   async setup (options, nuxt) {
-    if (nuxt.options._prepare) return
     const rootDir = nuxt.options.rootDir
     const { resolve } = createResolver(import.meta.url)
 
@@ -31,7 +30,14 @@ export default defineNuxtModule({
       projectSecretKey: process.env.NUXT_HUB_PROJECT_SECRET_KEY || '',
       userToken: process.env.NUXT_HUB_USER_TOKEN || '',
     })
-    if (/^\d+$/.test(String(hub.projectId))) {
+
+    // Preapre or Production mode, stop here
+    if (nuxt.options._prepare || !nuxt.options.dev) {
+      return
+    }
+
+    // Check if the project is linked to a NuxtHub project
+    if (hub.projectId && /^\d+$/.test(String(hub.projectId))) {
       const project = await $fetch(`/api/projects/${hub.projectId}`, {
         baseURL: hub.url,
         headers: {
@@ -49,11 +55,6 @@ export default defineNuxtModule({
           logger.warn(`NuxtHub project \`${project.slug}\` is not deployed yet, make sure to deploy it using \`nuxthub deploy\` or add the deployed URL to the project settings.`)
         }
       }
-    }
-
-    // Production mode
-    if (!nuxt.options.dev) {
-      return
     }
 
     if (hub.projectUrl) {
