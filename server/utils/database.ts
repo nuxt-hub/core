@@ -9,8 +9,9 @@ export function useDatabase() {
   if (_db) {
     return _db
   }
-  if (import.meta.dev && process.env.NUXT_HUB_PROJECT_URL) {
-    _db = useProxyDatabase(process.env.NUXT_HUB_PROJECT_URL, process.env.NUXT_HUB_PROJECT_SECRET_KEY)
+  const hub = useRuntimeConfig().hub
+  if (import.meta.dev && hub.projectUrl) {
+    _db = useProxyDatabase(hub.projectUrl, hub.projectSecretKey || hub.userToken)
     return _db
   }
   // @ts-ignore
