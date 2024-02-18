@@ -19,7 +19,7 @@
   "license": "PROPRIETARY",
   "scripts": {
     "dev:prepare": "nuxt prepare _demo",
-    "dev": "nuxi dev _demo",
+    "dev": "PORT=4000 nuxi dev _demo",
     "build": "nuxi build --preset cloudflare_pages _demo",
     "preview": "nuxt preview _demo",
     "lint": "eslint .",
@@ -44,6 +44,7 @@
     "pathe": "^1.1.2",
     "pkg-types": "^1.0.3",
     "rc9": "^2.1.1",
+    "ufo": "^1.4.0",
     "uncrypto": "^0.1.3",
     "wrangler": "^3.28.3",
     "zod": "^3.22.4"

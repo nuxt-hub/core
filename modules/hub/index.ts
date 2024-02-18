@@ -4,23 +4,60 @@ import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
 import { findWorkspaceDir } from 'pkg-types'
+import { readUser } from 'rc9'
+import { $fetch } from 'ofetch'
+import { joinURL } from 'ufo'
 
 export default defineNuxtModule({
   meta: {
     name: 'hub'
   },
-  async setup (_options, nuxt) {
+  async setup (options, nuxt) {
     const rootDir = nuxt.options.rootDir
     const { resolve } = createResolver(import.meta.url)
+
+    // Waiting for https://github.com/unjs/c12/pull/139
+    // Then adding the c12 dependency to the project to 1.8.1
+    options = defu(options, {
+      ...readUser('.nuxtrc').hub,
+    })
+
+    const runtimeConfig = nuxt.options.runtimeConfig
+    const hub = runtimeConfig.hub = defu(runtimeConfig.hub, options, {
+      url: process.env.NUXT_HUB_URL || 'https://hub.nuxt.com',
+      projectId: process.env.NUXT_HUB_PROJECT_ID || '',
+      projectUrl: process.env.NUXT_HUB_PROJECT_URL || '',
+      projectSecretKey: process.env.NUXT_HUB_PROJECT_SECRET_KEY || '',
+      userToken: process.env.NUXT_HUB_USER_TOKEN || '',
+    })
+    if (/^\d+$/.test(String(hub.projectId))) {
+      const project = await $fetch(`/api/projects/${hub.projectId}`, {
+        baseURL: hub.url,
+        headers: {
+          authorization: `Bearer ${hub.userToken}`
+        }
+      }).catch(() => {
+        logger.warn('Failed to fetch NuxtHub linked project, make sure to run `nuxthub link` again.')
+        return null
+      })
+      if (project) {
+        const adminUrl = joinURL(hub.url, project.teamSlug, project.slug)
+        logger.info(`Connected to NuxtHub project \`${adminUrl}\``)
+        hub.projectUrl = project.url
+        if (!hub.projectUrl) {
+          logger.warn(`NuxtHub project \`${project.slug}\` is not deployed yet, make sure to deploy it using \`nuxthub deploy\` or add the deployed URL to the project settings.`)
+        }
+      }
+    }
 
     // Production mode
     if (!nuxt.options.dev) {
       return
     }
 
-    if (process.env.NUXT_HUB_PROJECT_URL) {
+    if (hub.projectUrl) {
       // TODO: check on hub.nuxt.com if the project is connected
-      logger.info(`Using remote hub from \`${process.env.NUXT_HUB_PROJECT_URL}\``)
+      logger.info(`Using remote hub from \`${hub.projectUrl}\``)
       return
     } else {
       logger.info('Using local hub from bindings')

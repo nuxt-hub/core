@@ -27,8 +27,9 @@ function _useBucket() {
 }
 
 export function useBlob() {
-  if (import.meta.dev && process.env.NUXT_HUB_PROJECT_URL) {
-    return useProxyBlob(process.env.NUXT_HUB_PROJECT_URL, process.env.NUXT_HUB_PROJECT_SECRET_KEY)
+  const hub = useRuntimeConfig().hub
+  if (import.meta.dev && hub.projectUrl) {
+    return useProxyBlob(hub.projectUrl, hub.projectSecretKey || hub.userToken)
   }
   const bucket = _useBucket()
 
