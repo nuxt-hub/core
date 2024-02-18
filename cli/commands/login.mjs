@@ -33,7 +33,7 @@ export default defineCommand({
         if (token) {
           const user = await $api('/user', {
             headers: {
-              Authorization: `token ${token}`
+              Authorization: `Bearer ${token}`
             }
           }).catch(() => null)
           if (user?.name) {

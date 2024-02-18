@@ -1,6 +1,4 @@
 import isDocker from 'is-docker'
-import { joinURL } from 'ufo'
-import { ofetch } from 'ofetch'
 import { updateUser, readUser, writeUser, read, update } from 'rc9'
 import { homedir } from 'os'
 
@@ -31,12 +29,3 @@ export function projectPath() {
   return process.cwd().replace(homedir(), '~')
 }
 
-export const $api = ofetch.create({
-  baseURL: joinURL(NUXT_HUB_URL, '/api'),
-  onRequest({ options }) {
-    options.headers = options.headers || {}
-    if (!options.headers.Authorization) {
-      options.headers.Authorization = `token ${loadUserConfig().hub?.userToken || ''}`
-    }
-  }
-})

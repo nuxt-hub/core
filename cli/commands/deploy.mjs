@@ -31,7 +31,7 @@ export default defineCommand({
       if (!team) return
 
       project = await selectProject(team)
-      if (!project) return
+      if (!project) return consola.log('Cancelled.')
     }
 
     consola.info(`Deploying \`${project.slug}\` to NuxtHub...`)
