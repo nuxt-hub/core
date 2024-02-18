@@ -13,6 +13,7 @@ export default defineNuxtModule({
     name: 'hub'
   },
   async setup (options, nuxt) {
+    if (nuxt.options._prepare) return
     const rootDir = nuxt.options.rootDir
     const { resolve } = createResolver(import.meta.url)
 
