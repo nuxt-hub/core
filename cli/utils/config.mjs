@@ -1,5 +1,5 @@
 import isDocker from 'is-docker'
-import { updateUser, readUser, writeUser, read, update } from 'rc9'
+import { updateUser, readUser, writeUser, read, update, write } from 'rc9'
 import { homedir } from 'os'
 
 export const INITIAL_CONFIG = loadUserConfig()
@@ -19,6 +19,9 @@ export function loadProjectConfig () {
 }
 export function updateProjectConfig (config) {
   return update(config, '.nuxtrc')
+}
+export function writeProjectConfig (config) {
+  return write(config, '.nuxtrc')
 }
 
 export function isHeadless() {
