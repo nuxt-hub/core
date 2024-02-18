@@ -1,6 +1,24 @@
 import { consola } from 'consola'
 import { isCancel, select, text } from '@clack/prompts'
-import { $api, loadUserConfig, loadProjectConfig } from './config.mjs'
+import { joinURL } from 'ufo'
+import { ofetch } from 'ofetch'
+import { NUXT_HUB_URL, loadUserConfig, loadProjectConfig } from './config.mjs'
+
+export const $api = ofetch.create({
+  baseURL: joinURL(NUXT_HUB_URL, '/api'),
+  onRequest({ options }) {
+    options.headers = options.headers || {}
+    if (!options.headers.Authorization) {
+      options.headers.Authorization = `Bearer ${loadUserConfig().hub?.userToken || ''}`
+    }
+  },
+  onResponseError(ctx) {
+    if (ctx.response._data?.message) {
+      consola.error(ctx.response._data?.message)
+      process.exit(1)
+    }
+  }
+})
 
 export function fetchUser() {
   if (!loadUserConfig().hub?.userToken) {
@@ -48,7 +66,7 @@ export async function selectProject(team) {
       message: 'Project name',
       placeholder: 'my-nuxt-project'
     })
-    if (isCancel(projectName)) return null
+    if (!projectName || isCancel(projectName)) return null
     project = await $api(`/teams/${team.slug}/projects`, {
       method: 'POST',
       body: { name: projectName }

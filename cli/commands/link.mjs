@@ -41,6 +41,7 @@ export default defineCommand({
     if (!team) return
 
     project = await selectProject(team)
+    if (!project) return consola.log('Cancelled.')
 
     updateProjectConfig({
       hub: {
