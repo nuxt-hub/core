@@ -13,9 +13,6 @@
     "cli",
     "nuxt.config.ts"
   ],
-  "bin": {
-    "nuxthub": "cli/index.mjs"
-  },
   "license": "PROPRIETARY",
   "scripts": {
     "dev:prepare": "nuxt prepare _demo",
@@ -29,16 +26,11 @@
     "release": "release-it"
   },
   "dependencies": {
-    "@clack/prompts": "^0.7.0",
     "@cloudflare/workers-types": "^4.20240208.0",
     "@sindresorhus/slugify": "^2.2.1",
     "@uploadthing/mime-types": "^0.2.3",
-    "citty": "^0.1.6",
-    "consola": "^3.2.3",
     "get-port-please": "^3.1.2",
     "h3": "npm:h3-nightly@1.10.2-1706531092.e38d444",
-    "is-docker": "^3.0.0",
-    "listhen": "^1.6.0",
     "mime": "^4.0.1",
     "nuxt-auth-utils": "^0.0.18",
     "pathe": "^1.1.2",
