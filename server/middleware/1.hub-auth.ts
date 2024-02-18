@@ -12,7 +12,6 @@ export default eventHandler(async (event) => {
   const hub = useRuntimeConfig().hub
   const secretKey = (getHeader(event, 'authorization') || '').split(' ')[1]
   if (!secretKey) {
-    console.log('throw')
     throw createError({
       statusCode: 403,
       message: 'Missing Authorization header'
@@ -37,6 +36,7 @@ export default eventHandler(async (event) => {
         authorization: `Bearer ${secretKey}`
       }
     })
+    return
   }
 
   throw createError({
