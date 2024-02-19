@@ -101,14 +101,14 @@ export default defineNuxtModule<ModuleOptions>({
     }
 
     if (hub.projectUrl && !hub.local) {
-      await $fetch('/api/_hub/', {
-        method: 'HEAD',
+      log.info(`Using remote primitives from \`${hub.projectUrl}\``)
+      const primitives = await $fetch('/api/_hub/primitives', {
         baseURL: hub.projectUrl,
         headers: {
           authorization: `Bearer ${hub.projectSecretKey || hub.userToken}`
         }
       })
-      log.info(`Using remote primitives from \`${hub.projectUrl}\``)
+      logger.info(`Primitives available: ${Object.keys(primitives).filter(k => primitives[k]).map(k => `\`${k}\``).join(', ')} `)
       return
     } else {
       log.info('Using local primitives from `.hub/`')
