@@ -1,6 +1,7 @@
 import { $fetch } from 'ofetch'
 
 export default eventHandler(async (event) => {
+  console.log('NuxtHub middleware')
   // Skip if not a hub request
   if (/^\/api\/_hub\//.test(event.path) === false) {
     return
