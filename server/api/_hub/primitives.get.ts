@@ -1,8 +1,8 @@
-export default eventHandler(async (event) => {
+export default eventHandler(async () => {
   const [ dbCheck, kvCheck, blobCheck ] = await Promise.all([
-    useDatabase().exec('PRAGMA table_list').catch(() => false),
-    useKV().getKeys('__check__').catch(() => false),
-    useBlob().list({ prefix: '__check__' }).catch(() => false)
+    falseIfFail(() => useDatabase().exec('PRAGMA table_list')),
+    falseIfFail(() => useKV().getKeys('__check__')),
+    falseIfFail(() => useBlob().list({ prefix: '__check__' }))
   ])
 
   return {
@@ -11,3 +11,15 @@ export default eventHandler(async (event) => {
     blob: Array.isArray(blobCheck),
   }
 })
+
+async function falseIfFail (fn: () => any | Promise<any>) {
+  try {
+    const res = fn()
+    if (res instanceof Promise) {
+      return res.catch(() => false)
+    }
+    return res
+  } catch (e) {
+    return false
+  }
+}

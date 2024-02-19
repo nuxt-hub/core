@@ -108,6 +108,9 @@ export default defineNuxtModule<ModuleOptions>({
           authorization: `Bearer ${hub.projectSecretKey || hub.userToken}`
         }
       })
+        .catch((err) => {
+          throw new Error(`Failed to fetch remote primitives: ${err?.data?.message || err.message}`)
+        })
       logger.info(`Primitives available: ${Object.keys(primitives).filter(k => primitives[k]).map(k => `\`${k}\``).join(', ')} `)
       return
     } else {
