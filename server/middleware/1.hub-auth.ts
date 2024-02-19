@@ -1,7 +1,6 @@
 import { $fetch } from 'ofetch'
 
 export default eventHandler(async (event) => {
-  console.log('NuxtHub middleware')
   // Skip if not a hub request
   if (/^\/api\/_hub\//.test(event.path) === false) {
     return
@@ -29,7 +28,6 @@ export default eventHandler(async (event) => {
 
   // Hosted on NuxtHub
   if (hub.projectId && /^\d+$/.test(String(hub.projectId))) {
-    console.time('hub-check')
     // Here the secretKey is a user token
     await $fetch(`/api/projects/${hub.projectId}`, {
       baseURL: hub.url,
@@ -38,7 +36,6 @@ export default eventHandler(async (event) => {
         authorization: `Bearer ${secretKey}`
       }
     })
-    console.timeEnd('hub-check')
     return
   }
 
