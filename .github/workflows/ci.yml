@@ -1,8 +1,5 @@
 name: ci
 
-permissions:
-  contents: read
-
 on:
   push:
     branches:
@@ -11,6 +8,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 # https://github.com/vitejs/vite/blob/main/.github/workflows/ci.yml
 env:
   # 7 GiB by default on GitHub, setting to 6 GiB
@@ -18,11 +18,6 @@ env:
   NODE_OPTIONS: --max-old-space-size=6144
   # install playwright binary manually (because pnpm only runs install script once)
   PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
-
-
-# Remove default permissions of GITHUB_TOKEN for security
-# https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
-permissions: {}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
