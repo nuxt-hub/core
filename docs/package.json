@@ -21,11 +21,5 @@
   },
   "devDependencies": {
     "@nuxthq/studio": "^1.0.11"
-  },
-  "resolutions": {
-    "vue": "3.3.13"
-  },
-  "overrides": {
-    "vue": "3.3.13"
   }
 }

@@ -22,7 +22,7 @@ export default defineAppConfig({
     colorMode: true,
     links: [{
       icon: 'i-simple-icons-github',
-      to: 'https://github.com/atinux/nuxthub',
+      to: 'https://github.com/nuxt-hub/core',
       target: '_blank',
       'aria-label': 'NuxtHub'
     }]

@@ -1,4 +1,4 @@
 packages:
-  - "_demo/"
   - "docs/"
+  - "playground/"
   - "./"

@@ -1,4 +1,9 @@
 {
-  // https://nuxt.com/docs/guide/concepts/typescript
-  "extends": "./_demo/.nuxt/tsconfig.json"
+  "extends": "./.nuxt/tsconfig.json",
+  "exclude": [
+    "playground",
+    "src/module/runtime/server",
+    "docs",
+    "dist"
+  ]
 }
