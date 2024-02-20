@@ -24,7 +24,7 @@ const links = [
 </script>
 
 <template>
-  <UContainer class="min-h-screen flex flex-col justify-center">
+  <UContainer class="min-h-screen flex flex-col md:pt-12">
     <div class="flex justify-between">
       <UHorizontalNavigation :links="links" />
       <UButton
