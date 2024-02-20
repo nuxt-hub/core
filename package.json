@@ -27,6 +27,7 @@
     "docs:build": "nuxi build docs",
     "release": "npm run lint && npm run typecheck && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
     "lint": "eslint .",
+    "typecheck": "npm run test:types && npm run test:types:playground",
     "test:types": "vue-tsc --noEmit",
     "test:types:playground": "cd playground && vue-tsc --noEmit",
     "test": "vitest run",
