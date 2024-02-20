@@ -1,9 +1,9 @@
 title: 'NuxtHub'
-description: 'Welcome to NuxtHub documentation.'
+description: 'The Nuxt Toolkit to create full-stack applications on the Edge.'
 navigation: false
 hero:
-  title: 'Full Stack Nuxt app in the Edge'
-  description: 'Deploy a Full Stack Nuxt app using NuxtHub powered by CloudFlare'
+  title: 'Nuxt,<br>Full-Stack,<br>on the Edge'
+  description: 'The Nuxt Toolkit to create full-stack applications on the Edge powered by Cloudflare.'
   orientation: horizontal
   links:
     - label: Get started
@@ -22,7 +22,7 @@ hero:
     npx nuxthub deploy
     ```
 features:
-  title: 'All-in-one docs template'
+  title: 'All you need for full-stack apps'
   links:
     - label: Get started
       icon: i-heroicons-arrow-right-20-solid
@@ -30,21 +30,33 @@ features:
       to: '/getting-started'
       size: lg
   items:
+    - title: 'Database'
+      description: 'SQLite model-oriented databases with auto-migrations.'
+      icon: 'i-ph-database'
+      to: '/usage/database'
+    - title: 'KV'
+      description: 'Global, low-latency, key-value data storage.'
+      icon: 'i-ph-coin'
+      to: '/usage/kv'
+    - title: 'Blob'
+      description: 'Large storage of unstructured data.'
+      icon: 'i-ph-shapes'
+      to: '/usage/blob'
     - title: 'Nuxt 3'
       description: 'Powered by Nuxt 3 for optimal performances and SEO.'
       icon: 'i-simple-icons-nuxtdotjs'
       to: 'https://nuxt.com'
       target: '_blank'
-    - title: 'CloudFlare'
-      description: 'Using CloudFlare pages for edge rendering.'
+    - title: 'Cloudflare Pages'
+      description: 'Using Cloudflare Pages for edge rendering.'
       icon: 'i-simple-icons-cloudflare'
-      to: 'https://content.nuxt.com'
+      to: 'https://developers.cloudflare.com/pages'
       target: '_blank'
+    - title: 'NuxtHub CLI'
+      description: 'A powerful, yet simple, CLI to deploy in seconds on the edge.'
+      icon: 'i-ph-terminal'
     - title: 'NuxtHub Admin'
       description: 'Offers an admin to manage your project as a team.'
       icon: 'i-heroicons-user-group-solid'
       to: 'https://hub.nuxt.com'
       target: '_blank'
-    - title: 'NuxtHub CLI'
-      description: 'A powerful, yet simple, CLI to deploy in seconds on the edge.'
-      icon: 'i-ph-terminal'
