@@ -9,8 +9,9 @@
   },
   "dependencies": {
     "@iconify-json/simple-icons": "^1.1.92",
-    "@nuxthub/core": "latest",
+    "@kgierke/nuxt-basic-auth": "^1.4.0",
     "@nuxt/ui": "^2.13.0",
+    "@nuxthub/core": "latest",
     "drizzle-orm": "^0.29.3",
     "nuxt": "latest",
     "nuxt-auth-utils": "^0.0.18"
