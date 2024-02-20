@@ -22,11 +22,11 @@ export interface ModuleOptions {
    */
   url?: string
   /**
-   * The ID of the project on the NuxtHub platform
+   * The project's key on the NuxtHub platform
    * Available when using the NuxtHub platform using `nuxthub link`
-   * @default process.env.NUXT_HUB_PROJECT_ID
+   * @default process.env.NUXT_HUB_PROJECT_KEY
    */
-  projectId?: string
+  projectKey?: string
   /**
    * The user token to access the NuxtHub platform
    * Available when using the NuxtHub platform using `nuxthub login`
@@ -68,7 +68,7 @@ export default defineNuxtModule<ModuleOptions>({
     const runtimeConfig = nuxt.options.runtimeConfig
     const hub = runtimeConfig.hub = defu(runtimeConfig.hub, options, {
       url: process.env.NUXT_HUB_URL || 'https://hub.nuxt.com',
-      projectId: process.env.NUXT_HUB_PROJECT_ID || '',
+      projectKey: process.env.NUXT_HUB_PROJECT_KEY || '',
       projectUrl: process.env.NUXT_HUB_PROJECT_URL || '',
       projectSecretKey: process.env.NUXT_HUB_PROJECT_SECRET_KEY || '',
       userToken: process.env.NUXT_HUB_USER_TOKEN || '',
@@ -80,8 +80,8 @@ export default defineNuxtModule<ModuleOptions>({
     }
 
     // Check if the project is linked to a NuxtHub project
-    if (!hub.local && hub.projectId && /^\d+$/.test(String(hub.projectId))) {
-      const project = await $fetch(`/api/projects/${hub.projectId}`, {
+    if (!hub.local && hub.projectKey) {
+      const project = await $fetch(`/api/projects/${hub.projectKey}`, {
         baseURL: hub.url,
         headers: {
           authorization: `Bearer ${hub.userToken}`
