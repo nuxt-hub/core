@@ -1,4 +1,4 @@
-import { eq, and } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 
 export default eventHandler(async (event) => {
   const { id } = await getValidatedRouterParams(event, z.object({

@@ -1,4 +1,4 @@
-export default eventHandler(async (event) => {
+export default eventHandler(async () => {
   const db = useDatabase()
   // return useProjectKV(projectUrl).getKeys()
   // return await db.prepare("SELECT * from todos").all()
@@ -7,7 +7,7 @@ export default eventHandler(async (event) => {
   // return await db.prepare("SELECT * from todos").run()
   // return await db.exec('SELECT * from todos;')
 
-  const stmt = db.prepare('SELECT * from todos WHERE id = ?1')
+  // const stmt = db.prepare('SELECT * from todos WHERE id = ?1')
   // return {
   //   one: await stmt.bind(1).first(),
   //   three: await stmt.bind(3).first()
