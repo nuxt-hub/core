@@ -1,4 +1,4 @@
-export default eventHandler(async (event) => {
+export default eventHandler(async () => {
   // List entries for the current user
   const storage = await useKV()
 

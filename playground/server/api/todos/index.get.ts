@@ -1,6 +1,4 @@
-import { eq } from 'drizzle-orm'
-
-export default eventHandler(async (event) => {
+export default eventHandler(async () => {
   // List todos for the current user
   const todos = await useDB().select().from(tables.todos).all()
 

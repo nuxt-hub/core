@@ -8,7 +8,6 @@ import { readUser } from 'rc9'
 import { $fetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { generateWrangler } from './utils'
-import { addTypeTemplate } from '@nuxt/kit'
 
 const log = logger.withScope('nuxt:hub')
 
