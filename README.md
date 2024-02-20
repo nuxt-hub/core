@@ -17,28 +17,28 @@ Read more on https://docs.hub.nuxt.com
 
 ## Quick Setup
 
-1. Add `@nuxt/hub` dependency to your project
+1. Add `@nuxthub/core` dependency to your project
 
 ```bash
 # Using pnpm
-pnpm add @nuxt/hub
+pnpm add @nuxthub/core
 
 # Using yarn
-yarn add @nuxt/hub
+yarn add @nuxthub/core
 
 # Using npm
-npm install @nuxt/hub
+npm install @nuxthub/core
 
 # Using bun
-npm add @nuxt/hub
+npm add @nuxthub/core
 ```
 
-2. Add `@nuxt/hub` to the `modules` section of `nuxt.config.ts`
+2. Add `@nuxthub/core` to the `modules` section of `nuxt.config.ts`
 
 ```js
 export default defineNuxtConfig({
   modules: [
-    '@nuxt/hub'
+    '@nuxthub/core'
   ]
 })
 ```
