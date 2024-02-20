@@ -1,0 +1,50 @@
+title: 'NuxtHub'
+description: 'Welcome to NuxtHub documentation.'
+navigation: false
+hero:
+  title: 'Full Stack Nuxt app in the Edge'
+  description: 'Deploy a Full Stack Nuxt app using NuxtHub powered by CloudFlare'
+  orientation: horizontal
+  links:
+    - label: Get started
+      icon: i-heroicons-arrow-right-20-solid
+      trailing: true
+      to: '/getting-started'
+      size: lg
+    - label: Open on GitHub
+      icon: i-simple-icons-github
+      size: lg
+      color: gray
+      to: https://github.com/atinux/nuxthub
+      target: _blank
+  code: |
+    ```bash [Terminal]
+    npx nuxthub deploy
+    ```
+features:
+  title: 'All-in-one docs template'
+  links:
+    - label: Get started
+      icon: i-heroicons-arrow-right-20-solid
+      trailing: true
+      to: '/getting-started'
+      size: lg
+  items:
+    - title: 'Nuxt 3'
+      description: 'Powered by Nuxt 3 for optimal performances and SEO.'
+      icon: 'i-simple-icons-nuxtdotjs'
+      to: 'https://nuxt.com'
+      target: '_blank'
+    - title: 'CloudFlare'
+      description: 'Using CloudFlare pages for edge rendering.'
+      icon: 'i-simple-icons-cloudflare'
+      to: 'https://content.nuxt.com'
+      target: '_blank'
+    - title: 'NuxtHub Admin'
+      description: 'Offers an admin to manage your project as a team.'
+      icon: 'i-heroicons-user-group-solid'
+      to: 'https://hub.nuxt.com'
+      target: '_blank'
+    - title: 'NuxtHub CLI'
+      description: 'A powerful, yet simple, CLI to deploy in seconds on the edge.'
+      icon: 'i-ph-terminal'
