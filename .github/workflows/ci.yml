@@ -1,6 +1,8 @@
 name: ci
+
 permissions:
   contents: read
+
 on:
   push:
     branches:
