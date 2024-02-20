@@ -5,7 +5,7 @@ import type { H3Error } from 'h3'
 
 let _db: D1Database
 
-export function useDatabase() {
+export function useDatabase(): D1Database {
   if (_db) {
     return _db
   }
@@ -23,7 +23,7 @@ export function useDatabase() {
   throw createError('Missing Cloudflare DB binding (D1)')
 }
 
-export function useProxyDatabase(projectUrl: string, secretKey?: string) {
+export function useProxyDatabase(projectUrl: string, secretKey?: string): D1Database {
   const d1API = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/database'),
     method: 'POST',

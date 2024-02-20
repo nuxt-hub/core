@@ -6,7 +6,7 @@ import { joinURL } from 'ufo'
 
 let _kv: Storage
 
-export function useKV() {
+export function useKV(): Storage {
   if (_kv) {
     return _kv
   }
@@ -27,7 +27,7 @@ export function useKV() {
   throw createError('Missing Cloudflare KV binding (KV)')
 }
 
-export function useProxyKV(projectUrl: string, secretKey?: string) {
+export function useProxyKV(projectUrl: string, secretKey?: string): Storage {
   return createStorage({
     driver: httpDriver({
       base: joinURL(projectUrl, '/api/_hub/kv/'),
