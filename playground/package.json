@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "name": "nuxthub-playground",
+  "type": "module",
+  "scripts": {
+    "dev": "nuxi dev",
+    "build": "nuxi build",
+    "preview": "nuxi preview"
+  },
+  "dependencies": {
+    "@iconify-json/simple-icons": "^1.1.92",
+    "@nuxthub/core": "latest",
+    "@nuxt/ui": "^2.13.0",
+    "drizzle-orm": "^0.29.3",
+    "nuxt": "latest",
+    "nuxt-auth-utils": "^0.0.18"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "latest"
+  }
+}
