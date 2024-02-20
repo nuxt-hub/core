@@ -136,6 +136,9 @@ importers:
       '@iconify-json/simple-icons':
         specifier: ^1.1.92
         version: 1.1.92
+      '@kgierke/nuxt-basic-auth':
+        specifier: ^1.4.0
+        version: 1.4.0(rollup@3.29.4)
       '@nuxt/ui':
         specifier: ^2.13.0
         version: 2.13.0(nuxt@3.10.2)(rollup@3.29.4)(vite@5.1.3)(vue@3.4.19)
@@ -1431,6 +1434,16 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
+    dev: false
+
+  /@kgierke/nuxt-basic-auth@1.4.0(rollup@3.29.4):
+    resolution: {integrity: sha512-ZZWjCx2YuVTYl9zbRZEVvvGdFVbl7M3n9m5an0OJq+WsdPxLlb45XzVzcaKDUZqajyYWA21vEB8OgRxSBh81mA==}
+    dependencies:
+      '@nuxt/kit': 3.10.2(rollup@3.29.4)
+      defu: 6.1.4
+    transitivePeerDependencies:
+      - rollup
+      - supports-color
     dev: false
 
   /@koa/router@12.0.1:
