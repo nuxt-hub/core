@@ -1,0 +1,31 @@
+{
+  "name": "nuxthub-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxi dev",
+    "generate": "nuxi generate",
+    "build": "nuxi build",
+    "preview": "nuxi preview"
+  },
+  "dependencies": {
+    "@iconify-json/heroicons": "^1.1.20",
+    "@iconify-json/ph": "^1.1.11",
+    "@iconify-json/simple-icons": "^1.1.92",
+    "@nuxt/content": "^2.12.0",
+    "@nuxt/ui-pro": "^0.7.5",
+    "@nuxtjs/fontaine": "^0.4.1",
+    "@nuxtjs/google-fonts": "^3.1.3",
+    "nuxt": "^3.10.2",
+    "nuxt-og-image": "^2.2.4"
+  },
+  "devDependencies": {
+    "@nuxthq/studio": "^1.0.11"
+  },
+  "resolutions": {
+    "vue": "3.3.13"
+  },
+  "overrides": {
+    "vue": "3.3.13"
+  }
+}

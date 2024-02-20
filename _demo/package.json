@@ -7,10 +7,10 @@
     "preview": "nuxi preview"
   },
   "dependencies": {
-    "@iconify-json/simple-icons": "^1.1.90",
+    "@iconify-json/simple-icons": "^1.1.92",
     "@nuxt/ui": "^2.13.0",
     "drizzle-orm": "^0.29.3",
-    "nuxt": "^3.10.0",
+    "nuxt": "^3.10.2",
     "@atinux/nuxthub": "latest"
   },
   "devDependencies": {

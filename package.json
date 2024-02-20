@@ -15,8 +15,9 @@
   ],
   "license": "PROPRIETARY",
   "scripts": {
-    "dev:prepare": "nuxt prepare _demo",
+    "dev:prepare": "nuxt prepare _demo && nuxt prepare docs",
     "dev": "PORT=4000 nuxi dev _demo",
+    "dev:docs": "nuxi dev docs",
     "build": "nuxi build --preset cloudflare_pages _demo",
     "preview": "nuxt preview _demo",
     "lint": "eslint .",
