@@ -28,6 +28,13 @@ export interface BlobListOptions {
   cursor?: string
 }
 
+export interface BlobPutOptions {
+  contentType?: string,
+  contentLength?: string,
+  addRandomSuffix?: boolean,
+  [key: string]: any
+}
+
 const _r2_buckets: Record<string, R2Bucket> = {}
 
 function _useBucket() {
@@ -89,7 +96,7 @@ export function useBlob() {
 
       return object.body
     },
-    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: { contentType?: string, contentLength?: string, addRandomSuffix?: boolean, [key: string]: any } = { addRandomSuffix: true }) {
+    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = { addRandomSuffix: true }) {
       pathname = decodeURI(pathname)
       const { contentType: optionsContentType, contentLength, addRandomSuffix, ...customMetadata } = options
       const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
@@ -145,7 +152,7 @@ export function useProxyBlob(projectUrl: string, secretKey?: string) {
         method: 'GET'
       })
     },
-    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: { contentType?: string, contentLength?: string, addRandomSuffix?: boolean, [key: string]: any } = { addRandomSuffix: true }) {
+    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = { addRandomSuffix: true }) {
       const { contentType, contentLength, ...query } = options
       const headers: Record<string, string> = {}
       if (contentType) { headers['content-type'] = contentType }
