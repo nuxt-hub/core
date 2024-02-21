@@ -1,6 +1,31 @@
 # Changelog
 
 
+## v0.1.3
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.1.2...v0.1.3)
+
+### 🩹 Fixes
+
+- Add npm registry ([b401606](https://github.com/nuxt-hub/core/commit/b401606))
+
+### 📖 Documentation
+
+- Update blob + miscellanous ([1c98fd7](https://github.com/nuxt-hub/core/commit/1c98fd7))
+- Improve description ([24c1ef6](https://github.com/nuxt-hub/core/commit/24c1ef6))
+
+### 🏡 Chore
+
+- Update registry ([e7ffed1](https://github.com/nuxt-hub/core/commit/e7ffed1))
+- **logo:** Update ([92b8347](https://github.com/nuxt-hub/core/commit/92b8347))
+- **types:** Improve extended zod types ([c03a3ad](https://github.com/nuxt-hub/core/commit/c03a3ad))
+- **docs:** Add cf analytics ([1f9f221](https://github.com/nuxt-hub/core/commit/1f9f221))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Sylvain Marroufin ([@smarroufin](http://github.com/smarroufin))
+
 ## v0.1.2
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.1.1...v0.1.2)
