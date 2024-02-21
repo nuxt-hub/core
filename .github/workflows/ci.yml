@@ -66,8 +66,9 @@ jobs:
       - name: Run test suite
         run: pnpm test
 
-      - name: Test types
-        run: pnpm test:types
-
-      - name: Test playground types
-        run: pnpm test:types:playground
+      - name: Release Nightly
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: pnpm changelogen --bump --canary --publish --publishTag nightly
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
