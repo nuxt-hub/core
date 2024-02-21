@@ -1,7 +1,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
-    '../src/module',
+    '@nuxthub/core',
     '@nuxt/ui',
     '@kgierke/nuxt-basic-auth'
   ],
@@ -19,5 +19,8 @@ export default defineNuxtConfig({
         password: process.env.NUXT_ADMIN_PASSWORD || 'admin'
       }
     ]
+  },
+  imports: {
+    autoImport: true
   }
 })

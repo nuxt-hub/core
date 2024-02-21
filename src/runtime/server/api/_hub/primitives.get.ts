@@ -1,3 +1,5 @@
+import { eventHandler } from 'h3'
+
 export default eventHandler(async () => {
   const [ dbCheck, kvCheck, blobCheck ] = await Promise.all([
     falseIfFail(() => useDatabase().exec('PRAGMA table_list')),

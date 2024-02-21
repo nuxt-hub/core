@@ -1,3 +1,4 @@
+import { eventHandler } from 'h3'
 import { createH3StorageHandler } from 'unstorage/server'
 
 export default eventHandler(async (event) => {

@@ -8,6 +8,7 @@ import { readUser } from 'rc9'
 import { $fetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { generateWrangler } from './utils'
+import { version } from '../package.json'
 
 const log = logger.withScope('nuxt:hub')
 
@@ -52,7 +53,9 @@ export interface ModuleOptions {
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'hub'
+    name: '@nuxthub/core',
+    configKey: 'hub',
+    version
   },
   defaults: {
     remote: false
@@ -77,6 +80,9 @@ export default defineNuxtModule<ModuleOptions>({
     })
 
     addServerScanDir(resolve('./runtime/server'))
+    nuxt.options.nitro.externals = nuxt.options.nitro.externals || {}
+    nuxt.options.nitro.externals.inline = nuxt.options.nitro.externals.inline || []
+    nuxt.options.nitro.externals.inline.push(resolve('./runtime/server/'))
 
     // nuxt prepare or production mode, stop here
     if (nuxt.options._prepare || !nuxt.options.dev) {

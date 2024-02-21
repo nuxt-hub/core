@@ -8,6 +8,7 @@ import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
 import { parse } from 'pathe'
 import { joinURL } from 'ufo'
+import { useRuntimeConfig } from '#imports'
 
 export interface BlobObject {
   pathname: string

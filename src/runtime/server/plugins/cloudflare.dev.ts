@@ -1,7 +1,13 @@
-export default defineNitroPlugin(async (nitroApp) => {
+import type { H3Event } from 'h3'
+import type { NitroApp } from 'nitropack'
+// @ts-ignore
+import { defineNitroPlugin, useRuntimeConfig } from '#imports'
+import { hubHooks } from '../utils/hooks'
+
+export default defineNitroPlugin(async (nitroApp: NitroApp) => {
   const proxyPromise = getBindingsProxy()
 
-  nitroApp.hooks.hook('request', async (event) => {
+  nitroApp.hooks.hook('request', async (event: H3Event) => {
     const proxy = await proxyPromise
     // Inject proxy bindings to the request context
     // https://github.com/unjs/nitro/blob/main/src/runtime/entries/cloudflare-pages.ts
@@ -49,7 +55,6 @@ async function getBindingsProxy() {
     }
   })
 
-  // @ts-ignore
   await hubHooks.callHook('bindings:ready')
 
   return proxy
