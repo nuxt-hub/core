@@ -1,6 +1,24 @@
 # Changelog
 
 
+## v0.1.4
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.1.3...v0.1.4)
+
+### 📖 Documentation
+
+- Update ([cbd48b8](https://github.com/nuxt-hub/core/commit/cbd48b8))
+- Update local to remote option ([dbb3e90](https://github.com/nuxt-hub/core/commit/dbb3e90))
+
+### 🏡 Chore
+
+- Remove zod from auto imported utils ([adfc977](https://github.com/nuxt-hub/core/commit/adfc977))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Sylvain Marroufin ([@smarroufin](http://github.com/smarroufin))
+
 ## v0.1.3
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.1.2...v0.1.3)
