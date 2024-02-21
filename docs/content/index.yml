@@ -1,5 +1,5 @@
 title: 'NuxtHub'
-description: 'The Nuxt Toolkit to create full-stack applications on the Edge.'
+description: 'Build full-stack applications on Cloudflare, with zero configuration.'
 navigation: false
 hero:
   title: 'Nuxt,<br>Full-Stack,<br>on the Edge'
