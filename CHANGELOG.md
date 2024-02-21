@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v0.1.2
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.1.1...v0.1.2)
+
+### 🩹 Fixes
+
+- Add missing import ([b6c60f2](https://github.com/nuxt-hub/core/commit/b6c60f2))
+- Ci ([339be38](https://github.com/nuxt-hub/core/commit/339be38))
+
+### 🏡 Chore
+
+- **docs:** Update build command ([1c23a02](https://github.com/nuxt-hub/core/commit/1c23a02))
+- **ci:** Fix permissions ([e97be69](https://github.com/nuxt-hub/core/commit/e97be69))
+- Update ci ([7c16820](https://github.com/nuxt-hub/core/commit/7c16820))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.1.1
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.1.0...v0.1.1)
