@@ -1,4 +1,6 @@
+import { eventHandler, getHeader, createError } from 'h3'
 import { $fetch } from 'ofetch'
+import { useRuntimeConfig } from '#imports'
 
 export default eventHandler(async (event) => {
   // Skip if not a hub request

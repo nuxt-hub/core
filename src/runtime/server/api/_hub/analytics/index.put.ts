@@ -1,4 +1,5 @@
 import type { AnalyticsEngineDataPoint } from '@cloudflare/workers-types/experimental'
+import { eventHandler, readValidatedBody } from 'h3'
 
 export default eventHandler(async (event) => {
   const { data } = await readValidatedBody(event, z.object({

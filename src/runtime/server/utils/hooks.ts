@@ -1,3 +1,4 @@
+import { useRuntimeConfig } from '#imports'
 import { createHooks } from 'hookable'
 
 export interface HubHooks {

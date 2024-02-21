@@ -3,6 +3,7 @@ import { createStorage } from 'unstorage'
 import httpDriver from 'unstorage/drivers/http'
 import cloudflareKVBindingDriver from 'unstorage/drivers/cloudflare-kv-binding'
 import { joinURL } from 'ufo'
+import { useRuntimeConfig } from '#imports'
 
 let _kv: Storage
 

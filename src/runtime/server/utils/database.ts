@@ -2,6 +2,7 @@ import type { D1Database } from '@cloudflare/workers-types/experimental'
 import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import type { H3Error } from 'h3'
+import { useRuntimeConfig } from '#imports'
 
 let _db: D1Database
 
