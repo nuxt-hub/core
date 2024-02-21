@@ -10,7 +10,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 # https://github.com/vitejs/vite/blob/main/.github/workflows/ci.yml
 env:
@@ -46,7 +45,8 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - run: corepack enable
