@@ -7,7 +7,8 @@ export default defineNuxtConfig({
     '@nuxthq/studio',
     '@nuxtjs/fontaine',
     '@nuxtjs/google-fonts',
-    'nuxt-og-image'
+    'nuxt-og-image',
+    'nuxt-cloudflare-analytics'
   ],
   hooks: {
     // Define `@nuxt/ui` components as global to use them in `.md` (feel free to add those you need)
@@ -33,6 +34,10 @@ export default defineNuxtConfig({
   },
   routeRules: {
     '/api/search.json': { prerender: true },
+  },
+  cloudflareAnalytics: {
+    token: '469b1f7049f14941acef0d0262a07ab3',
+    scriptPath: false
   },
   devtools: {
     enabled: true
