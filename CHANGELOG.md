@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v0.1.1
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.1.0...v0.1.1)
+
+### 🩹 Fixes
+
+- Add missing imports ([53485ac](https://github.com/nuxt-hub/core/commit/53485ac))
+
+### 📖 Documentation
+
+- Update package name ([8ca7a04](https://github.com/nuxt-hub/core/commit/8ca7a04))
+
+### 🏡 Chore
+
+- **ci:** Add nightly ([34e955a](https://github.com/nuxt-hub/core/commit/34e955a))
+- Update module import ([0dacd0f](https://github.com/nuxt-hub/core/commit/0dacd0f))
+- Fix package repo ([8950351](https://github.com/nuxt-hub/core/commit/8950351))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.1.0
 
 
