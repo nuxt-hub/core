@@ -27,7 +27,7 @@
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "docs": "nuxi dev docs",
-    "docs:build": "nuxi build docs",
+    "docs:build": "nuxi generate docs",
     "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
     "lint": "eslint .",
     "test": "vitest run",
