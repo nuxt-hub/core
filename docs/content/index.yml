@@ -1,9 +1,9 @@
 title: 'NuxtHub'
-description: 'Build full-stack applications on Cloudflare, with zero configuration.'
+description: 'Build full-stack Nuxt apps, with zero configuration.'
 navigation: false
 hero:
-  title: 'Nuxt,<br>Full-Stack,<br>on the Edge'
-  description: 'The Nuxt Toolkit to create full-stack applications on the Edge powered by Cloudflare.'
+  title: 'Build full-stack <span class="text-primary">Nuxt apps</span>, on the edge.'
+  description: 'Access to a Database, Key-Value, and Blob storage with zero configuration. Deploy with confidence on your Cloudflare account and access to your data locally with a secured proxy.'
   orientation: horizontal
   links:
     - label: Get started
@@ -18,8 +18,15 @@ hero:
       to: https://github.com/atinux/nuxthub
       target: _blank
   code: |
-    ```bash [Terminal]
-    npx nuxthub deploy
+    ```ts [server/api/hello.ts]
+    export default eventHandler(async (event) => {
+      const database = useDatabase()
+      const blob = useBlob()
+      const kv = useKV()
+
+      // Do your magic here
+      return { hello: 'world' }
+    })
     ```
 features:
   title: 'All you need for full-stack apps'
@@ -31,15 +38,15 @@ features:
       size: lg
   items:
     - title: 'Database'
-      description: 'SQLite model-oriented databases with auto-migrations.'
+      description: 'Access to a SQLite database in your server with zero configuration.'
       icon: 'i-ph-database'
       to: '/usage/database'
-    - title: 'KV'
-      description: 'Global, low-latency, key-value data storage.'
+    - title: 'Key-Value'
+      description: 'Global, low-latency, key-value data storage in development and production.'
       icon: 'i-ph-coin'
       to: '/usage/kv'
     - title: 'Blob'
-      description: 'Large storage of unstructured data.'
+      description: 'Large storage of unstructured data to put anything inside and serve it as you want.'
       icon: 'i-ph-shapes'
       to: '/usage/blob'
     - title: 'Nuxt 3'
@@ -48,7 +55,7 @@ features:
       to: 'https://nuxt.com'
       target: '_blank'
     - title: 'Cloudflare Pages'
-      description: 'Using Cloudflare Pages for edge rendering.'
+      description: 'Deploy on Cloudflare Pages for edge-side rendering.'
       icon: 'i-simple-icons-cloudflare'
       to: 'https://developers.cloudflare.com/pages'
       target: '_blank'
