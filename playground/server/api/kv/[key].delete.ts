@@ -4,9 +4,7 @@ export default eventHandler(async (event) => {
   }).parse)
 
   // Delete entry for the current user
-  const storage = await useKV()
-
-  await storage.removeItem(key)
+  await useKV().removeItem(key)
 
   return { key }
 })

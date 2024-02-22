@@ -5,9 +5,7 @@ export default eventHandler(async (event) => {
   }).parse)
 
   // Set entry for the current user
-  const storage = await useKV()
-
-  await storage.setItem(key, value)
+  await useKV().setItem(key, value)
 
   return { key, value }
 })
