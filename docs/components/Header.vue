@@ -22,6 +22,9 @@ const { header } = useAppConfig()
     </template>
 
     <template #right>
+      <UButton to="https://hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=header" external icon="i-simple-icons-nuxtdotjs" variant="outline" class="hidden sm:inline-flex">
+        NuxtHub Console
+      </UButton>
       <UDocsSearchButton v-if="header?.search" :label="null" class="lg:hidden" />
 
       <UColorModeButton v-if="header?.colorMode" />
