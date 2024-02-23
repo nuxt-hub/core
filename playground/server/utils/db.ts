@@ -13,6 +13,6 @@ export const tables = {
   todos
 }
 
-export function useDB() {
+export function useDrizzle() {
   return drizzle(useDatabase(), { schema: tables })
 }
