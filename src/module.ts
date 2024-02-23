@@ -1,7 +1,6 @@
 import { defineNuxtModule, createResolver, logger, addServerScanDir } from '@nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
-import { randomUUID } from 'uncrypto'
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
 import { findWorkspaceDir } from 'pkg-types'
 import { readUser } from 'rc9'
@@ -158,17 +157,6 @@ export default defineNuxtModule<ModuleOptions>({
     // Add server plugin
     nuxt.options.nitro.plugins = nuxt.options.nitro.plugins || []
     nuxt.options.nitro.plugins.push(resolve('./runtime/server/plugins/cloudflare.dev'))
-
-    // Generate the session password
-    if (!process.env.NUXT_SESSION_PASSWORD) {
-      process.env.NUXT_SESSION_PASSWORD = randomUUID().replace(/-/g, '')
-      // Add it to .env
-      const envPath = join(rootDir, '.env')
-      const envContent = await readFile(envPath, 'utf-8').catch(() => '')
-      if (!envContent.includes('NUXT_SESSION_PASSWORD')) {
-        await writeFile(envPath, `${envContent ? envContent + '\n' : envContent}NUXT_SESSION_PASSWORD=${process.env.NUXT_SESSION_PASSWORD}`, 'utf-8')
-      }
-    }
   }
 })
 
