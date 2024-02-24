@@ -1,6 +1,38 @@
 # Changelog
 
 
+## v0.1.5
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.1.4...v0.1.5)
+
+### 🩹 Fixes
+
+- Leverage runtime envs for proxy middleware ([6654db7](https://github.com/nuxt-hub/core/commit/6654db7))
+
+### 📖 Documentation
+
+- Fix blob callout ([c457fe9](https://github.com/nuxt-hub/core/commit/c457fe9))
+- **drizzle:** Update ([1a52416](https://github.com/nuxt-hub/core/commit/1a52416))
+- Add stubs ([0b4b9c3](https://github.com/nuxt-hub/core/commit/0b4b9c3))
+- Pages descriptions ([73f6dff](https://github.com/nuxt-hub/core/commit/73f6dff))
+- Deploy update + minor updates ([399b3f7](https://github.com/nuxt-hub/core/commit/399b3f7))
+- Update ([32d5e0d](https://github.com/nuxt-hub/core/commit/32d5e0d))
+- Improve the getting-started ([0e9155d](https://github.com/nuxt-hub/core/commit/0e9155d))
+- Update ([c89a6fe](https://github.com/nuxt-hub/core/commit/c89a6fe))
+- Small improvements ([01ec0e4](https://github.com/nuxt-hub/core/commit/01ec0e4))
+
+### 🏡 Chore
+
+- **kv:** Update ([07a80c7](https://github.com/nuxt-hub/core/commit/07a80c7))
+- Remove password generation as part of nuxt-auth-utils ([9619c6e](https://github.com/nuxt-hub/core/commit/9619c6e))
+- Update deps ([4a5b638](https://github.com/nuxt-hub/core/commit/4a5b638))
+- **playground:** Various fixes ([9d6f699](https://github.com/nuxt-hub/core/commit/9d6f699))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Sylvain Marroufin ([@smarroufin](http://github.com/smarroufin))
+
 ## v0.1.4
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.1.3...v0.1.4)
