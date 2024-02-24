@@ -1,7 +1,7 @@
 {
   "name": "@nuxthub/core",
   "private": false,
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Nuxt Toolkit to create full-stack applications on the Edge.",
   "repository": {
     "type": "git",
