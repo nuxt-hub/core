@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.11
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.1.10...v0.1.11)
+
+### 🩹 Fixes
+
+- Move wrangler out of dependencies ([57ed91a](https://github.com/nuxt-hub/core/commit/57ed91a))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.1.10
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.1.9...v0.1.10)
