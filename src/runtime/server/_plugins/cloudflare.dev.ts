@@ -38,7 +38,9 @@ async function getBindingsProxy() {
   const _pkg = 'wrangler' // Bypass bundling!
   const { getPlatformProxy } = (await import(
     _pkg
-  )) as typeof import('wrangler')
+  ).catch(async () => {
+    throw new Error('Package `wrangler` not found, please install it with: npx nypm@latest add -D wrangler')
+  })) as typeof import('wrangler')
 
   const wranglerConfig = useRuntimeConfig().wrangler as { configPath: string; persistDir: string }
 
