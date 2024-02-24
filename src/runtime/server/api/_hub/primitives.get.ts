@@ -1,4 +1,7 @@
 import { eventHandler } from 'h3'
+import { useDatabase } from '../../utils/database'
+import { useBlob } from '../../utils/blob'
+import { useKV } from '../../utils/kv'
 
 export default eventHandler(async () => {
   const [ dbCheck, kvCheck, blobCheck ] = await Promise.all([
