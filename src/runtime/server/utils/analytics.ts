@@ -1,6 +1,7 @@
 import type { AnalyticsEngineDataPoint, AnalyticsEngineDataset } from '@cloudflare/workers-types/experimental'
 import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
+import { createError } from 'h3'
 import { useRuntimeConfig } from '#imports'
 
 const _datasets: Record<string, AnalyticsEngineDataset> = {}
