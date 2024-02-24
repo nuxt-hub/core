@@ -1,6 +1,5 @@
 import { eventHandler, getHeader, createError } from 'h3'
 import { $fetch } from 'ofetch'
-import { useRuntimeConfig } from '#imports'
 
 export default eventHandler(async (event) => {
   // Skip if not a hub request
@@ -11,9 +10,8 @@ export default eventHandler(async (event) => {
   if (import.meta.dev) {
     return
   }
-  const hub = useRuntimeConfig().hub
-  const secretKey = (getHeader(event, 'authorization') || '').split(' ')[1]
-  if (!secretKey) {
+  const secretKeyOrUserToken = (getHeader(event, 'authorization') || '').split(' ')[1]
+  if (!secretKeyOrUserToken) {
     throw createError({
       statusCode: 403,
       message: 'Missing Authorization header'
@@ -21,7 +19,8 @@ export default eventHandler(async (event) => {
   }
 
   // Self-hosted NuxtHub project, user has to set a secret key to access the proxy
-  if (hub.projectSecretKey && secretKey !== hub.projectSecretKey) {
+  const projectSecretKey = process.env.NUXT_HUB_PROJECT_SECRET_KEY
+  if (projectSecretKey && secretKeyOrUserToken !== projectSecretKey) {
     throw createError({
       statusCode: 401,
       message: 'Invalid secret key'
@@ -29,13 +28,14 @@ export default eventHandler(async (event) => {
   }
 
   // Hosted on NuxtHub
-  if (hub.projectKey) {
+  const projectKey = process.env.NUXT_HUB_PROJECT_KEY
+  if (projectKey) {
     // Here the secretKey is a user token
-    await $fetch(`/api/projects/${hub.projectKey}`, {
-      baseURL: hub.url,
+    await $fetch(`/api/projects/${projectKey}`, {
+      baseURL: process.env.NUXT_HUB_URL || 'https://hub.nuxt.com',
       method: 'HEAD',
       headers: {
-        authorization: `Bearer ${secretKey}`
+        authorization: `Bearer ${secretKeyOrUserToken}`
       }
     })
     return
@@ -43,6 +43,6 @@ export default eventHandler(async (event) => {
 
   throw createError({
     statusCode: 401,
-    message: 'Missing NUXT_HUB_PROJECT_SECRET_KEY'
+    message: 'Missing NUXT_HUB_PROJECT_SECRET_KEY envrionment variable or NUXT_HUB_PROJECT_KEY envrionment variable'
   })
 })
