@@ -20,7 +20,9 @@ export default eventHandler(async (event) => {
 
   // Self-hosted NuxtHub project, user has to set a secret key to access the proxy
   const projectSecretKey = process.env.NUXT_HUB_PROJECT_SECRET_KEY
-  if (projectSecretKey && secretKeyOrUserToken !== projectSecretKey) {
+  if (projectSecretKey && secretKeyOrUserToken === projectSecretKey) {
+    return
+  } else if (projectSecretKey) {
     throw createError({
       statusCode: 401,
       message: 'Invalid secret key'
