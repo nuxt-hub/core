@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.7
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.1.6...v0.1.7)
+
+### 🩹 Fixes
+
+- Missing createError imports ([551daba](https://github.com/nuxt-hub/core/commit/551daba))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.1.6
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.1.5...v0.1.6)
