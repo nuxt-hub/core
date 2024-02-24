@@ -17,23 +17,19 @@ Read more on https://docs.hub.nuxt.com
 
 ## Quick Setup
 
-1. Add `@nuxthub/core` dependency to your project
+1. Install `@nuxthub/core` dependency to your project:
 
 ```bash
-# Using pnpm
-pnpm add @nuxthub/core
-
-# Using yarn
-yarn add @nuxthub/core
-
-# Using npm
-npm install @nuxthub/core
-
-# Using bun
-npm add @nuxthub/core
+npx nypm@latest add @nuxthub/core
 ```
 
-2. Add `@nuxthub/core` to the `modules` section of `nuxt.config.ts`
+2. Install `wrangler` development dependency to your project:
+
+```bash
+npx nypm@latest add -D wrangler
+```
+
+3. Add `@nuxthub/core` to the `modules` section of `nuxt.config.ts`
 
 ```js
 export default defineNuxtConfig({
