@@ -1,6 +1,7 @@
 import type { D1Database } from '@cloudflare/workers-types/experimental'
 import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
+import { createError } from 'h3'
 import type { H3Error } from 'h3'
 import { useRuntimeConfig } from '#imports'
 
