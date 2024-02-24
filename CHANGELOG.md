@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.1.6
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.1.5...v0.1.6)
+
+### 🩹 Fixes
+
+- Better handle remote primitives ([d66413c](https://github.com/nuxt-hub/core/commit/d66413c))
+- Don't auto import server plugin ([6bebc2f](https://github.com/nuxt-hub/core/commit/6bebc2f))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.1.5
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.1.4...v0.1.5)
