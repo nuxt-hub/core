@@ -160,7 +160,7 @@ export default defineNuxtModule<ModuleOptions>({
     })
     // Add server plugin
     nuxt.options.nitro.plugins = nuxt.options.nitro.plugins || []
-    nuxt.options.nitro.plugins.push(resolve('./runtime/server/plugins/cloudflare.dev'))
+    nuxt.options.nitro.plugins.push(resolve('./runtime/server/_plugins/cloudflare.dev'))
   }
 })
 
