@@ -119,7 +119,11 @@ export default defineNuxtModule<ModuleOptions>({
         }
       })
         .catch((err) => {
-          throw new Error(`Failed to fetch remote primitives: ${err?.data?.message || err.message}`)
+          let message = 'Project not found'
+          if (err.status === 500) {
+            message = 'Internal server error'
+          }
+          throw new Error(`Failed to fetch remote primitives: ${message}`)
         })
       logger.info(`Primitives available: ${Object.keys(primitives).filter(k => primitives[k]).map(k => `\`${k}\``).join(', ')} `)
       return
