@@ -1,9 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   extends: ['@nuxt/ui-pro'],
-  app: {
-    baseURL: '/docs/'
-  },
   modules: [
     '@nuxt/content',
     '@nuxt/ui',
