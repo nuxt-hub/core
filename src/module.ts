@@ -8,6 +8,7 @@ import { $fetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { generateWrangler } from './utils'
 import { version } from '../package.json'
+import { argv } from 'node:process'
 
 const log = logger.withScope('nuxt:hub')
 
@@ -15,12 +16,12 @@ export interface ModuleOptions {
   /**
    * Set to `true` to use the remote bindings
    * Please use `nuxthub link` to link the project to a NuxtHub project before using this option
-   * @default false
+   * @default process.env.NUXT_HUB_REMOTE or --remote option when running `nuxt dev`
    */
-  remote: boolean
+  remote?: boolean
   /**
-   * The URL of the NuxtHub platform
-   * @default 'https://hub.nuxt.com'
+   * The URL of the NuxtHub Console
+   * @default 'https://console.hub.nuxt.com'
    */
   url?: string
   /**
@@ -56,9 +57,7 @@ export default defineNuxtModule<ModuleOptions>({
     configKey: 'hub',
     version
   },
-  defaults: {
-    remote: false
-  },
+  defaults: {},
   async setup (options, nuxt) {
     const rootDir = nuxt.options.rootDir
     const { resolve } = createResolver(import.meta.url)
@@ -71,11 +70,12 @@ export default defineNuxtModule<ModuleOptions>({
 
     const runtimeConfig = nuxt.options.runtimeConfig
     const hub = runtimeConfig.hub = defu(runtimeConfig.hub || {}, options, {
-      url: process.env.NUXT_HUB_URL || 'https://hub.nuxt.com',
+      url: process.env.NUXT_HUB_URL || 'https://console.hub.nuxt.com',
       projectKey: process.env.NUXT_HUB_PROJECT_KEY || '',
       projectUrl: process.env.NUXT_HUB_PROJECT_URL || '',
       projectSecretKey: process.env.NUXT_HUB_PROJECT_SECRET_KEY || '',
       userToken: process.env.NUXT_HUB_USER_TOKEN || '',
+      remote: argv.includes('--remote') || process.env.NUXT_HUB_REMOTE === 'true'
     })
 
     addServerScanDir(resolve('./runtime/server'))
@@ -89,15 +89,15 @@ export default defineNuxtModule<ModuleOptions>({
     }
 
     // Check if the project is linked to a NuxtHub project
-    if (hub.remote && hub.projectKey) {
+    if (hub.remote && hub.projectKey && !hub.projectUrl) {
       const project = await $fetch(`/api/projects/${hub.projectKey}`, {
         baseURL: hub.url,
         headers: {
           authorization: `Bearer ${hub.userToken}`
         }
       }).catch(() => {
-        log.warn('Failed to fetch NuxtHub linked project, make sure to run `nuxthub link` again.')
-        return null
+        log.error('Failed to fetch NuxtHub linked project, make sure to run `nuxthub link` again.')
+        process.exit(1)
       })
       if (project) {
         const adminUrl = joinURL(hub.url, project.teamSlug, project.slug)
@@ -106,29 +106,33 @@ export default defineNuxtModule<ModuleOptions>({
       }
     }
 
-    if (!hub.projectUrl && hub.remote) {
-      log.warn('No project URL found, make sure to deploy the project using `nuxthub deploy` or add the deployed URL to the project settings.')
+    if (hub.remote && !hub.projectUrl) {
+      log.error('No project URL found, make sure to deploy the project using `nuxthub deploy` or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable.')
+      process.exit(1)
     }
 
-    if (hub.projectUrl && hub.remote) {
-      log.info(`Using remote primitives from \`${hub.projectUrl}\``)
-      const primitives = await $fetch('/api/_hub/primitives', {
+    if (hub.remote) {
+      log.info(`Using remote storage from \`${hub.projectUrl}\``)
+      const remoteStorage = await $fetch('/api/_hub/storage', {
         baseURL: hub.projectUrl,
         headers: {
           authorization: `Bearer ${hub.projectSecretKey || hub.userToken}`
         }
       })
-        .catch((err) => {
+        .catch(async (err) => {
           let message = 'Project not found'
-          if (err.status === 500) {
+          if (err.status >= 500) {
             message = 'Internal server error'
+          } else if (err.status === 401) {
+            message = 'Authorization failed'
           }
-          throw new Error(`Failed to fetch remote primitives: ${message}`)
+          log.error(`Failed to fetch remote storage: ${message}`)
+          process.exit(1)
         })
-      logger.info(`Primitives available: ${Object.keys(primitives).filter(k => primitives[k]).map(k => `\`${k}\``).join(', ')} `)
+      logger.info(`Remote storage available: ${Object.keys(remoteStorage).filter(k => remoteStorage[k]).map(k => `\`${k}\``).join(', ')} `)
       return
     } else {
-      log.info('Using local primitives from `.hub/`')
+      log.info('Using local data from `.hub/`')
     }
 
     // Local development without remote connection

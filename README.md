@@ -13,7 +13,7 @@ Build full-stack applications with Nuxt on CloudFlare, with zero configuration.
 - Access key-value storage with `useKV()`
 - Store files with `useBlob()`
 
-Read more on https://docs.hub.nuxt.com
+Read more on https://hub.nuxt.com
 
 ## Quick Setup
 
