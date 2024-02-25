@@ -8,9 +8,9 @@ export default defineNuxtConfig({
   ui: {
     icons: ['heroicons', 'simple-icons']
   },
-  hub: {
-    // local: true
-  },
+  // hub: {
+  //   remote: true
+  // },
   basicAuth: {
     enabled: process.env.NODE_ENV === 'production',
     users: [

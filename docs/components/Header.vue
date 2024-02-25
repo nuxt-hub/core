@@ -22,9 +22,6 @@ const { header } = useAppConfig()
     </template>
 
     <template #right>
-      <UButton to="https://hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=header" external icon="i-simple-icons-nuxtdotjs" variant="outline" class="hidden sm:inline-flex">
-        NuxtHub Console
-      </UButton>
       <UDocsSearchButton v-if="header?.search" :label="null" class="lg:hidden" />
 
       <UColorModeButton v-if="header?.colorMode" />
@@ -36,10 +33,19 @@ const { header } = useAppConfig()
           v-bind="{ color: 'gray', variant: 'ghost', ...link }"
         />
       </template>
+      <UButton to="https://console.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=header" external icon="i-simple-icons-nuxtdotjs" color="black" class="hidden sm:inline-flex">
+        NuxtHub Console
+      </UButton>
     </template>
 
     <template #panel>
       <UNavigationTree :links="mapContentNavigation(navigation)" />
+
+      <div class="flex py-2">
+        <UButton to="https://console.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=header" external icon="i-simple-icons-nuxtdotjs" color="black" block>
+          NuxtHub Console
+        </UButton>
+      </div>
     </template>
   </UHeader>
 </template>

@@ -2,11 +2,6 @@ import { eventHandler, getValidatedRouterParams, readValidatedBody } from 'h3'
 import { z } from 'zod'
 import { useDatabase } from '../../../utils/database'
 
-const statementValidation = z.object({
-  query: z.string().min(1).max(1e6).trim(),
-  params: z.any().array(),
-})
-
 export default eventHandler(async (event) => {
   // https://developers.cloudflare.com/d1/build-databases/query-databases/
   const { command } = await getValidatedRouterParams(event, z.object({
@@ -33,12 +28,20 @@ export default eventHandler(async (event) => {
   }
 
   if (command === 'batch') {
-    const statements = await readValidatedBody(event, z.array(statementValidation).parse)
+    const statements = await readValidatedBody(event, z.array(z.object({
+      query: z.string().min(1).max(1e6).trim(),
+      params: z.any().array(),
+    })).parse)
     return db.batch(
       statements.map(stmt => db.prepare(stmt.query).bind(...stmt.params))
     )
   }
   // command is all, raw or run
-  const { query, params } = await readValidatedBody(event, statementValidation.parse)
-  return db.prepare(query).bind(...params)[command]()
+  const { query, params, columnNames } = await readValidatedBody(event, z.object({
+    query: z.string().min(1).max(1e6).trim(),
+    params: z.any().array(),
+    columnNames: z.boolean().default(false)
+  }).parse)
+  // @ts-ignore
+  return db.prepare(query).bind(...params).raw({ columnNames })
 })

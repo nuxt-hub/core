@@ -57,8 +57,13 @@ export function useProxyDatabase(projectUrl: string, secretKey?: string): D1Data
         async all() {
           return d1API('/all', { body: this._body }).catch(handleProxyError)
         },
-        async raw() {
-          return d1API('/raw', { body: this._body }).catch(handleProxyError)
+        async raw(options?: { columnNames?: boolean }) {
+          return d1API('/raw', {
+            body: {
+              ...this._body,
+              ...options
+            },
+          }).catch(handleProxyError)
         },
         async run() {
           return d1API('/run', { body: this._body }).catch(handleProxyError)

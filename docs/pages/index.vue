@@ -34,7 +34,7 @@ defineOgImage({
         <MDC :value="page.hero.title" />
       </template>
 
-      <MDC :value="page.hero.code" tag="pre" class="prose prose-primary dark:prose-invert mx-auto" />
+      <MDC :value="page.hero.code" tag="pre" class="prose prose-primary dark:prose-invert ml-auto" />
     </ULandingHero>
 
     <ULandingSection :title="page.features.title" :links="page.features.links">

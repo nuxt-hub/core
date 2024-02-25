@@ -60,7 +60,7 @@ export default defineAppConfig({
       }, {
         icon: 'i-simple-icons-nuxtdotjs',
         label: 'NuxtHub Console',
-        to: 'https://hub.nuxt.com',
+        to: 'https://console.hub.nuxt.com',
         target: '_blank',
       }]
     }
