@@ -26,7 +26,7 @@ const { data: files } = useLazyFetch<ParsedContent[]>('/api/search.json', {
   server: false,
 })
 
-provide('navigation', navigation)
+provide('navigation', navigation.value?.[0]?.children || [])
 </script>
 
 <template>
@@ -44,7 +44,7 @@ provide('navigation', navigation)
     <Footer />
 
     <ClientOnly>
-      <LazyUDocsSearch :files="files" :navigation="navigation" />
+      <LazyUContentSearch :files="files" :navigation="navigation" />
     </ClientOnly>
 
     <UNotifications />
