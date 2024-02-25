@@ -1,6 +1,29 @@
 # Changelog
 
 
+## v0.1.12
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.1.11...v0.1.12)
+
+### 📖 Documentation
+
+- Update infos on console ([5dd90bb](https://github.com/nuxt-hub/core/commit/5dd90bb))
+- Add baseURL ([1d0172a](https://github.com/nuxt-hub/core/commit/1d0172a))
+- Add baseURL" ([ebe27fa](https://github.com/nuxt-hub/core/commit/ebe27fa))
+- Fix 404 links ([deeda79](https://github.com/nuxt-hub/core/commit/deeda79))
+- Fix lint ([ae2f19f](https://github.com/nuxt-hub/core/commit/ae2f19f))
+
+### 🏡 Chore
+
+- Add screenshot of console ([79b798f](https://github.com/nuxt-hub/core/commit/79b798f))
+- Move console to it's own subdomain ([b165577](https://github.com/nuxt-hub/core/commit/b165577))
+- Lint ([e80195e](https://github.com/nuxt-hub/core/commit/e80195e))
+- Rename to manifest and docs improvements ([ee0e29a](https://github.com/nuxt-hub/core/commit/ee0e29a))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.1.11
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.1.10...v0.1.11)
