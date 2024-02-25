@@ -52,11 +52,11 @@ const links = computed(() => [toc?.bottom?.edit && {
 
       <hr v-if="surround?.length">
 
-      <UDocsSurround :surround="surround" />
+      <UContentSurround :surround="surround" />
     </UPageBody>
 
     <template v-if="page.toc !== false" #right>
-      <UDocsToc :title="toc?.title" :links="page.body?.toc?.links">
+      <UContentToc :title="toc?.title" :links="page.body?.toc?.links">
         <template v-if="toc?.bottom" #bottom>
           <div class="hidden lg:block space-y-6" :class="{ '!mt-6': page.body?.toc?.links?.length }">
             <UDivider v-if="page.body?.toc?.links?.length" type="dashed" />
@@ -64,7 +64,7 @@ const links = computed(() => [toc?.bottom?.edit && {
             <UPageLinks :title="toc.bottom.title" :links="links" />
           </div>
         </template>
-      </UDocsToc>
+      </UContentToc>
     </template>
   </UPage>
 </template>

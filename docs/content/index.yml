@@ -9,7 +9,7 @@ hero:
     - label: Get started
       icon: i-heroicons-arrow-right-20-solid
       trailing: true
-      to: '/getting-started'
+      to: '/docs/getting-started'
       size: lg
     - label: Open on GitHub
       icon: i-simple-icons-github
@@ -29,41 +29,45 @@ hero:
     })
     ```
 features:
-  title: 'All you need for full-stack apps'
+  title: 'All you need to start shipping'
+  description: 'NuxtHub provides you with all the tools you need to build and deploy your Nuxt apps, on the edge with zero configuration.'
   links:
     - label: Get started
       icon: i-heroicons-arrow-right-20-solid
       trailing: true
-      to: '/getting-started'
+      to: '/docs/getting-started'
       size: lg
+    - label: Open on GitHub
+      icon: i-simple-icons-github
+      size: lg
+      color: gray
+      to: https://github.com/atinux/nuxthub
+      target: _blank
   items:
     - title: 'Database'
       description: 'Access to a SQLite database in your server with zero configuration.'
-      icon: 'i-ph-database'
-      to: '/storage/database'
+      icon: 'i-ph-database-duotone'
+      to: '/docs/storage/database'
     - title: 'Key-Value'
       description: 'Global, low-latency, key-value data storage in development and production.'
-      icon: 'i-ph-coin'
-      to: '/storage/kv'
+      icon: 'i-ph-coin-duotone'
+      to: '/docs/storage/kv'
     - title: 'Blob'
       description: 'Large storage of unstructured data to put anything inside and serve it as you want.'
-      icon: 'i-ph-shapes'
-      to: '/storage/blob'
-    - title: 'Nuxt 3'
-      description: 'Powered by Nuxt 3 for optimal performances and SEO.'
-      icon: 'i-simple-icons-nuxtdotjs'
-      to: 'https://nuxt.com'
+      icon: 'i-ph-shapes-duotone'
+      to: '/docs/storage/blob'
+    - title: 'Remote Storage'
+      description: 'Access your remote storage locally with our secured proxy, work with your data as if they were local.'
+      icon: 'i-ph-plugs-connected-duotone'
+      to: '/docs/getting-started/deploy#remote-storage'
       target: '_blank'
     - title: 'Cloudflare Pages'
-      description: 'Deploy on Cloudflare Pages for edge-side rendering.'
+      description: 'Deploy to your Cloudflare account and enjoy dynamic rendering with low latency and cost (if not free).'
       icon: 'i-simple-icons-cloudflare'
       to: 'https://developers.cloudflare.com/pages'
       target: '_blank'
-    - title: 'NuxtHub CLI'
-      description: 'A powerful, yet simple, CLI to deploy in seconds on the edge.'
-      icon: 'i-ph-terminal'
-    - title: 'NuxtHub Console'
-      description: 'Offers an admin to manage your project as a team.'
-      icon: 'i-heroicons-user-group-solid'
+    - title: 'NuxtHub Console (alpha)'
+      description: 'Our web based dashboard to deploy & manage your NuxtHub apps with zero configuration.'
+      icon: 'i-ph-layout-duotone'
       to: 'https://console.hub.nuxt.com'
       target: '_blank'

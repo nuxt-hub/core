@@ -75,7 +75,8 @@ export default defineNuxtModule<ModuleOptions>({
       projectUrl: process.env.NUXT_HUB_PROJECT_URL || '',
       projectSecretKey: process.env.NUXT_HUB_PROJECT_SECRET_KEY || '',
       userToken: process.env.NUXT_HUB_USER_TOKEN || '',
-      remote: argv.includes('--remote') || process.env.NUXT_HUB_REMOTE === 'true'
+      remote: argv.includes('--remote') || process.env.NUXT_HUB_REMOTE === 'true',
+      version
     })
 
     addServerScanDir(resolve('./runtime/server'))
@@ -112,8 +113,8 @@ export default defineNuxtModule<ModuleOptions>({
     }
 
     if (hub.remote) {
-      log.info(`Using remote storage from \`${hub.projectUrl}\``)
-      const remoteStorage = await $fetch('/api/_hub/storage', {
+      log.info(`Using remote features from \`${hub.projectUrl}\``)
+      const manifest = await $fetch('/api/_hub/manifest', {
         baseURL: hub.projectUrl,
         headers: {
           authorization: `Bearer ${hub.projectSecretKey || hub.userToken}`
@@ -129,7 +130,10 @@ export default defineNuxtModule<ModuleOptions>({
           log.error(`Failed to fetch remote storage: ${message}`)
           process.exit(1)
         })
-      logger.info(`Remote storage available: ${Object.keys(remoteStorage).filter(k => remoteStorage[k]).map(k => `\`${k}\``).join(', ')} `)
+      if (manifest.version !== hub.version) {
+        log.warn(`\`${hub.projectUrl}\` is running \`@nuxthub/core@${manifest.version}\` while the local project is running \`@nuxthub/core@${hub.version}\`. Make sure to use the same version on both sides to avoid issues.`)
+      }
+      logger.info(`Remote storage available: ${Object.keys(manifest.storage).filter(k => manifest.storage[k]).map(k => `\`${k}\``).join(', ')} `)
       return
     } else {
       log.info('Using local data from `.hub/`')
