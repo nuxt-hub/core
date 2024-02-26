@@ -17,12 +17,13 @@ export default eventHandler(async (event) => {
       message: 'Missing Authorization header'
     })
   }
+  const projectKey = process.env.NUXT_HUB_PROJECT_KEY
 
   // Self-hosted NuxtHub project, user has to set a secret key to access the proxy
   const projectSecretKey = process.env.NUXT_HUB_PROJECT_SECRET_KEY
   if (projectSecretKey && secretKeyOrUserToken === projectSecretKey) {
     return
-  } else if (projectSecretKey) {
+  } else if (projectSecretKey && !projectKey) {
     throw createError({
       statusCode: 401,
       message: 'Invalid secret key'
@@ -30,7 +31,6 @@ export default eventHandler(async (event) => {
   }
 
   // Hosted on NuxtHub
-  const projectKey = process.env.NUXT_HUB_PROJECT_KEY
   if (projectKey) {
     // Here the secretKey is a user token
     await $fetch(`/api/projects/${projectKey}`, {
