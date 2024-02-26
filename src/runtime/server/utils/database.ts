@@ -13,7 +13,7 @@ export function hubDatabase(): D1Database {
   }
   const hub = useRuntimeConfig().hub
   if (import.meta.dev && hub.projectUrl) {
-    _db = useProxyDatabase(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    _db = proxyHubDatabase(hub.projectUrl, hub.projectSecretKey || hub.userToken)
     return _db
   }
   // @ts-ignore
@@ -25,7 +25,7 @@ export function hubDatabase(): D1Database {
   throw createError('Missing Cloudflare DB binding (D1)')
 }
 
-export function useProxyDatabase(projectUrl: string, secretKey?: string): D1Database {
+export function proxyHubDatabase(projectUrl: string, secretKey?: string): D1Database {
   const d1API = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/database'),
     method: 'POST',

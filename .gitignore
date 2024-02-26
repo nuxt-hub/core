@@ -24,9 +24,6 @@ dist
 .build-*
 .netlify
 
-# NuxtHUb
-.hub
-
 # Env
 .env
 

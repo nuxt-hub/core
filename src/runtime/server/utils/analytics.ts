@@ -21,10 +21,10 @@ function _useDataset() {
   throw createError(`Missing Cloudflare ${name} binding (Analytics Engine)`)
 }
 
-export function useAnalytics() {
+export function hubAnalytics() {
   const hub = useRuntimeConfig().hub
   if (import.meta.dev && hub.projectUrl) {
-    return useProxyAnalytics(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    return proxyHubAnalytics(hub.projectUrl, hub.projectSecretKey || hub.userToken)
   }
   const dataset = _useDataset()
 
@@ -36,7 +36,7 @@ export function useAnalytics() {
   }
 }
 
-export function useProxyAnalytics(projectUrl: string, secretKey?: string) {
+export function proxyHubAnalytics(projectUrl: string, secretKey?: string) {
   const analyticsAPI = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/analytics'),
     headers: {
