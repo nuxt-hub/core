@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.1.15
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.1.14...v0.1.15)
+
+### 📖 Documentation
+
+- Improve blob ([66d8c9e](https://github.com/nuxt-hub/core/commit/66d8c9e))
+
+### 🏡 Chore
+
+- **playground:** Add whitelist route ([49df540](https://github.com/nuxt-hub/core/commit/49df540))
+- **seo:** Social image ([998decf](https://github.com/nuxt-hub/core/commit/998decf))
+- **docs:** Methods params ([394a044](https://github.com/nuxt-hub/core/commit/394a044))
+- Rename use to hub prefix to avoid collision with Nitro ([ec7e13f](https://github.com/nuxt-hub/core/commit/ec7e13f))
+- Rename proxy and .hub to `.data/hub` ([5d73b42](https://github.com/nuxt-hub/core/commit/5d73b42))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Sylvain Marroufin ([@smarroufin](http://github.com/smarroufin))
+
 ## v0.1.14
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.1.13...v0.1.14)
