@@ -1,6 +1,6 @@
 import { eventHandler, getValidatedRouterParams, readValidatedBody } from 'h3'
 import { z } from 'zod'
-import { useDatabase } from '../../../utils/database'
+import { hubDatabase } from '../../../utils/database'
 
 const statementValidation = z.object({
   query: z.string().min(1).max(1e6).trim(),
@@ -12,7 +12,7 @@ export default eventHandler(async (event) => {
   const { command } = await getValidatedRouterParams(event, z.object({
     command: z.enum(['first', 'all', 'raw', 'run', 'dump', 'exec', 'batch'])
   }).parse)
-  const db = useDatabase()
+  const db = hubDatabase()
 
   if (command === 'exec') {
     const { query } = await readValidatedBody(event, z.object({

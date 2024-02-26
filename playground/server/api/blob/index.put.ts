@@ -5,7 +5,7 @@ export default eventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'Missing files' })
   }
 
-  const { put } = useBlob()
+  const { put } = hubBlob()
   const objects: BlobObject[] = []
   try {
     for (const file of files) {

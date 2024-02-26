@@ -52,7 +52,7 @@ function _useBucket() {
   throw createError(`Missing Cloudflare ${name} binding (R2)`)
 }
 
-export function useBlob() {
+export function hubBlob() {
   const hub = useRuntimeConfig().hub
   if (import.meta.dev && hub.projectUrl) {
     return useProxyBlob(hub.projectUrl, hub.projectSecretKey || hub.userToken)

@@ -1,9 +1,9 @@
 import { eventHandler } from 'h3'
 import { createH3StorageHandler } from 'unstorage/server'
-import { useKV } from '../../../utils/kv'
+import { hubKV } from '../../../utils/kv'
 
 export default eventHandler(async (event) => {
-  const storage = useKV()
+  const storage = hubKV()
   return createH3StorageHandler(storage, {
     resolvePath(event) {
       return event.context.params!.path || ''

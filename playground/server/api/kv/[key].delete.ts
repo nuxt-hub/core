@@ -4,7 +4,7 @@ export default eventHandler(async (event) => {
   }).parse)
 
   // Delete entry for the current user
-  await useKV().removeItem(key)
+  await hubKV().removeItem(key)
 
   return { key }
 })

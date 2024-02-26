@@ -3,5 +3,5 @@ export default eventHandler(async (event) => {
     pathname: z.string().min(1)
   }).parse)
 
-  return useBlob().delete(pathname)
+  return hubBlob().delete(pathname)
 })

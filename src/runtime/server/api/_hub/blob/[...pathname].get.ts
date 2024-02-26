@@ -1,6 +1,6 @@
 import { eventHandler, getValidatedRouterParams } from 'h3'
 import { z } from 'zod'
-import { useBlob } from '../../../utils/blob'
+import { hubBlob } from '../../../utils/blob'
 
 export default eventHandler(async (event) => {
   // TODO: handle caching in production
@@ -8,5 +8,5 @@ export default eventHandler(async (event) => {
     pathname: z.string().min(1)
   }).parse)
 
-  return useBlob().serve(event, pathname)
+  return hubBlob().serve(event, pathname)
 })

@@ -14,5 +14,5 @@ export const tables = {
 }
 
 export function useDrizzle() {
-  return drizzle(useDatabase(), { schema: tables })
+  return drizzle(hubDatabase(), { schema: tables })
 }

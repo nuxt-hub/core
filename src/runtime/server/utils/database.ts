@@ -7,7 +7,7 @@ import { useRuntimeConfig } from '#imports'
 
 let _db: D1Database
 
-export function useDatabase(): D1Database {
+export function hubDatabase(): D1Database {
   if (_db) {
     return _db
   }

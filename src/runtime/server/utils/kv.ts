@@ -8,7 +8,7 @@ import { useRuntimeConfig } from '#imports'
 
 let _kv: Storage
 
-export function useKV(): Storage {
+export function hubKV(): Storage {
   if (_kv) {
     return _kv
   }
