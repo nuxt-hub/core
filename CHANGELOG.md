@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.14
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.1.13...v0.1.14)
+
+### 🩹 Fixes
+
+- Handle all and run for database remote proxy ([1f17c08](https://github.com/nuxt-hub/core/commit/1f17c08))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.1.13
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.1.12...v0.1.13)
