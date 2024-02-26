@@ -13,6 +13,7 @@ export default defineNuxtConfig({
   // },
   basicAuth: {
     enabled: process.env.NODE_ENV === 'production',
+    allowedRoutes: ['/api/_hub/'],
     users: [
       {
         username: 'admin',
