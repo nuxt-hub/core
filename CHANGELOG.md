@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.13
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.1.12...v0.1.13)
+
+### 🩹 Fixes
+
+- Throw only if no projectKey defined ([ef9f0eb](https://github.com/nuxt-hub/core/commit/ef9f0eb))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.1.12
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.1.11...v0.1.12)
