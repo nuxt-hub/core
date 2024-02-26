@@ -1,5 +1,15 @@
 export default eventHandler(async () => {
-  const db = hubDatabase()
+  const kv = hubKV()
+
+  await kv.set('vue', { year: 2014 })
+  await kv.set('vue:nuxt', { year: 2016 })
+  await kv.set('vue:quasar', { version: 2015 })
+  await kv.set('react', { version: 2013 })
+  await kv.set('react:next', { version: 2016 })
+  await kv.set('react:gatsby', { version: 2015 })
+
+  return kv.keys()
+  // const db = hubDatabase()
   // return useProjectKV(projectUrl).getKeys()
   // return await db.prepare('SELECT * from todos').all()
   // return await db.prepare("SELECT * from todos").first()

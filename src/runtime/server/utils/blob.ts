@@ -55,7 +55,7 @@ function _useBucket() {
 export function hubBlob() {
   const hub = useRuntimeConfig().hub
   if (import.meta.dev && hub.projectUrl) {
-    return useProxyBlob(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    return proxyHubBlob(hub.projectUrl, hub.projectSecretKey || hub.userToken)
   }
   const bucket = _useBucket()
 
@@ -132,7 +132,7 @@ export function hubBlob() {
   }
 }
 
-export function useProxyBlob(projectUrl: string, secretKey?: string) {
+export function proxyHubBlob(projectUrl: string, secretKey?: string) {
   const blobAPI = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/blob'),
     headers: {

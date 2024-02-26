@@ -136,14 +136,14 @@ export default defineNuxtModule<ModuleOptions>({
       logger.info(`Remote storage available: ${Object.keys(manifest.storage).filter(k => manifest.storage[k]).map(k => `\`${k}\``).join(', ')} `)
       return
     } else {
-      log.info('Using local data from `.hub/`')
+      log.info('Using local data from `.data/hub`')
     }
 
     // Local development without remote connection
-    // Create the .hub/ directory
-    const hubDir = join(rootDir, './.hub')
+    // Create the .data/hub/ directory
+    const hubDir = join(rootDir, './.data/hub')
     try {
-      await mkdir(hubDir)
+      await mkdir(hubDir, { recursive: true })
     } catch (e: any) {
       if (e.errno === -17) {
         // File already exists
@@ -155,8 +155,8 @@ export default defineNuxtModule<ModuleOptions>({
     // Add it to .gitignore
     const gitignorePath = join(workspaceDir , '.gitignore')
     const gitignore = await readFile(gitignorePath, 'utf-8').catch(() => '')
-    if (!gitignore.includes('.hub')) {
-      await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}.hub`, 'utf-8')
+    if (!gitignore.includes('.data')) {
+      await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}.data`, 'utf-8')
     }
 
     // Generate the wrangler.toml file
