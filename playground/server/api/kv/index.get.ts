@@ -1,6 +1,6 @@
 export default eventHandler(async () => {
   // List entries for the current user
-  const storage = useKV()
+  const storage = hubKV()
 
   const keys = await storage.getKeys()
   // const items = await storage.getItems(keys)

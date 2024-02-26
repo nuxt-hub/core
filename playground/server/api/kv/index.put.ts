@@ -5,7 +5,7 @@ export default eventHandler(async (event) => {
   }).parse)
 
   // Set entry for the current user
-  await useKV().setItem(key, value)
+  await hubKV().setItem(key, value)
 
   return { key, value }
 })

@@ -11,7 +11,7 @@ hero:
       trailing: true
       to: '/docs/getting-started'
       size: lg
-    - label: Open on GitHub
+    - label: Star on GitHub
       icon: i-simple-icons-github
       size: lg
       color: gray
@@ -20,9 +20,9 @@ hero:
   code: |
     ```ts [server/api/hello.ts]
     export default eventHandler(async (event) => {
-      const database = useDatabase()
-      const blob = useBlob()
-      const kv = useKV()
+      const database = hubDatabase()
+      const blob = hubBlob()
+      const kv = hubKV()
 
       // Do your magic here
       return { hello: 'world' }
@@ -37,7 +37,7 @@ features:
       trailing: true
       to: '/docs/getting-started'
       size: lg
-    - label: Open on GitHub
+    - label: Star on GitHub
       icon: i-simple-icons-github
       size: lg
       color: gray

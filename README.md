@@ -9,9 +9,9 @@ Build full-stack applications with Nuxt on CloudFlare, with zero configuration.
 
 ## Features
 
-- Query an SQLite database with `useDatabase()`
-- Access key-value storage with `useKV()`
-- Store files with `useBlob()`
+- Query an SQLite database with `hubDatabase()`
+- Access key-value storage with `hubKV()`
+- Store files with `hubBlob()`
 
 Read more on https://hub.nuxt.com
 

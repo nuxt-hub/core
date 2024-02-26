@@ -1,5 +1,5 @@
 export default eventHandler(async () => {
-  const db = useDatabase()
+  const db = hubDatabase()
   // return useProjectKV(projectUrl).getKeys()
   // return await db.prepare('SELECT * from todos').all()
   // return await db.prepare("SELECT * from todos").first()

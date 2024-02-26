@@ -1,3 +1,3 @@
 export default eventHandler(async () => {
-  return useBlob().list()
+  return hubBlob().list()
 })
