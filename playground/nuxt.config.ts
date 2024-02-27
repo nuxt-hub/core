@@ -1,16 +1,15 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  extends: [
+    '../'
+  ],
   modules: [
-    '../src/module',
     '@nuxt/ui',
     '@kgierke/nuxt-basic-auth'
   ],
   ui: {
     icons: ['heroicons', 'simple-icons']
   },
-  // hub: {
-  //   remote: true
-  // },
   basicAuth: {
     enabled: process.env.NODE_ENV === 'production',
     allowedRoutes: ['/api/_hub/'],

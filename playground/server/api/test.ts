@@ -8,6 +8,7 @@ export default eventHandler(async () => {
   await kv.set('react:next', { version: 2016 })
   await kv.set('react:gatsby', { version: 2015 })
 
+
   return kv.keys()
   // const db = hubDatabase()
   // return useProjectKV(projectUrl).getKeys()

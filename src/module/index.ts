@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, logger, addServerScanDir } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, logger } from '@nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
@@ -7,7 +7,7 @@ import { readUser } from 'rc9'
 import { $fetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { generateWrangler } from './utils'
-import { version } from '../package.json'
+import { version } from '../../package.json'
 import { argv } from 'node:process'
 
 const log = logger.withScope('nuxt:hub')
@@ -78,11 +78,6 @@ export default defineNuxtModule<ModuleOptions>({
       remote: argv.includes('--remote') || process.env.NUXT_HUB_REMOTE === 'true',
       version
     })
-
-    addServerScanDir(resolve('./runtime/server'))
-    nuxt.options.nitro.externals = nuxt.options.nitro.externals || {}
-    nuxt.options.nitro.externals.inline = nuxt.options.nitro.externals.inline || []
-    nuxt.options.nitro.externals.inline.push(resolve('./runtime/server/'))
 
     // nuxt prepare or production mode, stop here
     if (nuxt.options._prepare || !nuxt.options.dev) {
@@ -168,7 +163,7 @@ export default defineNuxtModule<ModuleOptions>({
     })
     // Add server plugin
     nuxt.options.nitro.plugins = nuxt.options.nitro.plugins || []
-    nuxt.options.nitro.plugins.push(resolve('./runtime/server/_plugins/cloudflare.dev'))
+    nuxt.options.nitro.plugins.push(resolve('./runtime/bindings.dev'))
   }
 })
 

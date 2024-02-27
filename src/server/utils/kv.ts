@@ -6,7 +6,7 @@ import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import { useRuntimeConfig } from '#imports'
 
-interface KV extends Storage {
+export interface HubKV extends Storage {
   keys: Storage['getKeys']
   get: Storage['getItem']
   set: Storage['setItem']
@@ -14,9 +14,9 @@ interface KV extends Storage {
   del: Storage['removeItem']
 }
 
-let _kv: KV
+let _kv: HubKV
 
-export function hubKV(): KV {
+export function hubKV(): HubKV {
   if (_kv) {
     return _kv
   }
@@ -45,7 +45,7 @@ export function hubKV(): KV {
   throw createError('Missing Cloudflare KV binding (KV)')
 }
 
-export function proxyHubKV(projectUrl: string, secretKey?: string): KV {
+export function proxyHubKV(projectUrl: string, secretKey?: string): HubKV {
   const storage = createStorage({
     driver: httpDriver({
       base: joinURL(projectUrl, '/api/_hub/kv/'),
