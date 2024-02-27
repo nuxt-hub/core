@@ -62,7 +62,7 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Prepare module environment
+      - name: Prepare environment
         run: pnpm dev:prepare
 
       - name: Run test suite
