@@ -10,6 +10,7 @@
   "license": "Apache-2.0",
   "type": "module",
   "main": "./nuxt.config.ts",
+  "homepage": "https://hub.nuxt.com",
   "files": [
     "src",
     "nuxt.config.ts"
