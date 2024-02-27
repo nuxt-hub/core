@@ -1,10 +1,14 @@
-title: 'NuxtHub'
-description: 'Build full-stack Nuxt apps, with zero configuration.'
+title: 'NuxtHub: Build full-stack Nuxt apps, on the edge.'
+description: 'Access to a Database, Key-Value, and Blob storage with zero configuration. Deploy with confidence on your Cloudflare account and access to your remote storage locally with our secured proxy.'
 navigation: false
 hero:
   title: 'Build full-stack <span class="text-primary">Nuxt apps</span>, on the edge.'
   description: 'Access to a Database, Key-Value, and Blob storage with zero configuration. Deploy with confidence on your Cloudflare account and access to your remote storage locally with our secured proxy.'
   orientation: horizontal
+  headline:
+    to: https://github.com/nuxt-hub/core
+    label: Alpha version is out!
+    target: _blank
   links:
     - label: Get started
       icon: i-heroicons-arrow-right-20-solid

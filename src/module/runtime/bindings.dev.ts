@@ -1,8 +1,5 @@
 import type { H3Event } from 'h3'
 import type { NitroApp } from 'nitropack'
-// @ts-ignore
-import { defineNitroPlugin, useRuntimeConfig } from '#imports'
-import { hubHooks } from '../utils/hooks'
 
 export default defineNitroPlugin(async (nitroApp: NitroApp) => {
   const proxyPromise = getBindingsProxy()
