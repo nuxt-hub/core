@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.2.0
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.1.15...v0.2.0)
+
+### 🚀 Enhancements
+
+- ⚠️  Move to layer ([5309e02](https://github.com/nuxt-hub/core/commit/5309e02))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Move to layer ([5309e02](https://github.com/nuxt-hub/core/commit/5309e02))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.1.15
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.1.14...v0.1.15)
