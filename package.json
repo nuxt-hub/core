@@ -1,7 +1,7 @@
 {
   "name": "@nuxthub/core",
   "private": false,
-  "version": "0.1.15",
+  "version": "0.2.0",
   "description": "Build full-stack Nuxt applications on Cloudflare, with zero configuration.",
   "repository": {
     "type": "git",
@@ -14,7 +14,14 @@
     "src",
     "nuxt.config.ts"
   ],
-  "keywords": ["nuxt", "fullstack", "cloudflare", "database", "kv", "blob"],
+  "keywords": [
+    "nuxt",
+    "fullstack",
+    "cloudflare",
+    "database",
+    "kv",
+    "blob"
+  ],
   "scripts": {
     "dev:prepare": "nuxi prepare playground",
     "dev": "nuxi dev playground",
