@@ -39,7 +39,7 @@ export default defineNuxtConfig({
 })
 ```
 
-That's it! You can now NuxtHub features in your Nuxt app ✨
+That's it! You can now use NuxtHub features in your Nuxt app ✨
 
 ## Contributing
 
