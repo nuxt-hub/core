@@ -131,7 +131,7 @@ export default defineNuxtModule<ModuleOptions>({
       logger.info(`Remote storage available: ${Object.keys(manifest.storage).filter(k => manifest.storage[k]).map(k => `\`${k}\``).join(', ')} `)
       return
     } else {
-      log.info('Using local data from `.data/hub`')
+      log.info('Using local storage from `.data/hub`')
     }
 
     // Local development without remote connection
