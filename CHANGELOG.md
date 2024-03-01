@@ -1,6 +1,40 @@
 # Changelog
 
 
+## v0.2.1
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.2.0...v0.2.1)
+
+### 🩹 Fixes
+
+- Better handle remote storage for utils ([178d95c](https://github.com/nuxt-hub/core/commit/178d95c))
+
+### 📖 Documentation
+
+- Add content components and improve og image ([bfa179e](https://github.com/nuxt-hub/core/commit/bfa179e))
+- Update deps ([fde3364](https://github.com/nuxt-hub/core/commit/fde3364))
+- Rename to db:generate ([fc485b0](https://github.com/nuxt-hub/core/commit/fc485b0))
+- Add prose-a in tip component ([d1f0942](https://github.com/nuxt-hub/core/commit/d1f0942))
+- Add template ([156fd22](https://github.com/nuxt-hub/core/commit/156fd22))
+- Fixes ([de43c76](https://github.com/nuxt-hub/core/commit/de43c76))
+- Fix `wrangler` installation snippets for `npm` & `bun` ([#3](https://github.com/nuxt-hub/core/pull/3))
+
+### 🏡 Chore
+
+- Update social card to jpg ([412911c](https://github.com/nuxt-hub/core/commit/412911c))
+- Update ci ([7c857e5](https://github.com/nuxt-hub/core/commit/7c857e5))
+- Disable test in CI as they timeout for now ([57386c3](https://github.com/nuxt-hub/core/commit/57386c3))
+- **package:** Add homepage ([e9c371d](https://github.com/nuxt-hub/core/commit/e9c371d))
+- Correct wording in readme ([#5](https://github.com/nuxt-hub/core/pull/5))
+- Rename local data to local storage ([ab7e216](https://github.com/nuxt-hub/core/commit/ab7e216))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Ben 
+- Brad Veryard 
+- Sylvain Marroufin ([@smarroufin](http://github.com/smarroufin))
+
 ## v0.2.0
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.1.15...v0.2.0)
