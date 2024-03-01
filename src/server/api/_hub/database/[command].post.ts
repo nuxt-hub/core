@@ -27,9 +27,12 @@ export default eventHandler(async (event) => {
     const { query, params, colName } = await readValidatedBody(event, z.object({
       query: z.string().min(1).max(1e6).trim(),
       params: z.any().array(),
-      colName: z.string()
+      colName: z.string().optional()
     }).parse)
-    return db.prepare(query).bind(...params).first(colName)
+    if (colName) {
+      return db.prepare(query).bind(...params).first(colName)
+    }
+    return db.prepare(query).bind(...params).first()
   }
 
   if (command === 'batch') {

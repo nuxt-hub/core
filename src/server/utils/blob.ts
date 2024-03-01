@@ -54,7 +54,7 @@ function _useBucket() {
 
 export function hubBlob() {
   const hub = useRuntimeConfig().hub
-  if (import.meta.dev && hub.projectUrl) {
+  if (import.meta.dev && hub.remote && hub.projectUrl) {
     return proxyHubBlob(hub.projectUrl, hub.projectSecretKey || hub.userToken)
   }
   const bucket = _useBucket()

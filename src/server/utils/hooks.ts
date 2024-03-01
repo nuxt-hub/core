@@ -9,7 +9,7 @@ export const hubHooks = createHooks<HubHooks>()
 
 export function onHubReady (cb: HubHooks['bindings:ready']) {
   const hub = useRuntimeConfig().hub
-  if (import.meta.dev && !hub.projectUrl) {
+  if (import.meta.dev && !hub.remote) {
     return hubHooks.hookOnce('bindings:ready', cb)
   }
   cb()

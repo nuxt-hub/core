@@ -12,7 +12,7 @@ export function hubDatabase(): D1Database {
     return _db
   }
   const hub = useRuntimeConfig().hub
-  if (import.meta.dev && hub.projectUrl) {
+  if (import.meta.dev && hub.remote && hub.projectUrl) {
     _db = proxyHubDatabase(hub.projectUrl, hub.projectSecretKey || hub.userToken)
     return _db
   }

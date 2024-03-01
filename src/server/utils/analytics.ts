@@ -23,7 +23,7 @@ function _useDataset() {
 
 export function hubAnalytics() {
   const hub = useRuntimeConfig().hub
-  if (import.meta.dev && hub.projectUrl) {
+  if (import.meta.dev && hub.remote && hub.projectUrl) {
     return proxyHubAnalytics(hub.projectUrl, hub.projectSecretKey || hub.userToken)
   }
   const dataset = _useDataset()
