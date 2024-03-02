@@ -5,7 +5,7 @@
 [![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
-Build full-stack applications with Nuxt on CloudFlare, with zero configuration.
+Build full-stack applications with Nuxt on Cloudflare, with zero configuration.
 
 ## Features
 
