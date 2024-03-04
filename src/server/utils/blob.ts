@@ -126,8 +126,12 @@ export function hubBlob() {
 
       return mapR2ObjectToBlob(object)
     },
-    async delete(pathname: string) {
-      return await bucket.delete(decodeURI(pathname))
+    async delete(pathnames: string | string[]) {
+      if (Array.isArray(pathnames)) {
+        return await bucket.delete(pathnames.map((p) => decodeURI(p)))
+      } else {
+        return await bucket.delete(decodeURI(pathnames))
+      }
     }
   }
 }
@@ -170,10 +174,19 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
       })
       return JSON.parse(headers.get('x-blob') || '{}') as BlobObject
     },
-    async delete(pathname: string) {
-      await blobAPI<void>(decodeURI(pathname), {
-        method: 'DELETE',
-      })
+    async delete(pathnames: string | string[]) {
+      if (Array.isArray(pathnames)) {
+        await blobAPI<void>('/delete', {
+          method: 'POST',
+          body: {
+            pathnames: pathnames.map((p) => decodeURI(p))
+          }
+        })
+      } else {
+        await blobAPI<void>(decodeURI(pathnames), {
+          method: 'DELETE',
+        })
+      }
       return
     }
   }
