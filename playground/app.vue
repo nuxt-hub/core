@@ -47,7 +47,7 @@ const links = [
       </NuxtLink>
       ·
       <NuxtLink
-        href="https://twitter.com/nuxt_js"
+        href="https://twitter.com/nuxt_hub"
         target="_blank"
         class="text-sm text-gray-500 hover:text-gray-700"
       >
