@@ -37,7 +37,7 @@ export default defineAppConfig({
       'aria-label': 'Nuxt Website'
     }, {
       icon: 'i-simple-icons-x',
-      to: 'https://x.com/nuxt_js',
+      to: 'https://x.com/nuxt_hub',
       target: '_blank',
       'aria-label': 'Nuxt on X'
     }, {
