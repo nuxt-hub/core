@@ -9,7 +9,6 @@ on:
       - main
 
 permissions:
-  contents: read
   id-token: write
 
 # https://github.com/vitejs/vite/blob/main/.github/workflows/ci.yml
