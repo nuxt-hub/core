@@ -2,11 +2,10 @@
 export default defineNuxtConfig({
   extends: ['@nuxt/ui-pro'],
   modules: [
+    '@nuxt/fonts',
     '@nuxt/content',
     '@nuxt/ui',
     '@nuxthq/studio',
-    '@nuxtjs/fontaine',
-    '@nuxtjs/google-fonts',
     'nuxt-og-image',
     'nuxt-cloudflare-analytics'
   ],
@@ -20,17 +19,6 @@ export default defineNuxtConfig({
   },
   ui: {
     icons: ['heroicons', 'ph', 'simple-icons']
-  },
-  // Fonts
-  fontMetrics: {
-    fonts: ['DM Sans']
-  },
-  googleFonts: {
-    display: 'swap',
-    download: true,
-    families: {
-      'DM+Sans': [400, 500, 600, 700]
-    }
   },
   routeRules: {
     '/api/search.json': { prerender: true },
