@@ -38,7 +38,7 @@
     "@cloudflare/workers-types": "^4.20240222.0",
     "@nuxt/kit": "^3.10.3",
     "@sindresorhus/slugify": "^2.2.1",
-    "@uploadthing/mime-types": "^0.2.4",
+    "@uploadthing/mime-types": "^0.2.6",
     "defu": "^6.1.4",
     "destr": "^2.0.3",
     "get-port-please": "^3.1.2",
@@ -58,12 +58,12 @@
     "@nuxt/eslint-config": "^0.2.0",
     "@nuxt/schema": "^3.10.3",
     "@nuxt/test-utils": "^3.11.0",
-    "@types/node": "^20.11.20",
+    "@types/node": "^20.11.25",
     "changelogen": "^0.5.5",
     "eslint": "^8.57.0",
     "nuxt": "^3.10.3",
-    "typescript": "^5.3.3",
+    "typescript": "^5.4.2",
     "vitest": "^1.3.1",
-    "wrangler": "^3.30.0"
+    "wrangler": "^3.31.0"
   }
 }
