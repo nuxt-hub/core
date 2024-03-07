@@ -46,10 +46,13 @@ async function getBindingsProxy() {
     persist: { path: wranglerConfig.persistDir },
   })
 
+  // @ts-ignore
+  globalThis.__cf_env__ = proxy.env
+
   Object.keys(proxy.env).forEach((key) => {
     // @ts-ignore
     if (!globalThis[key]) {
-    // @ts-ignore
+      // @ts-ignore
       globalThis[key] = proxy.env[key]
     }
   })

@@ -1,6 +1,20 @@
 import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core'
 
 export default defineEventHandler(async () => {
+  const db0 = useDatabase()
+
+  const _tables = await db0.sql`
+    SELECT
+      name,
+      type
+    FROM
+      sqlite_schema
+    WHERE
+      type = 'table' AND
+      name NOT LIKE 'sqlite_%' and name NOT LIKE '_litestream_%' and name NOT LIKE '__drizzle%'
+    ;`
+
+  console.log(_tables.rows)
   const db = useDrizzle()
 
   const tables = await db.all(sql`

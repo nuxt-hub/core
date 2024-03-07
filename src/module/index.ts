@@ -96,6 +96,17 @@ export default defineNuxtModule<ModuleOptions>({
       }
     })
 
+    // Bind `useDatabase()` to `hubDatabase()`
+    nuxt.options.nitro.experimental = defu(nuxt.options.nitro.experimental, {
+      database: true
+    })
+    nuxt.options.nitro.database = defu(nuxt.options.nitro.database, {
+      default: {
+        connector: 'cloudflare-d1',
+        options: { bindingName: 'DB' }
+      }
+    })
+
     // nuxt prepare or production mode, stop here
     if (nuxt.options._prepare || !nuxt.options.dev) {
       return
