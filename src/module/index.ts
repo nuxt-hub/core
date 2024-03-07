@@ -79,6 +79,23 @@ export default defineNuxtModule<ModuleOptions>({
       version
     })
 
+    // Add Server caching (Nitro)
+    nuxt.options.nitro = defu(nuxt.options.nitro, {
+      storage: {
+        cache: {
+          driver: 'cloudflare-kv-binding',
+          binding: 'CACHE',
+          base: 'cache'
+        }
+      },
+      devStorage: {
+        cache: {
+          driver: 'fs',
+          base: join(rootDir, '.data/cache')
+        }
+      }
+    })
+
     // nuxt prepare or production mode, stop here
     if (nuxt.options._prepare || !nuxt.options.dev) {
       return
