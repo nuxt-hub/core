@@ -1,6 +1,51 @@
 # Changelog
 
 
+## v0.3.0
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.2.1...v0.3.0)
+
+### 🚀 Enhancements
+
+- ⚠️  Add server cache binding ([e524bfe](https://github.com/nuxt-hub/core/commit/e524bfe))
+
+### 🩹 Fixes
+
+- Correct capitalisation for Cloudflare ([#8](https://github.com/nuxt-hub/core/pull/8))
+
+### 📖 Documentation
+
+- Update 3.deploy.md ([#6](https://github.com/nuxt-hub/core/pull/6))
+- Update 3.deploy.md ([#7](https://github.com/nuxt-hub/core/pull/7))
+- Update 3.deploy.md ([#10](https://github.com/nuxt-hub/core/pull/10))
+- GitHub edit link for content in app.config.ts ([#11](https://github.com/nuxt-hub/core/pull/11))
+- Update twitter link ([13a57f3](https://github.com/nuxt-hub/core/commit/13a57f3))
+- Fix code snippet in 3.blob.md ([#12](https://github.com/nuxt-hub/core/pull/12))
+- Move font to Inter ([fae96d4](https://github.com/nuxt-hub/core/commit/fae96d4))
+- Improve content and add cache note ([d4c98d3](https://github.com/nuxt-hub/core/commit/d4c98d3))
+
+### 🏡 Chore
+
+- **blob:** Batch delete ([5c424c8](https://github.com/nuxt-hub/core/commit/5c424c8))
+- Lint fix ([a8af37c](https://github.com/nuxt-hub/core/commit/a8af37c))
+
+### 🤖 CI
+
+- Remove `contents: read` permission as repo is now public ([68fc0b4](https://github.com/nuxt-hub/core/commit/68fc0b4))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Add server cache binding ([e524bfe](https://github.com/nuxt-hub/core/commit/e524bfe))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Oskar Świtalski 
+- Sylvain Marroufin ([@smarroufin](http://github.com/smarroufin))
+- Rajeev R Sharma <i.rarsh@gmail.com>
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+- Dale Weaver
+
 ## v0.2.1
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.2.0...v0.2.1)
