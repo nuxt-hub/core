@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.3.1
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.3.0...v0.3.1)
+
+### 🚀 Enhancements
+
+- Add `del` as alias of `delete` for `hubBlob()` ([444c382](https://github.com/nuxt-hub/core/commit/444c382))
+
+### 🏡 Chore
+
+- Update deps ([2059138](https://github.com/nuxt-hub/core/commit/2059138))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.3.0
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.2.1...v0.3.0)
