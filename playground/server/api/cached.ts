@@ -1,4 +1,4 @@
-export default cachedEventHandler(async (event) => {
+export default cachedEventHandler(async () => {
   return {
     now: Date.now()
   }
