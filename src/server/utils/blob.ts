@@ -59,7 +59,7 @@ export function hubBlob() {
   }
   const bucket = _useBucket()
 
-  return {
+  const blob = {
     async list(options: BlobListOptions = { limit: 1000 }) {
       const resolvedOptions = defu(options, {
         limit: 500,
@@ -126,13 +126,17 @@ export function hubBlob() {
 
       return mapR2ObjectToBlob(object)
     },
-    async delete(pathnames: string | string[]) {
+    async del(pathnames: string | string[]) {
       if (Array.isArray(pathnames)) {
         return await bucket.delete(pathnames.map((p) => decodeURI(p)))
       } else {
         return await bucket.delete(decodeURI(pathnames))
       }
     }
+  }
+  return {
+    ...blob,
+    delete: blob.del
   }
 }
 
@@ -144,7 +148,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
     }
   })
 
-  return {
+  const blob = {
     async list(options: BlobListOptions = { limit: 1000 }) {
       return blobAPI<BlobObject[]>('/', {
         method: 'GET',
@@ -174,7 +178,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
       })
       return JSON.parse(headers.get('x-blob') || '{}') as BlobObject
     },
-    async delete(pathnames: string | string[]) {
+    async del(pathnames: string | string[]) {
       if (Array.isArray(pathnames)) {
         await blobAPI<void>('/delete', {
           method: 'POST',
@@ -189,6 +193,11 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
       }
       return
     }
+  }
+
+  return {
+    ...blob,
+    delete: blob.del
   }
 }
 
