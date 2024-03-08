@@ -19,7 +19,7 @@ hero:
       icon: i-simple-icons-github
       size: lg
       color: gray
-      to: https://github.com/atinux/nuxthub
+      to: https://github.com/nuxt-hub/core
       target: _blank
   code: |
     ```ts [server/api/hello.ts]
@@ -45,7 +45,7 @@ features:
       icon: i-simple-icons-github
       size: lg
       color: gray
-      to: https://github.com/atinux/nuxthub
+      to: https://github.com/nuxt-hub/core
       target: _blank
   items:
     - title: 'Database'
