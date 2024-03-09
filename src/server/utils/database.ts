@@ -12,12 +12,12 @@ export function hubDatabase(): D1Database {
     return _db
   }
   const hub = useRuntimeConfig().hub
-  if (import.meta.dev && hub.remote && hub.projectUrl) {
+  // @ts-ignore
+  const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
+  if (hub.remote && hub.projectUrl && !binding) {
     _db = proxyHubDatabase(hub.projectUrl, hub.projectSecretKey || hub.userToken)
     return _db
   }
-  // @ts-ignore
-  const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
   if (binding) {
     _db = binding as D1Database
     return _db

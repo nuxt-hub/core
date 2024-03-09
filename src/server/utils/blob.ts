@@ -37,14 +37,17 @@ export interface BlobPutOptions {
 
 const _r2_buckets: Record<string, R2Bucket> = {}
 
-function _useBucket() {
-  const name = 'BLOB'
+
+function getBlobBinding(name: string = 'BLOB') {
+  // @ts-ignore
+  return process.env[name] || globalThis.__env__?.[name] || globalThis[name]
+}
+function _useBucket(name: string = 'BLOB') {
   if (_r2_buckets[name]) {
     return _r2_buckets[name]
   }
 
-  // @ts-ignore
-  const binding = process.env[name] || globalThis.__env__?.[name] || globalThis[name]
+  const binding = getBlobBinding(name)
   if (binding) {
     _r2_buckets[name] = binding as R2Bucket
     return _r2_buckets[name]
@@ -54,7 +57,8 @@ function _useBucket() {
 
 export function hubBlob() {
   const hub = useRuntimeConfig().hub
-  if (import.meta.dev && hub.remote && hub.projectUrl) {
+  const binding = getBlobBinding()
+  if (hub.remote && hub.projectUrl && !binding) {
     return proxyHubBlob(hub.projectUrl, hub.projectSecretKey || hub.userToken)
   }
   const bucket = _useBucket()

@@ -1,7 +1,4 @@
 import { eventHandler } from 'h3'
-import { hubDatabase } from '../../utils/database'
-import { hubBlob } from '../../utils/blob'
-import { hubKV } from '../../utils/kv'
 import { useRuntimeConfig } from '#imports'
 
 export default eventHandler(async () => {

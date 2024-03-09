@@ -27,7 +27,7 @@
     "dev:prepare": "nuxi prepare playground",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
-    "docs": "nuxi dev docs",
+    "docs": "PORT=4000 nuxi dev docs",
     "docs:build": "nuxi generate docs",
     "release": "npm run lint && npm run test && changelogen --release && npm publish && git push --follow-tags",
     "lint": "eslint .",
