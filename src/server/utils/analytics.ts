@@ -6,14 +6,18 @@ import { useRuntimeConfig } from '#imports'
 
 const _datasets: Record<string, AnalyticsEngineDataset> = {}
 
-function _useDataset() {
-  const name = 'ANALYTICS'
+function getAnalyticsBinding(name: string = 'ANALYTICS') {
+  // @ts-ignore
+  return process.env[name] || globalThis.__env__?.[name] || globalThis[name]
+}
+
+function _useDataset(name: string = 'ANALYTICS') {
   if (_datasets[name]) {
     return _datasets[name]
   }
 
   // @ts-ignore
-  const binding = process.env[name] || globalThis.__env__?.[name] || globalThis[name]
+  const binding = getAnalyticsBinding()
   if (binding) {
     _datasets[name] = binding as AnalyticsEngineDataset
     return _datasets[name]
@@ -23,7 +27,8 @@ function _useDataset() {
 
 export function hubAnalytics() {
   const hub = useRuntimeConfig().hub
-  if (import.meta.dev && hub.remote && hub.projectUrl) {
+  const binding = getAnalyticsBinding()
+  if (hub.remote && hub.projectUrl && !binding) {
     return proxyHubAnalytics(hub.projectUrl, hub.projectSecretKey || hub.userToken)
   }
   const dataset = _useDataset()
