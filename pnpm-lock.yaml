@@ -141,7 +141,7 @@ importers:
         version: 2.14.1(nuxt@3.10.3)(vite@5.1.5)(vue@3.4.21)
       '@nuxthub/core':
         specifier: latest
-        version: 0.3.1
+        version: 0.3.2
       drizzle-orm:
         specifier: ^0.29.3
         version: 0.29.4(@cloudflare/workers-types@4.20240222.0)
@@ -2185,7 +2185,7 @@ packages:
       strip-literal: 2.0.0
       ufo: 1.4.0
       unenv: 1.9.0
-      unplugin: 1.8.3
+      unplugin: 1.9.0
       vite: 5.1.5(@types/node@20.11.25)
       vite-node: 1.3.1(@types/node@20.11.25)
       vite-plugin-checker: 0.6.4(eslint@8.57.0)(typescript@5.4.2)(vite@5.1.5)
@@ -2230,8 +2230,8 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@nuxthub/core@0.3.1:
-    resolution: {integrity: sha512-AoPEKFSzvCfcymbR5qwE60EIge1PSak1yF9TYOldo9azX7P0L2bWpxIx+sjzA9ELx8KHjaSumpq9Df2AHSzeQA==}
+  /@nuxthub/core@0.3.2:
+    resolution: {integrity: sha512-13u9dY90+/cWvSNG3ZxFkzq5NNwgZzYj/Ldlg7+40dPVIXW+n6qObdhk4/lpjdtiVrsOtXlrv4sphOgw3W9m3w==}
     dependencies:
       '@cloudflare/workers-types': 4.20240222.0
       '@nuxt/kit': 3.10.3
@@ -10497,7 +10497,7 @@ packages:
       pkg-types: 1.0.3
       scule: 1.3.0
       strip-literal: 1.3.0
-      unplugin: 1.8.3
+      unplugin: 1.9.0
     transitivePeerDependencies:
       - rollup
 

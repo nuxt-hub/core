@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/content',
     '@nuxt/ui',
-    // '@nuxthq/studio',
+    '@nuxthq/studio',
     'nuxt-og-image',
     'nuxt-cloudflare-analytics'
   ],
