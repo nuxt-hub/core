@@ -3,9 +3,6 @@ export default defineNuxtConfig({
   extends: [
     '../'
   ],
-  hub: {
-    remote: true
-  },
   modules: [
     '@nuxt/ui',
     '@kgierke/nuxt-basic-auth'
