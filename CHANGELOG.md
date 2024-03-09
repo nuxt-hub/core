@@ -1,6 +1,29 @@
 # Changelog
 
 
+## v0.3.2
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.3.1...v0.3.2)
+
+### 🚀 Enhancements
+
+- Support remote storage in production ([#17](https://github.com/nuxt-hub/core/pull/17))
+
+### 📖 Documentation
+
+- Use del instead of delete ([ef21f83](https://github.com/nuxt-hub/core/commit/ef21f83))
+- Update readme ([b993d03](https://github.com/nuxt-hub/core/commit/b993d03))
+- Correct project link ([#16](https://github.com/nuxt-hub/core/pull/16))
+
+### 🏡 Chore
+
+- Upadte wrangler ([dc34459](https://github.com/nuxt-hub/core/commit/dc34459))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Ray ([@so1ve](http://github.com/so1ve))
+
 ## v0.3.1
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.3.0...v0.3.1)
