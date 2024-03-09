@@ -61,7 +61,7 @@ features:
       icon: 'i-ph-shapes-duotone'
       to: '/docs/storage/blob'
     - title: 'Remote Storage'
-      description: 'Access your remote storage locally with our secured proxy, work with your data as if they were local.'
+      description: 'Access your remote storage locally or from other Nuxt projects with our secured proxy, work with your data as if they were local.'
       icon: 'i-ph-plugs-connected-duotone'
       to: '/docs/getting-started/deploy#remote-storage'
       target: '_blank'

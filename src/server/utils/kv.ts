@@ -21,11 +21,11 @@ export function hubKV(): HubKV {
     return _kv
   }
   const hub = useRuntimeConfig().hub
-  if (import.meta.dev && hub.remote && hub.projectUrl) {
-    return proxyHubKV(hub.projectUrl, hub.projectSecretKey || hub.userToken)
-  }
   // @ts-ignore
   const binding = process.env.KV || globalThis.__env__?.KV || globalThis.KV
+  if (hub.remote && hub.projectUrl && !binding) {
+    return proxyHubKV(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+  }
   if (binding) {
     const storage = createStorage({
       driver: cloudflareKVBindingDriver({
