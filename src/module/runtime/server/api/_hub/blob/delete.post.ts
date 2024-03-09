@@ -1,6 +1,5 @@
 import { eventHandler, readValidatedBody, sendNoContent } from 'h3'
 import { z } from 'zod'
-import { hubBlob } from '../../../utils/blob'
 
 export default eventHandler(async (event) => {
   const { pathnames } = await readValidatedBody(event, z.object({

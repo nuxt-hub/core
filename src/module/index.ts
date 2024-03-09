@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, logger } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, logger, addServerScanDir } from '@nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
@@ -14,9 +14,10 @@ const log = logger.withScope('nuxt:hub')
 
 export interface ModuleOptions {
   /**
-   * Set to `true` to use the remote bindings
-   * Please use `nuxthub link` to link the project to a NuxtHub project before using this option
+   * Set to `true` to use the remote storage.
+   * Only set to `true` in your nuxt.config on a projet you are not deploying to NuxtHub
    * @default process.env.NUXT_HUB_REMOTE or --remote option when running `nuxt dev`
+   * @see https://hub.nuxt.com/docs/getting-started/installation#options
    */
   remote?: boolean
   /**
@@ -25,27 +26,22 @@ export interface ModuleOptions {
    */
   url?: string
   /**
-   * The project's key on the NuxtHub platform
-   * Available when using the NuxtHub platform using `nuxthub link`
+   * The project's key on the NuxtHub platform, added with `nuxthub link`.
    * @default process.env.NUXT_HUB_PROJECT_KEY
    */
   projectKey?: string
   /**
-   * The user token to access the NuxtHub platform
-   * Available when using the NuxtHub platform using `nuxthub login`
+   * The user token to access the NuxtHub platform, added with `nuxthub login`
    * @default process.env.NUXT_HUB_USER_TOKEN
    */
   userToken?: string
   /**
-   * The URL of the deployed project
-   * Available when not using the NuxtHub platform
-   * A projectSecretKey must be defined as well
+   * The URL of the deployed project, used to fetch the remote storage, a projectKey must be defined as well
    * @default process.env.NUXT_HUB_PROJECT_URL
    */
   projectUrl?: string
   /**
-   * The secret key defined in the deployed project as env variable
-   * Available when not using the NuxtHub platform
+   * The secret key defined in the deployed project as env variable, used to fetch the remote storage from the projectUrl
    * @default process.env.NUXT_HUB_PROJECT_SECRET_KEY
    */
   projectSecretKey?: string
@@ -100,6 +96,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.nitro.experimental = defu(nuxt.options.nitro.experimental, {
       database: true
     })
+    // @ts-ignore
     nuxt.options.nitro.database = defu(nuxt.options.nitro.database, {
       default: {
         connector: 'cloudflare-d1',
@@ -107,35 +104,50 @@ export default defineNuxtModule<ModuleOptions>({
       }
     })
 
-    // nuxt prepare or production mode, stop here
-    if (nuxt.options._prepare || !nuxt.options.dev) {
+    // nuxt prepare, stop here
+    if (nuxt.options._prepare) {
       return
     }
 
-    // Check if the project is linked to a NuxtHub project
-    if (hub.remote && hub.projectKey && !hub.projectUrl) {
-      const project = await $fetch(`/api/projects/${hub.projectKey}`, {
-        baseURL: hub.url,
-        headers: {
-          authorization: `Bearer ${hub.userToken}`
-        }
-      }).catch(() => {
-        log.error('Failed to fetch NuxtHub linked project, make sure to run `nuxthub link` again.')
-        process.exit(1)
-      })
-      if (project) {
-        const adminUrl = joinURL(hub.url, project.teamSlug, project.slug)
-        log.info(`Linked to \`${adminUrl}\``)
-        hub.projectUrl = project.url
-      }
-    }
-
-    if (hub.remote && !hub.projectUrl) {
-      log.error('No project URL found, make sure to deploy the project using `nuxthub deploy` or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable.')
-      process.exit(1)
-    }
-
     if (hub.remote) {
+      // Can either use projectKey or projectUrl
+      if (hub.projectKey && hub.projectUrl) {
+        log.error('You cannot use both NUXT_HUB_PROJECT_KEY and NUXT_HUB_PROJECT_URL at the same time. Please use only one of them.')
+        process.exit(1)
+      }
+      // Check if the project is linked to a NuxtHub project
+      // it should have a projectKey and a userToken
+      // Then we fill the projectUrl
+      if (hub.projectKey) {
+        const project = await $fetch(`/api/projects/${hub.projectKey}`, {
+          baseURL: hub.url,
+          headers: {
+            authorization: `Bearer ${hub.userToken}`
+          }
+        }).catch(() => {
+          log.error('Failed to fetch NuxtHub linked project, make sure to run `nuxthub link` again.')
+          process.exit(1)
+        })
+        if (project) {
+          const adminUrl = joinURL(hub.url, project.teamSlug, project.slug)
+          log.info(`Linked to \`${adminUrl}\``)
+          hub.projectUrl = project.url
+        }
+      }
+
+      // Make sure we have a projectUrl when using the remote option
+      if (!hub.projectUrl) {
+        log.error('No project URL found, make sure to deploy the project using `nuxthub deploy` or link your project with `nuxthub link` or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable (if self-hosted).')
+        process.exit(1)
+      }
+
+      // Make sure we have a secret when using the remote option
+      if (!hub.projectKey && !hub.projectSecretKey && !hub.userToken) {
+        log.error('No project secret key found, make sure to add the `NUXT_HUB_PROJECT_SECRET_KEY` environment variable.')
+        process.exit(1)
+      }
+
+      // If using the remote option with a projectUrl and a projectSecretKey
       log.info(`Using remote features from \`${hub.projectUrl}\``)
       const manifest = await $fetch('/api/_hub/manifest', {
         baseURL: hub.projectUrl,
@@ -144,11 +156,11 @@ export default defineNuxtModule<ModuleOptions>({
         }
       })
         .catch(async (err) => {
-          let message = 'Project not found'
+          let message = 'Project not found.\nMake sure to deploy the project using `nuxthub deploy` or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable.'
           if (err.status >= 500) {
             message = 'Internal server error'
           } else if (err.status === 401) {
-            message = 'Authorization failed'
+            message = 'Authorization failed.\nMake sure to provide a valid NUXT_HUB_PROJECT_SECRET_KEY or being logged in with `nuxthub login`'
           }
           log.error(`Failed to fetch remote storage: ${message}`)
           process.exit(1)
@@ -158,40 +170,45 @@ export default defineNuxtModule<ModuleOptions>({
       }
       logger.info(`Remote storage available: ${Object.keys(manifest.storage).filter(k => manifest.storage[k]).map(k => `\`${k}\``).join(', ')} `)
       return
-    } else {
-      log.info('Using local storage from `.data/hub`')
     }
+
+    // Add Proxy routes only if not remote
+    addServerScanDir(resolve('./runtime/server'))
 
     // Local development without remote connection
-    // Create the .data/hub/ directory
-    const hubDir = join(rootDir, './.data/hub')
-    try {
-      await mkdir(hubDir, { recursive: true })
-    } catch (e: any) {
-      if (e.errno === -17) {
-        // File already exists
-      } else {
-        throw e
-      }
-    }
-    const workspaceDir = await findWorkspaceDir(rootDir)
-    // Add it to .gitignore
-    const gitignorePath = join(workspaceDir , '.gitignore')
-    const gitignore = await readFile(gitignorePath, 'utf-8').catch(() => '')
-    if (!gitignore.includes('.data')) {
-      await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}.data`, 'utf-8')
-    }
+    if (nuxt.options.dev) {
+      log.info('Using local storage from `.data/hub`')
 
-    // Generate the wrangler.toml file
-    const wranglerPath = join(hubDir, './wrangler.toml')
-    await writeFile(wranglerPath, generateWrangler(), 'utf-8')
-    nuxt.options.runtimeConfig.wrangler = defu(nuxt.options.runtimeConfig.wrangler || {}, {
-      configPath: wranglerPath,
-      persistDir: hubDir
-    })
-    // Add server plugin
-    nuxt.options.nitro.plugins = nuxt.options.nitro.plugins || []
-    nuxt.options.nitro.plugins.push(resolve('./runtime/bindings.dev'))
+      // Create the .data/hub/ directory
+      const hubDir = join(rootDir, './.data/hub')
+      try {
+        await mkdir(hubDir, { recursive: true })
+      } catch (e: any) {
+        if (e.errno === -17) {
+          // File already exists
+        } else {
+          throw e
+        }
+      }
+      const workspaceDir = await findWorkspaceDir(rootDir)
+      // Add it to .gitignore
+      const gitignorePath = join(workspaceDir , '.gitignore')
+      const gitignore = await readFile(gitignorePath, 'utf-8').catch(() => '')
+      if (!gitignore.includes('.data')) {
+        await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}.data`, 'utf-8')
+      }
+
+      // Generate the wrangler.toml file
+      const wranglerPath = join(hubDir, './wrangler.toml')
+      await writeFile(wranglerPath, generateWrangler(), 'utf-8')
+      nuxt.options.runtimeConfig.wrangler = defu(nuxt.options.runtimeConfig.wrangler || {}, {
+        configPath: wranglerPath,
+        persistDir: hubDir
+      })
+      // Add server plugin
+      nuxt.options.nitro.plugins = nuxt.options.nitro.plugins || []
+      nuxt.options.nitro.plugins.push(resolve('./runtime/bindings.dev'))
+    }
   }
 })
 
