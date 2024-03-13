@@ -24,6 +24,12 @@ export default defineNuxtConfig({
   routeRules: {
     '/api/search.json': { prerender: true },
   },
+  nitro: {
+    prerender: {
+      // For CF trailing slash issue
+      autoSubfolderIndex: false
+    }
+  },
   cloudflareAnalytics: {
     token: '469b1f7049f14941acef0d0262a07ab3',
     scriptPath: false
