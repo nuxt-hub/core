@@ -16,6 +16,16 @@ export interface HubKV extends Storage {
 
 let _kv: HubKV
 
+/**
+ * Access the Key-Value store
+ *
+ * @example ```ts
+ * const kv = hubKV()
+ * await kv.set('key', 'value')
+ * ```
+ *
+ * @see https://hub.nuxt.com/docs/storage/kv
+ */
 export function hubKV(): HubKV {
   if (_kv) {
     return _kv
