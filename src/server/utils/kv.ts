@@ -7,17 +7,51 @@ import { createError } from 'h3'
 import { useRuntimeConfig } from '#imports'
 
 export interface HubKV extends Storage {
+  /**
+   * Gets all keys from the storage.
+   *
+   * @see https://hub.nuxt.com/docs/storage/kv#keys
+   */
   keys: Storage['getKeys']
+  /**
+   * Gets an item from the storage.
+   *
+   * @param key The key to get
+   *
+   * @see https://hub.nuxt.com/docs/storage/kv#get
+   */
   get: Storage['getItem']
+  /**
+   * Sets an item in the storage.
+   *
+   * @param key The key to set
+   * @param value The value to set
+   *
+   * @see https://hub.nuxt.com/docs/storage/kv#set
+   */
   set: Storage['setItem']
+  /**
+   * Checks if an item exists in the storage.
+   *
+   * @param key The key to check
+   *
+   * @see https://hub.nuxt.com/docs/storage/kv#has
+   */
   has: Storage['hasItem']
+  /**
+   * Deletes an item from the storage.
+   *
+   * @param key The key to delete
+   *
+   * @see https://hub.nuxt.com/docs/storage/kv#del
+   */
   del: Storage['removeItem']
 }
 
 let _kv: HubKV
 
 /**
- * Access the Key-Value store
+ * Accesses the Key-Value storage.
  *
  * @example ```ts
  * const kv = hubKV()
@@ -55,6 +89,19 @@ export function hubKV(): HubKV {
   throw createError('Missing Cloudflare KV binding (KV)')
 }
 
+/**
+ * Accesses the remote Key-Value storage.
+ *
+ * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
+ * @param secretKey The secret key to authenticate to the remote endpoint
+ *
+ * @example ```ts
+ * const kv = proxyHubKV('https://my-deployed-project.nuxt.dev', 'my-secret-key')
+ * await kv.set('key', 'value')
+ * ```
+ *
+ * @see https://hub.nuxt.com/docs/storage/kv
+ */
 export function proxyHubKV(projectUrl: string, secretKey?: string): HubKV {
   const storage = createStorage({
     driver: httpDriver({
