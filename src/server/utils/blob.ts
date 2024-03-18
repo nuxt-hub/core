@@ -1,6 +1,6 @@
 import type { extensions } from '@uploadthing/mime-types'
 import slugify from '@sindresorhus/slugify'
-import type { R2Bucket } from '@cloudflare/workers-types/experimental'
+import type { R2Bucket, ReadableStream } from '@cloudflare/workers-types/experimental'
 import { ofetch } from 'ofetch'
 import mime from 'mime'
 import type { H3Event } from 'h3'
@@ -12,9 +12,21 @@ import { joinURL } from 'ufo'
 import { useRuntimeConfig } from '#imports'
 
 export interface BlobObject {
+  /**
+   * The pathname of the blob, used to @see {@link HubBlob.serve} the blob.
+   */
   pathname: string
+  /**
+   * The content type of the blob.
+   */
   contentType: string | undefined
+  /**
+   * The size of the blob in bytes.
+   */
   size: number
+  /**
+   * The date the blob was uploaded at.
+   */
   uploadedAt: Date
 }
 
@@ -24,13 +36,28 @@ export interface BlobListOptions {
    * @default 1000
    */
   limit?: number
+  /**
+   * The prefix to filter the blobs by.
+   */
   prefix?: string
+  /**
+   * The cursor to list the blobs from (used for pagination).
+   */
   cursor?: string
 }
 
 export interface BlobPutOptions {
+  /**
+   * The content type of the blob.
+   */
   contentType?: string,
+  /**
+   * The content length of the blob.
+   */
   contentLength?: string,
+  /**
+   * If a random suffix is added to the blob pathname.
+   */
   addRandomSuffix?: boolean,
   [key: string]: any
 }
@@ -55,7 +82,59 @@ function _useBucket(name: string = 'BLOB') {
   throw createError(`Missing Cloudflare ${name} binding (R2)`)
 }
 
-export function hubBlob() {
+interface HubBlob {
+  /**
+   * List all the blobs in the bucket.
+   *
+   * @param options The list options
+   */
+  list(options?: BlobListOptions): Promise<BlobObject[]>
+  /**
+   * Serve the blob from the bucket.
+   *
+   * @param event The H3 event (needed to set headers for the response)
+   * @param pathname The pathname of the blob
+   */
+  serve(event: H3Event, pathname: string): Promise<ReadableStream<any>>
+  /**
+   * Put a new blob into the bucket.
+   *
+   * @param pathname The pathname of the blob
+   * @param body The blob content
+   * @param options The put options
+   */
+  put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options?: BlobPutOptions): Promise<BlobObject>
+  /**
+   * Get the blob metadata from the bucket.
+   *
+   * @param pathname The pathname of the blob
+   */
+  head(pathname: string): Promise<BlobObject>
+  /**
+   * Delete the blob from the bucket.
+   *
+   * @param pathnames The pathname of the blob
+   */
+  del(pathnames: string | string[]): Promise<void>
+  /**
+   * Delete the blob from the bucket.
+   *
+   * @param pathnames The pathname of the blob
+   */
+  delete(pathnames: string | string[]): Promise<void>
+}
+
+/**
+ * Access the Blob storage.
+ *
+ * @example ```ts
+ * const blob = hubBlob()
+ * const blobs = await blob.list()
+ * ```
+ *
+ * @see https://hub.nuxt.com/docs/storage/blob
+ */
+export function hubBlob(): HubBlob {
   const hub = useRuntimeConfig().hub
   const binding = getBlobBinding()
   if (hub.remote && hub.projectUrl && !binding) {
@@ -144,6 +223,19 @@ export function hubBlob() {
   }
 }
 
+/**
+ * Access the remote Blob storage.
+ *
+ * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
+ * @param secretKey The secret key to authenticate to the remote endpoint
+ *
+ * @example ```ts
+ * const blob = proxyHubBlob('https://my-deployed-project.nuxt.dev', 'my-secret-key')
+ * const blobs = await blob.list()
+ * ```
+ *
+ * @see https://hub.nuxt.com/docs/storage/blob
+ */
 export function proxyHubBlob(projectUrl: string, secretKey?: string) {
   const blobAPI = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/blob'),
@@ -160,7 +252,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
       })
     },
     async serve(_event: H3Event, pathname: string) {
-      return blobAPI<ReadableStreamDefaultReader<any>>(decodeURI(pathname), {
+      return blobAPI<ReadableStream<any>>(decodeURI(pathname), {
         method: 'GET'
       })
     },
@@ -247,6 +339,16 @@ function fileSizeToBytes(input: string) {
   return Math.floor(bytes)
 }
 
+/**
+ * Ensure the blob is valid and meets the specified requirements.
+ *
+ * @param blob The blob to check
+ * @param options The options to check against
+ * @param options.maxSize The maximum size of the blob (e.g. '1MB')
+ * @param options.types The allowed types of the blob (e.g. ['image/png', 'application/json', 'video'])
+ *
+ * @throws If the blob does not meet the requirements
+ */
 export function ensureBlob(blob: Blob, options: { maxSize?: BlobSize, types?: BlobType[] }) {
   if (!options.maxSize && !options.types?.length) {
     throw createError({
