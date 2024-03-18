@@ -125,7 +125,7 @@ interface HubBlob {
 }
 
 /**
- * Accesses the Blob storage.
+ * Access the Blob storage.
  *
  * @example ```ts
  * const blob = hubBlob()
@@ -224,7 +224,7 @@ export function hubBlob(): HubBlob {
 }
 
 /**
- * Accesses the remote Blob storage.
+ * Access the remote Blob storage.
  *
  * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
  * @param secretKey The secret key to authenticate to the remote endpoint

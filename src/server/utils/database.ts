@@ -8,7 +8,7 @@ import { useRuntimeConfig } from '#imports'
 let _db: D1Database
 
 /**
- * Accesses the D1 database.
+ * Access the D1 database.
  *
  * @example ```ts
  * const db = hubDatabase()
@@ -36,7 +36,7 @@ export function hubDatabase(): D1Database {
 }
 
 /**
- * Accesses the remote D1 database.
+ * Access the remote D1 database.
  *
  * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
  * @param secretKey The secret key to authenticate to the remote endpoint

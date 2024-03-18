@@ -51,7 +51,7 @@ export interface HubKV extends Storage {
 let _kv: HubKV
 
 /**
- * Accesses the Key-Value storage.
+ * Access the Key-Value storage.
  *
  * @example ```ts
  * const kv = hubKV()
@@ -90,7 +90,7 @@ export function hubKV(): HubKV {
 }
 
 /**
- * Accesses the remote Key-Value storage.
+ * Access the remote Key-Value storage.
  *
  * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
  * @param secretKey The secret key to authenticate to the remote endpoint
