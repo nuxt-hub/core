@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, logger, addServerScanDir } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule } from '@nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
@@ -189,13 +189,15 @@ export default defineNuxtModule<ModuleOptions>({
       // Generate the wrangler.toml file
       const wranglerPath = join(hubDir, './wrangler.toml')
       await writeFile(wranglerPath, generateWrangler(), 'utf-8')
-      nuxt.options.runtimeConfig.wrangler = defu(nuxt.options.runtimeConfig.wrangler || {}, {
+      // @ts-ignore
+      nuxt.options.nitro.cloudflareDev = {
+        persistDir: hubDir,
         configPath: wranglerPath,
-        persistDir: hubDir
-      })
-      // Add server plugin
+        silent: true
+      }
+      await installModule('nitro-cloudflare-dev')
       nuxt.options.nitro.plugins = nuxt.options.nitro.plugins || []
-      nuxt.options.nitro.plugins.push(resolve('./runtime/bindings.dev'))
+      nuxt.options.nitro.plugins.push(resolve('./runtime/ready.dev'))
     }
   }
 })
