@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v0.3.3
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.3.2...v0.3.3)
+
+### 📖 Documentation
+
+- Add plausible ([524fd0f](https://github.com/nuxt-hub/core/commit/524fd0f))
+- Prepared SQL must contain only one statement ([#19](https://github.com/nuxt-hub/core/pull/19))
+- Better handle trailing slash ([0f46859](https://github.com/nuxt-hub/core/commit/0f46859))
+- **storage:** Adds JSDocs ([#21](https://github.com/nuxt-hub/core/pull/21))
+
+### 🏡 Chore
+
+- **playground:** Remove remote option ([362c345](https://github.com/nuxt-hub/core/commit/362c345))
+- Lint fix ([9ed41d8](https://github.com/nuxt-hub/core/commit/9ed41d8))
+- Add renovate ([d31e7dc](https://github.com/nuxt-hub/core/commit/d31e7dc))
+- Update deps ([2ed17e0](https://github.com/nuxt-hub/core/commit/2ed17e0))
+
+### ❤️ Contributors
+
+- Sylvain Marroufin ([@smarroufin](http://github.com/smarroufin))
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Nutchanon Taechasuk ([@Quatton](http://github.com/Quatton))
+
 ## v0.3.2
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.3.1...v0.3.2)
