@@ -7,7 +7,8 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxthq/studio',
     'nuxt-og-image',
-    'nuxt-cloudflare-analytics'
+    'nuxt-cloudflare-analytics',
+    '@nuxtjs/plausible'
   ],
   hooks: {
     // Define `@nuxt/ui` components as global to use them in `.md` (feel free to add those you need)
@@ -22,6 +23,12 @@ export default defineNuxtConfig({
   },
   routeRules: {
     '/api/search.json': { prerender: true },
+  },
+  nitro: {
+    prerender: {
+      // For CF trailing slash issue
+      autoSubfolderIndex: false
+    }
   },
   cloudflareAnalytics: {
     token: '469b1f7049f14941acef0d0262a07ab3',
