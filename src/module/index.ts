@@ -6,20 +6,23 @@ import { findWorkspaceDir } from 'pkg-types'
 import { readUser } from 'rc9'
 import { $fetch } from 'ofetch'
 import { joinURL } from 'ufo'
+import { parseArgs } from 'citty'
 import { generateWrangler } from './utils'
 import { version } from '../../package.json'
+import { execSync } from 'node:child_process'
 import { argv } from 'node:process'
 
-const log = logger.withScope('nuxt:hub')
+const log = logger.withTag('nuxt:hub')
 
 export interface ModuleOptions {
   /**
-   * Set to `true` to use the remote storage.
-   * Only set to `true` on a project you are deploying outside of NuxtHub or Cloudflare.
+   * Set to `true`, 'preview' or 'production' to use the remote storage.
+   * Only set the value on a project you are deploying outside of NuxtHub or Cloudflare.
+   * Or wrap it with $development to only use it in development mode.
    * @default process.env.NUXT_HUB_REMOTE or --remote option when running `nuxt dev`
    * @see https://hub.nuxt.com/docs/getting-started/remote-storage
    */
-  remote?: boolean
+  remote?: boolean | 'production' | 'preview',
   /**
    * The URL of the NuxtHub Console
    * @default 'https://console.hub.nuxt.com'
@@ -64,6 +67,7 @@ export default defineNuxtModule<ModuleOptions>({
       ...readUser('.nuxtrc').hub,
     })
 
+    const remoteArg = parseArgs(argv, { remote: { type: 'string' } }).remote as string
     const runtimeConfig = nuxt.options.runtimeConfig
     const hub = runtimeConfig.hub = defu(runtimeConfig.hub || {}, options, {
       url: process.env.NUXT_HUB_URL || 'https://console.hub.nuxt.com',
@@ -71,9 +75,14 @@ export default defineNuxtModule<ModuleOptions>({
       projectUrl: process.env.NUXT_HUB_PROJECT_URL || '',
       projectSecretKey: process.env.NUXT_HUB_PROJECT_SECRET_KEY || '',
       userToken: process.env.NUXT_HUB_USER_TOKEN || '',
-      remote: argv.includes('--remote') || process.env.NUXT_HUB_REMOTE === 'true',
+      remote: remoteArg || process.env.NUXT_HUB_REMOTE,
       version
     })
+    // validate remote option
+    if (hub.remote && !['true', 'production', 'preview'].includes(String(hub.remote))) {
+      log.error('Invalid remote option, should be `false`, `true`, `\'production\'` or `\'preview\'`')
+      delete hub.remote
+    }
 
     // Add Server caching (Nitro)
     nuxt.options.nitro = defu(nuxt.options.nitro, {
@@ -112,14 +121,33 @@ export default defineNuxtModule<ModuleOptions>({
           headers: {
             authorization: `Bearer ${hub.userToken}`
           }
-        }).catch(() => {
-          log.error('Failed to fetch NuxtHub linked project, make sure to run `nuxthub link` again.')
+        }).catch((err) => {
+          if (err.status === 401) {
+            log.error('It seems that you are not logged in, make sure to run `nuxthub login`.')
+          } else {
+            log.error('Failed to fetch NuxtHub linked project, make sure to run `nuxthub link` again.')
+          }
           process.exit(1)
         })
-        if (project) {
-          const adminUrl = joinURL(hub.url, project.teamSlug, project.slug)
-          log.info(`Linked to \`${adminUrl}\``)
-          hub.projectUrl = project.url
+        let env = hub.remote
+        // Guess the environment from the branch name if env is 'true'
+        if (env === 'true') {
+          try {
+            const branch = execSync('git branch --show-current', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+            env = (branch === project.productionBranch ? 'production' : 'preview')
+          } catch {
+            // ignore
+            log.warn('Could not guess the environment from the branch name, using `production` as default')
+            env = 'production'
+          }
+        }
+        const adminUrl = joinURL(hub.url, project.teamSlug, project.slug)
+        log.info(`Linked to \`${adminUrl}\``)
+        log.info(`Using \`${env}\` environment`)
+        hub.projectUrl = (env === 'production' ? project.url : project.previewUrl)
+        if (!hub.projectUrl) {
+          log.error(`No deployment found for \`${env}\`, make sure to deploy the project using \`nuxthub deploy\`.`)
+          process.exit(1)
         }
       }
 
@@ -136,7 +164,7 @@ export default defineNuxtModule<ModuleOptions>({
       }
 
       // If using the remote option with a projectUrl and a projectSecretKey
-      log.info(`Using remote features from \`${hub.projectUrl}\``)
+      log.info(`Using remote storage from \`${hub.projectUrl}\``)
       const manifest = await $fetch('/api/_hub/manifest', {
         baseURL: hub.projectUrl,
         headers: {
