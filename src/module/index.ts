@@ -15,9 +15,9 @@ const log = logger.withScope('nuxt:hub')
 export interface ModuleOptions {
   /**
    * Set to `true` to use the remote storage.
-   * Only set to `true` in your nuxt.config on a projet you are not deploying to NuxtHub
+   * Only set to `true` on a project you are deploying outside of NuxtHub or Cloudflare.
    * @default process.env.NUXT_HUB_REMOTE or --remote option when running `nuxt dev`
-   * @see https://hub.nuxt.com/docs/getting-started/installation#options
+   * @see https://hub.nuxt.com/docs/getting-started/remote-storage
    */
   remote?: boolean
   /**
