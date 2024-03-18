@@ -7,6 +7,16 @@ import { useRuntimeConfig } from '#imports'
 
 let _db: D1Database
 
+/**
+ * Access the D1 database.
+ *
+ * @example ```ts
+ * const db = hubDatabase()
+ * const result = await db.exec('SELECT * FROM table')
+ * ```
+ *
+ * @see https://hub.nuxt.com/docs/storage/database
+ */
 export function hubDatabase(): D1Database {
   if (_db) {
     return _db
@@ -25,6 +35,19 @@ export function hubDatabase(): D1Database {
   throw createError('Missing Cloudflare DB binding (D1)')
 }
 
+/**
+ * Access the remote D1 database.
+ *
+ * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
+ * @param secretKey The secret key to authenticate to the remote endpoint
+ *
+ * @example ```ts
+ * const db = proxyHubDatabase('https://my-deployed-project.nuxt.dev', 'my-secret-key')
+ * await db.exec('SELECT * FROM table')
+ * ```
+ *
+ * @see https://hub.nuxt.com/docs/storage/database
+ */
 export function proxyHubDatabase(projectUrl: string, secretKey?: string): D1Database {
   const d1API = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/database'),
