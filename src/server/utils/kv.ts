@@ -8,13 +8,13 @@ import { useRuntimeConfig } from '#imports'
 
 export interface HubKV extends Storage {
   /**
-   * Gets all keys from the storage.
+   * Get all keys from the storage.
    *
    * @see https://hub.nuxt.com/docs/storage/kv#keys
    */
   keys: Storage['getKeys']
   /**
-   * Gets an item from the storage.
+   * Get an item from the storage.
    *
    * @param key The key to get
    *
@@ -22,7 +22,7 @@ export interface HubKV extends Storage {
    */
   get: Storage['getItem']
   /**
-   * Sets an item in the storage.
+   * Set an item in the storage.
    *
    * @param key The key to set
    * @param value The value to set
@@ -31,7 +31,7 @@ export interface HubKV extends Storage {
    */
   set: Storage['setItem']
   /**
-   * Checks if an item exists in the storage.
+   * Check if an item exists in the storage.
    *
    * @param key The key to check
    *
@@ -39,7 +39,7 @@ export interface HubKV extends Storage {
    */
   has: Storage['hasItem']
   /**
-   * Deletes an item from the storage.
+   * Delete an item from the storage.
    *
    * @param key The key to delete
    *

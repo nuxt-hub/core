@@ -84,20 +84,20 @@ function _useBucket(name: string = 'BLOB') {
 
 interface HubBlob {
   /**
-   * Lists all the blobs in the bucket.
+   * List all the blobs in the bucket.
    *
    * @param options The list options
    */
   list(options?: BlobListOptions): Promise<BlobObject[]>
   /**
-   * Serves the blob from the bucket.
+   * Serve the blob from the bucket.
    *
    * @param event The H3 event (needed to set headers for the response)
    * @param pathname The pathname of the blob
    */
   serve(event: H3Event, pathname: string): Promise<ReadableStream<any>>
   /**
-   * Puts a new blob into the bucket.
+   * Put a new blob into the bucket.
    *
    * @param pathname The pathname of the blob
    * @param body The blob content
@@ -105,19 +105,19 @@ interface HubBlob {
    */
   put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options?: BlobPutOptions): Promise<BlobObject>
   /**
-   * Gets the blob metadata from the bucket.
+   * Get the blob metadata from the bucket.
    *
    * @param pathname The pathname of the blob
    */
   head(pathname: string): Promise<BlobObject>
   /**
-   * Deletes the blob from the bucket.
+   * Delete the blob from the bucket.
    *
    * @param pathnames The pathname of the blob
    */
   del(pathnames: string | string[]): Promise<void>
   /**
-   * Deletes the blob from the bucket.
+   * Delete the blob from the bucket.
    *
    * @param pathnames The pathname of the blob
    */
@@ -340,7 +340,7 @@ function fileSizeToBytes(input: string) {
 }
 
 /**
- * Ensures the blob is valid and meets the specified requirements.
+ * Ensure the blob is valid and meets the specified requirements.
  *
  * @param blob The blob to check
  * @param options The options to check against
