@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.3.5
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.3.4...v0.3.5)
+
+### 🩹 Fixes
+
+- Check stringified value ([4394fd3](https://github.com/nuxt-hub/core/commit/4394fd3))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.3.4
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.3.3...v0.3.4)
