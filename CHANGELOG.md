@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.3.6
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.3.5...v0.3.6)
+
+### 🚀 Enhancements
+
+- Add support for hub.env in runtimeConfig ([d0fefd8](https://github.com/nuxt-hub/core/commit/d0fefd8))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.3.5
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.3.4...v0.3.5)
