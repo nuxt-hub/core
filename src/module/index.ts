@@ -67,7 +67,8 @@ export default defineNuxtModule<ModuleOptions>({
       ...readUser('.nuxtrc').hub,
     })
 
-    const remoteArg = parseArgs(argv, { remote: { type: 'string' } }).remote as string
+    let remoteArg = parseArgs(argv, { remote: { type: 'string' } }).remote as string
+    remoteArg = (remoteArg === '' ? 'true' : remoteArg)
     const runtimeConfig = nuxt.options.runtimeConfig
     const hub = runtimeConfig.hub = defu(runtimeConfig.hub || {}, options, {
       url: process.env.NUXT_HUB_URL || 'https://console.hub.nuxt.com',
