@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v0.3.4
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.3.3...v0.3.4)
+
+### 🚀 Enhancements
+
+- Leverage `nitro-cloudflare-dev` ([#22](https://github.com/nuxt-hub/core/pull/22))
+- Support remote storage per env ([#24](https://github.com/nuxt-hub/core/pull/24))
+
+### 📖 Documentation
+
+- Improve remote option ([3ed0c20](https://github.com/nuxt-hub/core/commit/3ed0c20))
+- Improve migration with Drizzle ORM ([d057776](https://github.com/nuxt-hub/core/commit/d057776))
+
+### 🏡 Chore
+
+- Update deps ([64ee799](https://github.com/nuxt-hub/core/commit/64ee799))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.3.3
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.3.2...v0.3.3)
