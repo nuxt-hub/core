@@ -76,7 +76,8 @@ export default defineNuxtModule<ModuleOptions>({
       projectSecretKey: process.env.NUXT_HUB_PROJECT_SECRET_KEY || '',
       userToken: process.env.NUXT_HUB_USER_TOKEN || '',
       remote: remoteArg || process.env.NUXT_HUB_REMOTE,
-      version
+      version,
+      env: process.env.NUXT_HUB_ENV || 'production'
     })
     // validate remote option
     if (hub.remote && !['true', 'production', 'preview'].includes(String(hub.remote))) {
@@ -149,6 +150,8 @@ export default defineNuxtModule<ModuleOptions>({
           log.error(`No deployment found for \`${env}\`, make sure to deploy the project using \`nuxthub deploy\`.`)
           process.exit(1)
         }
+        // Update hub.env in runtimeConfig
+        hub.env = env
       }
 
       // Make sure we have a projectUrl when using the remote option
