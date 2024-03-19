@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.3.7
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.3.6...v0.3.7)
+
+### 🩹 Fixes
+
+- Support --remote again ([8e9b13e](https://github.com/nuxt-hub/core/commit/8e9b13e))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.3.6
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.3.5...v0.3.6)
