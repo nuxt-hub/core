@@ -131,7 +131,7 @@ export default defineNuxtModule<ModuleOptions>({
         })
         let env = hub.remote
         // Guess the environment from the branch name if env is 'true'
-        if (env === 'true') {
+        if (String(env) === 'true') {
           try {
             const branch = execSync('git branch --show-current', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
             env = (branch === project.productionBranch ? 'production' : 'preview')
