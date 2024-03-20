@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.3.8
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.3.7...v0.3.8)
+
+### 🏡 Chore
+
+- Log when using a different console url ([14e65c6](https://github.com/nuxt-hub/core/commit/14e65c6))
+- Improve logs ([ada2a4b](https://github.com/nuxt-hub/core/commit/ada2a4b))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.3.7
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.3.6...v0.3.7)
