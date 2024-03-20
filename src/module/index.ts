@@ -85,6 +85,10 @@ export default defineNuxtModule<ModuleOptions>({
       log.error('Invalid remote option, should be `false`, `true`, `\'production\'` or `\'preview\'`')
       delete hub.remote
     }
+    // Log when using a different Hub url
+    if (hub.url !== 'https://console.hub.nuxt.com') {
+      log.info(`Using \`${hub.url}\` as NuxtHub Console URL`)
+    }
 
     // Add Server caching (Nitro)
     nuxt.options.nitro = defu(nuxt.options.nitro, {
