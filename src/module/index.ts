@@ -115,7 +115,7 @@ export default defineNuxtModule<ModuleOptions>({
     if (hub.remote) {
       // Can either use projectKey or projectUrl
       if (hub.projectKey && hub.projectUrl) {
-        log.error('You cannot use both NUXT_HUB_PROJECT_KEY and NUXT_HUB_PROJECT_URL at the same time. Please use only one of them.')
+        log.error('You cannot use both `NUXT_HUB_PROJECT_KEY` and `NUXT_HUB_PROJECT_URL` at the same time. Please use only one of them.')
         process.exit(1)
       }
       // Check if the project is linked to a NuxtHub project
@@ -131,7 +131,7 @@ export default defineNuxtModule<ModuleOptions>({
           if (err.status === 401) {
             log.error('It seems that you are not logged in, make sure to run `nuxthub login`.')
           } else {
-            log.error('Failed to fetch NuxtHub linked project, make sure to run `nuxthub link` again.')
+            log.error('Failed to fetch linked project on NuxtHub, make sure to run `nuxthub link` again.')
           }
           process.exit(1)
         })
