@@ -59,8 +59,8 @@ export default defineAppConfig({
         target: '_blank',
       }, {
         icon: 'i-simple-icons-nuxtdotjs',
-        label: 'NuxtHub Console',
-        to: 'https://console.hub.nuxt.com',
+        label: 'NuxtHub Admin',
+        to: 'https://admin.hub.nuxt.com',
         target: '_blank',
       }]
     }

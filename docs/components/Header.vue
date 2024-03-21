@@ -33,8 +33,8 @@ const { header } = useAppConfig()
           v-bind="{ color: 'gray', variant: 'ghost', ...link }"
         />
       </template>
-      <UButton to="https://console.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=header" external icon="i-simple-icons-nuxtdotjs" color="black" class="hidden sm:inline-flex">
-        NuxtHub Console
+      <UButton to="https://admin.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=header" external icon="i-simple-icons-nuxtdotjs" color="black" class="hidden sm:inline-flex">
+        NuxtHub Admin
       </UButton>
     </template>
 
@@ -42,8 +42,8 @@ const { header } = useAppConfig()
       <UNavigationTree :links="mapContentNavigation(navigation)" />
 
       <div class="flex py-2">
-        <UButton to="https://console.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=header" external icon="i-simple-icons-nuxtdotjs" color="black" block class="sm:hidden">
-          NuxtHub Console
+        <UButton to="https://admin.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=header" external icon="i-simple-icons-nuxtdotjs" color="black" block class="sm:hidden">
+          NuxtHub Admin
         </UButton>
       </div>
     </template>
