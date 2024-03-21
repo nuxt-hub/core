@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.3.9
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.3.8...v0.3.9)
+
+### 🏡 Chore
+
+- Rename console to admin for clarity ([72cfb51](https://github.com/nuxt-hub/core/commit/72cfb51))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.3.8
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.3.7...v0.3.8)
