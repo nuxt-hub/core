@@ -34,7 +34,7 @@ export default eventHandler(async (event) => {
   if (projectKey) {
     // Here the secretKey is a user token
     await $fetch(`/api/projects/${projectKey}`, {
-      baseURL: process.env.NUXT_HUB_URL || 'https://console.hub.nuxt.com',
+      baseURL: process.env.NUXT_HUB_URL || 'https://admin.hub.nuxt.com',
       method: 'HEAD',
       headers: {
         authorization: `Bearer ${secretKeyOrUserToken}`

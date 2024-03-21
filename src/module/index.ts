@@ -24,8 +24,8 @@ export interface ModuleOptions {
    */
   remote?: boolean | 'production' | 'preview',
   /**
-   * The URL of the NuxtHub Console
-   * @default 'https://console.hub.nuxt.com'
+   * The URL of the NuxtHub Admin
+   * @default 'https://admin.hub.nuxt.com'
    */
   url?: string
   /**
@@ -71,7 +71,7 @@ export default defineNuxtModule<ModuleOptions>({
     remoteArg = (remoteArg === '' ? 'true' : remoteArg)
     const runtimeConfig = nuxt.options.runtimeConfig
     const hub = runtimeConfig.hub = defu(runtimeConfig.hub || {}, options, {
-      url: process.env.NUXT_HUB_URL || 'https://console.hub.nuxt.com',
+      url: process.env.NUXT_HUB_URL || 'https://admin.hub.nuxt.com',
       projectKey: process.env.NUXT_HUB_PROJECT_KEY || '',
       projectUrl: process.env.NUXT_HUB_PROJECT_URL || '',
       projectSecretKey: process.env.NUXT_HUB_PROJECT_SECRET_KEY || '',
@@ -86,8 +86,8 @@ export default defineNuxtModule<ModuleOptions>({
       delete hub.remote
     }
     // Log when using a different Hub url
-    if (hub.url !== 'https://console.hub.nuxt.com') {
-      log.info(`Using \`${hub.url}\` as NuxtHub Console URL`)
+    if (hub.url !== 'https://admin.hub.nuxt.com') {
+      log.info(`Using \`${hub.url}\` as NuxtHub Admin URL`)
     }
 
     // Add Server caching (Nitro)
