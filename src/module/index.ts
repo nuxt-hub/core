@@ -229,7 +229,8 @@ export default defineNuxtModule<ModuleOptions>({
       nuxt.options.nitro.cloudflareDev = {
         persistDir: hubDir,
         configPath: wranglerPath,
-        silent: true
+        silent: true,
+        shamefullyPatchR2Buckets: true
       }
       await installModule('nitro-cloudflare-dev')
       nuxt.options.nitro.plugins = nuxt.options.nitro.plugins || []
