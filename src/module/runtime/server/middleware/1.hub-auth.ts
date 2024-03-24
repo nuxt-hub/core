@@ -1,3 +1,4 @@
+import { handleCors } from 'h3'
 import { eventHandler, getHeader, createError } from 'h3'
 import { $fetch } from 'ofetch'
 
@@ -8,6 +9,8 @@ export default eventHandler(async (event) => {
   }
   // Skip if in development
   if (import.meta.dev) {
+    // add cors for devtools embed
+    handleCors(event, {})
     return
   }
   const secretKeyOrUserToken = (getHeader(event, 'authorization') || '').split(' ')[1]
