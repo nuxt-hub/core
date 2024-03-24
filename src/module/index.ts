@@ -1,4 +1,5 @@
 import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule } from '@nuxt/kit'
+import { addCustomTab } from '@nuxt/devtools-kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
@@ -193,14 +194,29 @@ export default defineNuxtModule<ModuleOptions>({
         log.warn(`\`${hub.projectUrl}\` is running \`@nuxthub/core@${manifest.version}\` while the local project is running \`@nuxthub/core@${hub.version}\`. Make sure to use the same version on both sides to avoid issues.`)
       }
       logger.info(`Remote storage available: ${Object.keys(manifest.storage).filter(k => manifest.storage[k]).map(k => `\`${k}\``).join(', ')} `)
-      return
     }
 
-    // Add Proxy routes only if not remote
-    addServerScanDir(resolve('./runtime/server'))
+    if (nuxt.options.dev || !hub.remote) {
+      // Add Proxy routes only if not remote or in development (used for devtools)
+      addServerScanDir(resolve('./runtime/server'))
+    }
+
+    if (nuxt.options.dev) {
+      nuxt.hook('listen', (_, { url }) => {
+        addCustomTab({
+          name: 'hub-database',
+          title: 'Hub Database',
+          icon: 'i-ph-database',
+          view: {
+            type: 'iframe',
+            src: `https://admin.hub.nuxt.com/embed/database?url=${url}`,
+          },
+        })
+      })
+    }
 
     // Local development without remote connection
-    if (nuxt.options.dev) {
+    if (nuxt.options.dev && !hub.remote) {
       log.info('Using local storage from `.data/hub`')
 
       // Create the .data/hub/ directory
