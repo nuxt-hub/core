@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.3.10
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.3.9...v0.3.10)
+
+### 🚀 Enhancements
+
+- Add Hub database in the devtools ([#29](https://github.com/nuxt-hub/core/pull/29))
+
+### 🏡 Chore
+
+- Update renovate.json ([dac1b5f](https://github.com/nuxt-hub/core/commit/dac1b5f))
+- Update deps ([edb67fa](https://github.com/nuxt-hub/core/commit/edb67fa))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.3.9
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.3.8...v0.3.9)
