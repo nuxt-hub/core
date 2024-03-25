@@ -18,6 +18,14 @@ Read more on https://hub.nuxt.com
 
 ## Quick Setup
 
+Duplicate our [nuxt-hub/starter](https://github.com/nuxt-hub/starter) or create a new NuxtHub project with:
+
+```bash
+npx nuxthub init my-app
+```
+
+## Add to a Nuxt project
+
 1. Install `@nuxthub/core` dependency to your project:
 
 ```bash
