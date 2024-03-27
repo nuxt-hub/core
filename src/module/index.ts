@@ -204,12 +204,33 @@ export default defineNuxtModule<ModuleOptions>({
     if (nuxt.options.dev) {
       nuxt.hook('listen', (_, { url }) => {
         addCustomTab({
+          category: 'server',
           name: 'hub-database',
-          title: 'Hub Database',
+          title: 'Database',
           icon: 'i-ph-database',
           view: {
             type: 'iframe',
             src: `https://admin.hub.nuxt.com/embed/database?url=${url}`,
+          },
+        })
+        addCustomTab({
+          category: 'server',
+          name: 'hub-kv',
+          title: 'KV',
+          icon: 'i-ph-coin',
+          view: {
+            type: 'iframe',
+            src: `https://admin.hub.nuxt.com/embed/kv?url=${url}`,
+          },
+        })
+        addCustomTab({
+          category: 'server',
+          name: 'hub-blob',
+          title: 'Blob',
+          icon: 'i-ph-shapes',
+          view: {
+            type: 'iframe',
+            src: `https://admin.hub.nuxt.com/embed/blob?url=${url}`,
           },
         })
       })

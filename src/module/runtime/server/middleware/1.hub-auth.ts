@@ -10,7 +10,10 @@ export default eventHandler(async (event) => {
   // Skip if in development
   if (import.meta.dev) {
     // add cors for devtools embed
-    handleCors(event, {})
+    handleCors(event, {
+      methods: '*',
+      origin: ['https://admin.hub.nuxt.com'],
+    })
     return
   }
   const secretKeyOrUserToken = (getHeader(event, 'authorization') || '').split(' ')[1]
