@@ -68,6 +68,6 @@
     "nuxt": "^3.11.1",
     "typescript": "^5.4.3",
     "vitest": "^1.4.0",
-    "wrangler": "^3.38.0"
+    "wrangler": "^3.39.0"
   }
 }
