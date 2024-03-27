@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v0.3.11
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.3.10...v0.3.11)
+
+### 🚀 Enhancements
+
+- Add support for Blob & KV in devtools ([#30](https://github.com/nuxt-hub/core/pull/30))
+
+### 📖 Documentation
+
+- Add starter ([4684cde](https://github.com/nuxt-hub/core/commit/4684cde))
+
+### 🏡 Chore
+
+- Update wrangler ([d0018ec](https://github.com/nuxt-hub/core/commit/d0018ec))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.3.10
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.3.9...v0.3.10)
