@@ -206,7 +206,7 @@ export default defineNuxtModule<ModuleOptions>({
         addCustomTab({
           category: 'server',
           name: 'hub-database',
-          title: 'Database',
+          title: 'Hub Database',
           icon: 'i-ph-database',
           view: {
             type: 'iframe',
@@ -216,7 +216,7 @@ export default defineNuxtModule<ModuleOptions>({
         addCustomTab({
           category: 'server',
           name: 'hub-kv',
-          title: 'KV',
+          title: 'Hub KV',
           icon: 'i-ph-coin',
           view: {
             type: 'iframe',
@@ -226,7 +226,7 @@ export default defineNuxtModule<ModuleOptions>({
         addCustomTab({
           category: 'server',
           name: 'hub-blob',
-          title: 'Blob',
+          title: 'Hub Blob',
           icon: 'i-ph-shapes',
           view: {
             type: 'iframe',
