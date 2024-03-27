@@ -113,6 +113,11 @@ export default defineNuxtModule<ModuleOptions>({
       return
     }
 
+    // Write hub.config.json after build
+    nuxt.hook('nitro:build:public-assets', async (nitro) => {
+      await writeFile(join(nitro.options.output.publicDir, 'hub.config.json'), JSON.stringify(hub, null, 2), 'utf-8')
+    })
+
     if (hub.remote) {
       // Can either use projectKey or projectUrl
       if (hub.projectKey && hub.projectUrl) {
