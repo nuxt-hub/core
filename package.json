@@ -9,11 +9,11 @@
   },
   "license": "Apache-2.0",
   "type": "module",
-  "main": "./nuxt.config.ts",
+  "main": "./dist/module.cjs",
+  "module": "./dist/module.mjs",
   "homepage": "https://hub.nuxt.com",
   "files": [
-    "src",
-    "nuxt.config.ts"
+    "dist"
   ],
   "keywords": [
     "nuxt",
@@ -24,7 +24,8 @@
     "blob"
   ],
   "scripts": {
-    "dev:prepare": "nuxi prepare playground",
+    "build": "nuxt-module-build build",
+    "dev:prepare": "nuxt-module-build build --stub; nuxi prepare playground",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "docs": "PORT=4000 nuxi dev docs",
@@ -60,6 +61,7 @@
   "devDependencies": {
     "@nuxt/devtools": "^1.1.4",
     "@nuxt/eslint-config": "^0.2.0",
+    "@nuxt/module-builder": "^0.5.5",
     "@nuxt/schema": "^3.11.1",
     "@nuxt/test-utils": "^3.12.0",
     "@types/node": "^20.11.30",

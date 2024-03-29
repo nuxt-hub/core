@@ -38,11 +38,11 @@ npx nypm@latest add @nuxthub/core
 npx nypm@latest add -D wrangler
 ```
 
-3. Add `@nuxthub/core` to the `extends` section of `nuxt.config.ts`
+3. Add `@nuxthub/core` to the `modules` section of `nuxt.config.ts`
 
 ```js
 export default defineNuxtConfig({
-  extends: [
+  modules: [
     '@nuxthub/core'
   ]
 })

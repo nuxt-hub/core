@@ -1,3 +1,5 @@
+import { defineNitroPlugin } from 'nitropack/runtime/plugin'
+
 export default defineNitroPlugin(async () => {
   // Wait for nitro-cloudflare-dev to be ready
   // @ts-ignore
