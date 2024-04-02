@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule, addServerImports, addServerImportsDir } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule, addServerImportsDir } from '@nuxt/kit'
 import { addCustomTab } from '@nuxt/devtools-kit'
 import { join } from 'pathe'
 import { defu } from 'defu'

@@ -1,9 +1,11 @@
+import module from '../src/module'
+
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
     '@nuxt/ui',
     '@kgierke/nuxt-basic-auth',
-    '@nuxthub/core'
+    module
   ],
   ui: {
     icons: ['heroicons', 'simple-icons']
