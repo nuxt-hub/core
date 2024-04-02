@@ -79,7 +79,8 @@ export default defineNuxtModule<ModuleOptions>({
       userToken: process.env.NUXT_HUB_USER_TOKEN || '',
       remote: remoteArg || process.env.NUXT_HUB_REMOTE,
       version,
-      env: process.env.NUXT_HUB_ENV || 'production'
+      env: process.env.NUXT_HUB_ENV || 'production',
+      openapi: nuxt.options.nitro.experimental?.openAPI === true
     })
     // validate remote option
     if (hub.remote && !['true', 'production', 'preview'].includes(String(hub.remote))) {
