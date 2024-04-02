@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.3.12
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.3.11...v0.3.12)
+
+### 🚀 Enhancements
+
+- Expose openapi spec under `_hub` secure routes ([#35](https://github.com/nuxt-hub/core/pull/35))
+
+### ❤️ Contributors
+
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
 ## v0.3.11
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.3.10...v0.3.11)
