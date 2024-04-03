@@ -1,5 +1,8 @@
 import { eventHandler } from 'h3'
 import { useRuntimeConfig } from '#imports'
+import { hubDatabase } from '../../utils/database'
+import { hubKV } from '../../utils/kv'
+import { hubBlob } from '../../utils/blob'
 
 export default eventHandler(async () => {
   const { version } = useRuntimeConfig().hub
