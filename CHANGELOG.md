@@ -1,6 +1,29 @@
 # Changelog
 
 
+## v0.4.0
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.3.12...v0.4.0)
+
+### 🚀 Enhancements
+
+- Build hooks in Cloudflare CI ([#40](https://github.com/nuxt-hub/core/pull/40))
+- Transform as module ([#37](https://github.com/nuxt-hub/core/pull/37))
+- ⚠️  Update deps and force breaking change ([a34d67f](https://github.com/nuxt-hub/core/commit/a34d67f))
+
+### 🏡 Chore
+
+- **release:** V0.3.13 ([dc8f203](https://github.com/nuxt-hub/core/commit/dc8f203))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Update deps and force breaking change ([a34d67f](https://github.com/nuxt-hub/core/commit/a34d67f))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
 ## v0.3.13
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.3.12...v0.3.13)
