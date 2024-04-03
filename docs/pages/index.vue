@@ -114,7 +114,7 @@ useSeoMeta({
           </h4>
           <ULink
             target="_blank" to="/"
-            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition-hover transition-300"
+            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition transition-300 z-10"
           >
             {{ page?.database.pricing.externalLink }}
             <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
@@ -161,7 +161,7 @@ useSeoMeta({
           </h4>
           <ULink
             target="_blank" to="/"
-            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition-hover transition-300"
+            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition transition-300 z-10"
           >
             {{ page?.blob.pricing.externalLink }}
             <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
@@ -209,7 +209,7 @@ useSeoMeta({
           </h4>
           <ULink
             target="_blank" to="/"
-            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition-hover transition-300"
+            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition transition-300 z-10"
           >
             {{ page?.kv.pricing.externalLink }}
             <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
