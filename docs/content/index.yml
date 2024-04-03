@@ -47,30 +47,28 @@ features:
 deploy:
   headline: Ready to use
   title: Deploy a Nuxt application <span class="text-primary">in one minute.</span>
-  description: The NuxtHub Admin is made to <span class="font-semibold text-gray-200 dark:text-white">simplify your experience</span> with NuxtHub, enabling you to effortlessly manage teams and projects, as well as deploying NuxtHub application with <span class="font-semibold text-gray-200 dark:text-white">zero-configuration</span> on your Cloudflare account.
+  description: The NuxtHub Admin is made to <span class="font-semibold text-gray-800 dark:text-white">simplify your experience</span> with NuxtHub, enabling you to effortlessly manage teams and projects, as well as deploying NuxtHub application with <span class="font-semibold text-gray-800 dark:text-white">zero-configuration</span> on your Cloudflare account.
   features:
     - title: Link your Cloudflare account
       description: Create an API token on Cloudflare with our pre-filled template.
       img:
-        name: '/images/deploy-account.webp'
-        width: '718'
-        height: '388'
-    - title: Create
-      description: Import your repository and deploy with Cloudflare CI or deploy with npx nuxthub deploy
+        name: '/images/steps/link-cloudflare-account.png'
+    - title: Create a Nuxt app
+      description: Start from our templates or import your GitHub repository.
       img:
-        name: '/images/deploy-create.webp'
+        name: '/images/steps/create-nuxthub-project.png'
         width: '718'
         height: '388'
-    - title: Deploy your first project
-      description: Run npx nuxthub deploy
+    - title: Deploy it
+      description: Run the nuxthub deploy command or use the Cloudflare Pages CI/CD.
       img:
-        name: '/images/deploy-project.webp'
+        name: '/images/steps/deploy-nuxt-project.png'
         width: '718'
         height: '388'
-    - title: Share your website to the world
+    - title: Share it to the world
       description: Get insights and manage your storage in NuxtHub.
       img:
-        name: '/images/deploy-share.webp'
+        name: '/images/steps/share-nuxt-project.png'
         width: '718'
         height: '388'
   buttons:
@@ -87,7 +85,7 @@ database:
     height: '649'
   headline: NuxtHub Database
   title: A scalable database for your Nuxt application.
-  description: 'NuxtHub Database unlocks the power of <span class="font-semibold text-gray-200 dark:text-white">Cloudflare D1</span> to give you access to a serverless SQL database, with zero configuration.
+  description: 'NuxtHub Database unlocks the power of <span class="font-semibold text-gray-800 dark:text-white">Cloudflare D1</span> to give you access to a serverless SQL database, with zero configuration.
   Scale and manage effortlessly, and pay only for what you use.'
   features:
     - name: '`hubDatabase()` server composable'
@@ -118,7 +116,7 @@ blob:
     height: '649'
   headline: NuxtHub Blob
   title: Add file uploads to your Nuxt application.
-  description: 'NuxtHub Blob lets you to store and access media files on a global network, thanks to <span class="font-semibold text-gray-200 dark:text-white">Cloudflare R2.</span>
+  description: 'NuxtHub Blob lets you to store and access media files on a global network, thanks to <span class="font-semibold text-gray-800 dark:text-white">Cloudflare R2.</span>
 Let users upload data like images, videos and audio files with our server composable with our blob validator.'
   features:
     - name: 'hubBlob() server composable'
@@ -149,7 +147,7 @@ kv:
     height: '649'
   headline: NuxtHub KV
   title: A Global Key-Value Database for Nuxt.
-  description: 'NuxtHub KV leverages <span class="font-semibold text-gray-200 dark:text-white">Cloudflare Workers KV</span> to access a global, low-latency, key-value data storage across 300+ global locations.
+  description: 'NuxtHub KV leverages <span class="font-semibold text-gray-800 dark:text-white">Cloudflare Workers KV</span> to access a global, low-latency, key-value data storage across 300+ global locations.
 Access it in your Nuxt codebase, with zero-configuration.'
   features:
     - name: 'HubKV() server composable'
