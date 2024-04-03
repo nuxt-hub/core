@@ -117,7 +117,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     if (process.env.CF_PAGES) {
       nuxt.hook('build:before', async () => {
-        await $fetch('/api/projects/build/start', {
+        await $fetch('/api/projects/build/before', {
           baseURL: hub.url,
           method: 'POST',
           body: hub,
@@ -125,7 +125,7 @@ export default defineNuxtModule<ModuleOptions>({
       })
 
       nuxt.hook('build:done', async () => {
-        await $fetch('/api/projects/build/finish', {
+        await $fetch('/api/projects/build/done', {
           baseURL: hub.url,
           method: 'POST',
           body: hub,
