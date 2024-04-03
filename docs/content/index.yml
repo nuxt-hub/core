@@ -250,7 +250,7 @@ testimonials:
     - quote: "I can't find an excuse to not go full-stack with Nuxt from now on. Ship fast the Nuxt way, zero config. Just plug & deploy."
       author:
         name: 'Israel Ortuño'
-        description: 'VueJobs'
+        description: 'Co-founder of VueJobs'
         avatar:
           src: 'https://avatars.githubusercontent.com/u/1769417?v=4'
           loading: 'lazy'
@@ -260,6 +260,13 @@ testimonials:
         description: 'Product Developer'
         avatar:
           src: 'https://avatars.githubusercontent.com/u/15716057?v=4'
+          loading: 'lazy'
+    - quote: "I love the polish and the batteries-included approach. NuxtHub takes web framework and hosting integration to a new level!"
+      author:
+        name: 'Igor Minar'
+        description: 'Software Engineer at Cloudflare'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/216296?v=4'
           loading: 'lazy'
 journey:
     title: 'Begin your NuxtHub journey <span class="text-green-400">today</span>'

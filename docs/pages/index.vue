@@ -236,7 +236,7 @@ useSeoMeta({
         <h2 v-html="page?.testimonials.description" />
       </template>
 
-      <UPageColumns>
+      <UPageColumns :ui="{ wrapper: 'column-1 md:columns-2 lg:columns-4 gap-8 space-y-8' }">
         <!-- Hack for Safari -->
         <div v-for="(testimonial, index) in page?.testimonials.items" :key="index" class="break-inside-avoid">
           <ULandingTestimonial v-bind="testimonial" :card="false" />
