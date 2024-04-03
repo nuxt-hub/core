@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.3.13
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.3.12...v0.3.13)
+
+### 🚀 Enhancements
+
+- Build hooks in Cloudflare CI ([#40](https://github.com/nuxt-hub/core/pull/40))
+
+### ❤️ Contributors
+
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
 ## v0.3.12
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.3.11...v0.3.12)
