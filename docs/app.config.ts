@@ -1,7 +1,7 @@
 export default defineAppConfig({
   ui: {
-    primary: 'emerald',
-    gray: 'cool',
+    primary: 'green',
+    gray: 'slate',
     footer: {
       bottom: {
         left: 'text-sm text-gray-500 dark:text-gray-400',

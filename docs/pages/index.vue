@@ -15,39 +15,271 @@ useSeoMeta({
 
 <template>
   <div>
-    <ULandingHero v-bind="page.hero">
-      <template #top>
-        <Background class="opacity-30" />
-      </template>
+    <UColorModeImage :light="page?.hero.img.light" :dark="page?.hero.img.dark" :width="page?.hero.img.width"
+      :height="page?.hero.img.height" class="absolute right-0 top-16 opacity-60 lg:opacity-100" />
+    <ULandingHero v-bind="page?.hero" orientation="horizontal"
+      :ui="{ container: 'flex flex-row justify-start items-center' }">
       <template #headline>
-        <UBadge v-if="page.hero.headline" variant="subtle" size="lg" class="relative rounded-full font-semibold">
-          <NuxtLink :to="page.hero.headline.to" target="_blank" class="focus:outline-none" tabindex="-1">
+        <UBadge v-if="page?.hero.headline" variant="subtle" size="lg" class="relative rounded-full font-semibold">
+          <NuxtLink :to="page?.hero.headline.to" target="_blank" class="focus:outline-none" tabindex="-1">
             <span class="absolute inset-0" aria-hidden="true" />
           </NuxtLink>
 
-          {{ page.hero.headline.label }}
+          {{ page?.hero.headline.label }}
 
-          <UIcon v-if="page.hero.headline.icon" :name="page.hero.headline.icon" class="ml-1 w-4 h-4 pointer-events-none" />
+          <UIcon v-if="page?.hero.headline.icon" :name="page?.hero.headline.icon"
+            class="ml-1 w-4 h-4 pointer-events-none" />
         </UBadge>
       </template>
 
       <template #title>
-        <MDC :value="page.hero.title" />
+        <MDC :value="page?.hero.title" />
       </template>
 
-      <MDC :value="page.hero.code" tag="pre" class="hero_code prose prose-primary dark:prose-invert lg:ml-auto" />
+      <template #description>
+        <p v-html="page?.hero.description" />
+      </template>
     </ULandingHero>
 
-    <ULandingSection :title="page.features.title" :description="page.features.description" :links="page.features.links" class="pt-0 sm:pt-0">
-      <UPageGrid>
-        <ULandingCard v-for="(item, index) of page.features.items" :key="index" v-bind="item" />
-      </UPageGrid>
+    <ULandingSection :ui="{ wrapper: 'py-6 sm:py-12' }">
+      <ul class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-16">
+        <li v-for="feature in page?.features" :key="feature.name" class="flex flex-col gap-y-2">
+          <UIcon :name="feature.icon" class="h-8 w-8 shrink-0 text-green-400" />
+          <div class="flex flex-col gap-y-1">
+            <h5 class="font-semibold text-gray-900 dark:text-white">{{ feature.name }}</h5>
+            <p class="text-gray-500 dark:text-gray-400">{{ feature.description }}</p>
+          </div>
+        </li>
+      </ul>
+    </ULandingSection>
+
+    <!-- deploy section -->
+    <ULandingSection :headline="page?.deploy.headline" :title="page?.deploy.title" :links="page?.deploy.buttons">
+      <template #title>
+        <h2 v-html="page?.deploy.title" />
+      </template>
+      <template #description>
+        <p v-html="page?.deploy.description" />
+      </template>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 items-start justify-center">
+        <li v-for="deploy in page?.deploy.features" :key="deploy.label" class="flex flex-col gap-y-8 justify-center">
+          <img :src="deploy.img.name" :width="deploy.img.width" :height="deploy.img.height" class="rounded-xl" />
+          <div>
+            <h4 v-html="deploy.title" class="font-semibold" />
+            <p class="text-gray-500 dark:text-gray-400">{{ deploy.description }}</p>
+          </div>
+        </li>
+      </ul>
+    </ULandingSection>
+
+    <!-- database section -->
+    <ULandingSection :headline="page?.database.headline" :features="page?.database.features"
+      :links="page?.database.buttons" align="left" :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }">
+      <template #title>
+        <h2 v-html="page?.database.title" />
+      </template>
+      <template #description>
+        <h2 v-html="page?.database.description" />
+      </template>
+      <img :src="page?.database.img.name" :width="page?.database.img.width" :height="page?.database.img.height" />
+    </ULandingSection>
+
+    <div
+      class="bg-gray-100 dark:bg-gray-900/30 py-10 border border-y-gray-300 dark:border-y-gray-700 border-x-transparent relative">
+      <UColorModeImage light="/images/pricing-dots-light.svg" dark="/images/pricing-dots-dark.svg"
+        class="absolute left-0 inset-y-0" />
+      <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
+        <div class="flex flex-col gap-y-2">
+          <h4 class="font-semibold">
+            {{ page?.database.pricing.title }}
+          </h4>
+          <ULink target="_blank" to="/"
+            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition-hover transition-300">
+            {{ page?.database.pricing.externalLink }}
+            <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
+          </ULink>
+        </div>
+        <div class="flex justify-between gap-x-8 pt-8 lg:pt-0">
+          <div v-for="price in page?.database.pricing.features" :key="price.title" class="flex flex-col gap-y-2">
+            <h4 class="font-semibold">
+              {{ price.title }}
+            </h4>
+            <p class="text-gray-500 dark:text-gray-400">
+              {{ price.description }}
+            </p>
+          </div>
+        </div>
+      </UContainer>
+    </div>
+
+    <!-- blob section -->
+    <ULandingSection :headline="page?.blob.headline" :features="page?.blob.features" :links="page?.blob.buttons"
+      :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }" align="right">
+      <template #title>
+        <h2 v-html="page?.blob.title" />
+      </template>
+      <template #description>
+        <h2 v-html="page?.blob.description" />
+      </template>
+      <img :src="page?.blob.img.name" :width="page?.blob.img.width" :height="page?.blob.img.height" />
+    </ULandingSection>
+
+    <div
+      class="bg-gray-100 dark:bg-gray-900/30 py-10 border border-y-gray-300 dark:border-y-gray-700 border-x-transparent relative">
+      <UColorModeImage light="/images/pricing-dots-light.svg" dark="/images/pricing-dots-dark.svg"
+        class="absolute left-0 inset-y-0" />
+      <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
+        <div class="flex flex-col gap-y-2">
+          <h4 class="font-semibold">
+            {{ page?.blob.pricing.title }}
+          </h4>
+          <ULink target="_blank" to="/"
+            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition-hover transition-300">
+            {{ page?.blob.pricing.externalLink }}
+            <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
+          </ULink>
+        </div>
+
+        <div class="flex justify-between gap-x-8 pt-8 lg:pt-0">
+          <div v-for="price in page?.blob.pricing.features" :key="price.title" class="flex flex-col gap-y-2">
+            <h4 class="font-semibold">
+              {{ price.title }}
+            </h4>
+            <p class="text-gray-500 dark:text-gray-400">
+              {{ price.description }}
+            </p>
+          </div>
+        </div>
+      </UContainer>
+    </div>
+
+    <!-- KV section -->
+    <ULandingSection :headline="page?.kv.headline" :features="page?.kv.features" :links="page?.kv.buttons"
+      :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }" align="left">
+      <template #title>
+        <h2 v-html="page?.kv.title" />
+      </template>
+      <template #description>
+        <h2 v-html="page?.kv.description" />
+      </template>
+      <img :src="page?.kv.img.name" :width="page?.kv.img.width" :height="page?.kv.img.height" />
+    </ULandingSection>
+
+    <div
+      class="bg-gray-100 dark:bg-gray-900/30 py-10 border border-y-gray-300 dark:border-y-gray-700 border-x-transparent relative">
+      <UColorModeImage light="/images/pricing-dots-light.svg" dark="/images/pricing-dots-dark.svg"
+        class="absolute left-0 inset-y-0" />
+      <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
+        <div class="flex flex-col gap-y-2">
+          <h4 class="font-semibold">
+            {{ page?.kv.pricing.title }}
+          </h4>
+          <ULink target="_blank" to="/"
+            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition-hover transition-300">
+            {{ page?.kv.pricing.externalLink }}
+            <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
+          </ULink>
+        </div>
+        <div class="grid grid-cols-2 gap-8 sm:flex justify-between gap-x-8 pt-8 lg:pt-0">
+          <div v-for="price in page?.kv.pricing.features" :key="price.title" class="flex flex-col gap-y-2">
+            <h4 class="font-semibold">
+              {{ price.title }}
+            </h4>
+            <p class="text-gray-500 dark:text-gray-400">
+              {{ price.description }}
+            </p>
+          </div>
+        </div>
+      </UContainer>
+    </div>
+
+    <!-- storage section -->
+    <ULandingSection :headline="page?.storage.headline" :features="page?.storage.features"
+      :links="page?.storage.buttons" :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }" align="right">
+      <template #title>
+        <h2 v-html="page?.storage.title" />
+      </template>
+      <template #description>
+        <h2 v-html="page?.storage.description" />
+      </template>
+      <img :src="page?.storage.img.name" :width="page?.storage.img.width" :height="page?.storage.img.height" />
+    </ULandingSection>
+
+    <!-- tool section -->
+    <ULandingSection :headline="page?.tool.headline" :links="page?.tool.buttons">
+      <template #title>
+        <h2 v-html="page?.tool.title" />
+      </template>
+      <template #description>
+        <h2 v-html="page?.tool.description" />
+      </template>
+
+      <ULandingGrid :ui="{ wrapper: 'flex flex-col md:grid gap-8 md:grid-cols-2 lg:grid-cols-4 relative' }">
+        <ULandingCard v-for="tool in page?.tool.features" :description="tool.description"
+          :ui="{ title: '', description: 'pl-8' }">
+          <template #title>
+            <div class="flex flex-row gap-x-3 items-center">
+              <UIcon :name="tool.icon" class="h-5 w-5 text-green-400" />
+              <h5 class="text-gray-900 dark:text-white text-base font-bold truncate">{{ tool.title }}</h5>
+            </div>
+          </template>
+        </ULandingCard>
+      </ULandingGrid>
+    </ULandingSection>
+
+    <!-- testomonials section -->
+    <ULandingSection :headline="page?.testimonials.headline">
+      <template #title>
+        <h2 v-html="page?.testimonials.title" />
+      </template>
+      <template #description>
+        <h2 v-html="page?.testimonials.description" />
+      </template>
+
+      <UPageColumns>
+        <!-- Hack for Safari -->
+        <div v-for="(testimonial, index) in page?.testimonials.items" :key="index" class="break-inside-avoid">
+          <ULandingTestimonial v-bind="testimonial" :card="false" />
+        </div>
+      </UPageColumns>
+    </ULandingSection>
+
+    <!-- journey section -->
+    <ULandingSection class="relative mt-32" :ui="{ title: 'z-10' }">
+      <div
+        class="flex justify-center absolute left-0 right-0 -top-8 sm:-top-10 md:-top-12 lg:-top-20 xl:-top-32 2xl:-top-42">
+        <UColorModeImage :light="page?.journey.images.light" :dark="page?.journey.images.dark"
+          :width="page?.journey.images.width" :height="page?.journey.images.height" />
+      </div>
+
+      <template #title>
+        <h2 v-html="page?.journey.title" />
+      </template>
+
+      <ULandingGrid :ui="{ wrapper: 'md:grid-cols-1 lg:grid-cols-3' }">
+        <UPageCard v-for="feature in page?.journey.features" :description="feature.description"
+          :ui="{ title: '', description: 'pl-8' }">
+          <template #title>
+            <div class="flex flex-row gap-x-3 items-center">
+              <UIcon :name="feature.icon" class="h-5 w-5 text-green-400" />
+              <h5 class="text-gray-900 dark:text-white text-base font-bold truncate">{{ feature.title }}</h5>
+            </div>
+          </template>
+        </UPageCard>
+      </ULandingGrid>
+
+      <template #bottom>
+        <div class="flex w-full justify-center items-center space-x-4 pt-[92px]">
+          <UInputCopy v-bind="page?.journey.copybutton" />
+          <UButton v-bind="page?.journey.button" />
+        </div>
+      </template>
     </ULandingSection>
   </div>
 </template>
 
 <style lang="postcss">
-.hero_code div div  {
+.hero_code div div {
   @apply dark:bg-gray-900/60 backdrop-blur-3xl bg-white/60;
 }
 </style>
