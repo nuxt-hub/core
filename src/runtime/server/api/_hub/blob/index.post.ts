@@ -1,3 +1,6 @@
+import { createError, eventHandler, readFormData } from 'h3'
+import { hubBlob, type BlobObject } from '../../../utils/blob'
+
 export default eventHandler(async (event) => {
   const form = await readFormData(event)
   const files = form.getAll('files') as File[]

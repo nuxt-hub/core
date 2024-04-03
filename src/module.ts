@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule, addServerImportsDir } from '@nuxt/kit'
 import { addCustomTab } from '@nuxt/devtools-kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
@@ -9,7 +9,7 @@ import { $fetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { parseArgs } from 'citty'
 import { generateWrangler } from './utils'
-import { version } from '../../package.json'
+import { version } from '../package.json'
 import { execSync } from 'node:child_process'
 import { argv } from 'node:process'
 
@@ -61,6 +61,7 @@ export default defineNuxtModule<ModuleOptions>({
   async setup (options, nuxt) {
     const rootDir = nuxt.options.rootDir
     const { resolve } = createResolver(import.meta.url)
+    const resolveRuntimeModule = (path: string) => resolve('./runtime', path)
 
     // Waiting for https://github.com/unjs/c12/pull/139
     // Then adding the c12 dependency to the project to 1.8.1
@@ -117,6 +118,9 @@ export default defineNuxtModule<ModuleOptions>({
     if (nuxt.options._prepare) {
       return
     }
+
+    // Register composables
+    addServerImportsDir(resolveRuntimeModule('./server/utils'))
 
     // Within CF Pages CI/CD to notice NuxtHub about the build and hub config
     if (!nuxt.options.dev && process.env.CF_PAGES && process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN && process.env.NUXT_HUB_PROJECT_KEY && process.env.NUXT_HUB_ENV) {
