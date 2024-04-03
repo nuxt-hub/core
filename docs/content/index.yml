@@ -22,7 +22,7 @@ NuxtHub lets your run your Nuxt apps, anywhere with high performance and afforda
       trailing: true
       to: '/docs/getting-started'
       size: lg
-      class: 'transition-hover duration-300'
+      class: 'transition duration-300'
     - label: Star on GitHub
       icon: i-simple-icons-github
       size: lg
@@ -30,7 +30,7 @@ NuxtHub lets your run your Nuxt apps, anywhere with high performance and afforda
       variant: ghost
       to: https://github.com/nuxt-hub/core
       target: _blank
-      class: 'transition-hover duration-300'
+      class: 'transition duration-300'
 features:
   - name: Automatic scaling
     description: Traffic is routed and load balanced across thousands of servers. Sleep well as your Nuxt app scales effortlessly.
@@ -73,11 +73,12 @@ deploy:
         height: '388'
   buttons:
     - label: Sign in
-      class: 'text-gray-900'
       size: xl
+      class: 'transition duration-300'
     - label: Learn more
       color: gray
       size: xl
+      class: 'transition duration-300'
 database:
   img:
     name: '/images/database.webp'
@@ -95,10 +96,12 @@ database:
     - label: Explore database templates
       color: gray
       size: lg
+      class: 'transition duration-300'
     - label: Read documentation
       color: gray
       variant: ghost
       size: lg
+      class: 'transition duration-300'
   pricing:
       title: Cloudflare D1 Free
       externalLink: Learn more on Cloudflare D1 pricing
@@ -126,10 +129,12 @@ Let users upload data like images, videos and audio files with our server compos
     - label: Explore Blob templates
       icon: i-ph-app-window
       color: gray
+      class: 'transition duration-300'
     - label: Read documentation
       color: gray
       variant: ghost
       size: lg
+      class: 'transition duration-300'
   pricing:
       title: Cloudflare R2 Free
       externalLink: Learn more on Cloudflare R2 pricing
@@ -158,11 +163,13 @@ Access it in your Nuxt codebase, with zero-configuration.'
       icon: i-ph-app-window
       color: gray
       size: lg
+      class: 'transition duration-300'
     - label: Read documentation
       icon: i-ph-book-open
       variant: ghost
       color: gray
       size: lg
+      class: 'transition duration-300'
   pricing:
       title: Cloudflare KV Free
       externalLink: Learn more on Cloudflare KV pricing
@@ -194,10 +201,12 @@ storage:
       icon: i-ph-app-window
       color: gray
       size: lg
+      class: 'transition duration-300'
     - label: Read documentation
       variant: ghost
       color: gray
       size: lg
+      class: 'transition duration-300'
 tool:
   headline: All-in-one tool
   buttons:
@@ -206,6 +215,7 @@ tool:
       color: 'gray'
       size: 'lg'
       trailing-icon: 'i-heroicons-arrow-small-right'
+      class: 'transition duration-300'
   title: Tailored features for <span class="text-green-400">Nuxt developers</span>
   description: NuxtHub provides you with all the tools you need to build and deploy your Nuxt apps, on the edge.
   features:
@@ -288,3 +298,4 @@ journey:
     button:
       label: 'Get Started'
       size: 'lg'
+      class: 'transition duration-300'
