@@ -74,6 +74,7 @@ export default defineNuxtModule<ModuleOptions>({
     const hub = runtimeConfig.hub = defu(runtimeConfig.hub || {}, options, {
       url: process.env.NUXT_HUB_URL || 'https://admin.hub.nuxt.com',
       projectKey: process.env.NUXT_HUB_PROJECT_KEY || '',
+      deployKey: process.env.NUXT_HUB_PROJECT_DEPLOY_KEY || '',
       projectUrl: process.env.NUXT_HUB_PROJECT_URL || '',
       projectSecretKey: process.env.NUXT_HUB_PROJECT_SECRET_KEY || '',
       userToken: process.env.NUXT_HUB_USER_TOKEN || '',
@@ -112,6 +113,24 @@ export default defineNuxtModule<ModuleOptions>({
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {
       return
+    }
+
+    if (process.env.CF_PAGES) {
+      nuxt.hook('build:before', async () => {
+        await $fetch('/api/projects/build/start', {
+          baseURL: hub.url,
+          method: 'POST',
+          body: hub,
+        }).catch(() => {})
+      })
+
+      nuxt.hook('build:done', async () => {
+        await $fetch('/api/projects/build/finish', {
+          baseURL: hub.url,
+          method: 'POST',
+          body: hub,
+        }).catch(() => {})
+      })
     }
 
     if (hub.remote) {
