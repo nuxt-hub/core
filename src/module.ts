@@ -73,12 +73,16 @@ export default defineNuxtModule<ModuleOptions>({
     remoteArg = (remoteArg === '' ? 'true' : remoteArg)
     const runtimeConfig = nuxt.options.runtimeConfig
     const hub = runtimeConfig.hub = defu(runtimeConfig.hub || {}, options, {
-      url: process.env.NUXT_HUB_URL || 'https://admin.hub.nuxt.com',
-      projectKey: process.env.NUXT_HUB_PROJECT_KEY || '',
+      // Self-hosted project
       projectUrl: process.env.NUXT_HUB_PROJECT_URL || '',
       projectSecretKey: process.env.NUXT_HUB_PROJECT_SECRET_KEY || '',
+      // Deployed on NuxtHub
+      url: process.env.NUXT_HUB_URL || 'https://admin.hub.nuxt.com',
+      projectKey: process.env.NUXT_HUB_PROJECT_KEY || '',
       userToken: process.env.NUXT_HUB_USER_TOKEN || '',
+      // Remote storage
       remote: remoteArg || process.env.NUXT_HUB_REMOTE,
+      // Other options
       version,
       env: process.env.NUXT_HUB_ENV || 'production',
       openapi: nuxt.options.nitro.experimental?.openAPI === true
@@ -117,6 +121,31 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Register composables
     addServerImportsDir(resolveRuntimeModule('./server/utils'))
+
+    // Within CF Pages CI/CD to notice NuxtHub about the build and hub config
+    if (!nuxt.options.dev && process.env.CF_PAGES && process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN && process.env.NUXT_HUB_PROJECT_KEY && process.env.NUXT_HUB_ENV) {
+      nuxt.hook('build:before', async () => {
+        await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/before`, {
+          baseURL: hub.url,
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
+          },
+          body: {},
+        }).catch(() => {})
+      })
+
+      nuxt.hook('build:done', async () => {
+        await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/done`, {
+          baseURL: hub.url,
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
+          },
+          body: {},
+        }).catch(() => {})
+      })
+    }
 
     if (hub.remote) {
       // Can either use projectKey or projectUrl
