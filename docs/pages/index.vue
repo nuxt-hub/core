@@ -101,7 +101,7 @@ onMounted(() => {
       <template #description>
         <span v-html="page?.database.description" />
       </template>
-      <NuxtImg :src="page?.database.img.src" :width="page?.database.img.width" :height="page?.database.img.height" :data-zoom-src="page?.database.img.src" />
+      <NuxtImg :src="page?.database.img.src" :width="page?.database.img.width" :height="page?.database.img.height" :data-zoom-src="page?.database.img.src" class="border border-gray-200 dark:border-gray-800 rounded-md" />
     </ULandingSection>
 
     <div
@@ -148,7 +148,7 @@ onMounted(() => {
       <template #description>
         <span v-html="page?.blob.description" />
       </template>
-      <NuxtImg :src="page?.blob.img.src" :width="page?.blob.img.width" :height="page?.blob.img.height" :data-zoom-src="page?.blob.img.src" />
+      <NuxtImg :src="page?.blob.img.src" :width="page?.blob.img.width" :height="page?.blob.img.height" :data-zoom-src="page?.blob.img.src" class="border border-gray-200 dark:border-gray-800 rounded-md" />
     </ULandingSection>
 
     <div
@@ -196,7 +196,7 @@ onMounted(() => {
       <template #description>
         <span v-html="page?.kv.description" />
       </template>
-      <NuxtImg :src="page?.kv.img.src" :width="page?.kv.img.width" :height="page?.kv.img.height" :data-zoom-src="page?.kv.img.src" />
+      <NuxtImg :src="page?.kv.img.src" :width="page?.kv.img.width" :height="page?.kv.img.height" :data-zoom-src="page?.kv.img.src" class="border border-gray-200 dark:border-gray-800 rounded-md" />
     </ULandingSection>
 
     <div
