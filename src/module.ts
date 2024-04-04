@@ -17,6 +17,44 @@ const log = logger.withTag('nuxt:hub')
 
 export interface ModuleOptions {
   /**
+   * Set `true` to enable the analytics for the project.
+   * 
+   * @default false
+   */
+  analytics?: boolean
+  /**
+   * Set `true` to enable the Blob storage for the project.
+   * 
+   * NuxtHub Blob is a layer on top of Cloudflare R2, allowing to store large 
+   * amounts of unstructured data (images, videos, etc.).
+   * 
+   * @default true
+   */
+  blob?: boolean
+  /**
+   * Set `true` to enable caching for the project.
+   * 
+   * @default true
+   * @see https://hub.nuxt.com/docs/storage/blob
+   */
+  cache?: boolean
+  /**
+   * Set `true` to enable the database for the project.
+   * 
+   * NuxtHub Database is a layer on top of Cloudflare D1, a serverless SQLite databases.
+   * @default false
+   * @see https://hub.nuxt.com/docs/storage/database
+   */
+  database?: boolean
+  /**
+   * Set `true` to enable the Key-Value storage for the project.
+   * 
+   * NuxtHub KV is a layer on top of Cloudflare Workers KV, a global, low-latency, key-value data storage.
+   * @default true
+   * @see https://hub.nuxt.com/docs/storage/kv
+   */
+  kv?: boolean
+  /**
    * Set to `true`, 'preview' or 'production' to use the remote storage.
    * Only set the value on a project you are deploying outside of NuxtHub or Cloudflare.
    * Or wrap it with $development to only use it in development mode.
@@ -61,7 +99,6 @@ export default defineNuxtModule<ModuleOptions>({
   async setup (options, nuxt) {
     const rootDir = nuxt.options.rootDir
     const { resolve } = createResolver(import.meta.url)
-    const resolveRuntimeModule = (path: string) => resolve('./runtime', path)
 
     // Waiting for https://github.com/unjs/c12/pull/139
     // Then adding the c12 dependency to the project to 1.8.1
@@ -82,6 +119,12 @@ export default defineNuxtModule<ModuleOptions>({
       userToken: process.env.NUXT_HUB_USER_TOKEN || '',
       // Remote storage
       remote: remoteArg || process.env.NUXT_HUB_REMOTE,
+      // Nuxt Hub features
+      analytics: false,
+      blob: false,
+      cache: true,
+      database: true,
+      kv: true,
       // Other options
       version,
       env: process.env.NUXT_HUB_ENV || 'production',
@@ -120,7 +163,7 @@ export default defineNuxtModule<ModuleOptions>({
     }
 
     // Register composables
-    addServerImportsDir(resolveRuntimeModule('./server/utils'))
+    addServerImportsDir(resolve('./runtime/server/utils'))
 
     // Within CF Pages CI/CD to notice NuxtHub about the build and hub config
     if (!nuxt.options.dev && process.env.CF_PAGES && process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN && process.env.NUXT_HUB_PROJECT_KEY && process.env.NUXT_HUB_ENV) {

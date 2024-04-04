@@ -3,6 +3,7 @@ import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import { useRuntimeConfig } from '#imports'
+import { requireNuxtHubFeature } from './features'
 
 const _datasets: Record<string, AnalyticsEngineDataset> = {}
 
@@ -26,6 +27,8 @@ function _useDataset(name: string = 'ANALYTICS') {
 }
 
 export function hubAnalytics() {
+  requireNuxtHubFeature('analytics')
+
   const hub = useRuntimeConfig().hub
   const binding = getAnalyticsBinding()
   if (hub.remote && hub.projectUrl && !binding) {
@@ -42,6 +45,8 @@ export function hubAnalytics() {
 }
 
 export function proxyHubAnalytics(projectUrl: string, secretKey?: string) {
+  requireNuxtHubFeature('analytics')
+
   const analyticsAPI = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/analytics'),
     headers: {

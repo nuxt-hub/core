@@ -5,6 +5,7 @@ import cloudflareKVBindingDriver from 'unstorage/drivers/cloudflare-kv-binding'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import { useRuntimeConfig } from '#imports'
+import { requireNuxtHubFeature } from './features'
 
 export interface HubKV extends Storage {
   /**
@@ -61,6 +62,8 @@ let _kv: HubKV
  * @see https://hub.nuxt.com/docs/storage/kv
  */
 export function hubKV(): HubKV {
+  requireNuxtHubFeature('kv')
+
   if (_kv) {
     return _kv
   }
@@ -103,6 +106,8 @@ export function hubKV(): HubKV {
  * @see https://hub.nuxt.com/docs/storage/kv
  */
 export function proxyHubKV(projectUrl: string, secretKey?: string): HubKV {
+  requireNuxtHubFeature('kv')
+
   const storage = createStorage({
     driver: httpDriver({
       base: joinURL(projectUrl, '/api/_hub/kv/'),

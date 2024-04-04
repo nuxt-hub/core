@@ -4,6 +4,7 @@ import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import type { H3Error } from 'h3'
 import { useRuntimeConfig } from '#imports'
+import { requireNuxtHubFeature } from './features'
 
 let _db: D1Database
 
@@ -18,6 +19,8 @@ let _db: D1Database
  * @see https://hub.nuxt.com/docs/storage/database
  */
 export function hubDatabase(): D1Database {
+  requireNuxtHubFeature('database')
+
   if (_db) {
     return _db
   }
@@ -49,6 +52,8 @@ export function hubDatabase(): D1Database {
  * @see https://hub.nuxt.com/docs/storage/database
  */
 export function proxyHubDatabase(projectUrl: string, secretKey?: string): D1Database {
+  requireNuxtHubFeature('database')
+
   const d1API = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/database'),
     method: 'POST',

@@ -1,6 +1,8 @@
 import { eventHandler, getValidatedRouterParams, getHeader, getRequestWebStream, getQuery } from 'h3'
 import { z } from 'zod'
 import { hubBlob } from '../../../utils/blob'
+import { requireNuxtHubAuthorization } from '../../../utils/auth'
+import { requireNuxtHubFeature } from '../../../utils/features'
 
 async function streamToArrayBuffer(stream: ReadableStream, streamSize: number) {
   const result = new Uint8Array(streamSize)
@@ -19,6 +21,9 @@ async function streamToArrayBuffer(stream: ReadableStream, streamSize: number) {
 }
 
 export default eventHandler(async (event) => {
+  await requireNuxtHubAuthorization(event)
+  requireNuxtHubFeature('blob')
+  
   const { pathname } = await getValidatedRouterParams(event, z.object({
     pathname: z.string().min(1)
   }).parse)

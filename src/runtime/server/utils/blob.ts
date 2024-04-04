@@ -10,6 +10,7 @@ import { randomUUID } from 'uncrypto'
 import { parse } from 'pathe'
 import { joinURL } from 'ufo'
 import { useRuntimeConfig } from '#imports'
+import { requireNuxtHubFeature } from './features'
 
 export interface BlobObject {
   /**
@@ -135,6 +136,8 @@ interface HubBlob {
  * @see https://hub.nuxt.com/docs/storage/blob
  */
 export function hubBlob(): HubBlob {
+  requireNuxtHubFeature('blob')
+
   const hub = useRuntimeConfig().hub
   const binding = getBlobBinding()
   if (hub.remote && hub.projectUrl && !binding) {
@@ -237,6 +240,8 @@ export function hubBlob(): HubBlob {
  * @see https://hub.nuxt.com/docs/storage/blob
  */
 export function proxyHubBlob(projectUrl: string, secretKey?: string) {
+  requireNuxtHubFeature('blob')
+
   const blobAPI = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/blob'),
     headers: {
@@ -350,6 +355,8 @@ function fileSizeToBytes(input: string) {
  * @throws If the blob does not meet the requirements
  */
 export function ensureBlob(blob: Blob, options: { maxSize?: BlobSize, types?: BlobType[] }) {
+  requireNuxtHubFeature('blob')
+
   if (!options.maxSize && !options.types?.length) {
     throw createError({
       statusCode: 400,
