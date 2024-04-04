@@ -4,7 +4,6 @@ import { join } from 'pathe'
 import { defu } from 'defu'
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
 import { findWorkspaceDir } from 'pkg-types'
-import { readUser } from 'rc9'
 import { $fetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { parseArgs } from 'citty'
@@ -94,12 +93,6 @@ export default defineNuxtModule<ModuleOptions>({
   async setup (options, nuxt) {
     const rootDir = nuxt.options.rootDir
     const { resolve } = createResolver(import.meta.url)
-
-    // Waiting for https://github.com/unjs/c12/pull/139
-    // Then adding the c12 dependency to the project to 1.8.1
-    options = defu(options, {
-      ...readUser('.nuxtrc').hub,
-    })
 
     let remoteArg = parseArgs(argv, { remote: { type: 'string' } }).remote as string
     remoteArg = (remoteArg === '' ? 'true' : remoteArg)
