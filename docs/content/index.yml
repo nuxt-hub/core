@@ -13,16 +13,12 @@ NuxtHub lets your run your Nuxt apps, anywhere with high performance and afforda
     light: '/images/hero-light.svg'
     dark: '/images/hero-dark.svg'
   headline:
-    to: https://github.com/nuxt-hub/core
-    label: Alpha version is out!
-    target: _blank
+    label: Currently in alpha
   links:
     - label: Get started
-      icon: i-heroicons-arrow-right-20-solid
-      trailing: true
+      trailing-icon: i-heroicons-arrow-right-20-solid
       to: '/docs/getting-started'
       size: lg
-      class: 'transition duration-300'
     - label: Star on GitHub
       icon: i-simple-icons-github
       size: lg
@@ -30,7 +26,6 @@ NuxtHub lets your run your Nuxt apps, anywhere with high performance and afforda
       variant: ghost
       to: https://github.com/nuxt-hub/core
       target: _blank
-      class: 'transition duration-300'
 features:
   - name: Automatic scaling
     description: Traffic is routed and load balanced across thousands of servers. Sleep well as your Nuxt app scales effortlessly.
@@ -76,14 +71,16 @@ deploy:
   buttons:
     - label: NuxtHub Admin
       icon: i-simple-icons-nuxtdotjs
-      size: xl
-      class: 'transition duration-300'
+      color: black
+      size: lg
       to: https://admin.hub.nuxt.com
       target: _blank
-    - label: Learn more
+    - label: Get started
       color: gray
-      size: xl
-      class: 'transition duration-300'
+      variant: ghost
+      trailing-icon: i-heroicons-arrow-right-20-solid
+      to: '/docs/getting-started'
+      size: lg
 database:
   img:
     src: '/images/nuxthub-database.png'
@@ -91,22 +88,25 @@ database:
     height: 314
   headline: NuxtHub Database
   title: A scalable database for your Nuxt application.
-  description: 'NuxtHub Database unlocks the power of <a href="https://developers.cloudflare.com/d1/" target="_blank" class="font-semibold text-gray-800 dark:text-white hover:underline">Cloudflare D1</a> to give you access to a serverless SQL database, with zero configuration.
+  description: 'NuxtHub Database unlocks the power of <a class="font-semibold text-gray-800 dark:text-white hover:underline underline-offset-4" href="https://developers.cloudflare.com/d1/" target="_blank">Cloudflare D1</a> to give you access to a serverless SQL database, with zero configuration.
   Scale and manage effortlessly, and pay only for what you use.'
   features:
-    - name: '`hubDatabase()` server composable'
+    - name: 'hubDatabase() server composable'
     - name: 'Database browser powered by Drizzle Studio'
     - name: 'Nuxt Devtools integration'
   buttons:
-    - label: Explore database templates
-      color: gray
+    - label: Documentation
+      color: black
       size: lg
-      class: 'transition duration-300'
-    - label: Read documentation
+      to: /docs/storage/database
+      trailing-icon: i-ph-arrow-right
+    - label: nuxt-todos-edge
+      icon: i-simple-icons-github
       color: gray
       variant: ghost
       size: lg
-      class: 'transition duration-300'
+      to: https://github.com/Atinux/nuxt-todos-edge
+      target: _blank
   pricing:
       title: Cloudflare D1 Free
       externalLink: Learn more on Cloudflare D1 pricing
@@ -124,22 +124,25 @@ blob:
     height: 314
   headline: NuxtHub Blob
   title: Add file uploads to your Nuxt application.
-  description: 'NuxtHub Blob lets you to store and access media files on a global network, thanks to <a href="https://developers.cloudflare.com/r2/" target="_blank" class="font-semibold text-gray-800 dark:text-white hover:underline">Cloudflare R2.</a>
+  description: 'NuxtHub Blob lets you to store and access media files on a global network, thanks to <a class="font-semibold text-gray-800 dark:text-white hover:underline underline-offset-4" href="https://developers.cloudflare.com/r2/" target="_blank">Cloudflare R2</a>
 Let users upload data like images, videos and audio files with our server composable with our blob validator.'
   features:
     - name: 'hubBlob() server composable'
     - name: 'Dashboard to upload and manage files'
     - name: 'Manage blobs in the Nuxt Devtools'
   buttons:
-    - label: Explore Blob templates
-      icon: i-ph-app-window
-      color: gray
-      class: 'transition duration-300'
-    - label: Read documentation
+    - label: Documentation
+      color: black
+      size: lg
+      to: /docs/storage/blob
+      trailing-icon: i-ph-arrow-right
+    - label: nuxt-image-gallery
+      icon: i-simple-icons-github
       color: gray
       variant: ghost
       size: lg
-      class: 'transition duration-300'
+      to: https://github.com/Flosciante/nuxt-image-gallery
+      target: _blank
   pricing:
       title: Cloudflare R2 Free
       externalLink: Learn more on Cloudflare R2 pricing
@@ -157,24 +160,25 @@ kv:
     height: 314
   headline: NuxtHub KV
   title: A Global Key-Value Database for Nuxt.
-  description: 'NuxtHub KV leverages <a href="https://developers.cloudflare.com/kv/" target="_blank" class="font-semibold text-gray-800 dark:text-white hover:underline">Cloudflare Workers KV</a> to access a global, low-latency, key-value data storage across 300+ global locations.
+  description: 'NuxtHub KV leverages <a href="https://developers.cloudflare.com/kv/" target="_blank" class="font-semibold text-gray-800 dark:text-white hover:underline underline-offset-4">Cloudflare Workers KV</a> to access a global, low-latency, key-value data storage across 300+ global locations.
 Access it in your Nuxt codebase, with zero-configuration.'
   features:
-    - name: 'HubKV() server composable'
+    - name: 'hubKV() server composable'
     - name: 'Key-Value storage visual browser'
     - name: 'Manage KV storage in the Nuxt Devtools'
   buttons:
-    - label: Explore KV templates
-      icon: i-ph-app-window
-      color: gray
+    - label: Documentation
+      color: black
       size: lg
-      class: 'transition duration-300'
-    - label: Read documentation
-      icon: i-ph-book-open
+      to: /docs/storage/kv
+      trailing-icon: i-ph-arrow-right
+    - label: atinotes
+      icon: i-simple-icons-github
+      color: gray
       variant: ghost
-      color: gray
       size: lg
-      class: 'transition duration-300'
+      to: https://github.com/Atinux/atinotes
+      target: _blank
   pricing:
       title: Cloudflare KV Free
       externalLink: Learn more on Cloudflare KV pricing
@@ -191,9 +195,9 @@ Access it in your Nuxt codebase, with zero-configuration.'
           description: 1 GB
 storage:
   img:
-    src: '/images/storage.webp'
-    width: '1152'
-    height: '649'
+    src: '/images/nuxthub-schema.png'
+    width: 576
+    height: 374
   headline: Remote Storage
   title: Works locally with your staging data.
   description: NuxtHub grants the ability to access your remote storage from your local environment or from external Nuxt projects. This is made possible by our secured proxy system.
@@ -202,25 +206,33 @@ storage:
     - name: "Apply migrations or scripts to your remote storage"
     - name: "Lock/Unlock access to your production with one click"
   buttons:
-    - label: Explore remote templates
-      icon: i-ph-app-window
-      color: gray
+    - label: Documentation
+      color: black
       size: lg
-      class: 'transition duration-300'
-    - label: Read documentation
+      to: /docs/getting-started/remote-storage
+      trailing-icon: i-ph-arrow-right
+    - label: nuxthub/starter
+      icon: i-simple-icons-github
+      color: gray
       variant: ghost
-      color: gray
       size: lg
-      class: 'transition duration-300'
+      to: https://github.com/nuxt-hub/starter
+      target: _blank
 tool:
   headline: All-in-one tool
   buttons:
-    - label: 'Learn more'
-      to: '/'
-      color: 'gray'
-      size: 'lg'
-      trailing-icon: 'i-heroicons-arrow-small-right'
-      class: 'transition duration-300'
+    - label: NuxtHub Admin
+      icon: i-simple-icons-nuxtdotjs
+      color: black
+      size: lg
+      to: https://admin.hub.nuxt.com
+      target: _blank
+    - label: Get started
+      color: gray
+      variant: ghost
+      trailing-icon: i-heroicons-arrow-right-20-solid
+      to: '/docs/getting-started'
+      size: lg
   title: Tailored features for <span class="text-primary">Nuxt developers</span>
   description: NuxtHub provides you with all the tools you need to build and deploy your Nuxt apps, on the edge.
   features:
@@ -292,15 +304,19 @@ journey:
       - title: 'Enable NuxtHub in your project'
         description: 'Add the @nuxthub/core module to your Nuxt project and go full-stack. '
         icon: 'i-ph-terminal-window'
-      - title: 'Clone a NuxtHub template'
-        description: 'Choose one of our templates and start from it.'
+        to: '/docs/getting-started/installation#add-to-a-nuxt-project'
+      - title: 'Start from NuxtHub template'
+        description: 'Choose one of our open source templates and start from it.'
         icon: 'i-ph-app-window'
+        to: https://github.com/topics/nuxthub
       - title: 'Create an empty project'
         description: 'Create a NuxtHub project from scratch and deploy it with NuxtHub CLI.'
         icon: 'i-ph-code'
+        to: '/docs/getting-started/installation#quickstart'
     copybutton:
       value: 'npx nuxthub init my-app'
     button:
       label: 'Get Started'
-      size: 'lg'
-      class: 'transition duration-300'
+      size: 'md'
+      trailing-icon: i-ph-arrow-right
+      to: /docs/getting-started/installation

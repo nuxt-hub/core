@@ -14,7 +14,7 @@ useSeoMeta({
 })
 onMounted(() => {
   mediumZoom('[data-zoom-src]', {
-    margin: 50
+    margin: 5,
   })
 })
 </script>
@@ -243,7 +243,7 @@ onMounted(() => {
       <template #description>
         <span v-html="page?.storage.description" />
       </template>
-      <img :src="page?.storage.img.src" :width="page?.storage.img.width" :height="page?.storage.img.height">
+      <NuxtImg :src="page?.storage.img.src" :width="page?.storage.img.width" :height="page?.storage.img.height" :data-zoom-src="page?.storage.img.src" />
     </ULandingSection>
 
     <!-- tool section -->
@@ -308,8 +308,11 @@ onMounted(() => {
 
       <ULandingGrid :ui="{ wrapper: 'md:grid-cols-1 lg:grid-cols-3' }">
         <UPageCard
-          v-for="feature in page?.journey.features" :description="feature.description"
+          v-for="feature in page?.journey.features"
+          :key="feature.title"
+          :description="feature.description"
           :ui="{ title: '', description: 'pl-8' }"
+          :to="feature.to"
         >
           <template #title>
             <div class="flex flex-row gap-x-3 items-center">
@@ -324,7 +327,7 @@ onMounted(() => {
 
       <template #bottom>
         <div class="flex w-full justify-center items-center space-x-4 pt-[92px]">
-          <UInputCopy v-bind="page?.journey.copybutton" />
+          <UInputCopy v-bind="page?.journey.copybutton" class="w-[240px]" />
           <UButton v-bind="page?.journey.button" />
         </div>
       </template>
@@ -335,6 +338,9 @@ onMounted(() => {
 <style lang="postcss">
 .hero_code div div {
   @apply dark:bg-gray-900/60 backdrop-blur-3xl bg-white/60;
+}
+.medium-zoom-overlay {
+  @apply dark:!bg-gray-950 !bg-white;
 }
 .medium-zoom-overlay,
 .medium-zoom-image--opened {
