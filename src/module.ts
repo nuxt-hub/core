@@ -1,5 +1,4 @@
 import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule, addServerImportsDir } from '@nuxt/kit'
-import { addCustomTab } from '@nuxt/devtools-kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
@@ -7,7 +6,7 @@ import { findWorkspaceDir } from 'pkg-types'
 import { $fetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { parseArgs } from 'citty'
-import { generateWrangler } from './utils'
+import { addDevtoolsCustomTabs, generateWrangler } from './utils'
 import { version } from '../package.json'
 import { execSync } from 'node:child_process'
 import { argv } from 'node:process'
@@ -281,44 +280,14 @@ export default defineNuxtModule<ModuleOptions>({
       logger.info(`Remote storage available: ${Object.keys(manifest.storage).filter(k => manifest.storage[k]).map(k => `\`${k}\``).join(', ')} `)
     }
 
+    // Add Proxy routes only if not remote or in development (used for devtools)
     if (nuxt.options.dev || !hub.remote) {
-      // Add Proxy routes only if not remote or in development (used for devtools)
       addServerScanDir(resolve('./runtime/server'))
     }
 
+    // Add custom tabs to Nuxt Devtools
     if (nuxt.options.dev) {
-      nuxt.hook('listen', (_, { url }) => {
-        hub.database && addCustomTab({
-          category: 'server',
-          name: 'hub-database',
-          title: 'Hub Database',
-          icon: 'i-ph-database',
-          view: {
-            type: 'iframe',
-            src: `https://admin.hub.nuxt.com/embed/database?url=${url}`,
-          },
-        })
-        hub.kv && addCustomTab({
-          category: 'server',
-          name: 'hub-kv',
-          title: 'Hub KV',
-          icon: 'i-ph-coin',
-          view: {
-            type: 'iframe',
-            src: `https://admin.hub.nuxt.com/embed/kv?url=${url}`,
-          },
-        })
-        hub.blob && addCustomTab({
-          category: 'server',
-          name: 'hub-blob',
-          title: 'Hub Blob',
-          icon: 'i-ph-shapes',
-          view: {
-            type: 'iframe',
-            src: `https://admin.hub.nuxt.com/embed/blob?url=${url}`,
-          },
-        })
-      })
+      addDevtoolsCustomTabs(nuxt, hub)
     }
 
     // Local development without remote connection
