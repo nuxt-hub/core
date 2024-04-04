@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import mediumZoom from 'medium-zoom'
 import { joinURL } from 'ufo'
 const { data: page } = await useAsyncData('index', () => queryContent('/').findOne())
 
@@ -10,6 +11,11 @@ useSeoMeta({
   description: page.value.description,
   ogDescription: page.value.description,
   ogImage: joinURL(url, '/social-card.png')
+})
+onMounted(() => {
+  mediumZoom('[data-zoom-src]', {
+    margin: 50
+  })
 })
 </script>
 
@@ -49,11 +55,11 @@ useSeoMeta({
 
     <ULandingSection :ui="{ wrapper: 'py-6 sm:py-12' }">
       <ul class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-16">
-        <li v-for="feature in page?.features" :key="feature.name" class="flex flex-col gap-y-2">
+        <li v-for="feature in page?.features" :key="feature.title" class="flex flex-col gap-y-2">
           <UIcon :name="feature.icon" class="h-8 w-8 shrink-0 text-green-400" />
           <div class="flex flex-col gap-y-1">
-            <h5 class="font-semibold text-gray-900 dark:text-white">
-              {{ feature.name }}
+            <h5 class="font-medium text-gray-900 dark:text-white">
+              {{ feature.title }}
             </h5>
             <p class="text-gray-500 dark:text-gray-400">
               {{ feature.description }}
@@ -90,12 +96,12 @@ useSeoMeta({
       :links="page?.database.buttons" align="left" :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }"
     >
       <template #title>
-        <h2 v-html="page?.database.title" />
+        <span v-html="page?.database.title" />
       </template>
       <template #description>
-        <h2 v-html="page?.database.description" />
+        <span v-html="page?.database.description" />
       </template>
-      <img :src="page?.database.img.name" :width="page?.database.img.width" :height="page?.database.img.height">
+      <NuxtImg :src="page?.database.img.src" :width="page?.database.img.width" :height="page?.database.img.height" :data-zoom-src="page?.database.img.src" />
     </ULandingSection>
 
     <div
@@ -137,12 +143,12 @@ useSeoMeta({
       :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }" align="right"
     >
       <template #title>
-        <h2 v-html="page?.blob.title" />
+        <span v-html="page?.blob.title" />
       </template>
       <template #description>
-        <h2 v-html="page?.blob.description" />
+        <span v-html="page?.blob.description" />
       </template>
-      <img :src="page?.blob.img.name" :width="page?.blob.img.width" :height="page?.blob.img.height">
+      <NuxtImg :src="page?.blob.img.src" :width="page?.blob.img.width" :height="page?.blob.img.height" :data-zoom-src="page?.blob.img.src" />
     </ULandingSection>
 
     <div
@@ -185,12 +191,12 @@ useSeoMeta({
       :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }" align="left"
     >
       <template #title>
-        <h2 v-html="page?.kv.title" />
+        <span v-html="page?.kv.title" />
       </template>
       <template #description>
-        <h2 v-html="page?.kv.description" />
+        <span v-html="page?.kv.description" />
       </template>
-      <img :src="page?.kv.img.name" :width="page?.kv.img.width" :height="page?.kv.img.height">
+      <NuxtImg :src="page?.kv.img.src" :width="page?.kv.img.width" :height="page?.kv.img.height" :data-zoom-src="page?.kv.img.src" />
     </ULandingSection>
 
     <div
@@ -232,12 +238,12 @@ useSeoMeta({
       :links="page?.storage.buttons" :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }" align="right"
     >
       <template #title>
-        <h2 v-html="page?.storage.title" />
+        <span v-html="page?.storage.title" />
       </template>
       <template #description>
-        <h2 v-html="page?.storage.description" />
+        <span v-html="page?.storage.description" />
       </template>
-      <img :src="page?.storage.img.name" :width="page?.storage.img.width" :height="page?.storage.img.height">
+      <img :src="page?.storage.img.src" :width="page?.storage.img.width" :height="page?.storage.img.height">
     </ULandingSection>
 
     <!-- tool section -->
@@ -251,7 +257,9 @@ useSeoMeta({
 
       <ULandingGrid :ui="{ wrapper: 'flex flex-col md:grid gap-8 md:grid-cols-2 lg:grid-cols-4 relative' }">
         <ULandingCard
-          v-for="tool in page?.tool.features" :description="tool.description"
+          v-for="tool in page?.tool.features"
+          :key="tool.title"
+          :description="tool.description"
           :ui="{ title: '', description: 'pl-8' }"
         >
           <template #title>
@@ -327,5 +335,9 @@ useSeoMeta({
 <style lang="postcss">
 .hero_code div div {
   @apply dark:bg-gray-900/60 backdrop-blur-3xl bg-white/60;
+}
+.medium-zoom-overlay,
+.medium-zoom-image--opened {
+  z-index: 100;
 }
 </style>

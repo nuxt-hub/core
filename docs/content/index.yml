@@ -86,9 +86,9 @@ deploy:
       class: 'transition duration-300'
 database:
   img:
-    name: '/images/database.webp'
-    width: '1160'
-    height: '649'
+    src: '/images/nuxthub-database.png'
+    width: 576
+    height: 314
   headline: NuxtHub Database
   title: A scalable database for your Nuxt application.
   description: 'NuxtHub Database unlocks the power of <span class="font-semibold text-gray-800 dark:text-white">Cloudflare D1</span> to give you access to a serverless SQL database, with zero configuration.
@@ -119,9 +119,9 @@ database:
           description: 5 GB (total)
 blob:
   img:
-    name: '/images/blob.webp'
-    width: '1152'
-    height: '649'
+    src: '/images/nuxthub-blob.png'
+    width: 576
+    height: 314
   headline: NuxtHub Blob
   title: Add file uploads to your Nuxt application.
   description: 'NuxtHub Blob lets you to store and access media files on a global network, thanks to <span class="font-semibold text-gray-800 dark:text-white">Cloudflare R2.</span>
@@ -152,9 +152,9 @@ Let users upload data like images, videos and audio files with our server compos
           description: 10 GB / month
 kv:
   img:
-    name: '/images/kv.webp'
-    width: '1160'
-    height: '649'
+    src: '/images/nuxthub-kv.png'
+    width: 576
+    height: 314
   headline: NuxtHub KV
   title: A Global Key-Value Database for Nuxt.
   description: 'NuxtHub KV leverages <span class="font-semibold text-gray-800 dark:text-white">Cloudflare Workers KV</span> to access a global, low-latency, key-value data storage across 300+ global locations.
@@ -191,7 +191,7 @@ Access it in your Nuxt codebase, with zero-configuration.'
           description: 1 GB
 storage:
   img:
-    name: '/images/storage.webp'
+    src: '/images/storage.webp'
     width: '1152'
     height: '649'
   headline: Remote Storage
@@ -225,28 +225,28 @@ tool:
   description: NuxtHub provides you with all the tools you need to build and deploy your Nuxt apps, on the edge.
   features:
     - title: 'Storage region'
-      description: 'Choose a Cloudflare location to place your D1 and R2.'
+      description: 'Choose one of the five Cloudflare regions to place your D1 and R2.'
       icon: 'i-ph-globe'
     - title: 'Environment variables'
       description: 'Securely store secrets, API keys, tokens, and other environment variables.'
       icon: 'i-ph-key'
-    - title: 'Preview mode'
-      description: 'Choose a primary and a gray color from your Tailwind CSS color palette. '
+    - title: 'Production / Staging'
+      description: 'Switch between your production or staging deployments & resources.'
       icon: 'i-ph-eye'
-    - title: 'Free .nuxt.dev domain'
-      description: 'Set your custom domain or use our .nuxt.dev domain for free.'
+    - title: 'Custom domains'
+      description: 'Set your custom domain or use our .nuxt.dev domain for free.'
       icon: 'i-ph-cloud'
-    - title: 'NuxtHub template'
-      description: 'Choose one of our templates and start from it.'
+    - title: 'NuxtHub templates'
+      description: 'Quick start your next project using one of our ready-to use templates.'
       icon: 'i-ph-app-window'
-    - title: 'NuxtHub modules'
-      description: 'Supercharge your NuxtHub project with our official modules.'
+    - title: 'Real-time logs'
+      description: 'Access to your Nuxt server logs in real-time for debugging purpose.'
       icon: 'i-ph-plugs'
     - title: 'Import from GitHub'
-      description: 'Select a repository from your GitHub account and import it.'
+      description: 'Select a repository from your GitHub account and deploy it to the edge.'
       icon: 'i-simple-icons-github'
     - title: 'Nuxt DevTools'
-      description: 'Manage your NuxtHub database in the Nuxt Devtools.'
+      description: 'Manage your NuxtHub database, kv & blob in the Nuxt Devtools.'
       icon: 'i-simple-icons-nuxtdotjs'
 testimonials:
   headline: 'Wall of love'

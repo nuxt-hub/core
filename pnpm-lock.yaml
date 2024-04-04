@@ -144,6 +144,9 @@ importers:
       '@vueuse/nuxt':
         specifier: ^10.9.0
         version: 10.9.0(nuxt@3.11.1)(rollup@3.29.4)(vue@3.4.21)
+      medium-zoom:
+        specifier: ^1.1.0
+        version: 1.1.0
       nuxt:
         specifier: ^3.11.1
         version: 3.11.1(@types/node@20.12.4)(@unocss/reset@0.58.5)(drizzle-orm@0.30.4)(eslint@8.57.0)(floating-vue@5.2.2)(rollup@3.29.4)(typescript@5.4.3)(unocss@0.58.5)(vite@5.1.6)
@@ -7967,6 +7970,10 @@ packages:
   /media-typer@0.3.0:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
     engines: {node: '>= 0.6'}
+    dev: false
+
+  /medium-zoom@1.1.0:
+    resolution: {integrity: sha512-ewyDsp7k4InCUp3jRmwHBRFGyjBimKps/AJLjRSox+2q/2H4p/PNpQf+pwONWlJiOudkBXtbdmVbFjqyybfTmQ==}
     dev: false
 
   /merge-stream@2.0.0:
