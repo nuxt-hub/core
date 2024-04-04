@@ -264,7 +264,7 @@ tool:
       icon: 'i-simple-icons-nuxtdotjs'
 testimonials:
   headline: 'Wall of love'
-  title: 'Testimonials from <span class="text-green-400">early adopters</span>'
+  title: 'Testimonials from <span class="text-primary">early adopters</span>'
   description: 'Nuxt UI Pro ships with an extensive set of advanced components that cover a wide range of use-cases.'
   items:
     - quote: "NuxtHub is hands down the easiest way to get a project from zero to production on the Cloudflare stack!"

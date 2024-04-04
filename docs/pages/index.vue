@@ -56,7 +56,7 @@ onMounted(() => {
     <ULandingSection :ui="{ wrapper: 'py-6 sm:py-12' }">
       <ul class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-16">
         <li v-for="feature in page?.features" :key="feature.name" class="flex flex-col gap-y-2">
-          <UIcon :name="feature.icon" class="h-8 w-8 shrink-0 text-green-400" />
+          <UIcon :name="feature.icon" class="h-8 w-8 shrink-0 text-primary" />
           <div class="flex flex-col gap-y-1">
             <h5 class="font-medium text-gray-900 dark:text-white">
               {{ feature.name }}
@@ -264,7 +264,7 @@ onMounted(() => {
         >
           <template #title>
             <span class="flex flex-row gap-x-3 items-center">
-              <UIcon :name="tool.icon" class="h-5 w-5 text-green-400" />
+              <UIcon :name="tool.icon" class="h-5 w-5 text-primary" />
               <span class="text-gray-900 dark:text-white text-base font-bold truncate">
                 {{ tool.title }}
               </span>
@@ -316,7 +316,7 @@ onMounted(() => {
         >
           <template #title>
             <span class="flex flex-row gap-x-3 items-center">
-              <UIcon :name="feature.icon" class="h-5 w-5 text-green-400" />
+              <UIcon :name="feature.icon" class="h-5 w-5 text-primary" />
               <span class="text-gray-900 dark:text-white text-base font-bold truncate">
                 {{ feature.title }}
               </span>
