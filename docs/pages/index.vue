@@ -249,10 +249,10 @@ onMounted(() => {
     <!-- tool section -->
     <ULandingSection :headline="page?.tool.headline" :links="page?.tool.buttons">
       <template #title>
-        <h2 v-html="page?.tool.title" />
+        <span v-html="page?.tool.title" />
       </template>
       <template #description>
-        <h2 v-html="page?.tool.description" />
+        <span v-html="page?.tool.description" />
       </template>
 
       <ULandingGrid :ui="{ wrapper: 'flex flex-col md:grid gap-8 md:grid-cols-2 lg:grid-cols-4 relative' }">
@@ -263,12 +263,12 @@ onMounted(() => {
           :ui="{ title: '', description: 'pl-8' }"
         >
           <template #title>
-            <div class="flex flex-row gap-x-3 items-center">
+            <span class="flex flex-row gap-x-3 items-center">
               <UIcon :name="tool.icon" class="h-5 w-5 text-green-400" />
-              <h5 class="text-gray-900 dark:text-white text-base font-bold truncate">
+              <span class="text-gray-900 dark:text-white text-base font-bold truncate">
                 {{ tool.title }}
-              </h5>
-            </div>
+              </span>
+            </span>
           </template>
         </ULandingCard>
       </ULandingGrid>
@@ -277,10 +277,10 @@ onMounted(() => {
     <!-- testomonials section -->
     <ULandingSection :headline="page?.testimonials.headline">
       <template #title>
-        <h2 v-html="page?.testimonials.title" />
+        <span v-html="page?.testimonials.title" />
       </template>
       <template #description>
-        <h2 v-html="page?.testimonials.description" />
+        <span v-html="page?.testimonials.description" />
       </template>
 
       <UPageColumns :ui="{ wrapper: 'column-1 md:columns-2 lg:columns-4 gap-8 space-y-8' }">
@@ -303,7 +303,7 @@ onMounted(() => {
       </div>
 
       <template #title>
-        <h2 v-html="page?.journey.title" />
+        <span v-html="page?.journey.title" />
       </template>
 
       <ULandingGrid :ui="{ wrapper: 'md:grid-cols-1 lg:grid-cols-3' }">
@@ -315,12 +315,12 @@ onMounted(() => {
           :to="feature.to"
         >
           <template #title>
-            <div class="flex flex-row gap-x-3 items-center">
+            <span class="flex flex-row gap-x-3 items-center">
               <UIcon :name="feature.icon" class="h-5 w-5 text-green-400" />
-              <h5 class="text-gray-900 dark:text-white text-base font-bold truncate">
+              <span class="text-gray-900 dark:text-white text-base font-bold truncate">
                 {{ feature.title }}
-              </h5>
-            </div>
+              </span>
+            </span>
           </template>
         </UPageCard>
       </ULandingGrid>
