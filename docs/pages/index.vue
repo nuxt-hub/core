@@ -105,11 +105,11 @@ onMounted(() => {
     </ULandingSection>
 
     <div
-      class="bg-gray-100 dark:bg-gray-900/30 py-10 border border-y-gray-300 dark:border-y-gray-700 border-x-transparent relative"
+      class="bg-gray-100 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative"
     >
       <UColorModeImage
         light="/images/pricing-dots-light.svg" dark="/images/pricing-dots-dark.svg"
-        class="absolute left-0 inset-y-0"
+        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0"
       />
       <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
         <div class="flex flex-col gap-y-2">
@@ -124,7 +124,7 @@ onMounted(() => {
             <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
           </ULink>
         </div>
-        <div class="flex justify-between gap-x-8 pt-8 lg:pt-0">
+        <div class="flex flex-col sm:flex-row sm:justify-between gap-y-4 sm:gap-y-0 sm:gap-x-8 pt-8 lg:pt-0">
           <div v-for="price in page?.database.pricing.features" :key="price.title" class="flex flex-col gap-y-2">
             <h4 class="font-semibold">
               {{ price.title }}
@@ -152,11 +152,11 @@ onMounted(() => {
     </ULandingSection>
 
     <div
-      class="bg-gray-100 dark:bg-gray-900/30 py-10 border border-y-gray-300 dark:border-y-gray-700 border-x-transparent relative"
+      class="bg-gray-100 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative"
     >
       <UColorModeImage
         light="/images/pricing-dots-light.svg" dark="/images/pricing-dots-dark.svg"
-        class="absolute left-0 inset-y-0"
+        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0"
       />
       <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
         <div class="flex flex-col gap-y-2">
@@ -172,7 +172,7 @@ onMounted(() => {
           </ULink>
         </div>
 
-        <div class="flex justify-between gap-x-8 pt-8 lg:pt-0">
+        <div class="flex flex-col gap-y-4 sm:flex-row sm:justify-between sm:gap-y-0 sm:gap-x-8 pt-8 lg:pt-0">
           <div v-for="price in page?.blob.pricing.features" :key="price.title" class="flex flex-col gap-y-2">
             <h4 class="font-semibold">
               {{ price.title }}
@@ -200,11 +200,11 @@ onMounted(() => {
     </ULandingSection>
 
     <div
-      class="bg-gray-100 dark:bg-gray-900/30 py-10 border border-y-gray-300 dark:border-y-gray-700 border-x-transparent relative"
+      class="bg-gray-100 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative"
     >
       <UColorModeImage
         light="/images/pricing-dots-light.svg" dark="/images/pricing-dots-dark.svg"
-        class="absolute left-0 inset-y-0"
+        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0"
       />
       <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
         <div class="flex flex-col gap-y-2">
@@ -219,7 +219,7 @@ onMounted(() => {
             <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
           </ULink>
         </div>
-        <div class="grid grid-cols-2 gap-8 sm:flex justify-between gap-x-8 pt-8 lg:pt-0">
+        <div class="grid grid-cols-1 gap-8 sm:flex justify-between gap-x-8 pt-8 lg:pt-0">
           <div v-for="price in page?.kv.pricing.features" :key="price.title" class="flex flex-col gap-y-2">
             <h4 class="font-semibold">
               {{ price.title }}
@@ -345,5 +345,13 @@ onMounted(() => {
 .medium-zoom-overlay,
 .medium-zoom-image--opened {
   z-index: 100;
+}
+
+.dark .border-price {
+  border-image: linear-gradient(to right, rgba(30, 41, 59, 0.12), rgba(30, 41, 59, 1), rgba(30, 41, 59, 0.12)) 1;
+}
+
+.light .border-price {
+  border-image: linear-gradient(to right, rgba(226, 232, 240, 0.12), rgba(226, 232, 240, 1), rgba(226, 232, 240, 0.12)) 1;
 }
 </style>
