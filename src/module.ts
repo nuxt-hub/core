@@ -135,22 +135,24 @@ export default defineNuxtModule<ModuleOptions>({
       log.info(`Using \`${hub.url}\` as NuxtHub Admin URL`)
     }
 
-    // Add Server caching (Nitro)
-    nuxt.options.nitro = defu(nuxt.options.nitro, {
-      storage: {
-        cache: {
-          driver: 'cloudflare-kv-binding',
-          binding: 'CACHE',
-          base: 'cache'
+    if (hub.cache) {
+      // Add Server caching (Nitro)
+      nuxt.options.nitro = defu(nuxt.options.nitro, {
+        storage: {
+          cache: {
+            driver: 'cloudflare-kv-binding',
+            binding: 'CACHE',
+            base: 'cache'
+          }
+        },
+        devStorage: {
+          cache: {
+            driver: 'fs',
+            base: join(rootDir, '.data/cache')
+          }
         }
-      },
-      devStorage: {
-        cache: {
-          driver: 'fs',
-          base: join(rootDir, '.data/cache')
-        }
-      }
-    })
+      })
+    }
 
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {
