@@ -25,10 +25,7 @@ export interface ModuleOptions {
   /**
    * Set `true` to enable the Blob storage for the project.
    * 
-   * NuxtHub Blob is a layer on top of Cloudflare R2, allowing to store large 
-   * amounts of unstructured data (images, videos, etc.).
-   * 
-   * @default true
+   * @default false
    */
   blob?: boolean
   /**
@@ -41,15 +38,13 @@ export interface ModuleOptions {
   /**
    * Set `true` to enable the database for the project.
    * 
-   * NuxtHub Database is a layer on top of Cloudflare D1, a serverless SQLite databases.
-   * @default false
+   * @default true
    * @see https://hub.nuxt.com/docs/storage/database
    */
   database?: boolean
   /**
    * Set `true` to enable the Key-Value storage for the project.
    * 
-   * NuxtHub KV is a layer on top of Cloudflare Workers KV, a global, low-latency, key-value data storage.
    * @default true
    * @see https://hub.nuxt.com/docs/storage/kv
    */
