@@ -13,38 +13,11 @@ export default defineAppConfig({
     siteName: 'NuxtHub',
   },
   header: {
-    logo: {
-      alt: '',
-      light: '',
-      dark: ''
-    },
-    search: true,
-    colorMode: true,
     links: [{
       icon: 'i-simple-icons-github',
       to: 'https://github.com/nuxt-hub/core',
       target: '_blank',
       'aria-label': 'NuxtHub'
-    }]
-  },
-  footer: {
-    credits: 'Copyright NuxtLabs © 2024',
-    colorMode: false,
-    links: [{
-      icon: 'i-simple-icons-nuxtdotjs',
-      to: 'https://nuxt.com',
-      target: '_blank',
-      'aria-label': 'Nuxt Website'
-    }, {
-      icon: 'i-simple-icons-x',
-      to: 'https://x.com/nuxt_hub',
-      target: '_blank',
-      'aria-label': 'Nuxt on X'
-    }, {
-      icon: 'i-simple-icons-github',
-      to: 'https://github.com/nuxt-hub/core',
-      target: '_blank',
-      'aria-label': 'NuxtHub on GitHub'
     }]
   },
   toc: {

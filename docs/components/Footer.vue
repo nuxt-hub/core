@@ -20,7 +20,7 @@ const links = [
   },
   {
     label: 'Admin',
-    to: 'https://admin.hub.nuxt.com',
+    to: 'https://admin.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=footer',
     target: '_blank'
   }
 ]

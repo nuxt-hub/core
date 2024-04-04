@@ -73,7 +73,7 @@ deploy:
       icon: i-simple-icons-nuxtdotjs
       color: black
       size: lg
-      to: https://admin.hub.nuxt.com
+      to: https://admin.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=home
       target: _blank
     - label: Get started
       color: gray
@@ -231,7 +231,7 @@ tool:
       icon: i-simple-icons-nuxtdotjs
       color: black
       size: lg
-      to: https://admin.hub.nuxt.com
+      to: https://admin.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=home
       target: _blank
     - label: Get started
       color: gray
