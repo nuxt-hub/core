@@ -1,10 +1,10 @@
 title: 'Build, deploy & manage Nuxt apps, on the edge.'
-description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare. Deploy your Nuxt applications with a database, key-value and blob storages on your Cloudflare account, with zero configuration.
+description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare. Deploy your Nuxt applications with a database, key-value and blob storages on your account, with zero configuration.
 NuxtHub lets your run your Nuxt apps, anywhere with high performance and affordable.'
 navigation: false
 hero:
   title: 'Build, deploy & manage <br/> <span class="text-primary">Nuxt apps</span>, on the edge.'
-  description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare.<br/>Deploy your Nuxt applications with a database, key-value and blob storages on your Cloudflare account,<br/> with zero configuration.
+  description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare.<br/>Deploy your Nuxt apps with a database, key-value and blob storages on your Clouflare account, with zero configuration.<br/>
 NuxtHub lets your run your Nuxt apps, anywhere with high performance and affordable.'
   orientation: horizontal
   img:
@@ -28,10 +28,10 @@ NuxtHub lets your run your Nuxt apps, anywhere with high performance and afforda
       target: _blank
 features:
   - name: Automatic scaling
-    description: Traffic is routed and load balanced across thousands of servers. Sleep well as your Nuxt app scales effortlessly.
+    description: Traffic is routed and load balanced across thousands of servers. Sleep well as your Nuxt app scales.
     icon: 'i-ph-selection-all-duotone'
   - name: Exceptionally affordable
-    description: The first 100,000 requests each day are free and paid plans start at just $5 per 10 million requests.
+    description: First 100,000 requests each day are free. Cloudflare paid plan starts at $5 for 10 million monthly requests.
     icon: 'i-ph-coins-duotone'
   - name: Performant global network
     description: Your Nuxt app is deployed on the entire edge network and runs within milliseconds of your users worldwide
@@ -95,8 +95,7 @@ database:
     - name: 'Database browser powered by Drizzle Studio'
     - name: 'Nuxt Devtools integration'
   buttons:
-    - label: Documentation
-      color: black
+    - label: Database docs
       size: lg
       to: /docs/storage/database
       trailing-icon: i-ph-arrow-right
@@ -133,8 +132,7 @@ Let users upload data like images, videos and audio files with our server compos
     - name: 'Dashboard to upload and manage files'
     - name: 'Manage blobs in the Nuxt Devtools'
   buttons:
-    - label: Documentation
-      color: black
+    - label: Blob documentation
       size: lg
       to: /docs/storage/blob
       trailing-icon: i-ph-arrow-right
@@ -171,8 +169,7 @@ Access it in your Nuxt codebase, with zero-configuration.'
     - name: 'Key-Value storage visual browser'
     - name: 'Manage KV storage in the Nuxt Devtools'
   buttons:
-    - label: Documentation
-      color: black
+    - label: KV documentation
       size: lg
       to: /docs/storage/kv
       trailing-icon: i-ph-arrow-right
@@ -212,8 +209,7 @@ storage:
     - name: "Apply migrations or scripts to your remote storage"
     - name: "Lock/Unlock access to your production with one click"
   buttons:
-    - label: Documentation
-      color: black
+    - label: Remote storage docs
       size: lg
       to: /docs/getting-started/remote-storage
       trailing-icon: i-ph-arrow-right

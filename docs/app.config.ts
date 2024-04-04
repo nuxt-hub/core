@@ -7,6 +7,11 @@ export default defineAppConfig({
         left: 'text-sm text-gray-500 dark:text-gray-400',
         wrapper: 'border-t border-gray-200 dark:border-gray-800'
       }
+    },
+    variables: {
+      dark: {
+        background: 'var(--color-gray-950)'
+      }
     }
   },
   seo: {
