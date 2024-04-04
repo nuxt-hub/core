@@ -289,7 +289,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     if (nuxt.options.dev) {
       nuxt.hook('listen', (_, { url }) => {
-        addCustomTab({
+        hub.database && addCustomTab({
           category: 'server',
           name: 'hub-database',
           title: 'Hub Database',
@@ -299,7 +299,7 @@ export default defineNuxtModule<ModuleOptions>({
             src: `https://admin.hub.nuxt.com/embed/database?url=${url}`,
           },
         })
-        addCustomTab({
+        hub.kv && addCustomTab({
           category: 'server',
           name: 'hub-kv',
           title: 'Hub KV',
@@ -309,7 +309,7 @@ export default defineNuxtModule<ModuleOptions>({
             src: `https://admin.hub.nuxt.com/embed/kv?url=${url}`,
           },
         })
-        addCustomTab({
+        hub.blob && addCustomTab({
           category: 'server',
           name: 'hub-blob',
           title: 'Hub Blob',
