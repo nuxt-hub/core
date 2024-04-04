@@ -117,10 +117,10 @@ onMounted(() => {
             {{ page?.database.pricing.title }}
           </h4>
           <ULink
-            target="_blank" to="/"
+            target="_blank" :to="page?.database.pricing.link.to"
             class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition transition-300 z-10"
           >
-            {{ page?.database.pricing.externalLink }}
+            {{ page?.database.pricing.link.label }}
             <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
           </ULink>
         </div>
@@ -164,10 +164,10 @@ onMounted(() => {
             {{ page?.blob.pricing.title }}
           </h4>
           <ULink
-            target="_blank" to="/"
+            target="_blank" :to="page?.blob.pricing.link.to"
             class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition transition-300 z-10"
           >
-            {{ page?.blob.pricing.externalLink }}
+            {{ page?.blob.pricing.link.label }}
             <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
           </ULink>
         </div>
@@ -212,10 +212,10 @@ onMounted(() => {
             {{ page?.kv.pricing.title }}
           </h4>
           <ULink
-            target="_blank" to="/"
+            target="_blank" :to="page?.kv.pricing.link.to"
             class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition transition-300 z-10"
           >
-            {{ page?.kv.pricing.externalLink }}
+            {{ page?.kv.pricing.link.label }}
             <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
           </ULink>
         </div>

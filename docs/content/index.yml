@@ -109,7 +109,9 @@ database:
       target: _blank
   pricing:
       title: Cloudflare D1 Free
-      externalLink: Learn more on Cloudflare D1 pricing
+      link:
+        label: Learn more on Cloudflare D1 pricing
+        to: https://developers.cloudflare.com/d1/platform/pricing/
       features:
         - title: Rows read
           description: 5 million / day
@@ -145,7 +147,9 @@ Let users upload data like images, videos and audio files with our server compos
       target: _blank
   pricing:
       title: Cloudflare R2 Free
-      externalLink: Learn more on Cloudflare R2 pricing
+      link:
+        label: Learn more on Cloudflare R2 pricing
+        to: https://developers.cloudflare.com/r2/pricing/
       features:
         - title: Class A operations
           description: 1 million requests / month
@@ -181,7 +185,9 @@ Access it in your Nuxt codebase, with zero-configuration.'
       target: _blank
   pricing:
       title: Cloudflare KV Free
-      externalLink: Learn more on Cloudflare KV pricing
+      link:
+        label: Learn more on Cloudflare KV pricing
+        to: https://developers.cloudflare.com/kv/platform/pricing/
       features:
         - title: Read
           description: 100,000 / day
