@@ -30,7 +30,7 @@ provide('navigation', navigation.value?.[0]?.children || [])
 </script>
 
 <template>
-  <div>
+  <div class="bg-white dark:bg-gray-950">
     <Header />
 
     <UMain>
