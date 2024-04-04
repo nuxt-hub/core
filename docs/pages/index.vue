@@ -23,7 +23,7 @@ onMounted(() => {
   <div>
     <UColorModeImage
       :light="page?.hero.img.light" :dark="page?.hero.img.dark" :width="page?.hero.img.width"
-      :height="page?.hero.img.height" class="absolute right-0 top-16 opacity-60 lg:opacity-100"
+      :height="page?.hero.img.height" class="absolute right-0 top-0 md:top-16 opacity-60 lg:opacity-100 w-[235px] h-[343px] sm:w-[335px] sm:h-[443px] md:w-[435px] md:h-[543px] lg:w-[533px] lg:h-[643px]"
     />
     <ULandingHero
       v-bind="page?.hero" orientation="horizontal"

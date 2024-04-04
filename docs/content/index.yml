@@ -3,12 +3,12 @@ description: 'NuxtHub is a deployment and administration platform for Nuxt, powe
 NuxtHub lets your run your Nuxt apps, anywhere with high performance and affordable.'
 navigation: false
 hero:
-  title: 'Build, deploy & manage <br/> <span class="text-primary">Nuxt apps</span>, on the edge.'
-  description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare.<br/>Deploy your Nuxt apps with a database, key-value and blob storages on your Clouflare account, with zero configuration.<br/>
+  title: 'Build, deploy & manage <br /> <span class="text-primary">Nuxt apps</span>, on the edge.'
+  description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare.<br class="hidden md:block" />Deploy your Nuxt apps with a database, key-value and blob storages <br class="hidden md:block" />on your Clouflare account, with zero configuration.<br class="hidden md:block" />
 NuxtHub lets your run your Nuxt apps, anywhere with high performance and affordable.'
   orientation: horizontal
   img:
-    width: '543'
+    width: '535'
     height: '643'
     light: '/images/hero-light.svg'
     dark: '/images/hero-dark.svg'
