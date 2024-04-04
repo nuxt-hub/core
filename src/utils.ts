@@ -1,21 +1,30 @@
 import { addCustomTab } from '@nuxt/devtools-kit'
 import type { Nuxt } from 'nuxt/schema'
 
-export function generateWrangler() {
-  return `d1_databases = [
-  { binding = "DB", database_name = "default", database_id = "default" },
-]
-kv_namespaces = [
-  { binding = "KV", id = "kv_default" },
-  { binding = "CACHE", id = "cache_default" },
-]
-r2_buckets = [
-  { binding = "BLOB", bucket_name = "default" },
-]
-analytics_engine_datasets = [
-  { binding = "ANALYTICS", dataset = "default" }
-]
-`
+export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, cache: boolean, analytics: boolean }) {
+  return [
+    hub.analytics ? [
+      'analytics_engine_datasets = [',
+      '  { binding = "ANALYTICS", dataset = "default" }',
+      ']',
+    ] : [],
+    hub.blob ? [
+      'r2_buckets = [',
+      '  { binding = "BLOB", bucket_name = "default" }',
+      ']'
+    ] : [],
+    hub.cache || hub.kv ? [
+      'kv_namespaces = [',
+      hub.kv    ? '  { binding = "KV", id = "kv_default" },' : '',
+      hub.cache ? '  { binding = "CACHE", id = "cache_default" },' : '',
+      ']',
+    ] : [],
+    hub.database ? [
+      'd1_databases = [',
+      '  { binding = "DB", database_name = "default", database_id = "default" }',
+      ']'
+    ] : [],
+  ].flat().join('\n')
 }
 
 

@@ -315,7 +315,7 @@ export default defineNuxtModule<ModuleOptions>({
 
       // Generate the wrangler.toml file
       const wranglerPath = join(hubDir, './wrangler.toml')
-      await writeFile(wranglerPath, generateWrangler(), 'utf-8')
+      await writeFile(wranglerPath, generateWrangler(hub), 'utf-8')
       // @ts-ignore
       nuxt.options.nitro.cloudflareDev = {
         persistDir: hubDir,
