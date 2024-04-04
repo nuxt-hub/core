@@ -1,5 +1,5 @@
 export default defineNuxtConfig({
-  extends: [
-    '../../../'
+  modules: [
+    '../../../src/module'
   ]
 })

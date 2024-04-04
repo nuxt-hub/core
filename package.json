@@ -1,7 +1,7 @@
 {
   "name": "@nuxthub/core",
   "private": false,
-  "version": "0.3.12",
+  "version": "0.4.0",
   "description": "Build full-stack Nuxt applications on Cloudflare, with zero configuration.",
   "repository": {
     "type": "git",
@@ -9,11 +9,11 @@
   },
   "license": "Apache-2.0",
   "type": "module",
-  "main": "./nuxt.config.ts",
+  "main": "./dist/module.cjs",
+  "module": "./dist/module.mjs",
   "homepage": "https://hub.nuxt.com",
   "files": [
-    "src",
-    "nuxt.config.ts"
+    "dist"
   ],
   "keywords": [
     "nuxt",
@@ -24,7 +24,8 @@
     "blob"
   ],
   "scripts": {
-    "dev:prepare": "nuxi prepare playground",
+    "prepack": "nuxt-module-build build",
+    "dev:prepare": "nuxt-module-build build --stub; nuxi prepare playground",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "docs": "PORT=4000 nuxi dev docs",
@@ -35,8 +36,8 @@
     "test:watch": "vitest watch"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "^4.20240320.1",
-    "@nuxt/devtools-kit": "^1.1.4",
+    "@cloudflare/workers-types": "^4.20240402.0",
+    "@nuxt/devtools-kit": "^1.1.5",
     "@nuxt/kit": "^3.11.1",
     "@sindresorhus/slugify": "^2.2.1",
     "@uploadthing/mime-types": "^0.2.6",
@@ -58,16 +59,17 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^1.1.4",
+    "@nuxt/devtools": "^1.1.5",
     "@nuxt/eslint-config": "^0.2.0",
+    "@nuxt/module-builder": "^0.5.5",
     "@nuxt/schema": "^3.11.1",
     "@nuxt/test-utils": "^3.12.0",
-    "@types/node": "^20.11.30",
+    "@types/node": "^20.12.3",
     "changelogen": "^0.5.5",
     "eslint": "^8.57.0",
     "nuxt": "^3.11.1",
     "typescript": "^5.4.3",
     "vitest": "^1.4.0",
-    "wrangler": "^3.39.0"
+    "wrangler": "^3.44.0"
   }
 }

@@ -1,3 +1,4 @@
+import { eventHandler, createError } from 'h3'
 import { useRuntimeConfig } from '#imports'
 
 export default eventHandler(async (event) => {
