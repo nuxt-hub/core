@@ -119,7 +119,7 @@ export default defineNuxtModule<ModuleOptions>({
       userToken: process.env.NUXT_HUB_USER_TOKEN || '',
       // Remote storage
       remote: remoteArg || process.env.NUXT_HUB_REMOTE,
-      // Nuxt Hub features
+      // NuxtHub features
       analytics: false,
       blob: false,
       cache: true,
@@ -187,6 +187,18 @@ export default defineNuxtModule<ModuleOptions>({
           },
           body: {},
         }).catch(() => {})
+      })
+    } else {
+      // Write `dist/hub.config.json` after public assets are built
+      nuxt.hook('nitro:build:public-assets', async (nitro) => {
+        const hubConfig = {
+          analytics: hub.analytics,
+          blob: hub.blob,
+          cache: hub.cache,
+          database: hub.database,
+          kv: hub.kv
+        }
+        await writeFile(join(nitro.options.output.publicDir, 'hub.config.json'), JSON.stringify(hubConfig, null, 2), 'utf-8')
       })
     }
 

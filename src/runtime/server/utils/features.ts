@@ -3,22 +3,21 @@ import { createError } from 'h3'
 
 const featureMessages = {
   analytics: [
-    'Nuxt Hub Analytics is not enabled, set `hub.analytics = true` in your `nuxt.config.ts`'
+    'NuxtHub Analytics is not enabled, set `hub.analytics = true` in your `nuxt.config.ts`'
   ].join('\n'),
   blob: [
-    'Nuxt Hub Blob is not enabled, set `hub.blob = true` in your `nuxt.config.ts`',
-    'You might neet to subscribe to the Cloudflare\'s R2 Storage plan before enabling Blob.',
+    'NuxtHub Blob is not enabled, set `hub.blob = true` in your `nuxt.config.ts`',
     'Read more at https://hub.nuxt.com/docs/storage/blob'
   ].join('\n'),
   cache: [
-    'Nuxt Hub Cache is not enabled, set `hub.cache = true` in your `nuxt.config.ts`'
+    'NuxtHub Cache is not enabled, set `hub.cache = true` in your `nuxt.config.ts`'
   ].join('\n'),
   database: [
-    'Nuxt Hub Database is not enabled, set `hub.database = true` in your `nuxt.config.ts`',
+    'NuxtHub Database is not enabled, set `hub.database = true` in your `nuxt.config.ts`',
     'Read more at https://hub.nuxt.com/docs/storage/database'
   ].join('\n'),
   kv: [
-    'Nuxt Hub KV is not enabled, set `hub.kv = true` in your `nuxt.config.ts`',
+    'NuxtHub KV is not enabled, set `hub.kv = true` in your `nuxt.config.ts`',
     'Read more at https://hub.nuxt.com/docs/storage/kv'
   ].join('\n'),
 }
