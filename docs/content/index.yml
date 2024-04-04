@@ -34,47 +34,52 @@ NuxtHub lets your run your Nuxt apps, anywhere with high performance and afforda
 features:
   - name: Automatic scaling
     description: Traffic is routed and load balanced across thousands of servers. Sleep well as your Nuxt app scales effortlessly.
-    icon: 'i-ph-arrows-out'
+    icon: 'i-ph-selection-all-duotone'
   - name: Exceptionally affordable
     description: The first 100,000 requests each day are free and paid plans start at just $5 per 10 million requests.
-    icon: 'i-ph-faders'
+    icon: 'i-ph-coins-duotone'
   - name: Performant global network
     description: Your Nuxt app is deployed on the entire edge network and runs within milliseconds of your users worldwide
-    icon: 'i-ph-globe'
+    icon: 'i-ph-globe-duotone'
   - name: No servers to maintain
     description: Spend more time building, less time configuring. No VMs, no servers, and no containers to spin up or manage.
-    icon: 'i-ph-rocket-launch'
+    icon: 'i-ph-rocket-launch-duotone'
 deploy:
   headline: Ready to use
   title: Deploy a Nuxt application <span class="text-primary">in one minute.</span>
   description: The NuxtHub Admin is made to <span class="font-semibold text-gray-800 dark:text-white">simplify your experience</span> with NuxtHub, enabling you to effortlessly manage teams and projects, as well as deploying NuxtHub application with <span class="font-semibold text-gray-800 dark:text-white">zero-configuration</span> on your Cloudflare account.
-  features:
+  steps:
     - title: Link your Cloudflare account
       description: Create an API token on Cloudflare with our pre-filled template.
       img:
-        name: '/images/steps/link-cloudflare-account.webp'
+        src: '/images/steps/link-cloudflare-account.webp'
+        width: 274
+        height: 154
     - title: Create a Nuxt app
       description: Start from our templates or import your GitHub repository.
       img:
-        name: '/images/steps/create-nuxthub-project.webp'
-        width: '718'
-        height: '388'
+        src: '/images/steps/create-nuxthub-project.webp'
+        width: 274
+        height: 154
     - title: Deploy it
       description: Run the nuxthub deploy command or use the Cloudflare Pages CI/CD.
       img:
-        name: '/images/steps/deploy-nuxt-project.webp'
-        width: '718'
-        height: '388'
+        src: '/images/steps/deploy-nuxt-project.webp'
+        width: 274
+        height: 154
     - title: Share it to the world
       description: Get insights and manage your storage in NuxtHub.
       img:
-        name: '/images/steps/share-nuxt-project.webp'
-        width: '718'
-        height: '388'
+        src: '/images/steps/share-nuxt-project.webp'
+        width: 274
+        height: 154
   buttons:
-    - label: Sign in
+    - label: NuxtHub Admin
+      icon: i-simple-icons-nuxtdotjs
       size: xl
       class: 'transition duration-300'
+      to: https://admin.hub.nuxt.com
+      target: _blank
     - label: Learn more
       color: gray
       size: xl

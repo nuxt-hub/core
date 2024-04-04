@@ -66,20 +66,18 @@ useSeoMeta({
     <!-- deploy section -->
     <ULandingSection :headline="page?.deploy.headline" :title="page?.deploy.title" :links="page?.deploy.buttons">
       <template #title>
-        <h2 v-html="page?.deploy.title" />
+        <span v-html="page?.deploy.title" />
       </template>
       <template #description>
-        <p v-html="page?.deploy.description" />
+        <span v-html="page?.deploy.description" />
       </template>
       <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 items-start justify-center">
-        <li v-for="deploy in page?.deploy.features" :key="deploy.label" class="flex flex-col gap-y-8 justify-center group">
-          <div class="bg-gray-800 group-hover:bg-green-400 rounded-xl transition duration-500">
-            <img :src="deploy.img.name" :width="deploy.img.width" :height="deploy.img.height" class="rounded-xl">
-          </div>
+        <li v-for="step in page?.deploy.steps" :key="step.title" class="flex flex-col gap-y-8 justify-center group">
+          <NuxtImg :src="step.img.src" :width="step.img.width" :height="step.img.height" class="rounded-xl bg-gray-800 group-hover:bg-green-400 transition duration-500" />
           <div>
-            <h4 class="font-semibold" v-html="deploy.title" />
+            <h4 class="font-semibold" v-html="step.title" />
             <p class="text-gray-500 dark:text-gray-400">
-              {{ deploy.description }}
+              {{ step.description }}
             </p>
           </div>
         </li>
