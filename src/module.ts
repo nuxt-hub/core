@@ -31,21 +31,21 @@ export interface ModuleOptions {
   /**
    * Set `true` to enable caching for the project.
    * 
-   * @default true
+   * @default false
    * @see https://hub.nuxt.com/docs/storage/blob
    */
   cache?: boolean
   /**
    * Set `true` to enable the database for the project.
    * 
-   * @default true
+   * @default false
    * @see https://hub.nuxt.com/docs/storage/database
    */
   database?: boolean
   /**
    * Set `true` to enable the Key-Value storage for the project.
    * 
-   * @default true
+   * @default false
    * @see https://hub.nuxt.com/docs/storage/kv
    */
   kv?: boolean
@@ -117,9 +117,9 @@ export default defineNuxtModule<ModuleOptions>({
       // NuxtHub features
       analytics: false,
       blob: false,
-      cache: true,
-      database: true,
-      kv: true,
+      cache: false,
+      database: false,
+      kv: false,
       // Other options
       version,
       env: process.env.NUXT_HUB_ENV || 'production',
