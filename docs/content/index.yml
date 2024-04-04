@@ -91,7 +91,7 @@ database:
     height: 314
   headline: NuxtHub Database
   title: A scalable database for your Nuxt application.
-  description: 'NuxtHub Database unlocks the power of <span class="font-semibold text-gray-800 dark:text-white">Cloudflare D1</span> to give you access to a serverless SQL database, with zero configuration.
+  description: 'NuxtHub Database unlocks the power of <a href="https://developers.cloudflare.com/d1/" target="_blank" class="font-semibold text-gray-800 dark:text-white hover:underline">Cloudflare D1</a> to give you access to a serverless SQL database, with zero configuration.
   Scale and manage effortlessly, and pay only for what you use.'
   features:
     - name: '`hubDatabase()` server composable'
@@ -124,7 +124,7 @@ blob:
     height: 314
   headline: NuxtHub Blob
   title: Add file uploads to your Nuxt application.
-  description: 'NuxtHub Blob lets you to store and access media files on a global network, thanks to <span class="font-semibold text-gray-800 dark:text-white">Cloudflare R2.</span>
+  description: 'NuxtHub Blob lets you to store and access media files on a global network, thanks to <a href="https://developers.cloudflare.com/r2/" target="_blank" class="font-semibold text-gray-800 dark:text-white hover:underline">Cloudflare R2.</a>
 Let users upload data like images, videos and audio files with our server composable with our blob validator.'
   features:
     - name: 'hubBlob() server composable'
@@ -157,7 +157,7 @@ kv:
     height: 314
   headline: NuxtHub KV
   title: A Global Key-Value Database for Nuxt.
-  description: 'NuxtHub KV leverages <span class="font-semibold text-gray-800 dark:text-white">Cloudflare Workers KV</span> to access a global, low-latency, key-value data storage across 300+ global locations.
+  description: 'NuxtHub KV leverages <a href="https://developers.cloudflare.com/kv/" target="_blank" class="font-semibold text-gray-800 dark:text-white hover:underline">Cloudflare Workers KV</a> to access a global, low-latency, key-value data storage across 300+ global locations.
 Access it in your Nuxt codebase, with zero-configuration.'
   features:
     - name: 'HubKV() server composable'
@@ -221,7 +221,7 @@ tool:
       size: 'lg'
       trailing-icon: 'i-heroicons-arrow-small-right'
       class: 'transition duration-300'
-  title: Tailored features for <span class="text-green-400">Nuxt developers</span>
+  title: Tailored features for <span class="text-primary">Nuxt developers</span>
   description: NuxtHub provides you with all the tools you need to build and deploy your Nuxt apps, on the edge.
   features:
     - title: 'Storage region'
@@ -282,7 +282,7 @@ testimonials:
           src: 'https://avatars.githubusercontent.com/u/216296?v=4'
           loading: 'lazy'
 journey:
-    title: 'Begin your NuxtHub journey <span class="text-green-400">today</span>'
+    title: 'Begin your NuxtHub journey <span class="text-primary">today</span>'
     images:
       width: '1443'
       height: '428'
