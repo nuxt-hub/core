@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import mediumZoom from 'medium-zoom'
 import { joinURL } from 'ufo'
+
+const mapSection = ref(null)
+const mapSectionVisible = ref(false)
+
 const { data: page } = await useAsyncData('index', () => queryContent('/').findOne())
 
 const { url } = useSiteConfig()
+const color = useColorMode()
 
 useSeoMeta({
   title: page.value.title,
@@ -12,11 +17,19 @@ useSeoMeta({
   ogDescription: page.value.description,
   ogImage: joinURL(url, '/social-card.png')
 })
+
 onMounted(() => {
   mediumZoom('[data-zoom-src]', {
     margin: 5,
   })
 })
+
+useIntersectionObserver(
+  mapSection,
+  ([{ isIntersecting }], _) => {
+    mapSectionVisible.value = isIntersecting
+  },
+)
 </script>
 
 <template>
@@ -292,15 +305,12 @@ onMounted(() => {
     </ULandingSection>
 
     <!-- journey section -->
-    <ULandingSection class="relative mt-32" :ui="{ title: 'z-10' }">
-      <div
-        class="flex justify-center absolute left-0 right-0 -top-8 sm:-top-10 md:-top-12 lg:-top-20 xl:-top-32 2xl:-top-42"
-      >
-        <UColorModeImage
-          :light="page?.journey.images.light" :dark="page?.journey.images.dark"
-          :width="page?.journey.images.width" :height="page?.journey.images.height"
-        />
-      </div>
+    <ULandingSection ref="mapSection" class="relative mt-32" :ui="{ title: 'z-10' }">
+      <ClientOnly>
+        <LandingMapDark v-if="$colorMode.preference === 'dark'" class="absolute left-0 right-0 -top-8 sm:-top-10 md:-top-12 lg:-top-20 xl:-top-32 2xl:-top-42" :runAnim="mapSectionVisible" />
+        <LandingMapLight v-else class="absolute left-0 right-0 -top-8 sm:-top-10 md:-top-12 lg:-top-20 xl:-top-32 2xl:-top-42" :runAnim="mapSectionVisible" />
+      </ClientOnly>
+
 
       <template #title>
         <span v-html="page?.journey.title" />
