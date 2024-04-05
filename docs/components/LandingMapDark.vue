@@ -19,7 +19,6 @@ onMounted(() => {
 })
 
 watch(() => props.runAnim, () => {
-  console.log('runAnim', props.runAnim)
   props.runAnim ? resume() : pause()
 })
 
