@@ -1,6 +1,32 @@
 # Changelog
 
 
+## v0.4.1
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.4.0...v0.4.1)
+
+### 🩹 Fixes
+
+- **blob:** Move `HEAD /[path]` to `GET /head/[path]` ([#48](https://github.com/nuxt-hub/core/pull/48))
+
+### 📖 Documentation
+
+- Update screenshot ([3030fc9](https://github.com/nuxt-hub/core/commit/3030fc9))
+- Simplify deploy section ([22e9fcc](https://github.com/nuxt-hub/core/commit/22e9fcc))
+- New landing ([#44](https://github.com/nuxt-hub/core/pull/44))
+- Add Evan You testimonial ([d5c95dd](https://github.com/nuxt-hub/core/commit/d5c95dd))
+- Update description for testimonials ([d4ac425](https://github.com/nuxt-hub/core/commit/d4ac425))
+
+### 🏡 Chore
+
+- Fix typos ([d433653](https://github.com/nuxt-hub/core/commit/d433653))
+
+### ❤️ Contributors
+
+- Sylvain Marroufin ([@smarroufin](http://github.com/smarroufin))
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Florent Delerue <florentdelerue@hotmail.com>
+
 ## v0.4.0
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.3.12...v0.4.0)
