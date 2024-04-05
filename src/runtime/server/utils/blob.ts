@@ -269,10 +269,9 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
       })
     },
     async head(pathname: string) {
-      const { headers } = await blobAPI.raw<void>(decodeURI(pathname), {
-        method: 'HEAD'
+      return await blobAPI<void>(`/head/${decodeURI(pathname)}`, {
+        method: 'GET'
       })
-      return JSON.parse(headers.get('x-blob') || '{}') as BlobObject
     },
     async del(pathnames: string | string[]) {
       if (Array.isArray(pathnames)) {
