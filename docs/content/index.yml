@@ -264,7 +264,7 @@ tool:
 testimonials:
   headline: 'Wall of love'
   title: 'Testimonials from <span class="text-primary">early adopters</span>'
-  description: 'Nuxt UI Pro ships with an extensive set of advanced components that cover a wide range of use-cases.'
+  description: 'NuxtHub empowers developers to ship full-stack Nuxt applications with zero configuration, hear what they think about it.'
   items:
     - quote: "Nuxt on Cloudflare infra with minimal effort - this is huge!"
       author:
