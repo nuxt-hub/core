@@ -306,8 +306,8 @@ useIntersectionObserver(
     <!-- journey section -->
     <ULandingSection ref="mapSection" class="relative mt-32" :ui="{ title: 'z-10' }">
       <ClientOnly>
-        <LandingMapDark v-if="$colorMode.preference === 'dark'" class="absolute left-0 right-0 -top-8 sm:-top-10 md:-top-12 lg:-top-20 xl:-top-32 2xl:-top-42" :runAnim="mapSectionVisible" />
-        <LandingMapLight v-else class="absolute left-0 right-0 -top-8 sm:-top-10 md:-top-12 lg:-top-20 xl:-top-32 2xl:-top-42" :runAnim="mapSectionVisible" />
+        <LandingMapDark v-if="$colorMode.preference === 'dark'" class="absolute left-0 right-0 -top-8 sm:-top-10 md:-top-12 lg:-top-20 xl:-top-32 2xl:-top-42" :run-anim="mapSectionVisible" />
+        <LandingMapLight v-else class="absolute left-0 right-0 -top-8 sm:-top-10 md:-top-12 lg:-top-20 xl:-top-32 2xl:-top-42" :run-anim="mapSectionVisible" />
       </ClientOnly>
 
 
