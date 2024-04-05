@@ -301,6 +301,13 @@ testimonials:
         avatar:
           src: 'https://avatars.githubusercontent.com/u/15716057?v=4'
           loading: 'lazy'
+    - quote: "Nuxt is becoming the best framework for bootstrappers imo. NuxtHub is a layer on top of Cloudflare services for cheap & fast full-stack edge hosting."
+      author:
+        name: 'Tommy J. Vedvik'
+        description: 'UX Developer'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/48070?v=4'
+          loading: 'lazy'
 journey:
     title: 'Begin your NuxtHub journey <span class="text-primary">today</span>'
     images:
