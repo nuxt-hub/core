@@ -8,7 +8,6 @@ const mapSectionVisible = ref(false)
 const { data: page } = await useAsyncData('index', () => queryContent('/').findOne())
 
 const { url } = useSiteConfig()
-const color = useColorMode()
 
 useSeoMeta({
   title: page.value.title,
