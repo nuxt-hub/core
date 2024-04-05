@@ -266,6 +266,20 @@ testimonials:
   title: 'Testimonials from <span class="text-primary">early adopters</span>'
   description: 'Nuxt UI Pro ships with an extensive set of advanced components that cover a wide range of use-cases.'
   items:
+    - quote: "Nuxt on Cloudflare infra with minimal effort - this is huge!"
+      author:
+        name: 'Evan You'
+        description: 'Author of Vue.js and Vite.'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/499550?v=4'
+          loading: 'lazy'
+    - quote: "I love the polish and the batteries-included approach. NuxtHub takes web framework and hosting integration to a new level!"
+      author:
+        name: 'Igor Minar'
+        description: 'Software Engineer at Cloudflare'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/216296?v=4'
+          loading: 'lazy'
     - quote: "NuxtHub is hands down the easiest way to get a project from zero to production on the Cloudflare stack!"
       author:
         name: 'Charlie Hield'
@@ -286,13 +300,6 @@ testimonials:
         description: 'Product Developer'
         avatar:
           src: 'https://avatars.githubusercontent.com/u/15716057?v=4'
-          loading: 'lazy'
-    - quote: "I love the polish and the batteries-included approach. NuxtHub takes web framework and hosting integration to a new level!"
-      author:
-        name: 'Igor Minar'
-        description: 'Software Engineer at Cloudflare'
-        avatar:
-          src: 'https://avatars.githubusercontent.com/u/216296?v=4'
           loading: 'lazy'
 journey:
     title: 'Begin your NuxtHub journey <span class="text-primary">today</span>'
