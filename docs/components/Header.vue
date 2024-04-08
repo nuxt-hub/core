@@ -2,30 +2,44 @@
 import type { NavItem } from '@nuxt/content/dist/runtime/types'
 
 const navigation = inject<NavItem[]>('navigation', [])
-
+const { metaSymbol } = useShortcuts()
 const { header } = useAppConfig()
+const links = [
+  {
+    label: 'Get Started',
+    to: '/docs/getting-started'
+  },
+  {
+    label: 'Database',
+    to: '/docs/storage/database'
+  },
+  {
+    label: 'KV',
+    to: '/docs/storage/kv'
+  },
+  {
+    label: 'Blob',
+    to: '/docs/storage/blob'
+  },
+  {
+    label: 'Admin',
+    to: 'https://admin.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=header',
+    target: '_blank'
+  }
+]
 </script>
 
 <template>
-  <UHeader :ui="{}">
+  <UHeader :ui="{}" :links="links">
     <template #logo>
-      <template v-if="header?.logo?.dark || header?.logo?.light">
-        <UColorModeImage v-bind="{ class: 'h-6 w-auto', ...header?.logo }" />
-      </template>
-      <template v-else>
-        <Logo />
-      </template>
-    </template>
-
-    <template v-if="header?.search" #center>
-      <UContentSearchButton class="hidden lg:flex" />
+      <Logo />
     </template>
 
     <template #right>
-      <UContentSearchButton v-if="header?.search" :label="null" class="lg:hidden" />
-
-      <UColorModeButton v-if="header?.colorMode" />
-
+      <UTooltip text="Search" :shortcuts="[metaSymbol, 'K']" :popper="{ strategy: 'absolute' }">
+        <UContentSearchButton :label="null" />
+      </UTooltip>
+      <UColorModeButton />
       <template v-if="header?.links">
         <UButton
           v-for="(link, index) of header.links"
@@ -41,7 +55,7 @@ const { header } = useAppConfig()
     <template #panel>
       <UNavigationTree :links="mapContentNavigation(navigation)" />
 
-      <div class="flex py-2">
+      <div class="flex py-2 mt-2">
         <UButton to="https://admin.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=header" external icon="i-simple-icons-nuxtdotjs" color="black" block class="sm:hidden">
           NuxtHub Admin
         </UButton>

@@ -16,33 +16,33 @@ const log = logger.withTag('nuxt:hub')
 export interface ModuleOptions {
   /**
    * Set `true` to enable the analytics for the project.
-   * 
+   *
    * @default false
    */
   analytics?: boolean
   /**
    * Set `true` to enable the Blob storage for the project.
-   * 
+   *
    * @default false
    */
   blob?: boolean
   /**
    * Set `true` to enable caching for the project.
-   * 
+   *
    * @default false
    * @see https://hub.nuxt.com/docs/storage/blob
    */
   cache?: boolean
   /**
    * Set `true` to enable the database for the project.
-   * 
+   *
    * @default false
    * @see https://hub.nuxt.com/docs/storage/database
    */
   database?: boolean
   /**
    * Set `true` to enable the Key-Value storage for the project.
-   * 
+   *
    * @default false
    * @see https://hub.nuxt.com/docs/storage/kv
    */
