@@ -151,6 +151,18 @@ export default defineNuxtModule<ModuleOptions>({
           body: {},
         }).catch(() => {})
       })
+    } else {
+      // Write `dist/hub.config.json` after public assets are built
+      nuxt.hook('nitro:build:public-assets', async (nitro) => {
+        const hubConfig = {
+          analytics: true,
+          blob: true,
+          cache: true,
+          database: true,
+          kv: true
+        }
+        await writeFile(join(nitro.options.output.publicDir, 'hub.config.json'), JSON.stringify(hubConfig, null, 2), 'utf-8')
+      })
     }
 
     if (hub.remote) {
