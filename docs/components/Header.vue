@@ -35,7 +35,7 @@ const links = [
         <UContentSearchButton :label="null" />
       </UTooltip>
       <UButton variant="ghost" label="Log in" to="/login" color="black" size="md" class="hidden sm:block" external />
-      <UButton variant="solid" label="Sign up" to="/signup" size="md" class="text-gray-900 bg-green-400 hidden sm:block" external  />
+      <UButton variant="solid" label="Sign up" to="/signup" size="md" class="text-gray-900 bg-green-400 hidden sm:block" external />
     </template>
 
     <template #panel>

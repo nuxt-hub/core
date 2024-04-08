@@ -36,7 +36,9 @@ useSeoMeta({
         <UPricingCard v-for="pricing in page?.pricing.plans" :key="pricing.title" v-bind="pricing" />
       </UPricingGrid>
 
-      <div class="w-full text-center pt-8 italic text-gray-500 dark:text-gray-400 text-sm">{{ page?.pricing.info }}</div>
+      <div class="w-full text-center pt-8 italic text-gray-500 dark:text-gray-400 text-sm">
+        {{ page?.pricing.info }}
+      </div>
 
       <UCard class="mt-8" :ui="{ body: { padding: 'md:p-[40px]' }}">
         <div class="flex justify-between items-center gap-x-8">
