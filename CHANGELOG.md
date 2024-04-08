@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v0.4.2
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.4.1...v0.4.2)
+
+### 📖 Documentation
+
+- Fix links in readme ([#45](https://github.com/nuxt-hub/core/pull/45))
+- Add testimonial ([84281a2](https://github.com/nuxt-hub/core/commit/84281a2))
+- Add Dario testimonial ([f17f7e3](https://github.com/nuxt-hub/core/commit/f17f7e3))
+
+### 🏡 Chore
+
+- Create resources to prepare for new version ([c2debfc](https://github.com/nuxt-hub/core/commit/c2debfc))
+- Create hub.config.json ([0342b00](https://github.com/nuxt-hub/core/commit/0342b00))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Sandro Circi ([@Sandros94](http://github.com/Sandros94))
+
 ## v0.4.1
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.4.0...v0.4.1)
