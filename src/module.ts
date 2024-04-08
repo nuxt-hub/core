@@ -131,7 +131,13 @@ export default defineNuxtModule<ModuleOptions>({
           headers: {
             authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
           },
-          body: {},
+          body: {
+            analytics: true,
+            blob: true,
+            cache: true,
+            database: true,
+            kv: true
+          },
         }).catch(() => {})
       })
 
