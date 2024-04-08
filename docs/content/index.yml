@@ -9,8 +9,8 @@ hero:
   img:
     width: '535'
     height: '643'
-    light: '/images/hero-light.svg'
-    dark: '/images/hero-dark.svg'
+    light: '/images/landing/hero-light.svg'
+    dark: '/images/landing/hero-dark.svg'
   headline:
     label: Currently in alpha
   links:
@@ -41,30 +41,30 @@ features:
 deploy:
   headline: Ready to use
   title: Deploy a Nuxt application <span class="text-primary">in one minute.</span>
-  description: The NuxtHub Admin is made to <span class="font-semibold text-gray-800 dark:text-white">simplify your experience</span> with NuxtHub, enabling you to effortlessly manage teams and projects, as well as deploying NuxtHub application with <span class="font-semibold text-gray-800 dark:text-white">zero-configuration</span> on your Cloudflare account.
+  description: The NuxtHub Admin is made to <span class="font-semibold text-gray-800 dark:text-white">simplify your experience</span> with NuxtHub, enabling you to effortlessly manage teams and projects, as well as deploying NuxtHub application with <span class="font-semibold text-gray-800 dark:text-white">zero-configuration</span> on your Cloudflare account.
   steps:
     - title: Link your Cloudflare account
       description: Create an API token on Cloudflare with our pre-filled template.
       img:
-        src: '/images/steps/link-cloudflare-account.webp'
+        src: '/images/landing/steps/link-cloudflare-account.webp'
         width: 460
         height: 259
     - title: Create a Nuxt app
       description: Start from our templates or import your GitHub repository.
       img:
-        src: '/images/steps/create-nuxthub-project.webp'
+        src: '/images/landing/steps/create-nuxthub-project.webp'
         width: 460
         height: 259
     - title: Deploy it
       description: Run the nuxthub deploy command or use the Cloudflare Pages CI/CD.
       img:
-        src: '/images/steps/deploy-nuxt-project.webp'
+        src: '/images/landing/steps/deploy-nuxt-project.webp'
         width: 460
         height: 259
     - title: Share it to the world
       description: Get insights and manage your storage in NuxtHub.
       img:
-        src: '/images/steps/share-nuxt-project.webp'
+        src: '/images/landing/steps/share-nuxt-project.webp'
         width: 460
         height: 259
   buttons:
@@ -82,7 +82,7 @@ deploy:
       size: lg
 database:
   img:
-    src: '/images/nuxthub-database.png'
+    src: '/images/landing/nuxthub-database.png'
     width: 576
     height: 314
   headline: NuxtHub Database
@@ -119,7 +119,7 @@ database:
           description: 5 GB (total)
 blob:
   img:
-    src: '/images/nuxthub-blob.png'
+    src: '/images/landing/nuxthub-blob.png'
     width: 576
     height: 314
   headline: NuxtHub Blob
@@ -156,7 +156,7 @@ Let users upload data like images, videos and audio files with our server compos
           description: 10 GB / month
 kv:
   img:
-    src: '/images/nuxthub-kv.png'
+    src: '/images/landing/nuxthub-kv.png'
     width: 576
     height: 314
   headline: NuxtHub KV
@@ -197,7 +197,7 @@ Access it in your Nuxt codebase, with zero-configuration.'
           description: 1 GB
 storage:
   img:
-    src: '/images/nuxthub-schema.png'
+    src: '/images/landing/nuxthub-schema.png'
     width: 576
     height: 374
   headline: Remote Storage
@@ -320,8 +320,8 @@ journey:
     images:
       width: '1443'
       height: '428'
-      light: '/images/cta-light.webp'
-      dark: '/images/cta-dark.webp'
+      light: '/images/landing/cta-light.webp'
+      dark: '/images/landing/cta-dark.webp'
     features:
       - title: 'Enable NuxtHub in your project'
         description: 'Add the @nuxthub/core module to your Nuxt project and go full-stack. '

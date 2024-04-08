@@ -1,0 +1,177 @@
+title: 'Discover the right plan for you.'
+description: 'NuxtHub is built on Cloudflare for optimal performance. While separate subscriptions are required, you get the combined power of both, with plans to suit your specific needs.'
+navigation: false
+hero:
+  title: 'Discover the right plan <span class="text-primary">for you</span>'
+  description: 'NuxtHub is built on Cloudflare for optimal performance. While separate subscriptions are required, you get the combined power of both, with plans to suit your specific needs.'
+  orientation: horizontal
+  img:
+    width: '1140'
+    height: '632'
+    light: '/images/pricing/hero-light.webp'
+    dark: '/images/pricing/hero-dark.webp'
+pricing:
+  plans:
+    - title: 'Solo'
+      descritpion: 'For solo user'
+      price: '$0'
+      features:
+        - '1 user per project'
+        - 'Lorem ipsum dolor sit amet,'
+        - 'Lorem ipsum dolor sit amet,'
+        - 'Lorem ipsum dolor sit amet,'
+        - '... and much more'
+      button:
+        label: 'Get started for free'
+        color: 'gray'
+    - title: 'Monthly Pro'
+      descritpion: 'For bootstrappers and indie hackers.'
+      price: '$12'
+      cycle: '/user/month'
+      highlight: true
+      features:
+        - '10 users per project'
+        - '$9 per additional user'
+        - 'Lorem ipsum dolor sit amet,'
+        - 'Lorem ipsum dolor sit amet,'
+        - 'Priority support with live chat'
+      badge:
+        label: 'Most popular'
+      button:
+        label: 'Start 14-day free trial'
+      ui:
+        inner: 'justify-between'
+        body:
+          background: 'bg-gradient-to-t from-primary/20 via-white to-white dark:from-primary/30 dark:via-gray-900 dark:to-gray-900 rounded-xl'
+    - title: 'Annual Pro'
+      descritpion: 'For bootstrappers and indie hackers.'
+      price: '$399'
+      cycle: '/month'
+      features:
+        - '10 users per project'
+        - '$9 per additional user'
+        - 'Unlimited projects'
+        - 'Unlimited deployments'
+        - 'Priority Support'
+      button:
+        label: 'Start 14-day free trial'
+  info: 'Prices don’t include your Cloudflare costs.'
+  contact:
+    title: 'Are you an Open Source Organization?'
+    description: "If you want to use NuxtHub to manage your open source projects, we'll love to work with you!<br/>Feel free to contact us."
+    button:
+      label: 'Contact us'
+      color: gray
+plan:
+  title: 'What comes with the free Cloudflare plan?'
+  description: 'Start free with Cloudflare and seamlessly upgrade to a paid as your needs grow.'
+  free: 'Free'
+  paid: 'Pay for your usage'
+  d1:
+    columns:
+      - key: 'title'
+      - key: free
+        label: Free plan
+      - key: paid
+        label: Paid plan
+    rows:
+      - title:
+          value: 'Cloudflare D1 (Database)'
+          class: 'font-semibold text-gray-950 dark:text-white'
+      - title:
+          value: 'Rows read'
+          class: 'border-t dark:border-gray-800 border-gray-200 dark:border-gray-800 border-gray-200'
+        free:
+          value: '5 million / day'
+          class: 'border-t dark:border-gray-800 border-gray-200'
+        paid:
+          value: 'First 25 billion / month included + $0.001 / million rows'
+          class: 'border-t dark:border-gray-800 border-gray-200'
+      - title:
+          value: 'Rows written'
+        free:
+          value: '100,000 / day'
+        paid:
+          value: 'First 50 million / month included + $1.00 / million rows'
+      - title:
+          value: 'Storage (per GB stored)'
+        free:
+          value: '5 GB (total)'
+        paid:
+          value: 'First 5 GB included + $0.75 / GB-mo'
+      - title:
+          value: 'Cloudflare R2 (Blob)'
+          class: 'font-semibold text-gray-950 dark:text-white'
+      - title:
+          value: 'Storage'
+          class: 'border-t dark:border-gray-800 border-gray-200'
+        free:
+          value: '10 GB / month'
+          class: 'border-t dark:border-gray-800 border-gray-200'
+        paid:
+          value: '$0.015 / GB storage'
+          class: 'border-t dark:border-gray-800 border-gray-200'
+      - title:
+          value: 'Class A operations'
+        free:
+          value: '1,000,000 / month'
+        paid:
+          value: '$4.50 / million'
+      - title:
+          value: 'Class B operations'
+        free:
+          value: '10,000,000 / month'
+        paid:
+          value: '$0.36 / million'
+      - title:
+          value: 'Cloudflare R2 (Blob)'
+          class: 'font-semibold text-gray-950 dark:text-white'
+      - title:
+          value: 'Read'
+          class: border-t dark:border-gray-800 border-gray-200
+        free:
+          value: '100,000 / day'
+          class: 'border-t dark:border-gray-800 border-gray-200'
+        paid:
+          value: '10M / month'
+          class: 'border-t dark:border-gray-800 border-gray-200'
+      - title:
+          value: 'List'
+        free:
+          value: '1,000 / day'
+        paid:
+          value: '1M / month'
+      - title:
+          value: 'Write'
+        free:
+          value: '1,000 / day'
+        paid:
+          value: '1M / month'
+      - title:
+          value: 'Delete'
+        free:
+          value: '1,000 / day'
+        paid:
+          value: '1M / month'
+      - title:
+          value: 'Storage'
+        free:
+          value: '1 GB'
+        paid:
+          value: '1 GB'
+  button:
+    label: 'Learn more on cloudflare'
+    external: true
+    trailingIcon: 'i-ph-arrow-square-out'
+    color: gray
+faq:
+  title: 'FAQ'
+  items:
+    - label: 'Can I try NuxtHub before paying for it?'
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat'
+    - label: 'How do I cancel my subscription?'
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat'
+    - label: How can I contact your support?
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat'
+    - label: What happens at the end of my trial?
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat'

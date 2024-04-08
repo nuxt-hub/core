@@ -2,12 +2,6 @@ export default defineAppConfig({
   ui: {
     primary: 'green',
     gray: 'slate',
-    footer: {
-      bottom: {
-        left: 'text-sm text-gray-500 dark:text-gray-400',
-        wrapper: 'border-t border-gray-200 dark:border-gray-800'
-      }
-    },
     variables: {
       dark: {
         background: 'var(--color-gray-950)'
@@ -16,14 +10,6 @@ export default defineAppConfig({
   },
   seo: {
     siteName: 'NuxtHub',
-  },
-  header: {
-    links: [{
-      icon: 'i-simple-icons-github',
-      to: 'https://github.com/nuxt-hub/core',
-      target: '_blank',
-      'aria-label': 'NuxtHub'
-    }]
   },
   toc: {
     title: 'Table of Contents',

@@ -3,28 +3,23 @@ import type { NavItem } from '@nuxt/content/dist/runtime/types'
 
 const navigation = inject<NavItem[]>('navigation', [])
 const { metaSymbol } = useShortcuts()
-const { header } = useAppConfig()
 const links = [
   {
-    label: 'Get Started',
-    to: '/docs/getting-started'
-  },
-  {
-    label: 'Database',
-    to: '/docs/storage/database'
-  },
-  {
-    label: 'KV',
-    to: '/docs/storage/kv'
-  },
-  {
-    label: 'Blob',
-    to: '/docs/storage/blob'
-  },
-  {
-    label: 'Admin',
-    to: 'https://admin.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=header',
-    target: '_blank'
+    label: 'Docs',
+    to: '/docs/getting-started',
+    children: mapContentNavigation(navigation)
+  }, {
+    label: 'Templates',
+    to: '/templates'
+  }, {
+    label: 'Pricing',
+    to: '/pricing'
+  }, {
+    label: 'Changelog',
+    to: '/changelog'
+  }, {
+    label: 'Blog',
+    to: '/blog'
   }
 ]
 </script>
@@ -39,26 +34,16 @@ const links = [
       <UTooltip text="Search" :shortcuts="[metaSymbol, 'K']" :popper="{ strategy: 'absolute' }">
         <UContentSearchButton :label="null" />
       </UTooltip>
-      <UColorModeButton />
-      <template v-if="header?.links">
-        <UButton
-          v-for="(link, index) of header.links"
-          :key="index"
-          v-bind="{ color: 'gray', variant: 'ghost', ...link }"
-        />
-      </template>
-      <UButton to="https://admin.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=header" external icon="i-simple-icons-nuxtdotjs" color="black" class="hidden sm:inline-flex">
-        NuxtHub Admin
-      </UButton>
+      <UButton variant="ghost" label="Log in" to="/login" color="black" size="md" class="hidden sm:block" external />
+      <UButton variant="solid" label="Sign up" to="/signup" size="md" class="text-gray-900 bg-green-400 hidden sm:block" external  />
     </template>
 
     <template #panel>
-      <UNavigationTree :links="mapContentNavigation(navigation)" />
+      <UNavigationTree :links="links" />
 
-      <div class="flex py-2 mt-2">
-        <UButton to="https://admin.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=header" external icon="i-simple-icons-nuxtdotjs" color="black" block class="sm:hidden">
-          NuxtHub Admin
-        </UButton>
+      <div class="flex flex-col gap-y-2 mt-4">
+        <UButton variant="solid" label="Log in" to="/login" color="white" size="md" class="flex justify-center" external />
+        <UButton variant="solid" label="Sign up" to="/signup" size="md" class="flex justify-center text-gray-900 bg-primary" external />
       </div>
     </template>
   </UHeader>
