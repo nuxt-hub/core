@@ -297,7 +297,7 @@ testimonials:
     - quote: "Took me less than 90 seconds to deploy an app with DB, KV, File storage and Caching, all on the edge with just a single command."
       author:
         name: 'Fayaz Ahmed'
-        description: 'Product Developer'
+        description: 'Indie Hacker'
         avatar:
           src: 'https://avatars.githubusercontent.com/u/15716057?v=4'
           loading: 'lazy'
@@ -307,6 +307,13 @@ testimonials:
         description: 'UX Developer'
         avatar:
           src: 'https://avatars.githubusercontent.com/u/48070?v=4'
+          loading: 'lazy'
+    - quote: "I love how NuxtHub combines, amplifies and simplifies the Cloudflare tooling with the wide and mature Nuxt ecosystem. I cannot wait to see how it will evolve and expand in the future!"
+      author:
+        name: 'Dario Piotrowicz'
+        description: 'Web Developer at Cloudflare'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/61631103?v=4'
           loading: 'lazy'
 journey:
     title: 'Begin your NuxtHub journey <span class="text-primary">today</span>'
