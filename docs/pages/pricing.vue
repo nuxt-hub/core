@@ -21,7 +21,6 @@ useSeoMeta({
 
     <UContainer class="relative">
       <UPageHero v-bind="page?.hero" align="center" :ui="{ wrapper: 'relative !pt-[144px] !pb-[92px]' }">
-
         <template #icon>
           <UBadge :label="page?.hero.headline" icon="" variant="outline" :ui="{ rounded: 'rounded-full' }" />
         </template>
@@ -63,7 +62,7 @@ useSeoMeta({
 
         <UPageGrid :ui="{ wrapper: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-8' }">
           <UPageCard v-for="plan in page?.cloudflare.plans" :key="plan.title" :title="plan.title" :description="plan.description" :to="plan.to">
-            <UIcon  name="i-ph-arrow-up-right" class="absolute top-2 right-2 h-4 w-4 text-gray-500 dark:text-gray-400 group-hover:text-gray-950 group-hover:dark:text-white cursor-pointer" />
+            <UIcon name="i-ph-arrow-up-right" class="absolute top-2 right-2 h-4 w-4 text-gray-500 dark:text-gray-400 group-hover:text-gray-950 group-hover:dark:text-white cursor-pointer" />
           </UPageCard>
         </UPageGrid>
 
@@ -73,7 +72,9 @@ useSeoMeta({
       </div>
 
       <div class="py-24">
-        <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight text-center w-full pb-12">FAQ</h1>
+        <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight text-center w-full pb-12">
+          FAQ
+        </h1>
         <ULandingFAQ :items="page?.faq.items" class="pt-[64px]" />
       </div>
     </UContainer>
