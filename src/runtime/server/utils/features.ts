@@ -29,10 +29,7 @@ export function requireNuxtHubFeature(feature: keyof typeof featureMessages) {
     throw createError({
       statusCode: 422,
       statusMessage: 'Unprocessable Entity',
-      message: `"${feature}" not enabled`,
-      data: {
-        reason: featureMessages[feature]
-      }
+      message: featureMessages[feature]
     })
   }
 }

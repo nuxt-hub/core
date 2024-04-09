@@ -7,6 +7,9 @@ export default defineNuxtConfig({
     '@kgierke/nuxt-basic-auth',
     module
   ],
+  hub: {
+    database: true
+  },
   ui: {
     icons: ['heroicons', 'simple-icons']
   },
