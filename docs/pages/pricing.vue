@@ -83,7 +83,9 @@ useSeoMeta({
     </div>
 
     <div class="py-24">
-      <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight text-center w-full pb-12">FAQ</h1>
+      <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight text-center w-full pb-12">
+        FAQ
+      </h1>
       <ULandingFAQ :items="page?.faq.items" class="pt-[64px]" />
     </div>
   </UContainer>
