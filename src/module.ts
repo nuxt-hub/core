@@ -1,14 +1,12 @@
 import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule, addServerImportsDir } from '@nuxt/kit'
-import { addCustomTab } from '@nuxt/devtools-kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
 import { findWorkspaceDir } from 'pkg-types'
-import { readUser } from 'rc9'
 import { $fetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { parseArgs } from 'citty'
-import { generateWrangler } from './utils'
+import { addDevtoolsCustomTabs, generateWrangler } from './utils'
 import { version } from '../package.json'
 import { execSync } from 'node:child_process'
 import { argv } from 'node:process'
@@ -16,6 +14,39 @@ import { argv } from 'node:process'
 const log = logger.withTag('nuxt:hub')
 
 export interface ModuleOptions {
+  /**
+   * Set `true` to enable the analytics for the project.
+   *
+   * @default false
+   */
+  analytics?: boolean
+  /**
+   * Set `true` to enable the Blob storage for the project.
+   *
+   * @default false
+   */
+  blob?: boolean
+  /**
+   * Set `true` to enable caching for the project.
+   *
+   * @default false
+   * @see https://hub.nuxt.com/docs/storage/blob
+   */
+  cache?: boolean
+  /**
+   * Set `true` to enable the database for the project.
+   *
+   * @default false
+   * @see https://hub.nuxt.com/docs/storage/database
+   */
+  database?: boolean
+  /**
+   * Set `true` to enable the Key-Value storage for the project.
+   *
+   * @default false
+   * @see https://hub.nuxt.com/docs/storage/kv
+   */
+  kv?: boolean
   /**
    * Set to `true`, 'preview' or 'production' to use the remote storage.
    * Only set the value on a project you are deploying outside of NuxtHub or Cloudflare.
@@ -61,13 +92,6 @@ export default defineNuxtModule<ModuleOptions>({
   async setup (options, nuxt) {
     const rootDir = nuxt.options.rootDir
     const { resolve } = createResolver(import.meta.url)
-    const resolveRuntimeModule = (path: string) => resolve('./runtime', path)
-
-    // Waiting for https://github.com/unjs/c12/pull/139
-    // Then adding the c12 dependency to the project to 1.8.1
-    options = defu(options, {
-      ...readUser('.nuxtrc').hub,
-    })
 
     let remoteArg = parseArgs(argv, { remote: { type: 'string' } }).remote as string
     remoteArg = (remoteArg === '' ? 'true' : remoteArg)
@@ -82,6 +106,12 @@ export default defineNuxtModule<ModuleOptions>({
       userToken: process.env.NUXT_HUB_USER_TOKEN || '',
       // Remote storage
       remote: remoteArg || process.env.NUXT_HUB_REMOTE,
+      // NuxtHub features
+      analytics: false,
+      blob: false,
+      cache: false,
+      database: false,
+      kv: false,
       // Other options
       version,
       env: process.env.NUXT_HUB_ENV || 'production',
@@ -97,22 +127,24 @@ export default defineNuxtModule<ModuleOptions>({
       log.info(`Using \`${hub.url}\` as NuxtHub Admin URL`)
     }
 
-    // Add Server caching (Nitro)
-    nuxt.options.nitro = defu(nuxt.options.nitro, {
-      storage: {
-        cache: {
-          driver: 'cloudflare-kv-binding',
-          binding: 'CACHE',
-          base: 'cache'
+    if (hub.cache) {
+      // Add Server caching (Nitro)
+      nuxt.options.nitro = defu(nuxt.options.nitro, {
+        storage: {
+          cache: {
+            driver: 'cloudflare-kv-binding',
+            binding: 'CACHE',
+            base: 'cache'
+          }
+        },
+        devStorage: {
+          cache: {
+            driver: 'fs',
+            base: join(rootDir, '.data/cache')
+          }
         }
-      },
-      devStorage: {
-        cache: {
-          driver: 'fs',
-          base: join(rootDir, '.data/cache')
-        }
-      }
-    })
+      })
+    }
 
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {
@@ -120,7 +152,7 @@ export default defineNuxtModule<ModuleOptions>({
     }
 
     // Register composables
-    addServerImportsDir(resolveRuntimeModule('./server/utils'))
+    addServerImportsDir(resolve('./runtime/server/utils'))
 
     // Within CF Pages CI/CD to notice NuxtHub about the build and hub config
     if (!nuxt.options.dev && process.env.CF_PAGES && process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN && process.env.NUXT_HUB_PROJECT_KEY && process.env.NUXT_HUB_ENV) {
@@ -132,11 +164,11 @@ export default defineNuxtModule<ModuleOptions>({
             authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
           },
           body: {
-            analytics: true,
-            blob: true,
-            cache: true,
-            database: true,
-            kv: true
+            analytics: hub.analytics,
+            blob: hub.blob,
+            cache: hub.cache,
+            database: hub.database,
+            kv: hub.kv
           },
         }).catch(() => {})
       })
@@ -155,11 +187,11 @@ export default defineNuxtModule<ModuleOptions>({
       // Write `dist/hub.config.json` after public assets are built
       nuxt.hook('nitro:build:public-assets', async (nitro) => {
         const hubConfig = {
-          analytics: true,
-          blob: true,
-          cache: true,
-          database: true,
-          kv: true
+          analytics: hub.analytics,
+          blob: hub.blob,
+          cache: hub.cache,
+          database: hub.database,
+          kv: hub.kv
         }
         await writeFile(join(nitro.options.output.publicDir, 'hub.config.json'), JSON.stringify(hubConfig, null, 2), 'utf-8')
       })
@@ -248,44 +280,14 @@ export default defineNuxtModule<ModuleOptions>({
       logger.info(`Remote storage available: ${Object.keys(manifest.storage).filter(k => manifest.storage[k]).map(k => `\`${k}\``).join(', ')} `)
     }
 
+    // Add Proxy routes only if not remote or in development (used for devtools)
     if (nuxt.options.dev || !hub.remote) {
-      // Add Proxy routes only if not remote or in development (used for devtools)
       addServerScanDir(resolve('./runtime/server'))
     }
 
+    // Add custom tabs to Nuxt Devtools
     if (nuxt.options.dev) {
-      nuxt.hook('listen', (_, { url }) => {
-        addCustomTab({
-          category: 'server',
-          name: 'hub-database',
-          title: 'Hub Database',
-          icon: 'i-ph-database',
-          view: {
-            type: 'iframe',
-            src: `https://admin.hub.nuxt.com/embed/database?url=${url}`,
-          },
-        })
-        addCustomTab({
-          category: 'server',
-          name: 'hub-kv',
-          title: 'Hub KV',
-          icon: 'i-ph-coin',
-          view: {
-            type: 'iframe',
-            src: `https://admin.hub.nuxt.com/embed/kv?url=${url}`,
-          },
-        })
-        addCustomTab({
-          category: 'server',
-          name: 'hub-blob',
-          title: 'Hub Blob',
-          icon: 'i-ph-shapes',
-          view: {
-            type: 'iframe',
-            src: `https://admin.hub.nuxt.com/embed/blob?url=${url}`,
-          },
-        })
-      })
+      addDevtoolsCustomTabs(nuxt, hub)
     }
 
     // Local development without remote connection
@@ -313,7 +315,7 @@ export default defineNuxtModule<ModuleOptions>({
 
       // Generate the wrangler.toml file
       const wranglerPath = join(hubDir, './wrangler.toml')
-      await writeFile(wranglerPath, generateWrangler(), 'utf-8')
+      await writeFile(wranglerPath, generateWrangler(hub), 'utf-8')
       // @ts-ignore
       nuxt.options.nitro.cloudflareDev = {
         persistDir: hubDir,

@@ -1,6 +1,8 @@
 import { eventHandler, getValidatedRouterParams, readValidatedBody } from 'h3'
 import { z } from 'zod'
 import { hubDatabase } from '../../../utils/database'
+import { requireNuxtHubAuthorization } from '../../../utils/auth'
+import { requireNuxtHubFeature } from '../../../utils/features'
 
 const statementValidation = z.object({
   query: z.string().min(1).max(1e6).trim(),
@@ -8,6 +10,9 @@ const statementValidation = z.object({
 })
 
 export default eventHandler(async (event) => {
+  await requireNuxtHubAuthorization(event)
+  requireNuxtHubFeature('database')
+  
   // https://developers.cloudflare.com/d1/build-databases/query-databases/
   const { command } = await getValidatedRouterParams(event, z.object({
     command: z.enum(['first', 'all', 'raw', 'run', 'dump', 'exec', 'batch'])

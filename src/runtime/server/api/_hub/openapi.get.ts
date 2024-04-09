@@ -1,7 +1,9 @@
 import { eventHandler, createError } from 'h3'
 import { useRuntimeConfig } from '#imports'
+import { requireNuxtHubAuthorization } from '../../utils/auth'
 
 export default eventHandler(async (event) => {
+  await requireNuxtHubAuthorization(event)
   const hub = useRuntimeConfig().hub
 
   if (!hub.openapi) {
