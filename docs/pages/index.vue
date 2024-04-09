@@ -155,7 +155,7 @@ onMounted(() => {
       class="bg-gray-100 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative"
     >
       <UColorModeImage
-        light="/images/landing/pricing-dots-light.svg" dark="/images/landing/images/pricing-dots-dark.svg"
+        light="/images/landing/pricing-dots-light.svg" dark="/images/landing/pricing-dots-dark.svg"
         class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0"
       />
       <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
