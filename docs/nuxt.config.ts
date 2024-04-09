@@ -23,6 +23,7 @@ export default defineNuxtConfig({
   ui: {
     icons: ['heroicons', 'ph', 'simple-icons']
   },
+  css: ['~/assets/css/style.css'],
   routeRules: {
     '/api/search.json': { prerender: true },
   },
