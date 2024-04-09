@@ -265,6 +265,12 @@ testimonials:
   headline: 'Wall of love'
   title: 'Testimonials from <span class="text-primary">early adopters</span>'
   description: 'NuxtHub empowers developers to ship full-stack Nuxt applications with zero configuration, hear what they think about it.'
+  cloudflare:
+    title: 'Cloudflare’s Workers LaunchPad'
+    description: 'NuxtHub is part of the Cloudflare’s Workers Launchpad Cohort to make sure you get a first-class experience on top of Cloudflare’s network.'
+    img:
+      light: '/images/landing/cloudflare-light.svg'
+      dark: '/images/landing/cloudflare-dark.svg'
   items:
     - quote: "Nuxt on Cloudflare infra with minimal effort - this is huge!"
       author:

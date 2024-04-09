@@ -286,8 +286,13 @@ onMounted(() => {
       <UPageColumns :ui="{ wrapper: 'column-1 md:columns-2 lg:columns-4 gap-8 space-y-8' }">
         <!-- Hack for Safari -->
         <div v-for="(testimonial, index) in page?.testimonials.items" :key="index" class="break-inside-avoid">
-          <ULandingTestimonial v-bind="testimonial" :card="false" />
+          <ULandingTestimonial v-bind="testimonial" />
         </div>
+        <UPageCard :title="page?.testimonials.cloudflare.title" :description="page?.testimonials.cloudflare.description" :ui="{ title: 'whitespace-normal' }">
+          <template #icon>
+            <UColorModeImage :light="page?.testimonials.cloudflare.img.light" :dark="page?.testimonials.cloudflare.img.dark" />
+          </template>
+        </UPageCard>
       </UPageColumns>
     </ULandingSection>
 
