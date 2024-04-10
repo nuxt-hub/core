@@ -8,6 +8,7 @@ export interface DeployConfig {
   cache?: string,
   database?: string,
   kv?: string,
+  vars: Record<string, string>
 }
 
 export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, cache: boolean, analytics: boolean }) {
@@ -39,7 +40,15 @@ export function generateWrangler(hub: { kv: boolean, database: boolean, blob: bo
 export function generateWranglerForPages(env: 'preview' | 'production', deployConfig: DeployConfig) {
   return [
     `name = "${deployConfig.name}"`,
-    '',
+    'compatibility_date = "2024-04-05"',
+    'pages_build_output_dir = "./dist"',
+    'compatibility_flags = [ "nodejs_compat" ]',
+
+    deployConfig.vars && Object.keys(deployConfig.vars).length > 0 ? [
+      `[env.${env}.vars]`,
+      ...Object.entries(deployConfig.vars).map(([key, value]) => `${key} = "${value}"`),
+      '',
+    ] : [],
     deployConfig.analytics ? [
       `[[env.${env}.analytics_engine_datasets]]`,
       'binding = "ANALYTICS"',
