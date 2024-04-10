@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v0.5.1
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.0...v0.5.1)
+
+### 🩹 Fixes
+
+- Cancel build if NuxtHub can't finish build hooks ([#60](https://github.com/nuxt-hub/core/pull/60))
+- Define module types in `package.json` ([#59](https://github.com/nuxt-hub/core/pull/59))
+- DevTools Database CORS error ([#57](https://github.com/nuxt-hub/core/pull/57))
+
+### 🏡 Chore
+
+- Update deps ([#61](https://github.com/nuxt-hub/core/pull/61))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Harlan Wilton ([@harlan-zw](http://github.com/harlan-zw))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
 ## v0.5.0
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.4.2...v0.5.0)
