@@ -170,7 +170,15 @@ export default defineNuxtModule<ModuleOptions>({
             database: hub.database,
             kv: hub.kv
           },
-        }).catch(() => {})
+        }).catch((e) => {
+          if (e.response?._data?.message) {
+            log.error(e.response._data.message)
+          } else {
+            log.error('Failed run build:before hook on NuxtHub.', e)
+          }
+
+          process.exit(1)
+        })
       })
 
       nuxt.hook('build:done', async () => {
@@ -181,7 +189,15 @@ export default defineNuxtModule<ModuleOptions>({
             authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
           },
           body: {},
-        }).catch(() => {})
+        }).catch((e) => {
+          if (e.response?._data?.message) {
+            log.error(e.response._data.message)
+          } else {
+            log.error('Failed run build:done hook on NuxtHub.', e)
+          }
+
+          process.exit(1)
+        })
       })
     } else {
       // Write `dist/hub.config.json` after public assets are built
