@@ -11,6 +11,7 @@
   "type": "module",
   "main": "./dist/module.cjs",
   "module": "./dist/module.mjs",
+  "types": "./dist/types.d.ts",
   "homepage": "https://hub.nuxt.com",
   "files": [
     "dist"
