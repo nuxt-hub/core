@@ -202,7 +202,7 @@ export default defineNuxtModule<ModuleOptions>({
           process.exit(1)
         })
       })
-      // Write `dist/hub.config.json` after public assets are built
+
       nuxt.hook('nitro:build:public-assets', async (nitro) => {
         await copyFile(join(rootDir, 'wrangler.toml'), join(nitro.options.output.publicDir, 'wrangler.toml'))
       })
