@@ -96,6 +96,7 @@ useSeoMeta({
 
 .badge {
   animation: neon 0.001s ease-in-out infinite alternate;
+  /* Atinux */
   /* animation: neon 8s linear infinite;  */
 }
 
@@ -119,6 +120,7 @@ useSeoMeta({
     0 0 25px rgba(0, 220, 130, 0.50);
   }
 
+  /* Atinux */
   /* 0%, 50%, 100% {
     box-shadow:
       0 0 1px rgba(0, 118, 70, 0),
