@@ -179,7 +179,7 @@ export default defineNuxtModule<ModuleOptions>({
 
           process.exit(1)
         })
-
+        // TODO: merge with user's wrangler.toml if exists
         await writeFile(join(rootDir, './wrangler.toml'), wrangler, 'utf-8')
       })
 
