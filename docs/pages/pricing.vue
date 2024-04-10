@@ -95,7 +95,8 @@ useSeoMeta({
 }
 
 .badge {
-  animation: neon 0.001s ease-in-out infinite alternate
+  animation: neon 0.001s ease-in-out infinite alternate;
+  /* animation: neon 8s linear infinite;  */
 }
 
 @keyframes neon {
@@ -117,5 +118,20 @@ useSeoMeta({
     0 0 12px rgba(0, 220, 130,0.44),
     0 0 25px rgba(0, 220, 130, 0.50);
   }
+
+  /* 0%, 50%, 100% {
+    box-shadow:
+      0 0 1px rgba(0, 118, 70, 0),
+      0 0 15px rgba(0, 220, 130, 0.15),
+      0 0 1px rgba(0, 220, 130,0.25),
+      0 0 6px rgba(0, 220, 130,0.50),
+      0 0 12px rgba(0, 220, 130,0.40),
+      0 0 22px rgba(0, 220, 130,0.25);
+  }
+  25%, 75% {
+    box-shadow: none;
+  } */
 }
+
+
 </style>
