@@ -37,51 +37,6 @@ export function generateWrangler(hub: { kv: boolean, database: boolean, blob: bo
   ].flat().join('\n')
 }
 
-export function generateWranglerForPages(env: 'preview' | 'production', deployConfig: DeployConfig) {
-  return [
-    `name = "${deployConfig.name}"`,
-    'compatibility_date = "2024-04-05"',
-    'pages_build_output_dir = "./dist"',
-    'compatibility_flags = [ "nodejs_compat" ]',
-
-    deployConfig.vars && Object.keys(deployConfig.vars).length > 0 ? [
-      `[env.${env}.vars]`,
-      ...Object.entries(deployConfig.vars).map(([key, value]) => `${key} = "${value}"`),
-      '',
-    ] : [],
-    deployConfig.analytics ? [
-      `[[env.${env}.analytics_engine_datasets]]`,
-      'binding = "ANALYTICS"',
-      `dataset = "${deployConfig.analytics}"`
-    ] : [],
-    '',
-    deployConfig.blob ? [
-      `[[env.${env}.r2_buckets]]`,
-      'binding = "BLOB"',
-      `bucket_name = "${deployConfig.blob}"`,
-    ] : [],
-    '',
-    deployConfig.cache ? [
-      `[[env.${env}.kv_namespaces]]`,
-      'binding = "CACHE"',
-      `id = "${deployConfig.cache}"`,
-    ]: [],
-    '',
-    deployConfig.database ? [
-      `[[env.${env}.d1_databases]]`,
-      `database_id = "${deployConfig.database}"`,
-      'binding = "DB"',
-      'database_name = "DB"',
-    ] : [],
-    '',
-    deployConfig.kv ? [
-      `[[env.${env}.kv_namespaces]]`,
-      'binding = "KV"',
-      `id = "${deployConfig.kv}"`,
-    ]: [],
-  ].flat().join('\n')
-}
-
 export function addDevtoolsCustomTabs(nuxt: Nuxt, hub: { kv: boolean, database: boolean, blob: boolean }) {
   nuxt.hook('listen', (_, { url }) => {
     hub.database && addCustomTab({
