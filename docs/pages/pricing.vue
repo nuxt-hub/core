@@ -95,45 +95,41 @@ useSeoMeta({
 }
 
 .badge {
-  animation: neon 0.001s ease-in-out infinite alternate;
-  /* Atinux */
-  /* animation: neon 8s linear infinite;  */
+  animation: neon 6s ease-in-out infinite;
+  box-shadow: 0 0 1px rgba(0, 118, 70, 0),
+              0 0 15px rgba(0, 220, 130, 0.15),
+              0 0 1px rgba(0, 220, 130,0.25),
+              0 0 6px rgba(0, 220, 130,0.50),
+              0 0 12px rgba(0, 220, 130,0.40),
+              0 0 22px rgba(0, 220, 130,0.25);
+
+  text-shadow: 0 0 1px rgba(0, 118, 70, 0),
+  0 0 15px rgba(0, 220, 130, 0.15),
+  0 0 1px rgba(0, 220, 130,0.25),
+  0 0 6px rgba(0, 220, 130,0.50),
+  0 0 12px rgba(0, 220, 130,0.40),
+  0 0 22px rgba(0, 220, 130,0.25);
 }
 
 @keyframes neon {
-  from {
-    box-shadow:
-    0 0 1px rgba(0, 118, 70, 0),
-    0 0 15px rgba(0, 220, 130, 0.15),
-    0 0 1px rgba(0, 220, 130,0.25),
-    0 0 6px rgba(0, 220, 130,0.50),
-    0 0 12px rgba(0, 220, 130,0.40),
-    0 0 22px rgba(0, 220, 130,0.25);
-  }
-  to {
-    box-shadow:
-    0 0 1px rgba(0, 118, 70, 0),
-    0 0 15px rgba(0, 220, 130, 0.15),
-    0 0 1px rgba(0, 220, 130,0.25),
-    0 0 6px rgba(0, 220, 130,0.22),
-    0 0 12px rgba(0, 220, 130,0.44),
-    0 0 25px rgba(0, 220, 130, 0.50);
-  }
+  38%, 40%, 44%, 46%, 57%, 58.5% {
+    box-shadow: 0 0 1px rgba(0, 118, 70, 0),
+              0 0 15px rgba(0, 220, 130, 0.15),
+              0 0 1px rgba(0, 220, 130,0.25),
+              0 0 6px rgba(0, 220, 130,0.50),
+              0 0 12px rgba(0, 220, 130,0.40),
+              0 0 22px rgba(0, 220, 130,0.25);
 
-  /* Atinux */
-  /* 0%, 50%, 100% {
-    box-shadow:
-      0 0 1px rgba(0, 118, 70, 0),
-      0 0 15px rgba(0, 220, 130, 0.15),
-      0 0 1px rgba(0, 220, 130,0.25),
-      0 0 6px rgba(0, 220, 130,0.50),
-      0 0 12px rgba(0, 220, 130,0.40),
-      0 0 22px rgba(0, 220, 130,0.25);
+    text-shadow: 0 0 1px rgba(0, 118, 70, 0),
+              0 0 15px rgba(0, 220, 130, 0.15),
+              0 0 1px rgba(0, 220, 130,0.25),
+              0 0 6px rgba(0, 220, 130,0.50),
+              0 0 12px rgba(0, 220, 130,0.40),
+              0 0 22px rgba(0, 220, 130,0.25);
   }
-  25%, 75% {
+  39%, 43%, 45%, 58% {
     box-shadow: none;
-  } */
+    text-shadow: none;
+  }
 }
-
-
 </style>
