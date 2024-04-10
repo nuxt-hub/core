@@ -1,6 +1,15 @@
 import { addCustomTab } from '@nuxt/devtools-kit'
 import type { Nuxt } from 'nuxt/schema'
 
+export interface DeployConfig {
+  name: string,
+  analytics?: string,
+  blob?: string,
+  cache?: string,
+  database?: string,
+  kv?: string,
+}
+
 export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, cache: boolean, analytics: boolean }) {
   return [
     hub.analytics ? [
@@ -27,6 +36,42 @@ export function generateWrangler(hub: { kv: boolean, database: boolean, blob: bo
   ].flat().join('\n')
 }
 
+export function generateWranglerForPages(env: 'preview' | 'production', deployConfig: DeployConfig) {
+  return [
+    `name = "${deployConfig.name}"`,
+    '',
+    deployConfig.analytics ? [
+      `[[env.${env}.analytics_engine_datasets]]`,
+      'binding = "ANALYTICS"',
+      `dataset = "${deployConfig.analytics}"`
+    ] : [],
+    '',
+    deployConfig.blob ? [
+      `[[env.${env}.r2_buckets]]`,
+      'binding = "BLOB"',
+      `bucket_name = "${deployConfig.blob}"`,
+    ] : [],
+    '',
+    deployConfig.cache ? [
+      `[[env.${env}.kv_namespaces]]`,
+      'binding = "CACHE"',
+      `id = "${deployConfig.cache}"`,
+    ]: [],
+    '',
+    deployConfig.database ? [
+      `[[env.${env}.d1_databases]]`,
+      `database_id = "${deployConfig.database}"`,
+      'binding = "DB"',
+      'database_name = "DB"',
+    ] : [],
+    '',
+    deployConfig.kv ? [
+      `[[env.${env}.kv_namespaces]]`,
+      'binding = "KV"',
+      `id = "${deployConfig.kv}"`,
+    ]: [],
+  ].flat().join('\n')
+}
 
 export function addDevtoolsCustomTabs(nuxt: Nuxt, hub: { kv: boolean, database: boolean, blob: boolean }) {
   nuxt.hook('listen', (_, { url }) => {

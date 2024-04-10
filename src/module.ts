@@ -1,12 +1,12 @@
 import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule, addServerImportsDir } from '@nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
-import { mkdir, writeFile, readFile } from 'node:fs/promises'
+import { mkdir, writeFile, readFile, copyFile } from 'node:fs/promises'
 import { findWorkspaceDir } from 'pkg-types'
 import { $fetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { parseArgs } from 'citty'
-import { addDevtoolsCustomTabs, generateWrangler } from './utils'
+import { addDevtoolsCustomTabs, generateWrangler, generateWranglerForPages, type DeployConfig } from './utils'
 import { version } from '../package.json'
 import { execSync } from 'node:child_process'
 import { argv } from 'node:process'
@@ -157,7 +157,7 @@ export default defineNuxtModule<ModuleOptions>({
     // Within CF Pages CI/CD to notice NuxtHub about the build and hub config
     if (!nuxt.options.dev && process.env.CF_PAGES && process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN && process.env.NUXT_HUB_PROJECT_KEY && process.env.NUXT_HUB_ENV) {
       nuxt.hook('build:before', async () => {
-        await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/before`, {
+        const { deployConfig } = await $fetch<{ deployConfig: DeployConfig }>(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/before`, {
           baseURL: hub.url,
           method: 'POST',
           headers: {
@@ -179,6 +179,9 @@ export default defineNuxtModule<ModuleOptions>({
 
           process.exit(1)
         })
+
+        const wranglerPath = join(rootDir, './wrangler.toml')
+        await writeFile(wranglerPath, generateWranglerForPages(process.env.NUXT_HUB_ENV as any, deployConfig), 'utf-8')
       })
 
       nuxt.hook('build:done', async () => {
@@ -198,6 +201,10 @@ export default defineNuxtModule<ModuleOptions>({
 
           process.exit(1)
         })
+      })
+      // Write `dist/hub.config.json` after public assets are built
+      nuxt.hook('nitro:build:public-assets', async (nitro) => {
+        await copyFile(join(rootDir, 'wrangler.toml'), join(nitro.options.output.publicDir, 'wrangler.toml'))
       })
     } else {
       // Write `dist/hub.config.json` after public assets are built
