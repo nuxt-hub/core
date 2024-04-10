@@ -16,7 +16,7 @@ export default eventHandler(async (event) => {
   const openapi = await import('#internal/nitro/routes/openapi')
     .then((mod) => mod.default)
     .catch(() => undefined)
-  
+
   if (typeof openapi !== 'function') {
     throw createError({
       statusCode: 404,
