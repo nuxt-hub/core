@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.5.0
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.4.2...v0.5.0)
+
+### 🚀 Enhancements
+
+- ⚠️  Module option to enable features ([#42](https://github.com/nuxt-hub/core/pull/42))
+
+### 🏡 Chore
+
+- Update error message ([3528421](https://github.com/nuxt-hub/core/commit/3528421))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Module option to enable features ([#42](https://github.com/nuxt-hub/core/pull/42))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
 ## v0.4.2
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.4.1...v0.4.2)

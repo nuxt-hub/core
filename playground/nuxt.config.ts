@@ -8,7 +8,10 @@ export default defineNuxtConfig({
     module
   ],
   hub: {
-    database: true
+    database: true,
+    kv: true,
+    blob: true,
+    cache: true
   },
   ui: {
     icons: ['heroicons', 'simple-icons']
