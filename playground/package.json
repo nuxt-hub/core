@@ -18,5 +18,8 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest"
+  },
+  "resolutions": {
+    "nitropack": "npm:nitropack-nightly@latest"
   }
 }
