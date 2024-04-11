@@ -3,8 +3,10 @@ import { useRuntimeConfig } from '#imports'
 import { hubDatabase } from '../../utils/database'
 import { hubKV } from '../../utils/kv'
 import { hubBlob } from '../../utils/blob'
+import { requireNuxtHubAuthorization } from '../../utils/auth'
 
-export default eventHandler(async () => {
+export default eventHandler(async (event) => {
+  await requireNuxtHubAuthorization(event)
   const { version } = useRuntimeConfig().hub
   const [ dbCheck, kvCheck, blobCheck ] = await Promise.all([
     falseIfFail(() => hubDatabase().exec('PRAGMA table_list')),

@@ -1,6 +1,67 @@
 # Changelog
 
 
+## v0.5.1
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.0...v0.5.1)
+
+### 🩹 Fixes
+
+- Cancel build if NuxtHub can't finish build hooks ([#60](https://github.com/nuxt-hub/core/pull/60))
+- Define module types in `package.json` ([#59](https://github.com/nuxt-hub/core/pull/59))
+- DevTools Database CORS error ([#57](https://github.com/nuxt-hub/core/pull/57))
+
+### 🏡 Chore
+
+- Update deps ([#61](https://github.com/nuxt-hub/core/pull/61))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Harlan Wilton ([@harlan-zw](http://github.com/harlan-zw))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
+## v0.5.0
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.4.2...v0.5.0)
+
+### 🚀 Enhancements
+
+- ⚠️  Module option to enable features ([#42](https://github.com/nuxt-hub/core/pull/42))
+
+### 🏡 Chore
+
+- Update error message ([3528421](https://github.com/nuxt-hub/core/commit/3528421))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Module option to enable features ([#42](https://github.com/nuxt-hub/core/pull/42))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
+## v0.4.2
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.4.1...v0.4.2)
+
+### 📖 Documentation
+
+- Fix links in readme ([#45](https://github.com/nuxt-hub/core/pull/45))
+- Add testimonial ([84281a2](https://github.com/nuxt-hub/core/commit/84281a2))
+- Add Dario testimonial ([f17f7e3](https://github.com/nuxt-hub/core/commit/f17f7e3))
+
+### 🏡 Chore
+
+- Create resources to prepare for new version ([c2debfc](https://github.com/nuxt-hub/core/commit/c2debfc))
+- Create hub.config.json ([0342b00](https://github.com/nuxt-hub/core/commit/0342b00))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Sandro Circi ([@Sandros94](http://github.com/Sandros94))
+
 ## v0.4.1
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.4.0...v0.4.1)

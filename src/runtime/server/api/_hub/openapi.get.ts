@@ -1,7 +1,9 @@
 import { eventHandler, createError } from 'h3'
 import { useRuntimeConfig } from '#imports'
+import { requireNuxtHubAuthorization } from '../../utils/auth'
 
 export default eventHandler(async (event) => {
+  await requireNuxtHubAuthorization(event)
   const hub = useRuntimeConfig().hub
 
   if (!hub.openapi) {
@@ -14,7 +16,7 @@ export default eventHandler(async (event) => {
   const openapi = await import('#internal/nitro/routes/openapi')
     .then((mod) => mod.default)
     .catch(() => undefined)
-  
+
   if (typeof openapi !== 'function') {
     throw createError({
       statusCode: 404,
