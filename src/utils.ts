@@ -27,7 +27,6 @@ export function generateWrangler(hub: { kv: boolean, database: boolean, blob: bo
   ].flat().join('\n')
 }
 
-
 export function addDevtoolsCustomTabs(nuxt: Nuxt, hub: { kv: boolean, database: boolean, blob: boolean }) {
   nuxt.hook('listen', (_, { url }) => {
     hub.database && addCustomTab({
