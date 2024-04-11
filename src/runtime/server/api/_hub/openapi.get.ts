@@ -13,7 +13,8 @@ export default eventHandler(async (event) => {
     })
   }
 
-  const openapi = await import('#internal/nitro/routes/openapi')
+  const _openapi = '#internal/nitro/routes/openapi' // Bypass bundling
+  const openapi = await import(_openapi)
     .then((mod) => mod.default)
     .catch(() => undefined)
 
