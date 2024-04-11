@@ -106,6 +106,7 @@ export default defineNuxtModule<ModuleOptions>({
       userToken: process.env.NUXT_HUB_USER_TOKEN || '',
       // Remote storage
       remote: remoteArg || process.env.NUXT_HUB_REMOTE,
+      remoteManifest: undefined,
       // NuxtHub features
       analytics: false,
       blob: false,
@@ -115,12 +116,13 @@ export default defineNuxtModule<ModuleOptions>({
       // Other options
       version,
       env: process.env.NUXT_HUB_ENV || 'production',
-      openapi: nuxt.options.nitro.experimental?.openAPI === true
+      openapi: nuxt.options.nitro.experimental?.openAPI === true,
     })
     // validate remote option
     if (hub.remote && !['true', 'production', 'preview'].includes(String(hub.remote))) {
       log.error('Invalid remote option, should be `false`, `true`, `\'production\'` or `\'preview\'`')
       delete hub.remote
+      delete hub.remoteManifest
     }
     // Log when using a different Hub url
     if (hub.url !== 'https://admin.hub.nuxt.com') {
@@ -274,7 +276,7 @@ export default defineNuxtModule<ModuleOptions>({
 
       // If using the remote option with a projectUrl and a projectSecretKey
       log.info(`Using remote storage from \`${hub.projectUrl}\``)
-      const manifest = await $fetch('/api/_hub/manifest', {
+      const manifest = hub.remoteManifest = await $fetch('/api/_hub/manifest', {
         baseURL: hub.projectUrl,
         headers: {
           authorization: `Bearer ${hub.projectSecretKey || hub.userToken}`
