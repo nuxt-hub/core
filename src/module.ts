@@ -156,8 +156,8 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Within CF Pages CI/CD to notice NuxtHub about the build and hub config
     if (!nuxt.options.dev && process.env.CF_PAGES && process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN && process.env.NUXT_HUB_PROJECT_KEY && process.env.NUXT_HUB_ENV) {
-      nuxt.hook('build:before', async () => {
-        const { wrangler } = await $fetch<{ wrangler: string }>(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/before`, {
+      nuxt.hook('modules:done', async () => {
+        const { wrangler } = await $fetch<{ wrangler: any }>(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/before`, {
           baseURL: hub.url,
           method: 'POST',
           headers: {
@@ -179,8 +179,8 @@ export default defineNuxtModule<ModuleOptions>({
 
           process.exit(1)
         })
-        // TODO: merge with user's wrangler.toml if exists
-        await writeFile(join(rootDir, './wrangler.toml'), wrangler, 'utf-8')
+        nuxt.options.nitro.cloudflare = nuxt.options.nitro.cloudflare || {}
+        nuxt.options.nitro.cloudflare.wrangler = defu(wrangler, nuxt.options.nitro.cloudflare.wrangler)
       })
 
       nuxt.hook('build:done', async () => {
