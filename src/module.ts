@@ -116,7 +116,7 @@ export default defineNuxtModule<ModuleOptions>({
       // Other options
       version,
       env: process.env.NUXT_HUB_ENV || 'production',
-      openapi: nuxt.options.nitro.experimental?.openAPI === true,
+      openapi: nuxt.options.nitro.experimental?.openAPI === true
     })
     // validate remote option
     if (hub.remote && !['true', 'production', 'preview'].includes(String(hub.remote))) {
