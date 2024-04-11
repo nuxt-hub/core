@@ -96,7 +96,6 @@ export default defineNuxtModule<ModuleOptions>({
     let remoteArg = parseArgs(argv, { remote: { type: 'string' } }).remote as string
     remoteArg = (remoteArg === '' ? 'true' : remoteArg)
     const runtimeConfig = nuxt.options.runtimeConfig
-    // @ts-ignore
     const hub = runtimeConfig.hub = defu(runtimeConfig.hub || {}, options, {
       // Self-hosted project
       projectUrl: process.env.NUXT_HUB_PROJECT_URL || '',
@@ -121,7 +120,6 @@ export default defineNuxtModule<ModuleOptions>({
     // validate remote option
     if (hub.remote && !['true', 'production', 'preview'].includes(String(hub.remote))) {
       log.error('Invalid remote option, should be `false`, `true`, `\'production\'` or `\'preview\'`')
-      // @ts-ignore
       delete hub.remote
     }
     // Log when using a different Hub url
@@ -272,7 +270,6 @@ export default defineNuxtModule<ModuleOptions>({
           process.exit(1)
         }
         // Update hub.env in runtimeConfig
-        // @ts-ignore
         hub.env = env
       }
 
