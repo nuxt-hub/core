@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.5.2
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.1...v0.5.2)
+
+### 🩹 Fixes
+
+- Generate `wrangler.toml` in CF deployment to use bindings ([#63](https://github.com/nuxt-hub/core/pull/63))
+
+### 📖 Documentation
+
+- Add another testimonial ([bcf41ef](https://github.com/nuxt-hub/core/commit/bcf41ef))
+- Add section on installation using `nuxi module add` ([#64](https://github.com/nuxt-hub/core/pull/64))
+- Added clarifications in self-hosted deployments ([#65](https://github.com/nuxt-hub/core/pull/65))
+
+### ❤️ Contributors
+
+- Max ([@onmax](http://github.com/onmax))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+- Gangan ([@shinGangan](http://github.com/shinGangan))
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.5.1
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.0...v0.5.1)
