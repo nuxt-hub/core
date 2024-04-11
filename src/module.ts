@@ -157,7 +157,7 @@ export default defineNuxtModule<ModuleOptions>({
     // Within CF Pages CI/CD to notice NuxtHub about the build and hub config
     if (!nuxt.options.dev && process.env.CF_PAGES && process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN && process.env.NUXT_HUB_PROJECT_KEY && process.env.NUXT_HUB_ENV) {
       nuxt.hook('modules:done', async () => {
-        const { bindingChanged } = await $fetch<{ wrangler: any, bindingChanged: boolean }>(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/before`, {
+        const { bindingsChanged } = await $fetch<{ bindingsChanged: boolean }>(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/before`, {
           baseURL: hub.url,
           method: 'POST',
           headers: {
@@ -181,16 +181,17 @@ export default defineNuxtModule<ModuleOptions>({
           process.exit(1)
         })
 
-        if (bindingChanged) {
+        if (bindingsChanged) {
           log.box([
             'NuxtHub detected some changes in this project bindings and updated your Pages project on your Cloudflare account.',
             'In order to enable this changes, this deployment will be cancelled and a new one has been created.'
           ].join('\n'))
 
+          // Wait 2 seconds to make sure NuxtHub cancel the deployment before exiting
+          await new Promise((resolve) => setTimeout(resolve, 2000))
+
           process.exit(1)
         }
-        // nuxt.options.nitro.cloudflare = nuxt.options.nitro.cloudflare || {}
-        // nuxt.options.nitro.cloudflare.wrangler = defu(wrangler, nuxt.options.nitro.cloudflare.wrangler)
       })
 
       nuxt.hook('build:done', async () => {
