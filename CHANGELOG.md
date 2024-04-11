@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.5.3
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.2...v0.5.3)
+
+### 🏡 Chore
+
+- **types:** Remove ts ignore ([8c69740](https://github.com/nuxt-hub/core/commit/8c69740))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.5.2
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.1...v0.5.2)
