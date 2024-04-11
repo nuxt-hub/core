@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.5.4
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.3...v0.5.4)
+
+### 🏡 Chore
+
+- **types:** Remove ts ignore" ([b04a439](https://github.com/nuxt-hub/core/commit/b04a439))
+- Remove ts-ignore ([cd5cd49](https://github.com/nuxt-hub/core/commit/cd5cd49))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.5.3
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.2...v0.5.3)
