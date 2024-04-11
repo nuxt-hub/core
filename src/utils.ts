@@ -1,16 +1,6 @@
 import { addCustomTab } from '@nuxt/devtools-kit'
 import type { Nuxt } from 'nuxt/schema'
 
-export interface DeployConfig {
-  name: string,
-  analytics?: string,
-  blob?: string,
-  cache?: string,
-  database?: string,
-  kv?: string,
-  vars: Record<string, string>
-}
-
 export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, cache: boolean, analytics: boolean }) {
   return [
     hub.analytics ? [
