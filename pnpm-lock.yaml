@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  nitropack: npm:nitropack-nightly@latest
-
 importers:
 
   .:
@@ -170,7 +167,7 @@ importers:
         version: 2.15.1(nuxt@3.11.2)(rollup@3.29.4)(vite@5.2.8)(vue@3.4.21)
       '@nuxthub/core':
         specifier: latest
-        version: link:..
+        version: 0.5.1(nuxt@3.11.2)(rollup@3.29.4)(vite@5.2.8)
       drizzle-orm:
         specifier: ^0.30.7
         version: 0.30.7(@cloudflare/workers-types@4.20240405.0)
@@ -2360,6 +2357,50 @@ packages:
       - utf-8-validate
     dev: false
 
+  /@nuxthub/core@0.5.1(nuxt@3.11.2)(rollup@3.29.4)(vite@5.2.8):
+    resolution: {integrity: sha512-+l2CBbdFbAGYZLmQDcXgBJdZ449kVcki3lCMrRm0/3BlNKm78Gp3p8Cx3hUlrxHm/SKB6jg+WLyJlK1Q2Py4zQ==}
+    dependencies:
+      '@cloudflare/workers-types': 4.20240405.0
+      '@nuxt/devtools-kit': 1.1.5(nuxt@3.11.2)(rollup@3.29.4)(vite@5.2.8)
+      '@nuxt/kit': 3.11.2(rollup@3.29.4)
+      '@sindresorhus/slugify': 2.2.1
+      '@uploadthing/mime-types': 0.2.7
+      citty: 0.1.6
+      defu: 6.1.4
+      destr: 2.0.3
+      get-port-please: 3.1.2
+      h3: 1.11.1
+      mime: 4.0.1
+      nitro-cloudflare-dev: 0.1.4
+      nuxt-auth-utils: 0.0.22(rollup@3.29.4)
+      ofetch: 1.3.4
+      pathe: 1.1.2
+      pkg-types: 1.0.3
+      ufo: 1.5.3
+      uncrypto: 0.1.3
+      unstorage: 1.10.2(ioredis@5.3.2)
+      zod: 3.22.4
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - idb-keyval
+      - ioredis
+      - nuxt
+      - rollup
+      - supports-color
+      - uWebSockets.js
+      - vite
+    dev: false
+
   /@nuxtjs/color-mode@3.3.3(rollup@3.29.4):
     resolution: {integrity: sha512-t6QM/tj1d/53xQ9JznNVIaqIfQWhjHRzNt5VqTxNeAJWG0HCdiHVezkUTMahPUgUbEJnBrtCoquUYwpyFhNF+Q==}
     dependencies:
@@ -2527,6 +2568,7 @@ packages:
     dependencies:
       is-glob: 4.0.3
       micromatch: 4.0.5
+      napi-wasm: 1.1.0
     bundledDependencies:
       - napi-wasm
 
@@ -6706,22 +6748,6 @@ packages:
     dependencies:
       duplexer: 0.1.2
 
-  /h3-nightly@1.11.2-1711156643.3e94cf6:
-    resolution: {integrity: sha512-Xx5cZP1gDIoNpL68KuO6ewsqGV/GodoEBRg0zYxfOola9TFaxpyqvqWCmNIfzWm15WBAPaIm2FeVOVi0lcLVxQ==}
-    dependencies:
-      cookie-es: 1.1.0
-      crossws: 0.2.4
-      defu: 6.1.4
-      destr: 2.0.3
-      iron-webcrypto: 1.1.0
-      ohash: 1.1.3
-      radix3: 1.1.2
-      ufo: 1.5.3
-      uncrypto: 0.1.3
-      unenv: 1.9.0
-    transitivePeerDependencies:
-      - uWebSockets.js
-
   /h3@1.11.1:
     resolution: {integrity: sha512-AbaH6IDnZN6nmbnJOH72y3c5Wwh9P97soSVdGSBbcDACRdkC0FEWf25pzx4f/NuOCK6quHmW18yF2Wx+G4Zi1A==}
     dependencies:
@@ -7093,9 +7119,6 @@ packages:
 
   /iron-webcrypto@1.0.0:
     resolution: {integrity: sha512-anOK1Mktt8U1Xi7fCM3RELTuYbnFikQY5VtrDj7kPgpejV7d43tWKhzgioO0zpkazLEL/j/iayRqnJhrGfqUsg==}
-
-  /iron-webcrypto@1.1.0:
-    resolution: {integrity: sha512-5vgYsCakNlaQub1orZK5QmNYhwYtcllTkZBp5sfIaCqY93Cf6l+v2rtE+E4TMbcfjxDMCdrO8wmp7+ZvhDECLA==}
 
   /is-absolute-url@4.0.1:
     resolution: {integrity: sha512-/51/TKE88Lmm7Gc4/8btclNXWS+g50wXhYJq8HWIBAGUBnoAdRu1aXeh364t/O7wXDAcTJDP8PNuNKWUDWie+A==}
@@ -8346,6 +8369,9 @@ packages:
     dev: false
     optional: true
 
+  /napi-wasm@1.1.0:
+    resolution: {integrity: sha512-lHwIAJbmLSjF9VDRm9GoVOy9AGp3aIvkjv+Kvz9h16QR3uSVYH78PNQUnT2U4X53mhlnV2M7wrhibQ3GHicDmg==}
+
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
@@ -8364,8 +8390,8 @@ packages:
       pkg-types: 1.0.3
     dev: false
 
-  /nitropack-nightly@2.10.0-28546505.8e88dd41(drizzle-orm@0.30.7):
-    resolution: {integrity: sha512-MV+TQ0CMLfTE+V8Gzk4hArnw/mLbEjj4ULfM7cakaIyMoEFpw8/l3u2Q1xevZnZAa30z9cCVQLIuGY+9KqDMNg==}
+  /nitropack@2.9.6(drizzle-orm@0.30.7):
+    resolution: {integrity: sha512-HP2PE0dREcDIBVkL8Zm6eVyrDd10/GI9hTL00PHvjUM8I9Y/2cv73wRDmxNyInfrx/CJKHATb2U/pQrqpzJyXA==}
     engines: {node: ^16.11.0 || >=17.0.0}
     hasBin: true
     peerDependencies:
@@ -8391,7 +8417,6 @@ packages:
       chalk: 5.3.0
       chokidar: 3.6.0
       citty: 0.1.6
-      confbox: 0.1.6
       consola: 3.2.3
       cookie-es: 1.1.0
       croner: 8.0.2
@@ -8406,7 +8431,7 @@ packages:
       fs-extra: 11.2.0
       globby: 14.0.1
       gzip-size: 7.0.0
-      h3: /h3-nightly@1.11.2-1711156643.3e94cf6
+      h3: 1.11.1
       hookable: 5.5.3
       httpxy: 0.1.5
       ioredis: 5.3.2
@@ -8441,7 +8466,6 @@ packages:
       unenv: 1.9.0
       unimport: 3.7.1(rollup@4.14.1)
       unstorage: 1.10.2(ioredis@5.3.2)
-      untyped: 1.4.2
       unwasm: 0.3.9
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -8869,7 +8893,7 @@ packages:
       knitwork: 1.1.0
       magic-string: 0.30.9
       mlly: 1.6.1
-      nitropack: /nitropack-nightly@2.10.0-28546505.8e88dd41(drizzle-orm@0.30.7)
+      nitropack: 2.9.6(drizzle-orm@0.30.7)
       nuxi: 3.11.1
       nypm: 0.3.8
       ofetch: 1.3.4

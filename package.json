@@ -71,8 +71,5 @@
     "typescript": "^5.4.4",
     "vitest": "^1.4.0",
     "wrangler": "^3.48.0"
-  },
-  "resolutions": {
-    "nitropack": "npm:nitropack-nightly@latest"
   }
 }
