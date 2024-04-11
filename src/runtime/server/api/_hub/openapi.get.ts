@@ -13,7 +13,6 @@ export default eventHandler(async (event) => {
     })
   }
 
-  // TODO: create an alias for it so when disabled, does not throw an error
   const openapi = await import('#internal/nitro/routes/openapi')
     .then((mod) => mod.default)
     .catch(() => undefined)
