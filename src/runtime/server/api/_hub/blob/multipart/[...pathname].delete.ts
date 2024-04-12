@@ -1,4 +1,4 @@
-import { createError, eventHandler } from 'h3'
+import { createError, eventHandler, sendNoContent } from 'h3'
 import { z } from 'zod'
 import { hubBlob } from '../../../../utils/blob'
 import { requireNuxtHubAuthorization } from '../../../../utils/auth'
@@ -17,15 +17,18 @@ export default eventHandler(async (event) => {
   }).parse)
 
 
-  const blob = hubBlob()
-  const mpu = blob.resumeMultipartUpload(pathname, uploadId)
+  const { resumeMultipartUpload } = hubBlob()
+  const { abort } = resumeMultipartUpload(pathname, uploadId)
 
   try {
-    await mpu.abort()
-  } catch (e: any) {
+    await abort()
+  }
+  catch (e: any) {
     throw createError({
       statusCode: 500,
       message: `Storage error: ${e.message}`
     })
   }
+
+  return sendNoContent(event)
 })

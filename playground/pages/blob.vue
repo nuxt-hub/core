@@ -49,13 +49,12 @@ async function uploadFiles(files: File[]) {
     const chunks = Math.ceil(file.size / chunkSize)
     const uploaded: BlobUploadedPart[] = []
 
-    const { pathname, uploadId } = await $fetch<{pathname: string, uploadId: string}>('/api/blob/mpu', {
-      method: 'POST',
-      query: {
-        action: 'create',
-        pathname: file.name,
+    const { pathname, uploadId } = await $fetch<{pathname: string, uploadId: string}>(
+      `/api/blob/multipart/${file.name}`,
+      {
+        method: 'POST',
       }
-    })
+    )
 
     for (let i = 0; i < chunks; i += 1) {
       const start = i * chunkSize
@@ -63,32 +62,36 @@ async function uploadFiles(files: File[]) {
       const partNumber = i + 1
       const chunk = file.slice(start, end)
 
-      const part = await $fetch<BlobUploadedPart>(`/api/blob/mpu/${pathname}`, {
-        params: {},
-        method: 'PUT',
-        body: await chunk.arrayBuffer(),
-        query: {
-          partNumber,
-          uploadId,
+      const part = await $fetch<BlobUploadedPart>(
+        `/api/blob/multipart/${pathname}`,
+        {
+          method: 'PUT',
+          query: {
+            uploadId,
+            partNumber,
+          },
+          body: chunk,
         }
-      })
+      )
 
       // optional: verify the etag and reupload if not match
 
       uploaded.push(part)
     }
 
-    const complete = await $fetch<SerializeObject<BlobObject>>('/api/blob/mpu', {
-      method: 'POST',
-      query: {
-        action: 'complete',
-        pathname,
-        uploadId,
-      },
-      body: {
-        parts: uploaded,
-      },
-    })
+    const complete = await $fetch<SerializeObject<BlobObject>>(
+      '/api/blob/multipart/complete',
+      {
+        method: 'POST',
+        query: {
+          pathname,
+          uploadId,
+        },
+        body: {
+          parts: uploaded,
+        },
+      }
+    )
 
     uploadedFiles.push(complete)
   }
