@@ -293,9 +293,9 @@ export default defineNuxtModule<ModuleOptions>({
           process.exit(1)
         })
       if (remoteManifest.version !== hub.version) {
-        log.warn(`\`${hub.projectUrl}\` is running \`@nuxthub/core@${remoteManifest.version}\` while the local project is running \`@nuxthub/core@${hub.version}\`. Make sure to use the same version on both sides to avoid issues.`)
+        log.warn(`\`${hub.projectUrl}\` is running \`@nuxthub/core@${remoteManifest.version}\` while the local project is running \`@nuxthub/core@${hub.version}\`. Make sure to use the same version on both sides for a smooth experience.`)
       }
-      
+
       Object.keys(remoteManifest.storage).filter(k => hub[k as keyof typeof hub] && !remoteManifest.storage[k]).forEach(k => {
         if (!remoteManifest.storage[k]) {
           log.warn(`Remote storage \`${k}\` is enabled locally but it's not enabled in the remote project. Deploy a new version with \`${k}\` enabled to use it remotely.`)

@@ -7,18 +7,18 @@ const featureMessages = {
   ].join('\n'),
   blob: [
     'NuxtHub Blob is not enabled, set `hub.blob = true` in your `nuxt.config.ts`',
-    'Read more at https://hub.nuxt.com/docs/storage/blob'
+    'Read more at `https://hub.nuxt.com/docs/storage/blob`'
   ].join('\n'),
   cache: [
     'NuxtHub Cache is not enabled, set `hub.cache = true` in your `nuxt.config.ts`'
   ].join('\n'),
   database: [
     'NuxtHub Database is not enabled, set `hub.database = true` in your `nuxt.config.ts`',
-    'Read more at https://hub.nuxt.com/docs/storage/database'
+    'Read more at `https://hub.nuxt.com/docs/storage/database`'
   ].join('\n'),
   kv: [
     'NuxtHub KV is not enabled, set `hub.kv = true` in your `nuxt.config.ts`',
-    'Read more at https://hub.nuxt.com/docs/storage/kv'
+    'Read more at `https://hub.nuxt.com/docs/storage/kv`'
   ].join('\n'),
 }
 
@@ -37,7 +37,7 @@ export function requireNuxtHubFeature(feature: keyof typeof featureMessages) {
   }
 
   if (hub.remote && !hub.remoteManifest?.storage?.[feature]) {
-    const message = `NuxtHub ${feature} is not enabled in the remote project. Enable it in your \`nuxt.config.ts\`, deploy new version and try again.\n Read more at https://hub.nuxt.com/docs/getting-started/remote-storage`
+    const message = `NuxtHub \`${feature}\` is not enabled in the remote project. Deploy a new version with \`${feature}\` enabled and try again.\nRead more at \`https://hub.nuxt.com/docs/getting-started/remote-storage\``
     if (import.meta.dev) {
       console.error(message)
     }
