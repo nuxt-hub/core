@@ -274,7 +274,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
       })
     },
     async head(pathname: string) {
-      return await blobAPI<void>(`/head/${decodeURI(pathname)}`, {
+      return await blobAPI<BlobObject>(`/head/${decodeURI(pathname)}`, {
         method: 'GET'
       })
     },
