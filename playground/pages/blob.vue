@@ -78,7 +78,7 @@ async function uploadFiles(files: File[]) {
       uploaded.push(part)
     }
 
-    const complete = await $fetch<SerializeObject<BlobObject>>(`/api/blob/mpu`, {
+    const complete = await $fetch<SerializeObject<BlobObject>>('/api/blob/mpu', {
       method: 'POST',
       query: {
         action: 'complete',

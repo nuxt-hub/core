@@ -378,7 +378,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
       return
     },
     async createMultipartUpload(pathname: string, options: BlobMultipartOptions = { addRandomSuffix: true }) {
-      return await blobAPI<BlobMultipartUpload>(`/mpu`, {
+      return await blobAPI<BlobMultipartUpload>('/mpu', {
         method: 'POST',
         query: {
           action: 'create',
@@ -410,7 +410,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
           })
         },
         async complete(uploadedParts: BlobUploadedPart[]): Promise<BlobObject> {
-          return await blobAPI<BlobObject>(`/mpu`, {
+          return await blobAPI<BlobObject>('/mpu', {
             method: 'POST',
             query: {
               action: 'complete',
