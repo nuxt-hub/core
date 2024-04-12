@@ -7,8 +7,8 @@ hero:
   description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare.<br />Deploy your Nuxt applications with a database, key-value and blob storage with zero configuration, on your Cloudflare account.<br />NuxtHub lets you affordably run your Nuxt apps everywhere and with high performance.'
   orientation: horizontal
   img:
-    width: '535'
-    height: '643'
+    width: '1439'
+    height: '681'
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
@@ -28,16 +28,16 @@ hero:
 features:
   - name: Automatic scaling
     description: Traffic is routed and load balanced across thousands of servers. Sleep well as your Nuxt app scales.
-    icon: 'i-ph-selection-all-duotone'
+    img: '/images/landing/features-scaling.svg'
   - name: Exceptionally affordable
     description: First 100,000 requests each day are free. Cloudflare paid plan starts at $5 for 10 million monthly requests.
-    icon: 'i-ph-coins-duotone'
+    img: '/images/landing/features-affordable.svg'
   - name: Performant global network
     description: Your Nuxt app is deployed on the entire edge network and runs within milliseconds of your users worldwide
-    icon: 'i-ph-globe-duotone'
+    img: '/images/landing/features-network.svg'
   - name: No servers to maintain
     description: Spend more time building, less time configuring. No VMs, no servers, and no containers to spin up or manage.
-    icon: 'i-ph-rocket-launch-duotone'
+    img: '/images/landing/features-servers.svg'
 deploy:
   headline: Ready to use
   title: Deploy a Nuxt application <span class="text-primary">in one minute.</span>
@@ -239,28 +239,28 @@ tool:
   features:
     - title: 'Storage region'
       description: 'Choose one of the five Cloudflare regions to place your D1 and R2.'
-      icon: 'i-ph-globe'
+      img: '/images/landing/tool-storage.svg'
     - title: 'Environment variables'
       description: 'Securely store secrets, API keys, tokens, and other environment variables.'
-      icon: 'i-ph-key'
+      img: '/images/landing/tool-env.svg'
     - title: 'Production / Staging'
       description: 'Switch between your production or staging deployments & resources.'
-      icon: 'i-ph-eye'
+      img: '/images/landing/tool-prod-staging.svg'
     - title: 'Custom domains'
       description: 'Set your custom domain or use our .nuxt.dev domain for free.'
-      icon: 'i-ph-cloud'
+      img: '/images/landing/tool-domains.svg'
     - title: 'NuxtHub templates'
       description: 'Quick start your next project using one of our ready-to use templates.'
-      icon: 'i-ph-app-window'
+      img: '/images/landing/tool-templates.svg'
     - title: 'Real-time logs'
       description: 'Access to your Nuxt server logs in real-time for debugging purpose.'
-      icon: 'i-ph-plugs'
+      img: '/images/landing/tool-logs.svg'
     - title: 'Import from GitHub'
       description: 'Select a repository from your GitHub account and deploy it to the edge.'
-      icon: 'i-simple-icons-github'
+      img: '/images/landing/tool-github.svg'
     - title: 'Nuxt DevTools'
       description: 'Manage your NuxtHub database, kv & blob in the Nuxt Devtools.'
-      icon: 'i-simple-icons-nuxtdotjs'
+      img: '/images/landing/tool-devtools.svg'
 testimonials:
   headline: 'Wall of love'
   title: 'Testimonials from <span class="text-primary">early adopters</span>'
@@ -324,22 +324,22 @@ testimonials:
 journey:
     title: 'Begin your NuxtHub journey <span class="text-primary">today</span>'
     images:
-      width: '1443'
-      height: '428'
-      light: '/images/landing/cta-light.webp'
-      dark: '/images/landing/cta-dark.webp'
+      width: '1439'
+      height: '708'
+      light: '/images/landing/cta-light.svg'
+      dark: '/images/landing/cta-dark.svg'
     features:
-      - title: 'Enable NuxtHub in your project'
+      - name: 'Enable NuxtHub in your project'
         description: 'Add the @nuxthub/core module to your Nuxt project and go full-stack. '
-        icon: 'i-ph-terminal-window'
+        img: '/images/landing/journey-terminal.svg'
         to: '/docs/getting-started/installation#add-to-a-nuxt-project'
-      - title: 'Start from NuxtHub template'
+      - name: 'Start from NuxtHub template'
         description: 'Choose one of our open source templates and start from it.'
-        icon: 'i-ph-app-window'
+        img: '/images/landing/journey-console.svg'
         to: https://github.com/topics/nuxthub
-      - title: 'Create an empty project'
+      - name: 'Create an empty project'
         description: 'Create a NuxtHub project from scratch and deploy it with NuxtHub CLI.'
-        icon: 'i-ph-code'
+        img: '/images/landing/journey-brackets.svg'
         to: '/docs/getting-started/installation#quickstart'
     copybutton:
       value: 'npx nuxthub init my-app'

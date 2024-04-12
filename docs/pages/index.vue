@@ -17,13 +17,14 @@ onMounted(() => {
     margin: 5,
   })
 })
+
 </script>
 
 <template>
   <div>
     <UColorModeImage
       :light="page?.hero.img.light" :dark="page?.hero.img.dark" :width="page?.hero.img.width"
-      :height="page?.hero.img.height" class="absolute right-0 top-0 md:top-16 opacity-60 lg:opacity-100 w-[235px] h-[343px] sm:w-[335px] sm:h-[443px] md:w-[435px] md:h-[543px] lg:w-[533px] lg:h-[643px]"
+      :height="page?.hero.img.height" class="absolute right-0 left-0 top-16 w-full"
     />
     <ULandingHero
       v-bind="page?.hero" orientation="horizontal"
@@ -56,7 +57,7 @@ onMounted(() => {
     <ULandingSection :ui="{ wrapper: 'py-6 sm:py-12' }">
       <ul class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-16">
         <li v-for="feature in page?.features" :key="feature.name" class="flex flex-col gap-y-2">
-          <UIcon :name="feature.icon" class="h-8 w-8 shrink-0 text-primary" />
+          <img :src="feature.img" width="32" height="32" alt="" />
           <div class="flex flex-col gap-y-1">
             <h5 class="font-medium text-gray-900 dark:text-white">
               {{ feature.name }}
@@ -247,7 +248,11 @@ onMounted(() => {
     </ULandingSection>
 
     <!-- tool section -->
-    <ULandingSection :headline="page?.tool.headline" :links="page?.tool.buttons">
+    <ULandingSection :headline="page?.tool.headline" :links="page?.tool.buttons" class="relative">
+
+      <img src="/images/landing/line-left.svg" class="absolute left-8 top-40" alt="" />
+      <img src="/images/landing/line-right.svg" class="absolute right-8 top-40" alt="" />
+
       <template #title>
         <span v-html="page?.tool.title" />
       </template>
@@ -264,7 +269,7 @@ onMounted(() => {
         >
           <template #title>
             <span class="flex flex-row gap-x-3 items-center">
-              <UIcon :name="tool.icon" class="h-5 w-5 text-primary" />
+              <img :src="tool.img" width="24" height="24" alt="" />
               <span class="text-gray-900 dark:text-white text-base font-bold truncate">
                 {{ tool.title }}
               </span>
@@ -290,7 +295,7 @@ onMounted(() => {
         </div>
         <UPageCard :title="page?.testimonials.cloudflare.title" :description="page?.testimonials.cloudflare.description" :ui="{ title: 'whitespace-normal' }">
           <template #icon>
-            <UColorModeImage :light="page?.testimonials.cloudflare.img.light" :dark="page?.testimonials.cloudflare.img.dark" />
+            <UColorModeImage :light="page?.testimonials.cloudflare.img.dark" :dark="page?.testimonials.cloudflare.img.light" />
           </template>
         </UPageCard>
       </UPageColumns>
@@ -311,7 +316,20 @@ onMounted(() => {
         <span v-html="page?.journey.title" />
       </template>
 
-      <ULandingGrid :ui="{ wrapper: 'md:grid-cols-1 lg:grid-cols-3' }">
+      <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-16 lg:px-16 text-center z-10">
+        <NuxtLink v-for="feature in page?.journey.features" :key="feature.name" :to="feature.to" class="flex flex-col gap-y-2 items-center hover:ring-primary hover:ring-2 rounded-lg p-4">
+          <img :src="feature.img" width="32" height="32" alt="" />
+          <div class="flex flex-col gap-y-1">
+            <h5 class="font-medium text-gray-900 dark:text-white">
+              {{ feature.name }}
+            </h5>
+            <p class="text-gray-500 dark:text-gray-400">
+              {{ feature.description }}
+            </p>
+          </div>
+        </NuxtLink>
+      </div>
+      <!-- <ULandingGrid :ui="{ wrapper: 'md:grid-cols-1 lg:grid-cols-3' }">
         <UPageCard
           v-for="feature in page?.journey.features"
           :key="feature.title"
@@ -328,7 +346,8 @@ onMounted(() => {
             </span>
           </template>
         </UPageCard>
-      </ULandingGrid>
+      </ULandingGrid> -->
+
 
       <template #bottom>
         <div class="flex w-full justify-center items-center space-x-4 pt-[92px]">

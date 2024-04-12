@@ -1,6 +1,6 @@
 import type { Changelog } from '~/types'
 
-export const useBlog = () => {
+export const useChangelog = () => {
   const changelogs = useState<Changelog[]>('changelogs', () => [])
 
   async function fetchList() {
