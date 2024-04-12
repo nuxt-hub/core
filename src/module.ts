@@ -307,6 +307,7 @@ export default defineNuxtModule<ModuleOptions>({
         logger.info(`Remote storage available: ${availableStorages.map(k => `\`${k}\``).join(', ')} `)
       } else {
         log.fatal('No remote storage available: make sure to enable at least one of the storage options in your `nuxt.config.ts` and deploy new version before using remote storage. Read more at https://hub.nuxt.com/docs/getting-started/remote-storage')
+        process.exit(1)
       }
     }
 
