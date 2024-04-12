@@ -13,7 +13,7 @@ export default eventHandler(async (event) => {
     })
   }
 
-  const openapi = await import('#internal/nitro/routes/openapi')
+  const openapi = await import('#hub/openapi')
     .then((mod) => mod.default)
     .catch(() => undefined)
 

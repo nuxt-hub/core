@@ -151,6 +151,11 @@ export default defineNuxtModule<ModuleOptions>({
       return
     }
 
+    // Fallback to custom placeholder when openAPI is disabled
+    nuxt.options.alias['#hub/openapi'] = nuxt.options.nitro?.experimental?.openAPI === true ?
+      '#internal/nitro/routes/openapi' :
+      resolve('./runtime/templates/openapi')
+
     // Register composables
     addServerImportsDir(resolve('./runtime/server/utils'))
 
