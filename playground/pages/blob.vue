@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { SerializeObject } from 'nitropack'
+
 const loading = ref(false)
 const newFilesValue = ref<File[]>([])
 const uploadRef = ref()
@@ -15,12 +17,7 @@ async function addFile () {
   loading.value = true
 
   try {
-    const formData = new FormData()
-    newFilesValue.value.forEach((file) => formData.append('files', file))
-    const uploadedFiles = await $fetch('/api/blob', {
-      method: 'PUT',
-      body: formData
-    })
+    const uploadedFiles = await uploadFiles(newFilesValue.value)
     files.value!.push(...uploadedFiles)
     toast.add({ title: `File${uploadedFiles.length > 1 ? 's' : ''} uploaded.` })
     newFilesValue.value = []
@@ -29,6 +26,74 @@ async function addFile () {
     toast.add({ title, color: 'red' })
   }
   loading.value = false
+}
+
+async function uploadFiles(files: File[]) {
+  const bigFileLimit = 10 * 1024 * 1024 // 10MB
+  const chunkSize = 10 * 1024 * 1024 // 10MB
+
+  const bigFiles = files.filter((file) => file.size > bigFileLimit)
+  const smallFiles = files.filter((file) => file.size <= bigFileLimit)
+
+  // upload small files
+  const formData = new FormData()
+  smallFiles.forEach((file) => formData.append('files', file))
+
+  const uploadedFiles = await $fetch('/api/blob', {
+    method: 'PUT',
+    body: formData
+  })
+
+  // upload big files
+  for (const file of bigFiles) {
+    const chunks = Math.ceil(file.size / chunkSize)
+    const uploaded: BlobUploadedPart[] = []
+
+    const { pathname, uploadId } = await $fetch<{pathname: string, uploadId: string}>('/api/blob/mpu', {
+      method: 'POST',
+      query: {
+        action: 'create',
+        pathname: file.name,
+      }
+    })
+
+    for (let i = 0; i < chunks; i += 1) {
+      const start = i * chunkSize
+      const end = Math.min(start + chunkSize, file.size)
+      const partNumber = i + 1
+      const chunk = file.slice(start, end)
+
+      const part = await $fetch<BlobUploadedPart>(`/api/blob/mpu/${pathname}`, {
+        params: {},
+        method: 'PUT',
+        body: await chunk.arrayBuffer(),
+        query: {
+          partNumber,
+          uploadId,
+        }
+      })
+
+      // optional: verify the etag and reupload if not match
+
+      uploaded.push(part)
+    }
+
+    const complete = await $fetch<SerializeObject<BlobObject>>(`/api/blob/mpu`, {
+      method: 'POST',
+      query: {
+        action: 'complete',
+        pathname,
+        uploadId,
+      },
+      body: {
+        parts: uploaded,
+      },
+    })
+
+    uploadedFiles.push(complete)
+  }
+
+  return uploadedFiles
 }
 
 function onFileSelect (e: any) {
