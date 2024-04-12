@@ -38,7 +38,7 @@ export function requireNuxtHubFeature(feature: keyof typeof featureMessages) {
     const message = `NuxtHub ${feature} is not enabled in the remote project. Enable it in your \`nuxt.config.ts\`, deploy new version and try again.\n Read more at https://hub.nuxt.com/docs/getting-started/remote-storage`
     throw createError({
       statusCode: 422,
-      statusMessage: process.dev ? message : 'Unprocessable Entity',
+      statusMessage: import.meta.dev ? message : 'Unprocessable Entity',
       message
     })
   }

@@ -276,7 +276,7 @@ export default defineNuxtModule<ModuleOptions>({
 
       // If using the remote option with a projectUrl and a projectSecretKey
       log.info(`Using remote storage from \`${hub.projectUrl}\``)
-      const manifest = hub.remoteManifest = await $fetch('/api/_hub/manifest', {
+      const remoteManifest = hub.remoteManifest = await $fetch('/api/_hub/manifest', {
         baseURL: hub.projectUrl,
         headers: {
           authorization: `Bearer ${hub.projectSecretKey || hub.userToken}`
@@ -292,10 +292,22 @@ export default defineNuxtModule<ModuleOptions>({
           log.error(`Failed to fetch remote storage: ${message}`)
           process.exit(1)
         })
-      if (manifest.version !== hub.version) {
-        log.warn(`\`${hub.projectUrl}\` is running \`@nuxthub/core@${manifest.version}\` while the local project is running \`@nuxthub/core@${hub.version}\`. Make sure to use the same version on both sides to avoid issues.`)
+      if (remoteManifest.version !== hub.version) {
+        log.warn(`\`${hub.projectUrl}\` is running \`@nuxthub/core@${remoteManifest.version}\` while the local project is running \`@nuxthub/core@${hub.version}\`. Make sure to use the same version on both sides to avoid issues.`)
       }
-      logger.info(`Remote storage available: ${Object.keys(manifest.storage).filter(k => manifest.storage[k]).map(k => `\`${k}\``).join(', ')} `)
+      
+      Object.keys(remoteManifest.storage).filter(k => hub[k as keyof typeof hub] && !remoteManifest.storage[k]).forEach(k => {
+        if (!remoteManifest.storage[k]) {
+          log.warn(`Remote storage \`${k}\` is enabled locally but it's not enabled in the remote project. Deploy a new version with \`${k}\` enabled to use it remotely.`)
+        }
+      })
+
+      const availableStorages = Object.keys(remoteManifest.storage).filter(k => hub[k as keyof typeof hub] && remoteManifest.storage[k])
+      if (availableStorages.length > 0) {
+        logger.info(`Remote storage available: ${availableStorages.map(k => `\`${k}\``).join(', ')} `)
+      } else {
+        log.fatal('No remote storage available: make sure to enable at least one of the storage options in your `nuxt.config.ts` and deploy new version before using remote storage. Read more at https://hub.nuxt.com/docs/getting-started/remote-storage')
+      }
     }
 
     // Add Proxy routes only if not remote or in development (used for devtools)
