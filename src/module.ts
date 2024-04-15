@@ -163,6 +163,9 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Within CF Pages CI/CD to notice NuxtHub about the build and hub config
     if (!nuxt.options.dev && process.env.CF_PAGES && process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN && process.env.NUXT_HUB_PROJECT_KEY && process.env.NUXT_HUB_ENV) {
+      // Disable remote option (if set also for prod)
+      hub.remote = false
+      // Wait for modules to be done to send config to NuxtHub
       nuxt.hook('modules:done', async () => {
         const { bindingsChanged } = await $fetch<{ bindingsChanged: boolean }>(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/before`, {
           baseURL: hub.url,
