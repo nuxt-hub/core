@@ -10,6 +10,7 @@ const dot = ref<HTMLElement>()
 const dots = ref<HTMLElement[]>()
 const container = ref<HTMLElement>()
 const clotherPoint = ref<Boolean>(true)
+const scrollTop = ref(0)
 
 const { y } = useWindowScroll()
 const { isScrolling } = useScroll(document)
@@ -28,6 +29,9 @@ onMounted(() => { 
 })
 
 watch(() => y.value, () => {
+
+  scrollTop.value = y.value
+
   const mobilePointTop = dot.value.getBoundingClientRect().top + window.scrollY
 
   const fixedPoints = dots.value.map(point => {
@@ -51,12 +55,11 @@ await fetchList()
 </script>
 
 <template>
-  <UContainer>
+  <UContainer v-if="page">
     <UPageHero v-bind="page?.hero" :ui="{ wrapper: 'border-none' }" />
     <ul class="flex flex-col relative">
-
-      <div ref="dot" class="absolute w-[2px] rounded-full bg-gray-500 dark:bg-gray-400 z-10 neon dot"
-        :style="{ top: `${y}px`, height: `${isScrolling ? 80 : clotherPoint || y === 0 ? 0 : 80}px`, width: `${isScrolling ? 1 : clotherPoint || y === 0 ? 0 : 1}px` }" />
+      <div ref="dot" class="hidden lg:block absolute w-[2px] rounded-full bg-gray-500 dark:bg-gray-400 z-10 neon dot"
+        :style="{ top: `${scrollTop}px`, height: `${isScrolling ? 80 : clotherPoint || y === 0 ? 0 : 80}px`, width: `${isScrolling ? 1 : clotherPoint || y === 0 ? 0 : 1}px` }" />
       <li v-for="(changelog, index) in changelogs" :key="changelog.title" class="relative flex w-full flex-col lg:flex-row last:mb-[2px] group">
         <div class="flex w-full pb-4 lg:w-[200px] lg:pb-0 -mt-1">
           <p class="text-sm text-gray-600 dark:text-gray-300">
@@ -64,7 +67,7 @@ await fetchList()
           </p>
         </div>
         <div ref="container" class="relative hidden lg:flex lg:min-w-[150px] lg:w-[150px]">
-          <div class="left-4 top-24 h-2 w-2 rounded-full bg-gray-500 dark:bg-gray-400 z-10" :class="{ 'neon': index === 0 }" ref="dots" />
+          <div class="hidden lg:block left-4 top-24 h-2 w-2 rounded-full bg-gray-500 dark:bg-gray-400 z-10" :class="{ 'neon': index === 0 }" ref="dots" />
 
           <div class="absolute left-[3.5px] top-0.5 h-full w-[1px] bg-gray-400 dark:bg-gray-500" />
         </div>
