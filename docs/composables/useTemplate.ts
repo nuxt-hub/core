@@ -1,4 +1,4 @@
-import type { Template } from '../types'
+import type { Template } from '~/types'
 
 export const useTemplate = () => {
   const templates = useState<Template[]>('templates', () => [])
@@ -8,7 +8,7 @@ export const useTemplate = () => {
       return
     }
 
-    const res = await $fetch<{ templates: Template[] }>('http://localhost:3001/api/templates')
+    const res = await $fetch<{ templates: Template[] }>('https:://admin.hub.nuxt.com/api/templates')
     if (res?.templates) {
       templates.value = res.templates
     }
