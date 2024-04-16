@@ -3,7 +3,7 @@ import { joinURL } from 'ufo'
 import { requireNuxtHubFeature } from './features'
 
 /**
- * Manage server caches.
+ * Manage server cache
  *
  * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
  * @param secretKey The secret key to authenticate to the remote endpoint
