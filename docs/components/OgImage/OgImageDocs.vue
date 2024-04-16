@@ -2,8 +2,7 @@
 defineOptions({
   inheritAttrs: false
 })
-
-const props = defineProps({
+defineProps({
   title: {
     type: String,
     required: true

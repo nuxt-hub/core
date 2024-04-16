@@ -19,6 +19,7 @@ const { data: surround } = await useAsyncData(`${route.path}-surround`, () => qu
   .where({ _extension: 'md', navigation: { $ne: false } })
   .only(['title', 'description', '_path'])
   .findSurround(withoutTrailingSlash(route.path))
+
 )
 
 useSeoMeta({
@@ -29,7 +30,6 @@ useSeoMeta({
   ogDescription: page.value.description,
   ogImage: joinURL(url, '/social-card.png')
 })
-
 
 defineOgImage({
   component: 'Docs',

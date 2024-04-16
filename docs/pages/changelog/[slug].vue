@@ -3,7 +3,6 @@ import { withoutTrailingSlash } from 'ufo'
 import type { ChangelogArticle } from '~/types'
 
 const route = useRoute()
-const { copy } = useCopyToClipboard()
 
 const { data: changelog } = await useAsyncData(route.path, () => queryContent<ChangelogArticle>(route.path).findOne())
 if (!changelog.value) {
@@ -17,13 +16,10 @@ const { data: surround } = await useAsyncData(`${route.path}-surround`, () => qu
   .findSurround(withoutTrailingSlash(route.path))
 )
 
-useSeoMeta({
-  title: changelog.value.head?.title || changelog.value.title,
-  description: changelog.value.head?.description || changelog.value.description
-})
 
 const title = changelog.value.head?.title || changelog.value.title
 const description = changelog.value.head?.description || changelog.value.description
+
 useSeoMeta({
   titleTemplate: '%s · NuxtHub Changelog',
   title,

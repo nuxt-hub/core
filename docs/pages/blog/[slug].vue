@@ -17,11 +17,6 @@ const { data: surround } = await useAsyncData(`${route.path}-surround`, () => qu
   .findSurround(withoutTrailingSlash(route.path))
 )
 
-useSeoMeta({
-  title: article.value.head?.title || article.value.title,
-  description: article.value.head?.description || article.value.description
-})
-
 const title = article.value.head?.title || article.value.title
 const description = article.value.head?.description || article.value.description
 
