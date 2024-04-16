@@ -1,10 +1,9 @@
-import type { ReadableStream } from '@cloudflare/workers-types/experimental'
 import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { requireNuxtHubFeature } from './features'
 
 /**
- * Access the remote Cache storage.
+ * Manage server caches.
  *
  * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
  * @param secretKey The secret key to authenticate to the remote endpoint
@@ -44,7 +43,5 @@ export function proxyHubCache(projectUrl: string, secretKey?: string) {
     }
   }
 
-  return {
-    ...cache
-  }
+  return cache
 }
