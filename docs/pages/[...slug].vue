@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { joinURL } from 'ufo'
 import { withoutTrailingSlash } from 'ufo'
 
 definePageMeta({
@@ -7,6 +8,7 @@ definePageMeta({
 
 const route = useRoute()
 const { toc, seo } = useAppConfig()
+const { url } = useSiteConfig()
 
 const { data: page } = await useAsyncData(route.path, () => queryContent(route.path).findOne())
 if (!page.value) {
@@ -24,8 +26,10 @@ useSeoMeta({
   title: page.value.title,
   ogTitle: `${page.value.title} - ${seo?.siteName}`,
   description: page.value.description,
-  ogDescription: page.value.description
+  ogDescription: page.value.description,
+  ogImage: joinURL(url, '/social-card.png')
 })
+
 
 defineOgImage({
   component: 'Docs',

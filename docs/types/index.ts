@@ -47,9 +47,10 @@ export interface BlogArticle extends ParsedContent {
 }
 
 export interface Template {
-  name: string
+  title: string
   slug: string
   description: string
   repo?: string
-  demo?: string
+  demoUrl?: string
+  imageUrl?: string
 }

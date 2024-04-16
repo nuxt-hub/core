@@ -23,7 +23,6 @@
     "medium-zoom": "^1.1.0",
     "nuxt": "^3.11.2",
     "nuxt-cloudflare-analytics": "^1.0.8",
-    "nuxt-og-image": "^2.2.4",
-    "capture-website": "^4.1.0"
+    "nuxt-og-image": "^2.2.4"
   }
 }

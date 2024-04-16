@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import type { NavItem } from '@nuxt/content/dist/runtime/types'
-
-const navigation = inject<NavItem[]>('navigation', [])
 const { metaSymbol } = useShortcuts()
 const links = [
   {
     label: 'Docs',
     to: '/docs/getting-started',
-    children: mapContentNavigation(navigation)
   }, {
     label: 'Templates',
     to: '/templates'
@@ -27,7 +23,7 @@ const links = [
 <template>
   <UHeader :ui="{}" :links="links">
     <template #logo>
-      <Logo />
+      <UColorModeImage light="/images/logo-light.svg" dark="/images/logo-dark.svg" class="h-6" />
     </template>
 
     <template #right>

@@ -26,7 +26,9 @@ useSeoMeta({
   twitterCard: 'summary_large_image'
 })
 
-provide('navigation', navigation.value?.[0]?.children || [])
+const docsNavigation = computed(() => navigation.value.filter(nav => nav._path === '/docs'))
+
+provide('navigation', docsNavigation.value?.[0]?.children || [])
 </script>
 
 <template>

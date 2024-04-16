@@ -17,19 +17,15 @@ onMounted(() => {
     margin: 5,
   })
 })
-
 </script>
 
 <template>
   <div>
-    <UColorModeImage
-      :light="page?.hero.img.light" :dark="page?.hero.img.dark" :width="page?.hero.img.width"
-      :height="page?.hero.img.height" class="absolute right-0 left-0 top-16 w-full"
-    />
-    <ULandingHero
-      v-bind="page?.hero" orientation="horizontal"
-      :ui="{ container: 'flex flex-row justify-start items-center' }"
-    >
+    <HeroDark class="absolute hidden right-0 left-0 top-0 xl:top-16 w-full dark:block" />
+    <HeroLight class="absolute right-0 left-0 top-0 xl:top-16 w-full dark:hidden" />
+
+    <ULandingHero v-bind="page?.hero" orientation="horizontal"
+      :ui="{ container: 'flex flex-row justify-start items-center' }">
       <template #headline>
         <UBadge v-if="page?.hero.headline" variant="subtle" size="lg" class="relative rounded-full font-semibold">
           <NuxtLink :to="page?.hero.headline.to" target="_blank" class="focus:outline-none" tabindex="-1">
@@ -38,10 +34,8 @@ onMounted(() => {
 
           {{ page?.hero.headline.label }}
 
-          <UIcon
-            v-if="page?.hero.headline.icon" :name="page?.hero.headline.icon"
-            class="ml-1 w-4 h-4 pointer-events-none"
-          />
+          <UIcon v-if="page?.hero.headline.icon" :name="page?.hero.headline.icon"
+            class="ml-1 w-4 h-4 pointer-events-none" />
         </UBadge>
       </template>
 
@@ -80,7 +74,8 @@ onMounted(() => {
       </template>
       <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 items-start justify-center">
         <li v-for="step in page?.deploy.steps" :key="step.title" class="flex flex-col gap-y-8 justify-center group">
-          <NuxtImg :src="step.img.src" :width="step.img.width" :height="step.img.height" class="rounded-xl bg-gray-800 group-hover:bg-green-400 transition duration-500" />
+          <NuxtImg :src="step.img.src" :width="step.img.width" :height="step.img.height"
+            class="rounded-xl bg-gray-800 group-hover:bg-green-400 transition duration-500" />
           <div>
             <h4 class="font-semibold" v-html="step.title" />
             <p class="text-gray-500 dark:text-gray-400">
@@ -92,35 +87,28 @@ onMounted(() => {
     </ULandingSection>
 
     <!-- database section -->
-    <ULandingSection
-      :headline="page?.database.headline" :features="page?.database.features"
-      :links="page?.database.buttons" align="left" :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }"
-    >
+    <ULandingSection :headline="page?.database.headline" :features="page?.database.features"
+      :links="page?.database.buttons" align="left" :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }">
       <template #title>
         <span v-html="page?.database.title" />
       </template>
       <template #description>
         <span v-html="page?.database.description" />
       </template>
-      <NuxtImg :src="page?.database.img.src" :width="page?.database.img.width" :height="page?.database.img.height" :data-zoom-src="page?.database.img.src" class="border border-gray-200 dark:border-gray-800 rounded-md" />
+      <NuxtImg :src="page?.database.img.src" :width="page?.database.img.width" :height="page?.database.img.height"
+        :data-zoom-src="page?.database.img.src" class="border border-gray-200 dark:border-gray-800 rounded-md" />
     </ULandingSection>
 
-    <div
-      class="bg-gray-100 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative"
-    >
-      <UColorModeImage
-        light="/images/landing/pricing-dots-light.svg" dark="/images/landing/pricing-dots-dark.svg"
-        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0"
-      />
+    <div class="bg-gray-50 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative">
+      <UColorModeImage light="/images/landing/pricing-line-light.svg" dark="/images/landing/pricing-line-dark.svg"
+        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0" />
       <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
         <div class="flex flex-col gap-y-2">
           <h4 class="font-semibold">
             {{ page?.database.pricing.title }}
           </h4>
-          <ULink
-            target="_blank" :to="page?.database.pricing.link.to"
-            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition transition-300 z-10"
-          >
+          <ULink target="_blank" :to="page?.database.pricing.link.to"
+            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition transition-300 z-10">
             {{ page?.database.pricing.link.label }}
             <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
           </ULink>
@@ -139,35 +127,28 @@ onMounted(() => {
     </div>
 
     <!-- blob section -->
-    <ULandingSection
-      :headline="page?.blob.headline" :features="page?.blob.features" :links="page?.blob.buttons"
-      :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }" align="right"
-    >
+    <ULandingSection :headline="page?.blob.headline" :features="page?.blob.features" :links="page?.blob.buttons"
+      :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }" align="right">
       <template #title>
         <span v-html="page?.blob.title" />
       </template>
       <template #description>
         <span v-html="page?.blob.description" />
       </template>
-      <NuxtImg :src="page?.blob.img.src" :width="page?.blob.img.width" :height="page?.blob.img.height" :data-zoom-src="page?.blob.img.src" class="border border-gray-200 dark:border-gray-800 rounded-md" />
+      <NuxtImg :src="page?.blob.img.src" :width="page?.blob.img.width" :height="page?.blob.img.height"
+        :data-zoom-src="page?.blob.img.src" class="border border-gray-200 dark:border-gray-800 rounded-md" />
     </ULandingSection>
 
-    <div
-      class="bg-gray-100 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative"
-    >
-      <UColorModeImage
-        light="/images/landing/pricing-dots-light.svg" dark="/images/landing/pricing-dots-dark.svg"
-        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0"
-      />
+    <div class="bg-gray-50 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative">
+      <UColorModeImage light="/images/landing/pricing-line-light.svg" dark="/images/landing/pricing-line-dark.svg"
+        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0" />
       <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
         <div class="flex flex-col gap-y-2">
           <h4 class="font-semibold">
             {{ page?.blob.pricing.title }}
           </h4>
-          <ULink
-            target="_blank" :to="page?.blob.pricing.link.to"
-            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition transition-300 z-10"
-          >
+          <ULink target="_blank" :to="page?.blob.pricing.link.to"
+            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition transition-300 z-10">
             {{ page?.blob.pricing.link.label }}
             <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
           </ULink>
@@ -187,35 +168,28 @@ onMounted(() => {
     </div>
 
     <!-- KV section -->
-    <ULandingSection
-      :headline="page?.kv.headline" :features="page?.kv.features" :links="page?.kv.buttons"
-      :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }" align="left"
-    >
+    <ULandingSection :headline="page?.kv.headline" :features="page?.kv.features" :links="page?.kv.buttons"
+      :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }" align="left">
       <template #title>
         <span v-html="page?.kv.title" />
       </template>
       <template #description>
         <span v-html="page?.kv.description" />
       </template>
-      <NuxtImg :src="page?.kv.img.src" :width="page?.kv.img.width" :height="page?.kv.img.height" :data-zoom-src="page?.kv.img.src" class="border border-gray-200 dark:border-gray-800 rounded-md" />
+      <NuxtImg :src="page?.kv.img.src" :width="page?.kv.img.width" :height="page?.kv.img.height"
+        :data-zoom-src="page?.kv.img.src" class="border border-gray-200 dark:border-gray-800 rounded-md" />
     </ULandingSection>
 
-    <div
-      class="bg-gray-100 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative"
-    >
-      <UColorModeImage
-        light="/images/landing/pricing-dots-light.svg" dark="/images/landing/pricing-dots-dark.svg"
-        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0"
-      />
+    <div class="bg-gray-50 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative">
+      <UColorModeImage light="/images/landing/pricing-line-light.svg" dark="/images/landing/pricing-line-dark.svg"
+        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0" />
       <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
         <div class="flex flex-col gap-y-2">
           <h4 class="font-semibold">
             {{ page?.kv.pricing.title }}
           </h4>
-          <ULink
-            target="_blank" :to="page?.kv.pricing.link.to"
-            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition transition-300 z-10"
-          >
+          <ULink target="_blank" :to="page?.kv.pricing.link.to"
+            class="text-gray-500 dark:text-gray-400 dark:hover:text-gray-300 hover:text-gray-400 transition transition-300 z-10">
             {{ page?.kv.pricing.link.label }}
             <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
           </ULink>
@@ -234,22 +208,20 @@ onMounted(() => {
     </div>
 
     <!-- storage section -->
-    <ULandingSection
-      :headline="page?.storage.headline" :features="page?.storage.features"
-      :links="page?.storage.buttons" :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }" align="right"
-    >
+    <ULandingSection :headline="page?.storage.headline" :features="page?.storage.features"
+      :links="page?.storage.buttons" :ui="{ features: { icon: { name: 'i-ph-check-circle-duotone' } } }" align="right">
       <template #title>
         <span v-html="page?.storage.title" />
       </template>
       <template #description>
         <span v-html="page?.storage.description" />
       </template>
-      <NuxtImg :src="page?.storage.img.src" :width="page?.storage.img.width" :height="page?.storage.img.height" :data-zoom-src="page?.storage.img.src" />
+      <NuxtImg :src="page?.storage.img.src" :width="page?.storage.img.width" :height="page?.storage.img.height"
+        :data-zoom-src="page?.storage.img.src" />
     </ULandingSection>
 
     <!-- tool section -->
     <ULandingSection :headline="page?.tool.headline" :links="page?.tool.buttons" class="relative">
-
       <img src="/images/landing/line-left.svg" class="absolute left-8 top-40" alt="" />
       <img src="/images/landing/line-right.svg" class="absolute right-8 top-40" alt="" />
 
@@ -261,12 +233,8 @@ onMounted(() => {
       </template>
 
       <ULandingGrid :ui="{ wrapper: 'flex flex-col md:grid gap-8 md:grid-cols-2 lg:grid-cols-4 relative' }">
-        <ULandingCard
-          v-for="tool in page?.tool.features"
-          :key="tool.title"
-          :description="tool.description"
-          :ui="{ title: '', description: 'pl-8' }"
-        >
+        <ULandingCard v-for="tool in page?.tool.features" :key="tool.title" :description="tool.description"
+          :ui="{ title: '', description: 'pl-8' }">
           <template #title>
             <span class="flex flex-row gap-x-3 items-center">
               <img :src="tool.img" width="24" height="24" alt="" />
@@ -289,73 +257,57 @@ onMounted(() => {
       </template>
 
       <UPageColumns :ui="{ wrapper: 'column-1 md:columns-2 lg:columns-4 gap-8 space-y-8' }">
+        <UPageCard :title="page?.testimonials.cloudflare.title" :description="page?.testimonials.cloudflare.description"
+          :ui="{ title: 'whitespace-normal text-white dark:text-gray-950', description: 'text-gray-400 dark:text-gray-500', background: 'bg-gray-900 dark:bg-white' }">
+          <template #icon>
+            <UColorModeImage :light="page?.testimonials.cloudflare.img.dark"
+              :dark="page?.testimonials.cloudflare.img.light" />
+          </template>
+        </UPageCard>
         <!-- Hack for Safari -->
         <div v-for="(testimonial, index) in page?.testimonials.items" :key="index" class="break-inside-avoid">
           <ULandingTestimonial v-bind="testimonial" />
         </div>
-        <UPageCard :title="page?.testimonials.cloudflare.title" :description="page?.testimonials.cloudflare.description" :ui="{ title: 'whitespace-normal' }">
-          <template #icon>
-            <UColorModeImage :light="page?.testimonials.cloudflare.img.dark" :dark="page?.testimonials.cloudflare.img.light" />
-          </template>
-        </UPageCard>
       </UPageColumns>
     </ULandingSection>
 
     <!-- journey section -->
-    <ULandingSection class="relative mt-32" :ui="{ title: 'z-10' }">
+    <div class="relative">
       <div
-        class="flex justify-center absolute left-0 right-0 -top-8 sm:-top-10 md:-top-12 lg:-top-20 xl:-top-32 2xl:-top-42"
-      >
-        <UColorModeImage
-          :light="page?.journey.images.light" :dark="page?.journey.images.dark"
-          :width="page?.journey.images.width" :height="page?.journey.images.height"
-        />
+        class="flex justify-center absolute left-0 right-0 -top-8 sm:-top-10 md:-top-12 lg:-top-20 xl:-top-32 2xl:-top-42">
+        <UColorModeImage :light="page?.journey.images.light" :dark="page?.journey.images.dark"
+          :width="page?.journey.images.width" :height="page?.journey.images.height" class="w-full" />
       </div>
 
-      <template #title>
-        <span v-html="page?.journey.title" />
-      </template>
+      <ULandingSection class="relative mt-32" :ui="{ title: 'z-10' }">
+        <template #title>
+          <span v-html="page?.journey.title" />
+        </template>
 
-      <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-16 lg:px-16 text-center z-10">
-        <NuxtLink v-for="feature in page?.journey.features" :key="feature.name" :to="feature.to" class="flex flex-col gap-y-2 items-center hover:ring-primary hover:ring-2 rounded-lg p-4">
-          <img :src="feature.img" width="32" height="32" alt="" />
-          <div class="flex flex-col gap-y-1">
-            <h5 class="font-medium text-gray-900 dark:text-white">
-              {{ feature.name }}
-            </h5>
-            <p class="text-gray-500 dark:text-gray-400">
-              {{ feature.description }}
-            </p>
-          </div>
-        </NuxtLink>
-      </div>
-      <!-- <ULandingGrid :ui="{ wrapper: 'md:grid-cols-1 lg:grid-cols-3' }">
-        <UPageCard
-          v-for="feature in page?.journey.features"
-          :key="feature.title"
-          :description="feature.description"
-          :ui="{ title: '', description: 'pl-8' }"
-          :to="feature.to"
-        >
-          <template #title>
-            <span class="flex flex-row gap-x-3 items-center">
-              <UIcon :name="feature.icon" class="h-5 w-5 text-primary" />
-              <span class="text-gray-900 dark:text-white text-base font-bold truncate">
-                {{ feature.title }}
-              </span>
-            </span>
-          </template>
-        </UPageCard>
-      </ULandingGrid> -->
-
-
-      <template #bottom>
-        <div class="flex w-full justify-center items-center space-x-4 pt-[92px]">
-          <UInputCopy v-bind="page?.journey.copybutton" class="w-[240px]" />
-          <UButton v-bind="page?.journey.button" />
+        <div
+          class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-16 lg:px-16 text-center z-10">
+          <NuxtLink v-for="feature in page?.journey.features" :key="feature.name" :to="feature.to"
+            class="flex flex-col gap-y-2 items-center hover:ring-primary hover:ring-2 rounded-lg p-4">
+            <img :src="feature.img" width="32" height="32" alt="" />
+            <div class="flex flex-col gap-y-1">
+              <h5 class="font-medium text-gray-900 dark:text-white">
+                {{ feature.name }}
+              </h5>
+              <p class="text-gray-500 dark:text-gray-400">
+                {{ feature.description }}
+              </p>
+            </div>
+          </NuxtLink>
         </div>
-      </template>
-    </ULandingSection>
+
+        <template #bottom>
+          <div class="flex w-full justify-center items-center space-x-4 pt-[92px]">
+            <UInputCopy v-bind="page?.journey.copybutton" class="w-[240px]" />
+            <UButton v-bind="page?.journey.button" />
+          </div>
+        </template>
+      </ULandingSection>
+    </div>
   </div>
 </template>
 
@@ -363,9 +315,11 @@ onMounted(() => {
 .hero_code div div {
   @apply dark:bg-gray-900/60 backdrop-blur-3xl bg-white/60;
 }
+
 .medium-zoom-overlay {
   @apply dark:!bg-gray-950 !bg-white;
 }
+
 .medium-zoom-overlay,
 .medium-zoom-image--opened {
   z-index: 100;

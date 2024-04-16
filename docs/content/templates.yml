@@ -5,23 +5,3 @@ description: 'Explore NuxtHub templates to get up and running in a few seconds.'
 hero:
   title: 'NuxtHub Templates'
   description: 'Explore NuxtHub templates to get up and running in a few seconds.'
-templates:
-  - name: 'NuxtHub Starter'
-    slug: 'starter'
-    description: 'The minimal starter to get started using Hub database, KV and blobs.'
-    repo: 'nuxt-hub/starter'
-  - name: 'Nuxt Todos'
-    slug: 'todos'
-    description: 'A full-stack application with authentication, SSR and database, running on the edge.'
-    repo: 'atinux/nuxt-todos-edge'
-    demo: 'https://todos.nuxt.dev/'
-  - name: 'Nuxt Image Gallery'
-    slug: 'image-gallery'
-    description: "This starter lets you get started with NuxtHub Blob in seconds."
-    repo: 'flosciante/nuxt-image-gallery'
-    demo: 'https://image-gallery.nuxt.dev/'
-  - name: 'Atinotes'
-    slug: 'atinotes'
-    description: "An editable website with universal rendering on the edge."
-    repo: '/atinux/atinotes'
-    demo: 'https://notes.atinux.com/'

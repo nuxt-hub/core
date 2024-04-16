@@ -16,10 +16,10 @@ useSeoMeta({
 </script>
 
 <template>
-  <div>
-    <div class="absolute inset-0 bg-hero h-[500px] mt-12" />
+  <div class="relative">
+    <UColorModeImage light="/images/pricing/hero-light.svg" dark="/images/pricing/hero-dark.svg" class="absolute w-full inset-0 -mt-12" />
 
-    <UContainer class="relative">
+    <UContainer>
       <UPageHero v-bind="page?.hero" align="center" :ui="{ wrapper: 'relative !pt-[144px] !pb-[92px]' }">
         <template #icon>
           <UBadge :label="page?.hero.headline" icon="" variant="outline" :ui="{ rounded: 'rounded-full' }" class="badge border-2 border-primary" />
@@ -83,13 +83,13 @@ useSeoMeta({
 
 <style scoped lang="postcss">
 .bg-hero {
-  background-image: url("/images/pricing/hero-light.webp");
+  background-image: url("/images/pricing/hero-light.svg");
   background-repeat: no-repeat;
   background-position: center;
 }
 
 .dark .bg-hero {
-  background-image: url("/images/pricing/hero-dark.webp");
+  background-image: url("/images/pricing/hero-dark.svg");
   background-repeat: no-repeat;
   background-position: center;
 }
