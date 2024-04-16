@@ -1,6 +1,75 @@
 # Changelog
 
 
+## v0.5.5
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.4...v0.5.5)
+
+### 🩹 Fixes
+
+- **remote-storage:** Raise error if storage is not enabled in the deployment ([#68](https://github.com/nuxt-hub/core/pull/68))
+- Fallback to custom placeholder when openAPI is disabled ([#70](https://github.com/nuxt-hub/core/pull/70))
+
+### 📖 Documentation
+
+- Simplify migrations using drizzle ([f8b3ff7](https://github.com/nuxt-hub/core/commit/f8b3ff7))
+- Add Anthony Fu testimonial ([cb47380](https://github.com/nuxt-hub/core/commit/cb47380))
+
+### 🏡 Chore
+
+- Removed unused dependencies ([d7de233](https://github.com/nuxt-hub/core/commit/d7de233))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
+## v0.5.4
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.3...v0.5.4)
+
+### 🏡 Chore
+
+- **types:** Remove ts ignore" ([b04a439](https://github.com/nuxt-hub/core/commit/b04a439))
+- Remove ts-ignore ([cd5cd49](https://github.com/nuxt-hub/core/commit/cd5cd49))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
+## v0.5.3
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.2...v0.5.3)
+
+### 🏡 Chore
+
+- **types:** Remove ts ignore ([8c69740](https://github.com/nuxt-hub/core/commit/8c69740))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
+## v0.5.2
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.1...v0.5.2)
+
+### 🩹 Fixes
+
+- Generate `wrangler.toml` in CF deployment to use bindings ([#63](https://github.com/nuxt-hub/core/pull/63))
+
+### 📖 Documentation
+
+- Add another testimonial ([bcf41ef](https://github.com/nuxt-hub/core/commit/bcf41ef))
+- Add section on installation using `nuxi module add` ([#64](https://github.com/nuxt-hub/core/pull/64))
+- Added clarifications in self-hosted deployments ([#65](https://github.com/nuxt-hub/core/pull/65))
+
+### ❤️ Contributors
+
+- Max ([@onmax](http://github.com/onmax))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+- Gangan ([@shinGangan](http://github.com/shinGangan))
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.5.1
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.0...v0.5.1)

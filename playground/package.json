@@ -13,8 +13,7 @@
     "@nuxt/ui": "^2.15.1",
     "@nuxthub/core": "latest",
     "drizzle-orm": "^0.30.7",
-    "nuxt": "^3.11.2",
-    "nuxt-auth-utils": "^0.0.22"
+    "nuxt": "^3.11.2"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest"
