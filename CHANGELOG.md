@@ -1,6 +1,35 @@
 # Changelog
 
 
+## v0.5.6
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.5...v0.5.6)
+
+### 🚀 Enhancements
+
+- Cache management ([#73](https://github.com/nuxt-hub/core/pull/73))
+- Add server cache tab to devtool ([#74](https://github.com/nuxt-hub/core/pull/74))
+
+### 🩹 Fixes
+
+- Disable remote storage within CF Pages CI ([02f65e5](https://github.com/nuxt-hub/core/commit/02f65e5))
+
+### 📖 Documentation
+
+- Update 2.drizzle.md, typo error : useDb instead of useDrizzle ([#72](https://github.com/nuxt-hub/core/pull/72))
+- Escape special chars ([d94892d](https://github.com/nuxt-hub/core/commit/d94892d))
+
+### 🏡 Chore
+
+- Update pnpm-lock.yaml ([a194392](https://github.com/nuxt-hub/core/commit/a194392))
+- Update lock ([2a7fab1](https://github.com/nuxt-hub/core/commit/2a7fab1))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+- Samuel LEFEVRE ([@samulefevre](http://github.com/samulefevre))
+
 ## v0.5.5
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.4...v0.5.5)
