@@ -221,31 +221,32 @@ onMounted(() => {
     </ULandingSection>
 
     <!-- tool section -->
-    <ULandingSection :headline="page?.tool.headline" :links="page?.tool.buttons" class="relative">
-      <img src="/images/landing/line-left.svg" class="absolute left-8 top-40" alt="" />
-      <img src="/images/landing/line-right.svg" class="absolute right-8 top-40" alt="" />
+    <div class="relative">
+      <img src="/images/landing/bg-tailored.webp" width="1441" height="181" class="absolute top-0 w-full right-0" alt="" />
 
-      <template #title>
-        <span v-html="page?.tool.title" />
-      </template>
-      <template #description>
-        <span v-html="page?.tool.description" />
-      </template>
+      <ULandingSection :headline="page?.tool.headline" :links="page?.tool.buttons" class="relative">
+        <template #title>
+          <span v-html="page?.tool.title" />
+        </template>
+        <template #description>
+          <span v-html="page?.tool.description" />
+        </template>
 
-      <ULandingGrid :ui="{ wrapper: 'flex flex-col md:grid gap-8 md:grid-cols-2 lg:grid-cols-4 relative' }">
-        <ULandingCard v-for="tool in page?.tool.features" :key="tool.title" :description="tool.description"
-          :ui="{ title: '', description: 'pl-8' }">
-          <template #title>
-            <span class="flex flex-row gap-x-3 items-center">
-              <img :src="tool.img" width="24" height="24" alt="" />
-              <span class="text-gray-900 dark:text-white text-base font-bold truncate">
-                {{ tool.title }}
+        <ULandingGrid :ui="{ wrapper: 'flex flex-col md:grid gap-8 md:grid-cols-2 lg:grid-cols-4 relative' }">
+          <ULandingCard v-for="tool in page?.tool.features" :key="tool.title" :description="tool.description"
+            :ui="{ title: '', description: 'pl-8' }">
+            <template #title>
+              <span class="flex flex-row gap-x-3 items-center">
+                <img :src="tool.img" width="24" height="24" alt="" />
+                <span class="text-gray-900 dark:text-white text-base font-bold truncate">
+                  {{ tool.title }}
+                </span>
               </span>
-            </span>
-          </template>
-        </ULandingCard>
-      </ULandingGrid>
-    </ULandingSection>
+            </template>
+          </ULandingCard>
+        </ULandingGrid>
+      </ULandingSection>
+    </div>
 
     <!-- testomonials section -->
     <ULandingSection :headline="page?.testimonials.headline">

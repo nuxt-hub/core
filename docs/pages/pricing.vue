@@ -17,7 +17,7 @@ useSeoMeta({
 
 <template>
   <div class="relative">
-    <UColorModeImage light="/images/pricing/hero-light.svg" dark="/images/pricing/hero-dark.svg" class="absolute w-full inset-0 -mt-12" />
+    <img src="/images/pricing/hero.webp" width="1441" height="181" class="absolute w-full inset-0" alt="" />
 
     <UContainer>
       <UPageHero v-bind="page?.hero" align="center" :ui="{ wrapper: 'relative !pt-[144px] !pb-[92px]' }">
