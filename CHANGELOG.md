@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v0.5.7
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.6...v0.5.7)
+
+### 🩹 Fixes
+
+- Return correct group keys in cache api index ([#75](https://github.com/nuxt-hub/core/pull/75))
+- Add cache to manifest ([#77](https://github.com/nuxt-hub/core/pull/77))
+
+### 🏡 Chore
+
+- Move to eslint9 ([#76](https://github.com/nuxt-hub/core/pull/76))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Gerben Mulder <github.undergo381@passmail.net>
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
 ## v0.5.6
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.5...v0.5.6)
