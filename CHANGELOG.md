@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.5.9
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.8...v0.5.9)
+
+### 🩹 Fixes
+
+- Add missing import ([ada8e5b](https://github.com/nuxt-hub/core/commit/ada8e5b))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.5.8
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.7...v0.5.8)
