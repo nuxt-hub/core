@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.5.8
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.7...v0.5.8)
+
+### 🚀 Enhancements
+
+- Add batchDel for cache proxy ([e85719f](https://github.com/nuxt-hub/core/commit/e85719f))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.5.7
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.6...v0.5.7)
