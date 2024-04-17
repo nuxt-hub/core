@@ -2,13 +2,13 @@ import type { AnalyticsEngineDataPoint, AnalyticsEngineDataset } from '@cloudfla
 import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
-import { useRuntimeConfig } from '#imports'
 import { requireNuxtHubFeature } from './features'
+import { useRuntimeConfig } from '#imports'
 
 const _datasets: Record<string, AnalyticsEngineDataset> = {}
 
 function getAnalyticsBinding(name: string = 'ANALYTICS') {
-  // @ts-ignore
+  // @ts-expect-error globalThis.__env__ is injected by the runtime
   return process.env[name] || globalThis.__env__?.[name] || globalThis[name]
 }
 
@@ -17,7 +17,6 @@ function _useDataset(name: string = 'ANALYTICS') {
     return _datasets[name]
   }
 
-  // @ts-ignore
   const binding = getAnalyticsBinding()
   if (binding) {
     _datasets[name] = binding as AnalyticsEngineDataset

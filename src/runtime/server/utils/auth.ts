@@ -1,6 +1,5 @@
 import type { H3Event } from 'h3'
-import { handleCors } from 'h3'
-import { getHeader, createError } from 'h3'
+import { getHeader, createError, handleCors } from 'h3'
 import { $fetch } from 'ofetch'
 
 export async function requireNuxtHubAuthorization(event: H3Event) {
@@ -9,7 +8,7 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
     // add cors for devtools embed
     handleCors(event, {
       methods: '*',
-      origin: ['https://admin.hub.nuxt.com'],
+      origin: ['https://admin.hub.nuxt.com']
     })
     return
   }
@@ -22,7 +21,7 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
     })
   }
   const projectKey = process.env.NUXT_HUB_PROJECT_KEY
-  
+
   // Self-hosted NuxtHub project, user has to set a secret key to access the proxy
   const projectSecretKey = process.env.NUXT_HUB_PROJECT_SECRET_KEY
   if (projectSecretKey && secretKeyOrUserToken === projectSecretKey) {
@@ -33,7 +32,7 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
       message: 'Invalid secret key'
     })
   }
-  
+
   // Hosted on NuxtHub
   if (projectKey) {
     // Here the secretKey is a user token
@@ -46,7 +45,7 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
     })
     return
   }
-  
+
   throw createError({
     statusCode: 401,
     message: 'Missing NUXT_HUB_PROJECT_SECRET_KEY envrionment variable or NUXT_HUB_PROJECT_KEY envrionment variable'

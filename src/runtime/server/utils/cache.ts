@@ -31,12 +31,12 @@ export function proxyHubCache(projectUrl: string, secretKey?: string) {
       })
     },
     async get(key: string) {
-      return cacheAPI<any>(`/${key}`, {
+      return cacheAPI(`/${key}`, {
         method: 'GET'
       })
     },
     async del(key: string) {
-      await cacheAPI<void>(`/${key}`, {
+      await cacheAPI(`/${key}`, {
         method: 'DELETE'
       })
       return

@@ -4,8 +4,8 @@ import httpDriver from 'unstorage/drivers/http'
 import cloudflareKVBindingDriver from 'unstorage/drivers/cloudflare-kv-binding'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
-import { useRuntimeConfig } from '#imports'
 import { requireNuxtHubFeature } from './features'
+import { useRuntimeConfig } from '#imports'
 
 export interface HubKV extends Storage {
   /**
@@ -68,7 +68,7 @@ export function hubKV(): HubKV {
     return _kv
   }
   const hub = useRuntimeConfig().hub
-  // @ts-ignore
+  // @ts-expect-error globalThis.__env__ is not defined
   const binding = process.env.KV || globalThis.__env__?.KV || globalThis.KV
   if (hub.remote && hub.projectUrl && !binding) {
     return proxyHubKV(hub.projectUrl, hub.projectSecretKey || hub.userToken)
@@ -85,7 +85,7 @@ export function hubKV(): HubKV {
       set: storage.setItem,
       has: storage.hasItem,
       del: storage.removeItem,
-      ...storage,
+      ...storage
     }
     return _kv
   }
@@ -123,6 +123,6 @@ export function proxyHubKV(projectUrl: string, secretKey?: string): HubKV {
     set: storage.setItem,
     has: storage.hasItem,
     del: storage.removeItem,
-    ...storage,
+    ...storage
   }
 }
