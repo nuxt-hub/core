@@ -36,7 +36,7 @@ export function requireNuxtHubFeature(feature: keyof typeof featureMessages) {
     })
   }
 
-  if (hub.remote && !hub.remoteManifest?.storage?.[feature]) {
+  if (hub.remote && !hub.remoteManifest?.features?.[feature] && !hub.remoteManifest?.storage?.[feature]) {
     const message = `NuxtHub \`${feature}\` is not enabled in the remote project. Deploy a new version with \`${feature}\` enabled and try again.\nRead more at \`https://hub.nuxt.com/docs/getting-started/remote-storage\``
     if (import.meta.dev) {
       console.error(message)
