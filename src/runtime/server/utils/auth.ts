@@ -9,8 +9,7 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
     handleCors(event, {
       methods: '*',
       origin: [
-        'https://admin.hub.nuxt.com',
-        // 'http://localhost:3000'
+        'https://admin.hub.nuxt.com'
       ]
     })
     return
