@@ -19,7 +19,10 @@ export default eventHandler(async (event) => {
     storage: {
       database: Boolean(dbCheck),
       kv: Array.isArray(kvCheck),
-      blob: Array.isArray(blobCheck)
+      blob: Array.isArray(blobCheck),
+    },
+    features: {
+      cache
     }
   }
 })

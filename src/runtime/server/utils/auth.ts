@@ -8,7 +8,10 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
     // add cors for devtools embed
     handleCors(event, {
       methods: '*',
-      origin: ['https://admin.hub.nuxt.com']
+      origin: [
+        'https://admin.hub.nuxt.com',
+        // 'http://localhost:3000'
+      ]
     })
     return
   }
