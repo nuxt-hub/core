@@ -27,7 +27,7 @@ export function generateWrangler(hub: { kv: boolean, database: boolean, blob: bo
   ].flat().join('\n')
 }
 
-export function addDevtoolsCustomTabs(nuxt: Nuxt, hub: { kv: boolean, database: boolean, blob: boolean }) {
+export function addDevtoolsCustomTabs(nuxt: Nuxt, hub: { kv: boolean, database: boolean, blob: boolean, cache: boolean, analytics: boolean }) {
   nuxt.hook('listen', (_, { url }) => {
     hub.database && addCustomTab({
       category: 'server',
@@ -59,6 +59,17 @@ export function addDevtoolsCustomTabs(nuxt: Nuxt, hub: { kv: boolean, database: 
       view: {
         type: 'iframe',
         src: `https://admin.hub.nuxt.com/embed/blob?url=${url}`,
+      },
+    })
+
+    hub.cache && addCustomTab({
+      category: 'server',
+      name: 'hub-cache',
+      title: 'Hub Cache',
+      icon: 'i-ph-lightning',
+      view: {
+        type: 'iframe',
+        src: `https://admin.hub.nuxt.com/embed/cache?url=${url}`,
       },
     })
   })
