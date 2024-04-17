@@ -1,4 +1,4 @@
-import { eventHandler, getRouterParam, createError } from 'h3'
+import { eventHandler, getRouterParam, createError, sendNoContent } from 'h3'
 import { requireNuxtHubAuthorization } from '../../../utils/auth'
 import { requireNuxtHubFeature } from '../../../utils/features'
 // @ts-expect-error useStorage not yet typed

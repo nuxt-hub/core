@@ -1,4 +1,4 @@
-import { eventHandler, readValidatedBody } from 'h3'
+import { eventHandler, readValidatedBody, sendNoContent } from 'h3'
 import { z } from 'zod'
 import { requireNuxtHubAuthorization } from '../../../utils/auth'
 import { requireNuxtHubFeature } from '../../../utils/features'
