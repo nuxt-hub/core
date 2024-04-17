@@ -2,7 +2,7 @@ title: 'Discover the right plan for you.'
 description: 'NuxtHub is built on Cloudflare for optimal performance. While separate subscriptions are required, you get the combined power of both, with plans to suit your specific needs.'
 navigation: false
 hero:
-  headline: '-20% off during beta!'
+  headline: '-20% off with yearly plan'
   title: 'Discover the right plan <span class="text-primary">for you</span>'
   description: 'NuxtHub is built on Cloudflare for optimal performance. While separate subscriptions are required, you get the combined power of both, with plans to suit your specific needs.'
   orientation: horizontal
@@ -14,7 +14,7 @@ hero:
 pricing:
   plans:
     - title: 'Solo'
-      descritpion: 'For solo user'
+      description: 'For solo user'
       price: '$0'
       features:
         - '1 user per project'
@@ -25,8 +25,8 @@ pricing:
       button:
         label: 'Get started for free'
         color: 'gray'
-    - title: 'Monthly Pro'
-      descritpion: 'For bootstrappers and indie hackers.'
+    - title: 'Pro'
+      description: 'For bootstrappers and indie hackers.'
       price: '$12'
       cycle: '/user/month'
       highlight: true
@@ -44,10 +44,9 @@ pricing:
         inner: 'justify-between'
         body:
           background: 'bg-gradient-to-t from-primary/20 via-white to-white dark:from-primary/30 dark:via-gray-900 dark:to-gray-900 rounded-xl'
-    - title: 'Annual Pro'
-      descritpion: 'For bootstrappers and indie hackers.'
-      price: '$399'
-      cycle: '/month'
+    - title: 'On-Premise'
+      description: 'Deploy NuxtHub on your own infrastructure.'
+      price: '-'
       features:
         - '10 users per project'
         - '$9 per additional user'
@@ -55,20 +54,26 @@ pricing:
         - 'Unlimited deployments'
         - 'Priority Support'
       button:
-        label: 'Start 14-day free trial'
-  info: "Prices don't include your Cloudflare costs."
+        label: 'Contact us'
+        to: 'mailto:hub@nuxt.com?subject=On-Premise%20Deployment&body=Hi%20NuxtHub%20Team%2C%0A%0AI%20am%20interested%20in%20deploying%20NuxtHub%20on%20my%20own%20infrastructure.%0A%0AKind%20regards%2C'
+  info: 'Prices does not include your <a href="https://www.cloudflare.com/plans/developer-platform/" target="_blank" class="underline underline-offset-4 dark:hover:text-white hover:text-gray-900">Cloudflare costs</a>.'
   contact:
     title: 'Are you an Open Source Organization?'
-    description: "If you want to use NuxtHub to manage your open source projects, we'll love to work with you!<br/>Feel free to contact us."
+    description: "If you want to use NuxtHub to manage your open source projects, we'll have a special offer for you!"
     button:
       label: 'Contact us'
       color: gray
+      to: 'mailto:hub@nuxt.com?subject=Open%20Source%20Organization%20Offer&body=Hi%20NuxtHub%20Team%2C%0A%0AI%20am%20interested%20in%20the%20special%20offer%20for%20Open%20Source%20Organizations.%0A%0AKind%20regards%2C'
 cloudflare:
-  title: 'What comes with the free Cloudflare plan?'
+  title: 'What comes with Cloudflare free plan?'
   description: 'Start free with Cloudflare and seamlessly upgrade to a paid as your needs grow.'
   plans:
     - title: 'Cloudflare D1 (Database)'
-      description: 'D1 bills based on Usage, Scale-to-zero and Storage.'
+      description: >
+        Billing based on usage:
+        - 5 million rows read / day
+        - 100,000 rows written / day
+        - 5 GB of total storage'
       to: 'https://developers.cloudflare.com/d1/platform/pricing/'
     - title: 'Cloudflare R2 (Blob)'
       description: 'R2 charges based on the total volume of data stored, along with Class A operations and Class B operations.'

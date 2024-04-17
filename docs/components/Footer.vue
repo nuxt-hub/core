@@ -1,14 +1,16 @@
 <script setup lang="ts">
 const links = [
   {
-    label: 'Nuxt UI',
-    to: 'https://ui.nuxt.com/'
-  }, {
     label: 'Nuxt Docs',
     to: 'https://nuxt.com'
   }, {
-    label: 'Nuxt Studio',
-    to: 'https://nuxt.studio'
+    label: 'Terms',
+    to: 'https://admin.hub.nuxt.com/terms',
+    target: '_blank'
+  }, {
+    label: 'Privacy',
+    to: 'https://admin.hub.nuxt.com/privacy',
+    target: '_blank'
   }
 ]
 </script>
@@ -16,7 +18,7 @@ const links = [
 <template>
   <UFooter :links="links">
     <template #left>
-      Copyright © {{ new Date().getFullYear() }}
+      <span class="inline text-sm">© {{ new Date().getFullYear() }} <a href="https://nuxtlabs.com" target="_blank" class="text-gray-900 dark:text-gray-50 hover:underline underline-offset-4">NuxtLabs</a></span>
     </template>
 
     <template #right>

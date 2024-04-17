@@ -13,16 +13,21 @@ useSeoMeta({
   ogImage: joinURL(url, '/social-card.png')
 })
 
+const appear = ref(false)
+onMounted(() => {
+  setTimeout(() => {
+    appear.value = true
+  }, 0)
+})
 </script>
 
 <template>
   <div class="relative">
-    <img src="/images/pricing/hero.webp" width="1441" height="181" class="absolute w-full inset-0" alt="" />
-
+    <img src="/images/pricing/background.svg" class="absolute w-full inset-0 transition-opacity duration-1000" :class="appear ? 'opacity-100' : 'opacity-0'"/>
     <UContainer>
       <UPageHero v-bind="page?.hero" align="center" :ui="{ wrapper: 'relative !pt-[144px] !pb-[92px]' }">
         <template #icon>
-          <UBadge :label="page?.hero.headline" icon="" variant="outline" :ui="{ rounded: 'rounded-full' }" class="badge border-2 border-primary" />
+          <UBadge :label="page?.hero.headline" icon="" variant="outline" :ui="{ rounded: 'rounded-full' }" class="badge dark:border-2 border-primary" />
         </template>
 
         <template #title>
@@ -40,9 +45,7 @@ useSeoMeta({
           <UPricingCard v-for="pricing in page?.pricing.plans" :key="pricing.title" v-bind="pricing" />
         </UPricingGrid>
 
-        <div class="w-full text-center pt-8 italic text-gray-500 dark:text-gray-400 text-sm">
-          {{ page?.pricing.info }}
-        </div>
+        <div v-html="page?.pricing.info" class="w-full text-center pt-8 italic text-gray-500 dark:text-gray-400 text-sm" />
 
         <UCard class="mt-8" :ui="{ body: { padding: 'md:p-[40px]' }}">
           <div class="flex flex-col gap-y-4 text-center sm:text-left sm:flex-row sm:gap-y-0 justify-between items-center gap-x-8">
@@ -94,7 +97,7 @@ useSeoMeta({
   background-position: center;
 }
 
-.badge {
+.dark .badge {
   animation: neon 6s ease-in-out infinite;
   box-shadow: 0 0 1px rgba(0, 118, 70, 0),
               0 0 15px rgba(0, 220, 130, 0.15),

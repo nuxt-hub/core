@@ -4,7 +4,7 @@ NuxtHub lets you affordably run your Nuxt apps everywhere and with high performa
 navigation: false
 hero:
   title: 'Build, deploy & manage <br /> <span class="text-primary">Nuxt apps</span>, on the edge.'
-  description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare.<br />Deploy your Nuxt applications with a database, key-value and blob storage with zero configuration, on your Cloudflare account.<br />NuxtHub lets you affordably run your Nuxt apps everywhere and with high performance.'
+  description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare.<br />Deploy your app with a database, key-value and blob storage with zero configuration, on your Cloudflare account.<br />NuxtHub lets you affordably run your Nuxt apps everywhere and with high performance.'
   orientation: horizontal
   img:
     width: '1439'
@@ -86,7 +86,7 @@ database:
     width: 576
     height: 314
   headline: NuxtHub Database
-  title: A scalable database for your Nuxt application.
+  title: A <span class="text-primary">scalable database</span> for your Nuxt application.
   description: 'NuxtHub Database unlocks the power of <a class="font-semibold text-gray-800 dark:text-white hover:underline underline-offset-4" href="https://developers.cloudflare.com/d1/" target="_blank">Cloudflare D1</a> to give you access to a serverless SQL database, with zero configuration.
   Scale and manage effortlessly, and pay only for what you use.'
   features:
@@ -123,7 +123,7 @@ blob:
     width: 576
     height: 314
   headline: NuxtHub Blob
-  title: Add file uploads to your Nuxt application.
+  title: Add <span class="text-primary">file uploads</span> to your Nuxt application.
   description: 'NuxtHub Blob lets you to store and access media files on a global network, thanks to <a class="font-semibold text-gray-800 dark:text-white hover:underline underline-offset-4" href="https://developers.cloudflare.com/r2/" target="_blank">Cloudflare R2</a>
 Let users upload data like images, videos and audio files with our server composable with our blob validator.'
   features:
@@ -160,7 +160,7 @@ kv:
     width: 576
     height: 314
   headline: NuxtHub KV
-  title: A Global Key-Value Database for Nuxt.
+  title: A Global <span class="text-primary">Key-Value Database</span> for Nuxt.
   description: 'NuxtHub KV leverages <a href="https://developers.cloudflare.com/kv/" target="_blank" class="font-semibold text-gray-800 dark:text-white hover:underline underline-offset-4">Cloudflare Workers KV</a> to access a global, low-latency, key-value data storage across 300+ global locations.
 Access it in your Nuxt codebase, with zero-configuration.'
   features:
@@ -201,7 +201,7 @@ storage:
     width: 576
     height: 374
   headline: Remote Storage
-  title: Works locally with your staging data.
+  title: Works locally as a team with <span class="text-primary">shared data</span>.
   description: NuxtHub grants the ability to access your remote storage from your local environment or from external Nuxt projects. This is made possible by our secured proxy system.
   features:
     - name: "Work as a team on the same database"

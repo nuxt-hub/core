@@ -8,7 +8,7 @@ export const useTemplate = () => {
       return
     }
 
-    const res = await $fetch<{ templates: Template[] }>('https:://admin.hub.nuxt.com/api/templates')
+    const res = await $fetch<{ templates: Template[] }>('https://admin.hub.nuxt.com/api/templates')
     if (res?.templates) {
       templates.value = res.templates
     }

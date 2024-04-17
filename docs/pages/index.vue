@@ -12,6 +12,7 @@ useSeoMeta({
   ogDescription: page.value.description,
   ogImage: joinURL(url, '/social-card.png')
 })
+const animationDone = ref(false)
 onMounted(() => {
   mediumZoom('[data-zoom-src]', {
     margin: 5,
@@ -69,8 +70,9 @@ onMounted(() => {
       </template>
       <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 items-start justify-center">
         <li v-for="step in page?.deploy.steps" :key="step.title" class="flex flex-col gap-y-8 justify-center group">
-          <NuxtImg :src="step.img.src" :width="step.img.width" :height="step.img.height" :alt="step.title"
-            class="rounded-xl bg-gray-800 group-hover:bg-green-400 transition duration-500" />
+
+          <NuxtImg :src="step.img.src" :width="step.img.width" :height="step.img.height"
+            class="rounded-xl bg-gradient-to-r from-green-300 to-teal-500 group-hover:opacity-100 xl:opacity-90 transition duration-300" />
           <div>
             <h2 class="font-semibold" v-html="step.title" />
             <p class="text-gray-500 dark:text-gray-400">
