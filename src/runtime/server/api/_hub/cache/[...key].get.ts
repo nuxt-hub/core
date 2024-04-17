@@ -29,11 +29,11 @@ export default eventHandler(async (event) => {
       return
     }
     const item = await storage.getItem(key)
-    delete item.value
+    const { value, ...meta } = item
 
     const entry: any = {
       key,
-      ...item,
+      ...meta,
       size: JSON.stringify(item).length
     }
     try {
