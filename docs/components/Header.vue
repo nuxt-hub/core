@@ -23,7 +23,7 @@ const links = [
 <template>
   <UHeader :ui="{}" :links="links">
     <template #logo>
-      <UColorModeImage light="/images/logo-light.svg" dark="/images/logo-dark.svg" class="h-6" />
+      <UColorModeImage light="/images/logo-light.svg" dark="/images/logo-dark.svg" class="h-6" alt="NuxtHub logo" />
     </template>
 
     <template #right>
