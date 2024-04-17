@@ -1,6 +1,5 @@
 import type { H3Event } from 'h3'
-import { handleCors } from 'h3'
-import { getHeader, createError } from 'h3'
+import { getHeader, createError, handleCors } from 'h3'
 import { $fetch } from 'ofetch'
 
 export async function requireNuxtHubAuthorization(event: H3Event) {
@@ -10,9 +9,8 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
     handleCors(event, {
       methods: '*',
       origin: [
-        'https://admin.hub.nuxt.com',
-        // 'http://localhost:3000'
-      ],
+        'https://admin.hub.nuxt.com'
+      ]
     })
     return
   }

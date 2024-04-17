@@ -3,6 +3,6 @@ import { requireNuxtHubAuthorization } from '../../utils/auth'
 
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
-  
+
   return sendNoContent(event)
 })

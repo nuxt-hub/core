@@ -1,8 +1,8 @@
-import { eventHandler, getRouterParam, createError } from 'h3'
+import { eventHandler, readValidatedBody } from 'h3'
+import { z } from 'zod'
 import { requireNuxtHubAuthorization } from '../../../utils/auth'
 import { requireNuxtHubFeature } from '../../../utils/features'
-import { z } from 'zod'
-// @ts-ignore
+// @ts-expect-error missing type
 import { useStorage } from '#imports'
 
 export default eventHandler(async (event) => {

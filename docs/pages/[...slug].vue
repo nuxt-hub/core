@@ -39,7 +39,7 @@ const links = computed(() => [toc?.bottom?.edit && {
   icon: 'i-heroicons-pencil-square',
   label: 'Edit this page',
   to: `${toc.bottom.edit}/${page?.value?._file}`,
-  target: '_blank',
+  target: '_blank'
 }, ...(toc?.bottom?.links || [])].filter(Boolean))
 </script>
 

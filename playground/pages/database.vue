@@ -6,8 +6,8 @@ const newTodoInput = ref(null)
 const toast = useToast()
 const { data: todos } = await useFetch('/api/todos')
 
-async function addTodo () {
-  if (!newTodo.value.trim()) { return }
+async function addTodo() {
+  if (!newTodo.value.trim()) return
 
   loading.value = true
 
@@ -32,7 +32,7 @@ async function addTodo () {
   loading.value = false
 }
 
-async function toggleTodo (todo) {
+async function toggleTodo(todo) {
   todo.completed = Number(!todo.completed)
   await useFetch(`/api/todos/${todo.id}`, {
     method: 'PATCH',
@@ -42,7 +42,7 @@ async function toggleTodo (todo) {
   })
 }
 
-async function deleteTodo (todo) {
+async function deleteTodo(todo) {
   await useFetch(`/api/todos/${todo.id}`, { method: 'DELETE' })
   todos.value = todos.value.filter(t => t.id !== todo.id)
   toast.add({ title: `Todo "${todo.title}" deleted.` })

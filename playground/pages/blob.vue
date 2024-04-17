@@ -6,7 +6,7 @@ const uploadRef = ref()
 const toast = useToast()
 const { data: files } = await useFetch('/api/blob')
 
-async function addFile () {
+async function addFile() {
   if (!newFilesValue.value.length) {
     toast.add({ title: 'Missing files.', color: 'red' })
     return
@@ -16,7 +16,7 @@ async function addFile () {
 
   try {
     const formData = new FormData()
-    newFilesValue.value.forEach((file) => formData.append('files', file))
+    newFilesValue.value.forEach(file => formData.append('files', file))
     const uploadedFiles = await $fetch('/api/blob', {
       method: 'PUT',
       body: formData
@@ -31,7 +31,7 @@ async function addFile () {
   loading.value = false
 }
 
-function onFileSelect (e: any) {
+function onFileSelect(e: any) {
   const target = e.target
 
   // clone FileList so the reference does not clear due to following target clear
@@ -43,9 +43,8 @@ function onFileSelect (e: any) {
   addFile()
 }
 
-async function deleteFile (pathname: string) {
+async function deleteFile(pathname: string) {
   try {
-    // @ts-ignore
     await $fetch(`/api/blob/${pathname}`, { method: 'DELETE' })
     files.value = files.value!.filter(t => t.pathname !== pathname)
     toast.add({ title: `File "${pathname}" deleted.` })

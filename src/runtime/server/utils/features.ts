@@ -1,5 +1,5 @@
-import { useRuntimeConfig } from '#imports'
 import { createError } from 'h3'
+import { useRuntimeConfig } from '#imports'
 
 const featureMessages = {
   analytics: [
@@ -19,7 +19,7 @@ const featureMessages = {
   kv: [
     'NuxtHub KV is not enabled, set `hub.kv = true` in your `nuxt.config.ts`',
     'Read more at `https://hub.nuxt.com/docs/storage/kv`'
-  ].join('\n'),
+  ].join('\n')
 }
 
 export function requireNuxtHubFeature(feature: keyof typeof featureMessages) {
