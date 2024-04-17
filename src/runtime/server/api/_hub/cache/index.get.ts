@@ -17,7 +17,8 @@ export default eventHandler(async (event) => {
 
   for (const key of cache) {
     if (!key.includes(':')) continue
-    const group = key.split(':')[0]
+    const [group] = key.split(':')
+
     stats[group] = (stats[group] || 0) + 1
   }
 
