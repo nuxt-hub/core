@@ -1,5 +1,5 @@
 import { eventHandler } from 'h3'
-import { useRuntimeConfig, useStorage } from '#imports'
+import { useRuntimeConfig } from '#imports'
 import { hubDatabase } from '../../utils/database'
 import { hubKV } from '../../utils/kv'
 import { hubBlob } from '../../utils/blob'
@@ -12,7 +12,7 @@ export default eventHandler(async (event) => {
     falseIfFail(() => hubDatabase().exec('PRAGMA table_list')),
     falseIfFail(() => hubKV().getKeys('__check__')),
     falseIfFail(() => hubBlob().list({ prefix: '__check__' })),
-    falseIfFail(() => useStorage('cache:nitro').getKeys('__check__'))
+    falseIfFail(() => requireNuxtHubFeature('cache')),
   ])
 
   return {
@@ -21,7 +21,7 @@ export default eventHandler(async (event) => {
       database: Boolean(dbCheck),
       kv: Array.isArray(kvCheck),
       blob: Array.isArray(blobCheck),
-      cache: Array.isArray(cacheCheck),
+      cache: Boolean(cacheCheck),
     }
   }
 })
