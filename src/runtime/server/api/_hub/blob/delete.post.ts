@@ -7,7 +7,7 @@ import { requireNuxtHubFeature } from '../../../utils/features'
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
   requireNuxtHubFeature('blob')
-  
+
   const { pathnames } = await readValidatedBody(event, z.object({
     pathnames: z.array(z.string().min(1)).min(1)
   }).parse)

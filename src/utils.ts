@@ -3,27 +3,35 @@ import type { Nuxt } from 'nuxt/schema'
 
 export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, cache: boolean, analytics: boolean }) {
   return [
-    hub.analytics ? [
-      'analytics_engine_datasets = [',
-      '  { binding = "ANALYTICS", dataset = "default" }',
-      ']',
-    ] : [],
-    hub.blob ? [
-      'r2_buckets = [',
-      '  { binding = "BLOB", bucket_name = "default" }',
-      ']'
-    ] : [],
-    hub.cache || hub.kv ? [
-      'kv_namespaces = [',
-      hub.kv    ? '  { binding = "KV", id = "kv_default" },' : '',
-      hub.cache ? '  { binding = "CACHE", id = "cache_default" },' : '',
-      ']',
-    ] : [],
-    hub.database ? [
-      'd1_databases = [',
-      '  { binding = "DB", database_name = "default", database_id = "default" }',
-      ']'
-    ] : [],
+    hub.analytics
+      ? [
+          'analytics_engine_datasets = [',
+          '  { binding = "ANALYTICS", dataset = "default" }',
+          ']'
+        ]
+      : [],
+    hub.blob
+      ? [
+          'r2_buckets = [',
+          '  { binding = "BLOB", bucket_name = "default" }',
+          ']'
+        ]
+      : [],
+    hub.cache || hub.kv
+      ? [
+          'kv_namespaces = [',
+          hub.kv ? '  { binding = "KV", id = "kv_default" },' : '',
+          hub.cache ? '  { binding = "CACHE", id = "cache_default" },' : '',
+          ']'
+        ]
+      : [],
+    hub.database
+      ? [
+          'd1_databases = [',
+          '  { binding = "DB", database_name = "default", database_id = "default" }',
+          ']'
+        ]
+      : []
   ].flat().join('\n')
 }
 
@@ -36,8 +44,8 @@ export function addDevtoolsCustomTabs(nuxt: Nuxt, hub: { kv: boolean, database: 
       icon: 'i-ph-database',
       view: {
         type: 'iframe',
-        src: `https://admin.hub.nuxt.com/embed/database?url=${url}`,
-      },
+        src: `https://admin.hub.nuxt.com/embed/database?url=${url}`
+      }
     })
 
     hub.kv && addCustomTab({
@@ -47,8 +55,8 @@ export function addDevtoolsCustomTabs(nuxt: Nuxt, hub: { kv: boolean, database: 
       icon: 'i-ph-coin',
       view: {
         type: 'iframe',
-        src: `https://admin.hub.nuxt.com/embed/kv?url=${url}`,
-      },
+        src: `https://admin.hub.nuxt.com/embed/kv?url=${url}`
+      }
     })
 
     hub.blob && addCustomTab({
@@ -58,8 +66,8 @@ export function addDevtoolsCustomTabs(nuxt: Nuxt, hub: { kv: boolean, database: 
       icon: 'i-ph-shapes',
       view: {
         type: 'iframe',
-        src: `https://admin.hub.nuxt.com/embed/blob?url=${url}`,
-      },
+        src: `https://admin.hub.nuxt.com/embed/blob?url=${url}`
+      }
     })
 
     hub.cache && addCustomTab({
@@ -69,8 +77,8 @@ export function addDevtoolsCustomTabs(nuxt: Nuxt, hub: { kv: boolean, database: 
       icon: 'i-ph-lightning',
       view: {
         type: 'iframe',
-        src: `https://admin.hub.nuxt.com/embed/cache?url=${url}`,
-      },
+        src: `https://admin.hub.nuxt.com/embed/cache?url=${url}`
+      }
     })
   })
 }

@@ -2,7 +2,7 @@ import ms from 'ms'
 import { eventHandler, getRouterParam } from 'h3'
 import { requireNuxtHubAuthorization } from '../../../utils/auth'
 import { requireNuxtHubFeature } from '../../../utils/features'
-// @ts-ignore
+// @ts-expect-error useStorage not yet typed
 import { useStorage } from '#imports'
 
 export default eventHandler(async (event) => {
@@ -31,13 +31,13 @@ export default eventHandler(async (event) => {
     const item = await storage.getItem(key)
     const { value, ...meta } = item
 
-    const entry: any = {
+    const entry = {
       key,
       ...meta,
       size: JSON.stringify(item).length
     }
     try {
-      entry.duration = ms(item.expires - item.mtime, { long: true })
+      entry.duration = ms(meta.expires - meta.mtime, { long: true })
     } catch (err) {
       entry.duration = 'unknown'
       console.log('Cannot have ms duration', key, err)

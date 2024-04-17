@@ -6,6 +6,6 @@ import { requireNuxtHubFeature } from '../../../utils/features'
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
   requireNuxtHubFeature('blob')
-  
+
   return hubBlob().list()
 })

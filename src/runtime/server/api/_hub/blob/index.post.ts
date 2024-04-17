@@ -6,7 +6,7 @@ import { requireNuxtHubFeature } from '../../../utils/features'
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
   requireNuxtHubFeature('blob')
-  
+
   const form = await readFormData(event)
   const files = form.getAll('files') as File[]
   if (!files) {

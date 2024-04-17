@@ -7,7 +7,7 @@ import { requireNuxtHubFeature } from '../../../utils/features'
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
   requireNuxtHubFeature('blob')
-  
+
   // TODO: handle caching in production
   const { pathname } = await getValidatedRouterParams(event, z.object({
     pathname: z.string().min(1)
