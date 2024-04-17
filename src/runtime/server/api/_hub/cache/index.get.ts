@@ -12,7 +12,7 @@ export default eventHandler(async (event) => {
 
   const stats: Record<string, number> = {
     handlers: 0,
-    functions: 0,
+    functions: 0
   }
 
   for (const key of cache) {
