@@ -12,13 +12,12 @@ export default eventHandler(async (event) => {
 
   const stats: Record<string, number> = {
     handlers: 0,
-    functions: 0,
+    functions: 0
   }
 
   for (const key of cache) {
     if (!key.includes(':')) continue
-    const group = key.split(':').slice(0, -1).join(':')
-
+    const group = key.split(':')[0]
     stats[group] = (stats[group] || 0) + 1
   }
 
