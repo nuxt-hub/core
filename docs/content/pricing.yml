@@ -30,8 +30,8 @@ pricing:
       description: 'For bootstrappers and indie hackers.'
       price:
         monthly: '$12'
-        yearly: '$100'
-      cycle:
+        yearly: '$120'
+      cycle
         monthly: '/user/month'
         yearly: '/user/yearly'
       highlight: true
