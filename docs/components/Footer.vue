@@ -23,10 +23,21 @@ const links = [
 
     <template #right>
       <UColorModeButton />
-      <UButton icon="i-simple-icons-x" color="gray" variant="ghost" to="https://x.com/nuxt_js" target="_blank" aria-label="Go to NuxtHub X account"></UButton>
       <UButton
-        icon="i-simple-icons-github" color="gray" variant="ghost" to="https://github.com/nuxt/nuxt"
-        target="_blank" aria-label="Go to NuxtHub github repo">></UButton>
+        icon="i-simple-icons-x"
+        color="gray"
+        variant="ghost"
+        to="https://x.com/nuxt_hub"
+        target="_blank"
+        aria-label="Go to NuxtHub X account"
+      />
+      <UButton
+        icon="i-simple-icons-github"
+        color="gray"
+        variant="ghost"
+        to="https://github.com/nuxt-hub/core"
+        target="_blank"
+        aria-label="Go to NuxtHub GitHub repository"
       />
     </template>
   </UFooter>

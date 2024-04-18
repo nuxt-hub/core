@@ -65,7 +65,7 @@ pricing:
   info: 'Prices does not include your <a href="https://www.cloudflare.com/plans/developer-platform/" target="_blank" class="underline underline-offset-4 dark:hover:text-white hover:text-gray-900">Cloudflare costs</a>.'
   contact:
     title: 'Are you an Open Source Organization?'
-    description: "If you want to use NuxtHub to manage your open source projects, we'll have a special offer for you!"
+    description: "If you want to use NuxtHub to manage open source projects, we have a special offer for you."
     button:
       label: 'Contact us'
       color: gray
