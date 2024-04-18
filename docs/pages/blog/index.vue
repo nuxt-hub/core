@@ -70,7 +70,7 @@ await fetchList()
                     :alt="author.name"
                     class="lg:hover:scale-110 lg:hover:ring-primary-500 dark:lg:hover:ring-primary-400 transition-transform"
                   >
-                    <NuxtLink v-if="author.link" :to="author.link" target="_blank" class="focus:outline-none" tabindex="-1">
+                    <NuxtLink v-if="author.link" :to="author.link" target="_blank" class="focus:outline-none" tabindex="-1" aria-label="Go to the author's twitter or github">
                       <span class="absolute inset-0" aria-hidden="true" />
                     </NuxtLink>
                   </UAvatar>
