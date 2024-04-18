@@ -25,7 +25,7 @@ onMounted(() => {
 
 <template>
   <div class="relative">
-    <img src="/images/pricing/background.svg" class="absolute w-full inset-0 transition-opacity duration-1000" :class="appear ? 'opacity-100' : 'opacity-0'"/>
+    <img src="/images/pricing/background.svg" class="absolute w-full inset-0 transition-opacity duration-1000" :class="appear ? 'opacity-100' : 'opacity-0'" alt="" />
     <UContainer>
       <UPageHero v-bind="page?.hero" align="center" :ui="{ wrapper: 'relative !pt-[144px] !pb-[92px]' }">
         <template #icon>
