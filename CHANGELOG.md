@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.5.10
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.9...v0.5.10)
+
+### 🚀 Enhancements
+
+- New api route to clear all entries of specific base ([#80](https://github.com/nuxt-hub/core/pull/80))
+
+### 📖 Documentation
+
+- Fix broken link in remote section ([#78](https://github.com/nuxt-hub/core/pull/78))
+
+### ❤️ Contributors
+
+- Zac Webb ([@zacwebb](http://github.com/zacwebb))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
 ## v0.5.9
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.8...v0.5.9)
