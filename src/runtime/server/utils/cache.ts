@@ -41,6 +41,12 @@ export function proxyHubCache(projectUrl: string, secretKey?: string) {
       })
       return
     },
+    async clear(base: string) {
+      await cacheAPI(`/clear/${base}`, {
+        method: 'DELETE'
+      })
+      return
+    },
     async batchDel(keys: string[]) {
       await cacheAPI('/batch-delete', {
         method: 'POST',

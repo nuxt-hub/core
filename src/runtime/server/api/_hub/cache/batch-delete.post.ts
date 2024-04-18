@@ -14,9 +14,9 @@ export default eventHandler(async (event) => {
   }).parse)
 
   const storage = useStorage('cache:nitro')
-  // delete with batch of 10 keys
+  // delete with batch of 25 keys
   do {
-    const keysToDelete = keys.splice(0, 10)
+    const keysToDelete = keys.splice(0, 25)
     await Promise.all(keysToDelete.map(storage.removeItem))
   } while (keys.length)
 
