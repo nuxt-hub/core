@@ -262,7 +262,7 @@ onMounted(() => {
               :dark="page?.testimonials.cloudflare.img.light" alt="" />
           </template>
         </UPageCard>
-        <!-- Hack for Safari -->
+
         <div v-for="(testimonial, index) in page?.testimonials.items" :key="index" class="break-inside-avoid">
           <ULandingTestimonial v-bind="testimonial" />
         </div>
