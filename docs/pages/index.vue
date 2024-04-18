@@ -12,7 +12,7 @@ useSeoMeta({
   ogDescription: page.value.description,
   ogImage: joinURL(url, '/social-card.png')
 })
-const animationDone = ref(false)
+
 onMounted(() => {
   mediumZoom('[data-zoom-src]', {
     margin: 5,

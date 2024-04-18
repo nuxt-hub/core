@@ -16,6 +16,7 @@ pricing:
     - title: 'Solo'
       description: 'For solo user'
       price: '$0'
+      cycle: ''
       features:
         - '1 user per project'
         - 'Lorem ipsum dolor sit amet,'
@@ -27,8 +28,12 @@ pricing:
         color: 'gray'
     - title: 'Pro'
       description: 'For bootstrappers and indie hackers.'
-      price: '$12'
-      cycle: '/user/month'
+      price:
+        monthly: '$12'
+        yearly: '$100'
+      cycle:
+        monthly: '/user/month'
+        yearly: '/user/yearly'
       highlight: true
       features:
         - '10 users per project'
@@ -46,6 +51,7 @@ pricing:
           background: 'bg-gradient-to-t from-primary/20 via-white to-white dark:from-primary/30 dark:via-gray-900 dark:to-gray-900 rounded-xl'
     - title: 'On-Premise'
       description: 'Deploy NuxtHub on your own infrastructure.'
+      cycle: ''
       price: '-'
       features:
         - '10 users per project'

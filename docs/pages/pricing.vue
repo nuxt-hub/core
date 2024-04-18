@@ -3,6 +3,9 @@ import { joinURL } from 'ufo'
 
 const { data: page } = await useAsyncData('pricing', () => queryContent('/pricing').findOne())
 
+const isYearly = ref(false)
+const appear = ref(false)
+
 const { url } = useSiteConfig()
 
 useSeoMeta({
@@ -13,7 +16,6 @@ useSeoMeta({
   ogImage: joinURL(url, '/social-card.png')
 })
 
-const appear = ref(false)
 onMounted(() => {
   setTimeout(() => {
     appear.value = true
@@ -41,8 +43,15 @@ onMounted(() => {
 
 
       <div class="pt-12 pb-24 lg:py-24">
+        <div class="w-full flex justify-center">
+          <UPricingToggle v-model="isYearly" class="max-w-xs mb-12" />
+        </div>
+
         <UPricingGrid :compact="false">
-          <UPricingCard v-for="pricing in page?.pricing.plans" :key="pricing.title" v-bind="pricing" />
+          <UPricingCard v-for="pricing in page?.pricing.plans" :key="pricing.title" v-bind="pricing"
+          :price="pricing.price.monthly ? isYearly ? pricing.price.yearly : pricing.price.monthly : pricing.price"
+          :cycle="pricing.cycle.monthly ? isYearly ? pricing.cycle.yearly : pricing.cycle.monthly : pricing.cycle"
+           />
         </UPricingGrid>
 
         <div v-html="page?.pricing.info" class="w-full text-center pt-8 italic text-gray-500 dark:text-gray-400 text-sm" />
@@ -50,9 +59,9 @@ onMounted(() => {
         <UCard class="mt-8" :ui="{ body: { padding: 'md:p-[40px]' }}">
           <div class="flex flex-col gap-y-4 text-center sm:text-left sm:flex-row sm:gap-y-0 justify-between items-center gap-x-8">
             <div class="flex flex-col gap-y-2">
-              <h3 class="text-2xl font-semibold text-gray-950 dark:text-white">
+              <h2 class="text-2xl font-semibold text-gray-950 dark:text-white">
                 {{ page?.pricing.contact.title }}
-              </h3>
+              </h2>
               <p class="text-gray-500 dark:text-gray-400" v-html="page?.pricing.contact.description" />
             </div>
             <UButton v-bind="page?.pricing.contact.button" />
@@ -75,9 +84,9 @@ onMounted(() => {
       </div>
 
       <div class="py-24">
-        <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight text-center w-full pb-12">
-          FAQ
-        </h1>
+        <h2 class="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight text-center w-full pb-12">
+          {{ page?.faq.title }}
+        </h2>
         <ULandingFAQ :items="page?.faq.items" class="pt-[64px]" />
       </div>
     </UContainer>
