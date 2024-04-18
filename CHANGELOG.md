@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.5.11
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.10...v0.5.11)
+
+### 🩹 Fixes
+
+- **cache:** Avoid destructuring if null ([7565284](https://github.com/nuxt-hub/core/commit/7565284))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.5.10
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.9...v0.5.10)
