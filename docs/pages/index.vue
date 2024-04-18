@@ -47,7 +47,7 @@ onMounted(() => {
     <ULandingSection :ui="{ wrapper: 'py-6 sm:py-12' }">
       <ul class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-16">
         <li v-for="feature in page?.features" :key="feature.name" class="flex flex-col gap-y-2">
-          <img :src="feature.img" width="32" height="32" alt="" />
+          <img :src="feature.img" width="32" height="32" :alt="feature.name" />
           <div class="flex flex-col gap-y-1">
             <h2 class="font-medium text-gray-900 dark:text-white">
               {{ feature.name }}
@@ -70,8 +70,7 @@ onMounted(() => {
       </template>
       <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 items-start justify-center">
         <li v-for="step in page?.deploy.steps" :key="step.title" class="flex flex-col gap-y-8 justify-center group">
-
-          <NuxtImg :src="step.img.src" :width="step.img.width" :height="step.img.height"
+          <NuxtImg :src="step.img.src" :width="step.img.width" :height="step.img.height" :alt="step.title"
             class="rounded-xl bg-gradient-to-r from-green-300 to-teal-500 group-hover:opacity-100 xl:opacity-90 transition duration-300" />
           <div>
             <h2 class="font-semibold" v-html="step.title" />
@@ -98,7 +97,7 @@ onMounted(() => {
 
     <div class="bg-gray-50 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative">
       <UColorModeImage light="/images/landing/pricing-line-light.svg" dark="/images/landing/pricing-line-dark.svg"
-        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0" alt="" />
+        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0" alt="Database pricing section background" />
       <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
         <div class="flex flex-col gap-y-2">
           <h2 class="font-semibold">
@@ -138,7 +137,7 @@ onMounted(() => {
 
     <div class="bg-gray-50 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative">
       <UColorModeImage light="/images/landing/pricing-line-light.svg" dark="/images/landing/pricing-line-dark.svg"
-        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0" alt="" />
+        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0" alt="Blob pricing section background" />
       <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
         <div class="flex flex-col gap-y-2">
           <h2 class="font-semibold">
@@ -179,7 +178,7 @@ onMounted(() => {
 
     <div class="bg-gray-50 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative">
       <UColorModeImage light="/images/landing/pricing-line-light.svg" dark="/images/landing/pricing-line-dark.svg"
-        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0" alt="" />
+        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0" alt="KV pricing section background" />
       <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
         <div class="flex flex-col gap-y-2">
           <h2 class="font-semibold">
@@ -219,7 +218,7 @@ onMounted(() => {
 
     <!-- tool section -->
     <div class="relative">
-      <img src="/images/landing/bg-tailored.webp" width="1441" height="181" class="absolute top-0 w-full right-0" alt="" />
+      <img src="/images/landing/bg-tailored.webp" width="1441" height="181" class="absolute top-0 w-full right-0" alt="Tailored section background" />
 
       <ULandingSection :headline="page?.tool.headline" :links="page?.tool.buttons" class="relative">
         <template #title>
@@ -234,7 +233,7 @@ onMounted(() => {
             :ui="{ title: '', description: 'pl-8' }">
             <template #title>
               <span class="flex flex-row gap-x-3 items-center">
-                <img :src="tool.img" width="24" height="24" alt="" />
+                <img :src="tool.img" width="24" height="24" :alt="tool.title" />
                 <span class="text-gray-900 dark:text-white text-base font-bold truncate">
                   {{ tool.title }}
                 </span>
@@ -259,7 +258,7 @@ onMounted(() => {
           :ui="{ title: 'whitespace-normal text-white dark:text-gray-950', description: 'text-gray-400 dark:text-gray-500', background: 'bg-gray-900 dark:bg-white' }">
           <template #icon>
             <UColorModeImage :light="page?.testimonials.cloudflare.img.dark"
-              :dark="page?.testimonials.cloudflare.img.light" alt="" />
+              :dark="page?.testimonials.cloudflare.img.light" alt="Cloudflare logo" />
           </template>
         </UPageCard>
 
@@ -274,7 +273,7 @@ onMounted(() => {
       <div
         class="flex justify-center absolute left-0 right-0 -top-8 sm:-top-10 md:-top-12 lg:-top-20 xl:-top-32 2xl:-top-42">
         <UColorModeImage :light="page?.journey.images.light" :dark="page?.journey.images.dark"
-          :width="page?.journey.images.width" :height="page?.journey.images.height" class="w-full" alt="" />
+          :width="page?.journey.images.width" :height="page?.journey.images.height" class="w-full" alt="Journey section background" />
       </div>
 
       <ULandingSection class="relative mt-32" :ui="{ title: 'z-10' }">
@@ -286,7 +285,7 @@ onMounted(() => {
           class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-16 lg:px-16 text-center z-10">
           <NuxtLink v-for="feature in page?.journey.features" :key="feature.name" :to="feature.to"
             class="flex flex-col gap-y-2 items-center hover:ring-primary hover:ring-2 rounded-lg p-4">
-            <img :src="feature.img" width="32" height="32" alt="" />
+            <img :src="feature.img" width="32" height="32" :alt="feature.name" />
             <div class="flex flex-col gap-y-1">
               <h2 class="font-medium text-gray-900 dark:text-white">
                 {{ feature.name }}

@@ -94,7 +94,7 @@ await fetchList()
           <NuxtLink :to="changelog._path">
             <div class="space-y-4 -mt-1">
               <div class="inline-block overflow-hidden">
-                <img :alt="changelog.title" loading="lazy" width="1200" height="432" :src="changelog.img"
+                <img :alt="changelog.title || ''" loading="lazy" width="1200" height="432" :src="changelog.img"
                   class="aspect-[16/9] object-cover rounded-md group-hover:scale-[1.1] transition duration-300 h-full">
               </div>
 

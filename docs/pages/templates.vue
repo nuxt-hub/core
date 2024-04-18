@@ -26,10 +26,10 @@ await fetchList()
         <div class="w-full aspect-[16/9] h-full">
           <div v-if="template.demoUrl">
             <img :src="template.imageUrl"
-              class="object-cover object-top w-full h-full xl:hidden" :alt="template.demoUrl" width="600" height="300"
+              class="object-cover object-top w-full h-full xl:hidden" :alt="template.title" width="600" height="300"
               format="webp" :modifiers="{ pos: 'top' }" />
             <img :src="template.imageUrl"
-              class="object-cover object-top w-full h-full hidden xl:block" :alt="template.demoUrl" width="280"
+              class="object-cover object-top w-full h-full hidden xl:block" :alt="template.title" width="280"
               height="140" format="webp" :modifiers="{ pos: 'top' }" />
           </div>
 

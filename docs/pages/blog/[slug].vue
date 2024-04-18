@@ -55,7 +55,7 @@ const links = [
 </script>
 
 <template>
-  <img class="absolute left-0 right-0 w-full h-[292px] object-cover blur-[4px] opacity-20" :src="article.img" />
+  <img class="absolute left-0 right-0 w-full h-[292px] object-cover blur-[4px] opacity-20" :src="article.img" :alt="article.title" />
   <UContainer>
       <UPage>
       <UPageHeader :title="article.title" :description="article.description" :ui="{ headline: 'flex flex-col gap-y-8 items-start', description: 'text-gray-700 dark:text-gray-300' }">
