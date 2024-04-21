@@ -117,6 +117,11 @@ export function createMultipartUploader<
   }
 }
 
+export interface MultipartUploadChunk {
+  partNumber: number
+  chunkBody: Blob
+}
+
 export interface MultipartUploaderOptions<
   TCreateResponse,
   TUploadResponse,
@@ -130,10 +135,7 @@ export interface MultipartUploaderOptions<
    * Provide a function to upload a chunk of the file.
    */
   upload: (
-    chunk: {
-      partNumber: number,
-      chunkBody: Blob,
-    },
+    chunk: MultipartUploadChunk,
     data: TCreateResponse,
     file: File,
   ) => Promise<TUploadResponse> | TUploadResponse
@@ -154,10 +156,7 @@ export interface MultipartUploaderOptions<
    */
   verify?: (
     response: TUploadResponse,
-    chunk: {
-      partNumber: number,
-      chunkBody: Blob,
-    },
+    chunk: MultipartUploadChunk,
   ) => Promise<boolean> | boolean
 
   /**
