@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type { SerializeObject } from 'nitropack'
-
 const loading = ref(false)
+const loadingProgress = ref<number | null>(null)
 const newFilesValue = ref<File[]>([])
 const uploadRef = ref()
 
@@ -19,7 +18,9 @@ async function addFile () {
   try {
     const uploadedFiles = await uploadFiles(newFilesValue.value)
     files.value!.push(...uploadedFiles)
-    toast.add({ title: `File${uploadedFiles.length > 1 ? 's' : ''} uploaded.` })
+    if (uploadedFiles.length > 0) {
+      toast.add({ title: `File${uploadedFiles.length > 1 ? 's' : ''} uploaded.` })
+    }
     newFilesValue.value = []
   } catch (err: any) {
     const title = err.data?.data?.issues?.map((issue: any) => issue.message).join('\n') || err.message
@@ -30,7 +31,6 @@ async function addFile () {
 
 async function uploadFiles(files: File[]) {
   const bigFileLimit = 10 * 1024 * 1024 // 10MB
-  const chunkSize = 10 * 1024 * 1024 // 10MB
 
   const bigFiles = files.filter((file) => file.size > bigFileLimit)
   const smallFiles = files.filter((file) => file.size <= bigFileLimit)
@@ -46,54 +46,38 @@ async function uploadFiles(files: File[]) {
 
   // upload big files
   for (const file of bigFiles) {
-    const chunks = Math.ceil(file.size / chunkSize)
-    const uploaded: BlobUploadedPart[] = []
+    const { completed, progress, cancel } = useMultipartUpload(file)
 
-    const { pathname, uploadId } = await $fetch<{pathname: string, uploadId: string}>(
-      `/api/blob/multipart/${file.name}`,
-      {
-        method: 'POST',
-      }
-    )
-
-    for (let i = 0; i < chunks; i += 1) {
-      const start = i * chunkSize
-      const end = Math.min(start + chunkSize, file.size)
-      const partNumber = i + 1
-      const chunk = file.slice(start, end)
-
-      const part = await $fetch<BlobUploadedPart>(
-        `/api/blob/multipart/${pathname}`,
-        {
-          method: 'PUT',
-          query: {
-            uploadId,
-            partNumber,
-          },
-          body: chunk,
+    const uploadingToast = toast.add({
+      title: `Uploading Large File...`,
+      description: file.name,
+      color: 'sky',
+      timeout: 0,
+      closeButton: {
+        color: 'red',
+        variant: 'solid',
+      },
+      callback: () => {
+        if (progress.value !== 1) {
+          cancel()
         }
-      )
-
-      // optional: verify the etag and reupload if not match
-
-      uploaded.push(part)
-    }
-
-    const complete = await $fetch<SerializeObject<BlobObject>>(
-      '/api/blob/multipart/complete',
-      {
-        method: 'POST',
-        query: {
-          pathname,
-          uploadId,
-        },
-        body: {
-          parts: uploaded,
-        },
       }
-    )
+    })
+    watch(progress, v => loadingProgress.value = v)
 
-    uploadedFiles.push(complete)
+    const complete = await completed
+
+    loadingProgress.value = null
+    toast.remove(uploadingToast.id)
+
+    if (complete) {
+      uploadedFiles.push(complete)
+    } else {
+      toast.add({
+        title: `Failed to upload ${file.name}.`,
+        color: 'red'
+      })
+    }
   }
 
   return uploadedFiles
@@ -155,7 +139,7 @@ async function deleteFile (pathname: string) {
       </UButtonGroup>
     </div>
 
-    <UProgress v-if="loading" class="mt-2" />
+    <UProgress v-if="loading" :value="loadingProgress" :max="1" class="mt-2" />
 
     <div v-if="files?.length" class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4">
       <UCard
