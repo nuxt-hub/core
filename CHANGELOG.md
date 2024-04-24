@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v0.5.12
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.11...v0.5.12)
+
+### 🚀 Enhancements
+
+- Send pagesUrl in build done hook api ([#85](https://github.com/nuxt-hub/core/pull/85))
+
+### 📖 Documentation
+
+- Add link to Wrangler documentation ([#83](https://github.com/nuxt-hub/core/pull/83))
+
+### 🏡 Chore
+
+- Update dependencies ([2f40568](https://github.com/nuxt-hub/core/commit/2f40568))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Arash ([@arashsheyda](http://github.com/arashsheyda))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
 ## v0.5.11
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.10...v0.5.11)
