@@ -211,7 +211,9 @@ export default defineNuxtModule<ModuleOptions>({
           headers: {
             authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
           },
-          body: {}
+          body: {
+            pagesUrl: process.env.CF_PAGES_URL
+          }
         }).catch((e) => {
           if (e.response?._data?.message) {
             log.error(e.response._data.message)
