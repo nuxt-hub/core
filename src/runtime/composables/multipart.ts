@@ -182,7 +182,7 @@ export type MultipartUploader<
   TCompleteResponse,
 > = (
   /**
-   * The file to be uploaded.
+   * The file to upload.
    */
   file: File,
   /**
