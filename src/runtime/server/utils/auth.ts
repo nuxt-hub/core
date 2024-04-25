@@ -2,7 +2,7 @@ import type { H3Event } from 'h3'
 import { getHeader, createError, handleCors } from 'h3'
 import { $fetch } from 'ofetch'
 
-let localCache: Record<string, boolean> = {}
+const localCache: Record<string, boolean> = {}
 
 export async function requireNuxtHubAuthorization(event: H3Event) {
   // Skip if in development
