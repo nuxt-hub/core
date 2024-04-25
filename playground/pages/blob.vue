@@ -53,7 +53,7 @@ async function uploadFiles(files: File[]) {
     const { completed, progress, abort } = uploadLarge(file)
 
     const uploadingToast = toast.add({
-      title: `Uploading Large File...`,
+      title: `Uploading ${file.name}...`,
       description: file.name,
       color: 'sky',
       timeout: 0,

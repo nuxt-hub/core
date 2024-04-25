@@ -454,8 +454,8 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
 }
 
 function createMultipartUploadHandler(
-  hub: Pick<HubBlob, 'createMultipartUpload' | 'resumeMultipartUpload'
->): HubBlob['handleMultipartUpload'] {
+  hub: Pick<HubBlob, 'createMultipartUpload' | 'resumeMultipartUpload'>
+): HubBlob['handleMultipartUpload'] {
   const { createMultipartUpload, resumeMultipartUpload } = hub
 
   const createHandler = async (event: H3Event) => {
