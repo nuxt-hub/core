@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const loading = ref(false)
-const loadingProgress = ref<number | null>(null)
+const loadingProgress = ref<number | undefined>(undefined)
 const newFilesValue = ref<File[]>([])
 const uploadRef = ref()
 
@@ -45,8 +45,12 @@ async function uploadFiles(files: File[]) {
   })
 
   // upload big files
+  const uploadLarge = useMultipartUpload('/api/blob/multipart', {
+    concurrent: 2,
+  })
+
   for (const file of bigFiles) {
-    const { completed, progress, cancel } = useMultipartUpload(file)
+    const { completed, progress, abort } = uploadLarge(file)
 
     const uploadingToast = toast.add({
       title: `Uploading Large File...`,
@@ -58,16 +62,17 @@ async function uploadFiles(files: File[]) {
         variant: 'solid',
       },
       callback: () => {
-        if (progress.value !== 1) {
-          cancel()
+        if (progress.value !== 100) {
+          abort()
         }
       }
     })
-    watch(progress, v => loadingProgress.value = v)
+    const stopWatch = watch(progress, v => loadingProgress.value = v / 100)
 
     const complete = await completed
 
-    loadingProgress.value = null
+    stopWatch()
+    loadingProgress.value = undefined
     toast.remove(uploadingToast.id)
 
     if (complete) {

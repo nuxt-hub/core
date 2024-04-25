@@ -1,6 +1,7 @@
 import type { extensions } from '@uploadthing/mime-types'
 import slugify from '@sindresorhus/slugify'
 import type { R2Bucket, ReadableStream, R2MultipartUpload } from '@cloudflare/workers-types/experimental'
+import { z } from 'zod'
 import { ofetch } from 'ofetch'
 import mime from 'mime'
 import type { H3Event } from 'h3'
@@ -11,6 +12,7 @@ import { parse } from 'pathe'
 import { joinURL } from 'ufo'
 import { useRuntimeConfig } from '#imports'
 import { requireNuxtHubFeature } from './features'
+import { streamToArrayBuffer } from '../internal/utils/stream'
 
 export interface BlobObject {
   /**
@@ -113,6 +115,23 @@ export interface BlobMultipartOptions {
   [key: string]: any
 }
 
+export type HandleMPUResponse =
+  | {
+    action: 'create'
+    data: Pick<BlobMultipartUpload, 'pathname' | 'uploadId'>
+  }
+  | {
+    action: 'upload',
+    data: BlobUploadedPart
+  }
+  | {
+    action: 'complete',
+    data: BlobObject
+  }
+  | {
+    action: 'abort'
+  }
+
 const _r2_buckets: Record<string, R2Bucket> = {}
 
 
@@ -181,6 +200,11 @@ interface HubBlob {
    * Get the specified multipart upload.
    */
   resumeMultipartUpload(pathname: string, uploadId: string): BlobMultipartUpload
+  /**
+   * Handle the multipart upload request.
+   * Make sure your route includes `[action]` and `[...pathname]` params.
+   */
+  handleMultipartUpload(event: H3Event): Promise<HandleMPUResponse>
 }
 
 /**
@@ -306,7 +330,8 @@ export function hubBlob(): HubBlob {
   }
   return {
     ...blob,
-    delete: blob.del
+    delete: blob.del,
+    handleMultipartUpload: createMultipartUploadHandler(blob)
   }
 }
 
@@ -323,7 +348,7 @@ export function hubBlob(): HubBlob {
  *
  * @see https://hub.nuxt.com/docs/storage/blob
  */
-export function proxyHubBlob(projectUrl: string, secretKey?: string) {
+export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
   requireNuxtHubFeature('blob')
 
   const blobAPI = ofetch.create({
@@ -423,7 +448,151 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
 
   return {
     ...blob,
-    delete: blob.del
+    delete: blob.del,
+    handleMultipartUpload: createMultipartUploadHandler(blob)
+  }
+}
+
+function createMultipartUploadHandler(
+  hub: Pick<HubBlob, 'createMultipartUpload' | 'resumeMultipartUpload'
+>): HubBlob['handleMultipartUpload'] {
+  const { createMultipartUpload, resumeMultipartUpload } = hub
+
+  const createHandler = async (event: H3Event) => {
+    const { pathname } = await getValidatedRouterParams(event, z.object({
+      pathname: z.string().min(1),
+    }).parse)
+
+    const options = await readValidatedBody(event, z.record(z.string(), z.any()).optional().parse)
+
+    try {
+      const object = await createMultipartUpload(pathname, options)
+      return {
+        uploadId: object.uploadId,
+        pathname: object.pathname,
+      }
+    } catch (e: any) {
+      throw createError({
+        statusCode: 400,
+        message: e.message
+      })
+    }
+  }
+
+  const uploadHandler = async (event: H3Event) => {
+    const { pathname } = await getValidatedRouterParams(event, z.object({
+      pathname: z.string().min(1),
+    }).parse)
+
+    const { uploadId, partNumber } = await getValidatedQuery(event, z.object({
+      uploadId: z.string(),
+      partNumber: z.coerce.number(),
+    }).parse)
+
+    const contentLength = Number(getHeader(event, 'content-length') || '0')
+
+    const stream = getRequestWebStream(event)!
+    const body = await streamToArrayBuffer(stream, contentLength)
+
+    const mpu = resumeMultipartUpload(pathname, uploadId)
+
+    try {
+      return await mpu.uploadPart(partNumber, body)
+    } catch (e: any) {
+      throw createError({ status: 400, message: e.message })
+    }
+  }
+
+  const completeHandler = async (event: H3Event) => {
+    const { pathname } = await getValidatedRouterParams(event, z.object({
+      pathname: z.string().min(1),
+    }).parse)
+
+    const { uploadId } = await getValidatedQuery(event, z.object({
+      uploadId: z.string().min(1),
+    }).parse)
+
+    const { parts } = await readValidatedBody(event,z.object({
+      parts: z.array(z.object({
+        partNumber: z.number(),
+        etag: z.string(),
+      }))
+    }).parse)
+
+    const mpu = resumeMultipartUpload(pathname, uploadId)
+    try {
+      const object = await mpu.complete(parts)
+      return object
+    } catch (e: any) {
+      throw createError({ status: 400, message: e.message })
+    }
+  }
+
+  const abortHandler = async (event: H3Event) => {
+    const { pathname } = await getValidatedRouterParams(event, z.object({
+      pathname: z.string().min(1),
+    }).parse)
+
+    const { uploadId } = await getValidatedQuery(event, z.object({
+      uploadId: z.string().min(1),
+    }).parse)
+
+    const mpu = resumeMultipartUpload(pathname, uploadId)
+
+    try {
+      await mpu.abort()
+    }
+    catch (e: any) {
+      throw createError({ status: 400, message: e.message })
+    }
+  }
+
+  const handler = async (event: H3Event) => {
+    const method = event.method
+    const { action } = await getValidatedRouterParams(event, z.object({
+      action: z.enum(['create', 'upload', 'complete', 'abort']),
+    }).parse)
+
+    if (action === 'create' && method === 'POST') {
+      return {
+        action,
+        data: await createHandler(event),
+      }
+    }
+
+    if (action === 'upload' && method === 'PUT') {
+      return {
+        action,
+        data: await uploadHandler(event),
+      }
+    }
+
+    if (action === 'complete' && method === 'POST') {
+      return {
+        action,
+        data: await completeHandler(event),
+      }
+    }
+
+    if (action === 'abort' && method === 'DELETE') {
+      return {
+        action,
+        data: await abortHandler(event),
+      }
+    }
+
+    throw createError({ status: 405 })
+  }
+
+  return async (event: H3Event) => {
+    const result = await handler(event)
+
+    if (result.data) {
+      event.respondWith(Response.json(result.data))
+    } else {
+      sendNoContent(event)
+    }
+    return result
   }
 }
 

@@ -2,45 +2,79 @@ import defu from 'defu'
 import { randomUUID } from 'uncrypto'
 import { readonly, type Ref } from 'vue'
 import { useState } from '#imports'
+import type { FetchOptions } from 'ofetch'
+import type { SerializeObject } from 'nitropack'
 
 /**
  * Create a multipart uploader.
  */
-export function createMultipartUploader<
-  TCreateResponse,
-  TUploadResponse,
-  TCompleteResponse,
-> (
-  options: MultipartUploaderOptions<
-    TCreateResponse,
-    TUploadResponse,
-    TCompleteResponse
-  >
-): MultipartUploader<TCreateResponse, TUploadResponse, TCompleteResponse> {
-  const opts = defu(options, {
+export function useMultipartUpload(
+  baseURL: string,
+  options?: UseMultipartUploadOptions
+): MultipartUploader {
+  const {
+    partSize,
+    concurrent,
+    maxRetry,
+    fetchOptions,
+  }= defu(options, {
     partSize: 10 * 1024 * 1024, // 10MB
-    concurrent: 1, // 1 concurrent uploads
-    maxRetry: 3, // max retry attempts for the whole upload
+    concurrent: 1, // no concurrent upload by default
+    maxRetry: 3,
+  })
+  const ofetch = $fetch.create({ baseURL, ...fetchOptions })
+  const queryOptions = options?.fetchOptions?.query || {}
+
+  const create = (file: File) => ofetch<{
+    pathname: string,
+    uploadId: string
+  }>(`/create/${file.name}`, {
+    method: 'POST'
   })
 
-  // useMultipartUpload
-  return (file, optionsOverride = {}) => {
-    const {
-      create,
-      upload,
-      complete,
-      abort,
-      partSize,
-      concurrent,
-      maxRetry,
-      verify,
-    } = defu(optionsOverride, opts)
+  const upload = (
+    { partNumber, chunkBody }: MultipartUploadChunk,
+    { pathname, uploadId }: Awaited<ReturnType<typeof create>>,
+  ) => ofetch<BlobUploadedPart>(`/upload/${pathname}`, {
+    method: 'PUT',
+    query: {
+      ...queryOptions,
+      uploadId,
+      partNumber
+    },
+    body: chunkBody,
+  })
 
+  const complete = (
+    parts: Awaited<ReturnType<typeof upload>>[],
+    { pathname, uploadId }: Awaited<ReturnType<typeof create>>,
+  ) => ofetch<SerializeObject<BlobObject>>(`/complete/${pathname}`,
+    {
+      method: 'POST',
+      query: {
+        ...queryOptions,
+        uploadId
+      },
+      body: { parts },
+    },
+  )
+
+  const abort = (
+    { pathname, uploadId }: Awaited<ReturnType<typeof create>>,
+  ) => ofetch<void>(`/abort/${pathname}`, {
+    method: 'DELETE',
+    query: {
+      ...queryOptions,
+      uploadId
+    },
+  })
+
+  return (file) => {
     const data = create(file)
     const chunks = Math.ceil(file.size / partSize)
 
     const queue = Array.from({ length: chunks }, (_, i) => i + 1)
-    const parts: TUploadResponse[] = []
+    const parts: Awaited<ReturnType<typeof upload>>[] = []
     const progress = useState(randomUUID(), () => 0)
     const errors: Error[] = []
     let canceled = false
@@ -52,7 +86,7 @@ export function createMultipartUploader<
       canceled = true
       queue.splice(0, queue.length)
       if (abort) {
-        await abort(await data, file)
+        await abort(await data)
       }
     }
 
@@ -66,13 +100,9 @@ export function createMultipartUploader<
     const process = async (partNumber: number) => {
       const prepared = prepare(partNumber)
       try {
-        const part = await upload(prepared, await data, file)
+        const part = await upload(prepared, await data)
 
-        if (verify && !await verify(part, prepared)) {
-          throw new Error('Verification failed')
-        }
-
-        progress.value = parts.length / chunks
+        progress.value = parts.length / chunks * 100
         parts.push(part)
       } catch (e) {
         errors.push(e as Error)
@@ -106,59 +136,23 @@ export function createMultipartUploader<
         return
       }
 
-      return complete(parts, await data, file)
+      return complete(parts, await data)
     }
 
     return {
       completed: start(),
       progress: readonly(progress),
-      cancel,
+      abort: cancel,
     }
   }
 }
 
-export interface MultipartUploadChunk {
+interface MultipartUploadChunk {
   partNumber: number
   chunkBody: Blob
 }
 
-export interface MultipartUploaderOptions<
-  TCreateResponse,
-  TUploadResponse,
-  TCompleteResponse,
-> {
-  /**
-   * Provide a function to create the initial data for the upload.
-   */
-  create: (file: File) => Promise<TCreateResponse> | TCreateResponse
-  /**
-   * Provide a function to upload a chunk of the file.
-   */
-  upload: (
-    chunk: MultipartUploadChunk,
-    data: TCreateResponse,
-    file: File,
-  ) => Promise<TUploadResponse> | TUploadResponse
-  /**
-   * Provide a function to complete the upload.
-   */
-  complete: (
-    parts: TUploadResponse[],
-    data: TCreateResponse,
-    file: File,
-  ) => Promise<TCompleteResponse> | TCompleteResponse
-  /**
-   * Provide a function to abort the upload.
-   */
-  abort?: (data: TCreateResponse, file: File) => Promise<void> | void
-  /**
-   * Provide a function to verify the upload response.
-   */
-  verify?: (
-    response: TUploadResponse,
-    chunk: MultipartUploadChunk,
-  ) => Promise<boolean> | boolean
-
+export interface UseMultipartUploadOptions {
   /**
    * The size of each part of the file to be uploaded.
    * @default 10 * 1024 * 1024
@@ -174,39 +168,24 @@ export interface MultipartUploaderOptions<
    * @default 3
    */
   maxRetry?: number
+  /**
+   * Override the ofetch options.
+   * The query and headers will be merged with the options provided by the uploader.
+   */
+  fetchOptions?: Omit<FetchOptions, 'method' | 'baseURL' | 'body' | 'parseResponse' | 'responseType'>,
 }
 
-export type MultipartUploader<
-  TCreateResponse,
-  TUploadResponse,
-  TCompleteResponse,
-> = (
-  /**
-   * The file to upload.
-   */
-  file: File,
-  /**
-   * Options to override the default options.
-   */
-  optionsOverride?: Partial<Omit<
-    MultipartUploaderOptions<
-      TCreateResponse,
-      TUploadResponse,
-      TCompleteResponse
-    >,
-    'create' | 'upload' | 'complete' | 'abort'
-  >>
-) => {
+export type MultipartUploader = (file: File) => {
   /**
    * The promise that resolves to the complete response or undefined if the upload is canceled or failed.
    */
-  completed: Promise<TCompleteResponse | undefined>
+  completed: Promise<SerializeObject<BlobObject> | undefined>
   /**
-   * The progress of the upload as a number between 0 and 1.
+   * The progress of the upload as a number between 0 and 100.
    */
   progress: Readonly<Ref<number>>
   /**
-   * Cancel the upload.
+   * Abort the upload.
    */
-  cancel: () => Promise<void>
+  abort: () => Promise<void>
 }
