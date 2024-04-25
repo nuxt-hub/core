@@ -2,6 +2,8 @@ import type { H3Event } from 'h3'
 import { getHeader, createError, handleCors } from 'h3'
 import { $fetch } from 'ofetch'
 
+let localCache: Record<string, boolean> = {}
+
 export async function requireNuxtHubAuthorization(event: H3Event) {
   // Skip if in development
   if (import.meta.dev) {
@@ -37,6 +39,9 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
 
   // Hosted on NuxtHub
   if (projectKey) {
+    if (localCache[secretKeyOrUserToken]) {
+      return
+    }
     // Here the secretKey is a user token
     await $fetch(`/api/projects/${projectKey}`, {
       baseURL: process.env.NUXT_HUB_URL || 'https://admin.hub.nuxt.com',
@@ -45,6 +50,7 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
         authorization: `Bearer ${secretKeyOrUserToken}`
       }
     })
+    localCache[secretKeyOrUserToken] = true
     return
   }
 
