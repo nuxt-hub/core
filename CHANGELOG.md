@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.5.13
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.12...v0.5.13)
+
+### 🚀 Enhancements
+
+- Add local cache for auth with NuxtHub admin ([27174a8](https://github.com/nuxt-hub/core/commit/27174a8))
+
+### 🏡 Chore
+
+- Lint fix ([da07786](https://github.com/nuxt-hub/core/commit/da07786))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.5.12
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.11...v0.5.12)
