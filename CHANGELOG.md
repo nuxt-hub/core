@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.5.14
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.13...v0.5.14)
+
+### 🩹 Fixes
+
+- Don't add random suffix by default ([#89](https://github.com/nuxt-hub/core/pull/89))
+
+### 📖 Documentation
+
+- Add server features ([#79](https://github.com/nuxt-hub/core/pull/79))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Farnabaz <farnabaz@gmail.com>
+
 ## v0.5.13
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.12...v0.5.13)
