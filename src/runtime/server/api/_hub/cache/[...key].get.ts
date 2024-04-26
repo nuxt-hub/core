@@ -29,6 +29,7 @@ export default eventHandler(async (event) => {
       return
     }
     const item = await storage.getItem(key)
+    if (!item) return
     const { value, ...meta } = item
 
     const entry = {
@@ -40,7 +41,6 @@ export default eventHandler(async (event) => {
       entry.duration = ms(meta.expires - meta.mtime, { long: true })
     } catch (err) {
       entry.duration = 'unknown'
-      console.log('Cannot have ms duration', key, err)
     }
     stats.cache.push(entry)
   }))

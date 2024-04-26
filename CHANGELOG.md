@@ -1,6 +1,73 @@
 # Changelog
 
 
+## v0.5.13
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.12...v0.5.13)
+
+### 🚀 Enhancements
+
+- Add local cache for auth with NuxtHub admin ([27174a8](https://github.com/nuxt-hub/core/commit/27174a8))
+
+### 🏡 Chore
+
+- Lint fix ([da07786](https://github.com/nuxt-hub/core/commit/da07786))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
+## v0.5.12
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.11...v0.5.12)
+
+### 🚀 Enhancements
+
+- Send pagesUrl in build done hook api ([#85](https://github.com/nuxt-hub/core/pull/85))
+
+### 📖 Documentation
+
+- Add link to Wrangler documentation ([#83](https://github.com/nuxt-hub/core/pull/83))
+
+### 🏡 Chore
+
+- Update dependencies ([2f40568](https://github.com/nuxt-hub/core/commit/2f40568))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Arash ([@arashsheyda](http://github.com/arashsheyda))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
+## v0.5.11
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.10...v0.5.11)
+
+### 🩹 Fixes
+
+- **cache:** Avoid destructuring if null ([7565284](https://github.com/nuxt-hub/core/commit/7565284))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
+## v0.5.10
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.9...v0.5.10)
+
+### 🚀 Enhancements
+
+- New api route to clear all entries of specific base ([#80](https://github.com/nuxt-hub/core/pull/80))
+
+### 📖 Documentation
+
+- Fix broken link in remote section ([#78](https://github.com/nuxt-hub/core/pull/78))
+
+### ❤️ Contributors
+
+- Zac Webb ([@zacwebb](http://github.com/zacwebb))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
 ## v0.5.9
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.8...v0.5.9)
