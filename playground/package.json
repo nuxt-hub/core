@@ -10,11 +10,10 @@
   "dependencies": {
     "@iconify-json/simple-icons": "^1.1.99",
     "@kgierke/nuxt-basic-auth": "^1.5.0",
-    "@nuxt/ui": "^2.15.1",
+    "@nuxt/ui": "^2.15.2",
     "@nuxthub/core": "latest",
-    "drizzle-orm": "^0.30.7",
-    "nuxt": "^3.11.2",
-    "nuxt-auth-utils": "^0.0.22"
+    "drizzle-orm": "^0.30.8",
+    "nuxt": "^3.11.2"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest"

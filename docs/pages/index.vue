@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import mediumZoom from 'medium-zoom'
 import { joinURL } from 'ufo'
+
 const { data: page } = await useAsyncData('index', () => queryContent('/').findOne())
 
 const { url } = useSiteConfig()
@@ -14,7 +15,7 @@ useSeoMeta({
 })
 onMounted(() => {
   mediumZoom('[data-zoom-src]', {
-    margin: 5,
+    margin: 5
   })
 })
 </script>

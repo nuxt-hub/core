@@ -18,8 +18,12 @@ export default eventHandler(async (event) => {
   const contentLength = Number(getHeader(event, 'content-length') || '0')
 
   const options = { ...query }
-  if (!options.contentType) { options.contentType = contentType }
-  if (!options.contentLength) { options.contentLength = contentLength }
+  if (!options.contentType) {
+    options.contentType = contentType
+  }
+  if (!options.contentLength) {
+    options.contentLength = contentLength
+  }
 
   const stream = getRequestWebStream(event)!
   const body = await streamToArrayBuffer(stream, contentLength)

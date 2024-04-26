@@ -1,6 +1,185 @@
 # Changelog
 
 
+## v0.5.14
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.13...v0.5.14)
+
+### 🩹 Fixes
+
+- Don't add random suffix by default ([#89](https://github.com/nuxt-hub/core/pull/89))
+
+### 📖 Documentation
+
+- Add server features ([#79](https://github.com/nuxt-hub/core/pull/79))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Farnabaz <farnabaz@gmail.com>
+
+## v0.5.13
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.12...v0.5.13)
+
+### 🚀 Enhancements
+
+- Add local cache for auth with NuxtHub admin ([27174a8](https://github.com/nuxt-hub/core/commit/27174a8))
+
+### 🏡 Chore
+
+- Lint fix ([da07786](https://github.com/nuxt-hub/core/commit/da07786))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
+## v0.5.12
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.11...v0.5.12)
+
+### 🚀 Enhancements
+
+- Send pagesUrl in build done hook api ([#85](https://github.com/nuxt-hub/core/pull/85))
+
+### 📖 Documentation
+
+- Add link to Wrangler documentation ([#83](https://github.com/nuxt-hub/core/pull/83))
+
+### 🏡 Chore
+
+- Update dependencies ([2f40568](https://github.com/nuxt-hub/core/commit/2f40568))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Arash ([@arashsheyda](http://github.com/arashsheyda))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
+## v0.5.11
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.10...v0.5.11)
+
+### 🩹 Fixes
+
+- **cache:** Avoid destructuring if null ([7565284](https://github.com/nuxt-hub/core/commit/7565284))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
+## v0.5.10
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.9...v0.5.10)
+
+### 🚀 Enhancements
+
+- New api route to clear all entries of specific base ([#80](https://github.com/nuxt-hub/core/pull/80))
+
+### 📖 Documentation
+
+- Fix broken link in remote section ([#78](https://github.com/nuxt-hub/core/pull/78))
+
+### ❤️ Contributors
+
+- Zac Webb ([@zacwebb](http://github.com/zacwebb))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
+## v0.5.9
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.8...v0.5.9)
+
+### 🩹 Fixes
+
+- Add missing import ([ada8e5b](https://github.com/nuxt-hub/core/commit/ada8e5b))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
+## v0.5.8
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.7...v0.5.8)
+
+### 🚀 Enhancements
+
+- Add batchDel for cache proxy ([e85719f](https://github.com/nuxt-hub/core/commit/e85719f))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
+## v0.5.7
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.6...v0.5.7)
+
+### 🩹 Fixes
+
+- Return correct group keys in cache api index ([#75](https://github.com/nuxt-hub/core/pull/75))
+- Add cache to manifest ([#77](https://github.com/nuxt-hub/core/pull/77))
+
+### 🏡 Chore
+
+- Move to eslint9 ([#76](https://github.com/nuxt-hub/core/pull/76))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Gerben Mulder <github.undergo381@passmail.net>
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
+## v0.5.6
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.5...v0.5.6)
+
+### 🚀 Enhancements
+
+- Cache management ([#73](https://github.com/nuxt-hub/core/pull/73))
+- Add server cache tab to devtool ([#74](https://github.com/nuxt-hub/core/pull/74))
+
+### 🩹 Fixes
+
+- Disable remote storage within CF Pages CI ([02f65e5](https://github.com/nuxt-hub/core/commit/02f65e5))
+
+### 📖 Documentation
+
+- Update 2.drizzle.md, typo error : useDb instead of useDrizzle ([#72](https://github.com/nuxt-hub/core/pull/72))
+- Escape special chars ([d94892d](https://github.com/nuxt-hub/core/commit/d94892d))
+
+### 🏡 Chore
+
+- Update pnpm-lock.yaml ([a194392](https://github.com/nuxt-hub/core/commit/a194392))
+- Update lock ([2a7fab1](https://github.com/nuxt-hub/core/commit/2a7fab1))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+- Samuel LEFEVRE ([@samulefevre](http://github.com/samulefevre))
+
+## v0.5.5
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.4...v0.5.5)
+
+### 🩹 Fixes
+
+- **remote-storage:** Raise error if storage is not enabled in the deployment ([#68](https://github.com/nuxt-hub/core/pull/68))
+- Fallback to custom placeholder when openAPI is disabled ([#70](https://github.com/nuxt-hub/core/pull/70))
+
+### 📖 Documentation
+
+- Simplify migrations using drizzle ([f8b3ff7](https://github.com/nuxt-hub/core/commit/f8b3ff7))
+- Add Anthony Fu testimonial ([cb47380](https://github.com/nuxt-hub/core/commit/cb47380))
+
+### 🏡 Chore
+
+- Removed unused dependencies ([d7de233](https://github.com/nuxt-hub/core/commit/d7de233))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Farnabaz ([@farnabaz](http://github.com/farnabaz))
+
 ## v0.5.4
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.3...v0.5.4)

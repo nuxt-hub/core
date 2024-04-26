@@ -1,15 +1,15 @@
+import { mkdir, writeFile, readFile } from 'node:fs/promises'
+import { execSync } from 'node:child_process'
+import { argv } from 'node:process'
 import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule, addServerImportsDir, addImportsDir } from '@nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
-import { mkdir, writeFile, readFile } from 'node:fs/promises'
 import { findWorkspaceDir } from 'pkg-types'
 import { $fetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { parseArgs } from 'citty'
-import { addDevtoolsCustomTabs, generateWrangler } from './utils'
 import { version } from '../package.json'
-import { execSync } from 'node:child_process'
-import { argv } from 'node:process'
+import { addDevtoolsCustomTabs, generateWrangler } from './utils'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -54,7 +54,7 @@ export interface ModuleOptions {
    * @default process.env.NUXT_HUB_REMOTE or --remote option when running `nuxt dev`
    * @see https://hub.nuxt.com/docs/getting-started/remote-storage
    */
-  remote?: boolean | 'production' | 'preview',
+  remote?: boolean | 'production' | 'preview'
   /**
    * The URL of the NuxtHub Admin
    * @default 'https://admin.hub.nuxt.com'
@@ -89,7 +89,7 @@ export default defineNuxtModule<ModuleOptions>({
     version
   },
   defaults: {},
-  async setup (options, nuxt) {
+  async setup(options, nuxt) {
     const rootDir = nuxt.options.rootDir
     const { resolve } = createResolver(import.meta.url)
 
@@ -106,6 +106,7 @@ export default defineNuxtModule<ModuleOptions>({
       userToken: process.env.NUXT_HUB_USER_TOKEN || '',
       // Remote storage
       remote: remoteArg || process.env.NUXT_HUB_REMOTE,
+      remoteManifest: undefined,
       // NuxtHub features
       analytics: false,
       blob: false,
@@ -121,6 +122,7 @@ export default defineNuxtModule<ModuleOptions>({
     if (hub.remote && !['true', 'production', 'preview'].includes(String(hub.remote))) {
       log.error('Invalid remote option, should be `false`, `true`, `\'production\'` or `\'preview\'`')
       delete hub.remote
+      delete hub.remoteManifest
     }
     // Log when using a different Hub url
     if (hub.url !== 'https://admin.hub.nuxt.com') {
@@ -151,12 +153,20 @@ export default defineNuxtModule<ModuleOptions>({
       return
     }
 
+    // Fallback to custom placeholder when openAPI is disabled
+    nuxt.options.alias['#hub/openapi'] = nuxt.options.nitro?.experimental?.openAPI === true
+      ? '#internal/nitro/routes/openapi'
+      : resolve('./runtime/templates/openapi')
+
     // Register composables
     addServerImportsDir(resolve('./runtime/server/utils'))
     addImportsDir(resolve('./runtime/composables'))
 
     // Within CF Pages CI/CD to notice NuxtHub about the build and hub config
     if (!nuxt.options.dev && process.env.CF_PAGES && process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN && process.env.NUXT_HUB_PROJECT_KEY && process.env.NUXT_HUB_ENV) {
+      // Disable remote option (if set also for prod)
+      hub.remote = false
+      // Wait for modules to be done to send config to NuxtHub
       nuxt.hook('modules:done', async () => {
         const { bindingsChanged } = await $fetch<{ bindingsChanged: boolean }>(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/before`, {
           baseURL: hub.url,
@@ -171,7 +181,7 @@ export default defineNuxtModule<ModuleOptions>({
             cache: hub.cache,
             database: hub.database,
             kv: hub.kv
-          },
+          }
         }).catch((e) => {
           if (e.response?._data?.message) {
             log.error(e.response._data.message)
@@ -189,7 +199,7 @@ export default defineNuxtModule<ModuleOptions>({
           ].join('\n'))
 
           // Wait 2 seconds to make sure NuxtHub cancel the deployment before exiting
-          await new Promise((resolve) => setTimeout(resolve, 2000))
+          await new Promise(resolve => setTimeout(resolve, 2000))
 
           process.exit(1)
         }
@@ -202,7 +212,9 @@ export default defineNuxtModule<ModuleOptions>({
           headers: {
             authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
           },
-          body: {},
+          body: {
+            pagesUrl: process.env.CF_PAGES_URL
+          }
         }).catch((e) => {
           if (e.response?._data?.message) {
             log.error(e.response._data.message)
@@ -288,7 +300,7 @@ export default defineNuxtModule<ModuleOptions>({
 
       // If using the remote option with a projectUrl and a projectSecretKey
       log.info(`Using remote storage from \`${hub.projectUrl}\``)
-      const manifest = await $fetch('/api/_hub/manifest', {
+      const remoteManifest = hub.remoteManifest = await $fetch('/api/_hub/manifest', {
         baseURL: hub.projectUrl,
         headers: {
           authorization: `Bearer ${hub.projectSecretKey || hub.userToken}`
@@ -304,10 +316,23 @@ export default defineNuxtModule<ModuleOptions>({
           log.error(`Failed to fetch remote storage: ${message}`)
           process.exit(1)
         })
-      if (manifest.version !== hub.version) {
-        log.warn(`\`${hub.projectUrl}\` is running \`@nuxthub/core@${manifest.version}\` while the local project is running \`@nuxthub/core@${hub.version}\`. Make sure to use the same version on both sides to avoid issues.`)
+      if (remoteManifest.version !== hub.version) {
+        log.warn(`\`${hub.projectUrl}\` is running \`@nuxthub/core@${remoteManifest.version}\` while the local project is running \`@nuxthub/core@${hub.version}\`. Make sure to use the same version on both sides for a smooth experience.`)
       }
-      logger.info(`Remote storage available: ${Object.keys(manifest.storage).filter(k => manifest.storage[k]).map(k => `\`${k}\``).join(', ')} `)
+
+      Object.keys(remoteManifest.storage).filter(k => hub[k as keyof typeof hub] && !remoteManifest.storage[k]).forEach((k) => {
+        if (!remoteManifest.storage[k]) {
+          log.warn(`Remote storage \`${k}\` is enabled locally but it's not enabled in the remote project. Deploy a new version with \`${k}\` enabled to use it remotely.`)
+        }
+      })
+
+      const availableStorages = Object.keys(remoteManifest.storage).filter(k => hub[k as keyof typeof hub] && remoteManifest.storage[k])
+      if (availableStorages.length > 0) {
+        logger.info(`Remote storage available: ${availableStorages.map(k => `\`${k}\``).join(', ')} `)
+      } else {
+        log.fatal('No remote storage available: make sure to enable at least one of the storage options in your `nuxt.config.ts` and deploy new version before using remote storage. Read more at https://hub.nuxt.com/docs/getting-started/remote-storage')
+        process.exit(1)
+      }
     }
 
     // Add Proxy routes only if not remote or in development (used for devtools)
@@ -337,7 +362,7 @@ export default defineNuxtModule<ModuleOptions>({
       }
       const workspaceDir = await findWorkspaceDir(rootDir)
       // Add it to .gitignore
-      const gitignorePath = join(workspaceDir , '.gitignore')
+      const gitignorePath = join(workspaceDir, '.gitignore')
       const gitignore = await readFile(gitignorePath, 'utf-8').catch(() => '')
       if (!gitignore.includes('.data')) {
         await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}.data`, 'utf-8')
@@ -346,7 +371,7 @@ export default defineNuxtModule<ModuleOptions>({
       // Generate the wrangler.toml file
       const wranglerPath = join(hubDir, './wrangler.toml')
       await writeFile(wranglerPath, generateWrangler(hub), 'utf-8')
-      // @ts-ignore
+      // @ts-expect-error cloudflareDev is not typed here
       nuxt.options.nitro.cloudflareDev = {
         persistDir: hubDir,
         configPath: wranglerPath,
@@ -358,5 +383,3 @@ export default defineNuxtModule<ModuleOptions>({
     }
   }
 })
-
-

@@ -1,7 +1,6 @@
 import type { extensions } from '@uploadthing/mime-types'
 import slugify from '@sindresorhus/slugify'
 import type { R2Bucket, ReadableStream, R2MultipartUpload } from '@cloudflare/workers-types/experimental'
-import { z } from 'zod'
 import { ofetch } from 'ofetch'
 import mime from 'mime'
 import type { H3Event } from 'h3'
@@ -10,9 +9,9 @@ import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
 import { parse } from 'pathe'
 import { joinURL } from 'ufo'
-import { useRuntimeConfig } from '#imports'
 import { requireNuxtHubFeature } from './features'
 import { streamToArrayBuffer } from '../internal/utils/stream'
+import { useRuntimeConfig } from '#imports'
 
 export interface BlobObject {
   /**
@@ -87,15 +86,16 @@ export interface BlobPutOptions {
   /**
    * The content type of the blob.
    */
-  contentType?: string,
+  contentType?: string
   /**
    * The content length of the blob.
    */
-  contentLength?: string,
+  contentLength?: string
   /**
    * If a random suffix is added to the blob pathname.
+   * @default false
    */
-  addRandomSuffix?: boolean,
+  addRandomSuffix?: boolean
   [key: string]: any
 }
 
@@ -110,6 +110,7 @@ export interface BlobMultipartOptions {
   contentLength?: string,
   /**
    * If a random suffix is added to the blob pathname.
+   * @default false
    */
   addRandomSuffix?: boolean,
   [key: string]: any
@@ -134,9 +135,8 @@ export type HandleMPUResponse =
 
 const _r2_buckets: Record<string, R2Bucket> = {}
 
-
 function getBlobBinding(name: string = 'BLOB') {
-  // @ts-ignore
+  // @ts-expect-error globalThis.__env__ is not typed
   return process.env[name] || globalThis.__env__?.[name] || globalThis[name]
 }
 function _useBucket(name: string = 'BLOB') {
@@ -231,7 +231,7 @@ export function hubBlob(): HubBlob {
     async list(options: BlobListOptions = { limit: 1000 }) {
       const resolvedOptions = defu(options, {
         limit: 500,
-        include: ['httpMetadata' as const, 'customMetadata' as const],
+        include: ['httpMetadata' as const, 'customMetadata' as const]
       })
 
       // https://developers.cloudflare.com/r2/api/workers/workers-api-reference/#r2listoptions
@@ -242,7 +242,7 @@ export function hubBlob(): HubBlob {
       while (truncated) {
         const next = await bucket.list({
           ...options,
-          cursor: cursor,
+          cursor: cursor
         })
         listed.objects.push(...next.objects)
 
@@ -264,7 +264,7 @@ export function hubBlob(): HubBlob {
 
       return object.body
     },
-    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = { addRandomSuffix: true }) {
+    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = {}) {
       pathname = decodeURI(pathname)
       const { contentType: optionsContentType, contentLength, addRandomSuffix, ...customMetadata } = options
       const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
@@ -296,12 +296,12 @@ export function hubBlob(): HubBlob {
     },
     async del(pathnames: string | string[]) {
       if (Array.isArray(pathnames)) {
-        return await bucket.delete(pathnames.map((p) => decodeURI(p)))
+        return await bucket.delete(pathnames.map(p => decodeURI(p)))
       } else {
         return await bucket.delete(decodeURI(pathnames))
       }
     },
-    async createMultipartUpload(pathname: string, options: BlobMultipartOptions = { addRandomSuffix: true }): Promise<BlobMultipartUpload> {
+    async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}): Promise<BlobMultipartUpload> {
       pathname = decodeURI(pathname)
       const { contentType: optionsContentType, contentLength, addRandomSuffix, ...customMetadata } = options
       const contentType = optionsContentType || getContentType(pathname)
@@ -370,11 +370,15 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
         method: 'GET'
       })
     },
-    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = { addRandomSuffix: true }) {
+    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = {}) {
       const { contentType, contentLength, ...query } = options
       const headers: Record<string, string> = {}
-      if (contentType) { headers['content-type'] = contentType }
-      if (contentLength) { headers['content-length'] = contentLength }
+      if (contentType) {
+        headers['content-type'] = contentType
+      }
+      if (contentLength) {
+        headers['content-length'] = contentLength
+      }
       return await blobAPI<BlobObject>(decodeURI(pathname), {
         method: 'PUT',
         headers,
@@ -382,27 +386,27 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
         query
       })
     },
-    async head(pathname: string) {
-      return await blobAPI<BlobObject>(`/head/${decodeURI(pathname)}`, {
+    async head(pathname: string): Promise<BlobObject> {
+      return await blobAPI(`/head/${decodeURI(pathname)}`, {
         method: 'GET'
       })
     },
     async del(pathnames: string | string[]) {
       if (Array.isArray(pathnames)) {
-        await blobAPI<void>('/delete', {
+        await blobAPI('/delete', {
           method: 'POST',
           body: {
-            pathnames: pathnames.map((p) => decodeURI(p))
+            pathnames: pathnames.map(p => decodeURI(p))
           }
         })
       } else {
-        await blobAPI<void>(decodeURI(pathnames), {
-          method: 'DELETE',
+        await blobAPI(decodeURI(pathnames), {
+          method: 'DELETE'
         })
       }
       return
     },
-    async createMultipartUpload(pathname: string, options: BlobMultipartOptions = { addRandomSuffix: true }) {
+    async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}) {
       return await blobAPI<BlobMultipartUpload>(`/multipart/${decodeURI(pathname)}`, {
         method: 'POST',
         body: options,
@@ -605,7 +609,7 @@ function mapR2ObjectToBlob(object: R2Object): BlobObject {
     pathname: object.key,
     contentType: object.httpMetadata?.contentType,
     size: object.size,
-    uploadedAt: object.uploaded,
+    uploadedAt: object.uploaded
   }
 }
 
@@ -625,17 +629,17 @@ function mapR2MpuToBlobMpu(mpu: R2MultipartUpload): BlobMultipartUpload {
 }
 
 // Credits from shared utils of https://github.com/pingdotgg/uploadthing
-type PowOf2 = 1 | 2 | 4 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024;
-type SizeUnit = 'B' | 'KB' | 'MB' | 'GB';
-type BlobSize = `${PowOf2}${SizeUnit}`;
+type PowOf2 = 1 | 2 | 4 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024
+type SizeUnit = 'B' | 'KB' | 'MB' | 'GB'
+type BlobSize = `${PowOf2}${SizeUnit}`
 type BlobType = 'image' | 'video' | 'audio' | 'pdf' | 'text' | 'blob' | keyof typeof extensions
 const FILESIZE_UNITS = ['B', 'KB', 'MB', 'GB']
-type FileSizeUnit = (typeof FILESIZE_UNITS)[number];
+type FileSizeUnit = (typeof FILESIZE_UNITS)[number]
 
 function fileSizeToBytes(input: string) {
   const regex = new RegExp(
     `^(\\d+)(\\.\\d+)?\\s*(${FILESIZE_UNITS.join('|')})$`,
-    'i',
+    'i'
   )
   const match = input.match(regex)
 
@@ -643,7 +647,7 @@ function fileSizeToBytes(input: string) {
     throw createError({ statusCode: 400, message: `Invalid file size format: ${input}` })
   }
 
-  const sizeValue = parseFloat(match[1])
+  const sizeValue = Number.parseFloat(match[1])
   const sizeUnit = match[3].toUpperCase() as FileSizeUnit
 
   if (!FILESIZE_UNITS.includes(sizeUnit)) {

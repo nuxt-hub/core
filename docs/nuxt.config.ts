@@ -15,16 +15,16 @@ export default defineNuxtConfig({
   hooks: {
     // Define `@nuxt/ui` components as global to use them in `.md` (feel free to add those you need)
     'components:extend': (components) => {
-      const globals = components.filter((c) => ['UButton', 'UIcon'].includes(c.pascalName))
+      const globals = components.filter(c => ['UButton', 'UIcon'].includes(c.pascalName))
 
-      globals.forEach((c) => c.global = true)
+      globals.forEach(c => c.global = true)
     }
   },
   ui: {
     icons: ['heroicons', 'ph', 'simple-icons']
   },
   routeRules: {
-    '/api/search.json': { prerender: true },
+    '/api/search.json': { prerender: true }
   },
   nitro: {
     prerender: {

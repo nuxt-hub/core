@@ -6,7 +6,7 @@ import { requireNuxtHubFeature } from '../../../utils/features'
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
   requireNuxtHubFeature('blob')
-  
+
   const form = await readFormData(event)
   const files = form.getAll('files') as File[]
   if (!files) {
@@ -17,7 +17,8 @@ export default eventHandler(async (event) => {
   const objects: BlobObject[] = []
   try {
     for (const file of files) {
-      const object = await blob.put(file.name!, file, { addRandomSuffix: true })
+      // const object = await blob.put(file.name!, file, { addRandomSuffix: true })
+      const object = await blob.put(file.name!, file)
       objects.push(object)
     }
   } catch (e: any) {

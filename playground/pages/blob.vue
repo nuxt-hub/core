@@ -7,7 +7,7 @@ const uploadRef = ref()
 const toast = useToast()
 const { data: files } = await useFetch('/api/blob')
 
-async function addFile () {
+async function addFile() {
   if (!newFilesValue.value.length) {
     toast.add({ title: 'Missing files.', color: 'red' })
     return
@@ -100,9 +100,9 @@ function onFileSelect (e: any) {
   addFile()
 }
 
-async function deleteFile (pathname: string) {
+async function deleteFile(pathname: string) {
   try {
-    // @ts-ignore
+    // @ts-expect-error method DELETE is not typed
     await $fetch(`/api/blob/${pathname}`, { method: 'DELETE' })
     files.value = files.value!.filter(t => t.pathname !== pathname)
     toast.add({ title: `File "${pathname}" deleted.` })

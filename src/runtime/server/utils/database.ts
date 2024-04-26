@@ -3,8 +3,8 @@ import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import type { H3Error } from 'h3'
-import { useRuntimeConfig } from '#imports'
 import { requireNuxtHubFeature } from './features'
+import { useRuntimeConfig } from '#imports'
 
 let _db: D1Database
 
@@ -25,7 +25,7 @@ export function hubDatabase(): D1Database {
     return _db
   }
   const hub = useRuntimeConfig().hub
-  // @ts-ignore
+  // @ts-expect-error globalThis.__env__ is not defined
   const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
   if (hub.remote && hub.projectUrl && !binding) {
     _db = proxyHubDatabase(hub.projectUrl, hub.projectSecretKey || hub.userToken)
@@ -64,7 +64,7 @@ export function proxyHubDatabase(projectUrl: string, secretKey?: string): D1Data
   return {
     async exec(query: string) {
       return d1API<D1ExecResult>('/exec', {
-        body: { query },
+        body: { query }
       }).catch(handleProxyError)
     },
     async dump() {
@@ -90,7 +90,7 @@ export function proxyHubDatabase(projectUrl: string, secretKey?: string): D1Data
             body: {
               ...this._body,
               ...options
-            },
+            }
           }).catch(handleProxyError)
         },
         async run() {
@@ -109,7 +109,7 @@ export function proxyHubDatabase(projectUrl: string, secretKey?: string): D1Data
     },
     batch(statements: D1PreparedStatement[]) {
       return d1API('/batch', {
-        // @ts-ignore
+        // @ts-expect-error _body is not recognized but internally used
         body: statements.map(smtm => smtm._body)
       })
     }
@@ -119,7 +119,7 @@ export function proxyHubDatabase(projectUrl: string, secretKey?: string): D1Data
 function handleProxyError(err: H3Error) {
   throw createError({
     statusCode: err.statusCode,
-    // @ts-ignore
+    // @ts-expect-error not aware of data property
     message: err.data?.message || err.message
   })
 }
