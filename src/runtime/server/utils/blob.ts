@@ -58,6 +58,7 @@ export interface BlobPutOptions {
   contentLength?: string
   /**
    * If a random suffix is added to the blob pathname.
+   * @default false
    */
   addRandomSuffix?: boolean
   [key: string]: any
@@ -181,7 +182,7 @@ export function hubBlob(): HubBlob {
 
       return object.body
     },
-    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = { addRandomSuffix: true }) {
+    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = {}) {
       pathname = decodeURI(pathname)
       const { contentType: optionsContentType, contentLength, addRandomSuffix, ...customMetadata } = options
       const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
@@ -260,7 +261,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
         method: 'GET'
       })
     },
-    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = { addRandomSuffix: true }) {
+    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = {}) {
       const { contentType, contentLength, ...query } = options
       const headers: Record<string, string> = {}
       if (contentType) {
