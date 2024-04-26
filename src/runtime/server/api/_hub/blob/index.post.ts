@@ -17,7 +17,8 @@ export default eventHandler(async (event) => {
   const objects: BlobObject[] = []
   try {
     for (const file of files) {
-      const object = await blob.put(file.name!, file, { addRandomSuffix: true })
+      // const object = await blob.put(file.name!, file, { addRandomSuffix: true })
+      const object = await blob.put(file.name!, file)
       objects.push(object)
     }
   } catch (e: any) {
