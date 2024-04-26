@@ -15,14 +15,13 @@ export default eventHandler(async (event) => {
 
   const { uploadId, partNumber } = await getValidatedQuery(event, z.object({
     uploadId: z.string(),
-    partNumber: z.coerce.number(),
+    partNumber: z.coerce.number()
   }).parse)
 
   const contentLength = Number(getHeader(event, 'content-length') || '0')
 
   const stream = getRequestWebStream(event)!
   const body = await streamToArrayBuffer(stream, contentLength)
-
 
   const { resumeMultipartUpload } = hubBlob()
   const { uploadPart } = resumeMultipartUpload(pathname, uploadId)

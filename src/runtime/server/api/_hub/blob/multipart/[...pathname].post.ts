@@ -19,7 +19,7 @@ export default eventHandler(async (event) => {
     const object = await createMultipartUpload(pathname, options)
     return {
       uploadId: object.uploadId,
-      pathname: object.pathname,
+      pathname: object.pathname
     }
   } catch (e: any) {
     throw createError({

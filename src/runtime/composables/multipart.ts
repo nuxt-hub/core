@@ -1,9 +1,9 @@
 import defu from 'defu'
 import { randomUUID } from 'uncrypto'
 import { readonly, type Ref } from 'vue'
-import { useState } from '#imports'
 import type { FetchOptions } from 'ofetch'
 import type { SerializeObject } from 'nitropack'
+import { useState } from '#imports'
 
 /**
  * Create a multipart uploader.
@@ -16,17 +16,17 @@ export function useMultipartUpload(
     partSize,
     concurrent,
     maxRetry,
-    fetchOptions,
-  }= defu(options, {
+    fetchOptions
+  } = defu(options, {
     partSize: 10 * 1024 * 1024, // 10MB
     concurrent: 1, // no concurrent upload by default
-    maxRetry: 3,
+    maxRetry: 3
   })
   const ofetch = $fetch.create({ baseURL, ...fetchOptions })
   const queryOptions = options?.fetchOptions?.query || {}
 
   const create = (file: File) => ofetch<{
-    pathname: string,
+    pathname: string
     uploadId: string
   }>(`/create/${file.name}`, {
     method: 'POST'
@@ -34,7 +34,7 @@ export function useMultipartUpload(
 
   const upload = (
     { partNumber, chunkBody }: MultipartUploadChunk,
-    { pathname, uploadId }: Awaited<ReturnType<typeof create>>,
+    { pathname, uploadId }: Awaited<ReturnType<typeof create>>
   ) => ofetch<BlobUploadedPart>(`/upload/${pathname}`, {
     method: 'PUT',
     query: {
@@ -42,12 +42,12 @@ export function useMultipartUpload(
       uploadId,
       partNumber
     },
-    body: chunkBody,
+    body: chunkBody
   })
 
   const complete = (
     parts: Awaited<ReturnType<typeof upload>>[],
-    { pathname, uploadId }: Awaited<ReturnType<typeof create>>,
+    { pathname, uploadId }: Awaited<ReturnType<typeof create>>
   ) => ofetch<SerializeObject<BlobObject>>(`/complete/${pathname}`,
     {
       method: 'POST',
@@ -55,19 +55,21 @@ export function useMultipartUpload(
         ...queryOptions,
         uploadId
       },
-      body: { parts },
-    },
+      body: { parts }
+    }
   )
 
-  const abort = (
-    { pathname, uploadId }: Awaited<ReturnType<typeof create>>,
-  ) => ofetch<void>(`/abort/${pathname}`, {
-    method: 'DELETE',
-    query: {
-      ...queryOptions,
-      uploadId
-    },
-  })
+  const abort = async (
+    { pathname, uploadId }: Awaited<ReturnType<typeof create>>
+  ) => {
+    await ofetch(`/abort/${pathname}`, {
+      method: 'DELETE',
+      query: {
+        ...queryOptions,
+        uploadId
+      }
+    })
+  }
 
   return (file) => {
     const data = create(file)
@@ -142,7 +144,7 @@ export function useMultipartUpload(
     return {
       completed: start(),
       progress: readonly(progress),
-      abort: cancel,
+      abort: cancel
     }
   }
 }
@@ -172,7 +174,7 @@ export interface UseMultipartUploadOptions {
    * Override the ofetch options.
    * The query and headers will be merged with the options provided by the uploader.
    */
-  fetchOptions?: Omit<FetchOptions, 'method' | 'baseURL' | 'body' | 'parseResponse' | 'responseType'>,
+  fetchOptions?: Omit<FetchOptions, 'method' | 'baseURL' | 'body' | 'parseResponse' | 'responseType'>
 }
 
 export type MultipartUploader = (file: File) => {

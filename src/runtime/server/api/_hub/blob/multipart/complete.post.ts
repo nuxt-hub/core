@@ -10,13 +10,13 @@ export default eventHandler(async (event) => {
 
   const { pathname, uploadId } = await getValidatedQuery(event, z.object({
     pathname: z.string().min(1),
-    uploadId: z.string().min(1),
+    uploadId: z.string().min(1)
   }).parse)
 
   const { parts } = await readValidatedBody(event, z.object({
     parts: z.array(z.object({
       partNumber: z.number(),
-      etag: z.string(),
+      etag: z.string()
     }))
   }).parse)
 

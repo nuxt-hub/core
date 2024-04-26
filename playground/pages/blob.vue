@@ -32,12 +32,12 @@ async function addFile() {
 async function uploadFiles(files: File[]) {
   const bigFileLimit = 10 * 1024 * 1024 // 10MB
 
-  const bigFiles = files.filter((file) => file.size > bigFileLimit)
-  const smallFiles = files.filter((file) => file.size <= bigFileLimit)
+  const bigFiles = files.filter(file => file.size > bigFileLimit)
+  const smallFiles = files.filter(file => file.size <= bigFileLimit)
 
   // upload small files
   const formData = new FormData()
-  smallFiles.forEach((file) => formData.append('files', file))
+  smallFiles.forEach(file => formData.append('files', file))
 
   const uploadedFiles = await $fetch('/api/blob', {
     method: 'PUT',
@@ -46,7 +46,7 @@ async function uploadFiles(files: File[]) {
 
   // upload big files
   const uploadLarge = useMultipartUpload('/api/blob/multipart', {
-    concurrent: 2,
+    concurrent: 2
   })
 
   for (const file of bigFiles) {
@@ -59,7 +59,7 @@ async function uploadFiles(files: File[]) {
       timeout: 0,
       closeButton: {
         color: 'red',
-        variant: 'solid',
+        variant: 'solid'
       },
       callback: () => {
         if (progress.value !== 100) {
@@ -88,7 +88,7 @@ async function uploadFiles(files: File[]) {
   return uploadedFiles
 }
 
-function onFileSelect (e: any) {
+function onFileSelect(e: any) {
   const target = e.target
 
   // clone FileList so the reference does not clear due to following target clear

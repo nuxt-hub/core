@@ -9,8 +9,8 @@ import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
 import { parse } from 'pathe'
 import { joinURL } from 'ufo'
-import { requireNuxtHubFeature } from './features'
 import { streamToArrayBuffer } from '../internal/utils/stream'
+import { requireNuxtHubFeature } from './features'
 import { useRuntimeConfig } from '#imports'
 
 export interface BlobObject {
@@ -36,11 +36,11 @@ export interface BlobUploadedPart {
   /**
    * The number of the part.
    */
-  partNumber: number;
+  partNumber: number
   /**
    * The etag of the part.
    */
-  etag: string;
+  etag: string
 }
 
 export interface BlobMultipartUpload {
@@ -103,16 +103,16 @@ export interface BlobMultipartOptions {
   /**
    * The content type of the blob.
    */
-  contentType?: string,
+  contentType?: string
   /**
    * The content length of the blob.
    */
-  contentLength?: string,
+  contentLength?: string
   /**
    * If a random suffix is added to the blob pathname.
    * @default false
    */
-  addRandomSuffix?: boolean,
+  addRandomSuffix?: boolean
   [key: string]: any
 }
 
@@ -122,11 +122,11 @@ export type HandleMPUResponse =
     data: Pick<BlobMultipartUpload, 'pathname' | 'uploadId'>
   }
   | {
-    action: 'upload',
+    action: 'upload'
     data: BlobUploadedPart
   }
   | {
-    action: 'complete',
+    action: 'complete'
     data: BlobObject
   }
   | {
@@ -409,7 +409,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
     async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}) {
       return await blobAPI<BlobMultipartUpload>(`/multipart/${decodeURI(pathname)}`, {
         method: 'POST',
-        body: options,
+        body: options
       })
     },
     resumeMultipartUpload(pathname: string, uploadId: string): BlobMultipartUpload {
@@ -421,17 +421,17 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
             method: 'PUT',
             query: {
               uploadId,
-              partNumber,
+              partNumber
             },
-            body,
+            body
           })
         },
         async abort(): Promise<void> {
-          return await blobAPI<void>(`/multipart/${decodeURI(pathname)}`, {
+          await blobAPI(`/multipart/${decodeURI(pathname)}`, {
             method: 'DELETE',
             query: {
-              uploadId,
-            },
+              uploadId
+            }
           })
         },
         async complete(parts: BlobUploadedPart[]): Promise<BlobObject> {
@@ -439,13 +439,13 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
             method: 'POST',
             query: {
               pathname,
-              uploadId,
+              uploadId
             },
             body: {
-              parts,
-            },
+              parts
+            }
           })
-        },
+        }
       }
     }
   }
@@ -464,7 +464,7 @@ function createMultipartUploadHandler(
 
   const createHandler = async (event: H3Event) => {
     const { pathname } = await getValidatedRouterParams(event, z.object({
-      pathname: z.string().min(1),
+      pathname: z.string().min(1)
     }).parse)
 
     const options = await readValidatedBody(event, z.record(z.string(), z.any()).optional().parse)
@@ -473,7 +473,7 @@ function createMultipartUploadHandler(
       const object = await createMultipartUpload(pathname, options)
       return {
         uploadId: object.uploadId,
-        pathname: object.pathname,
+        pathname: object.pathname
       }
     } catch (e: any) {
       throw createError({
@@ -485,12 +485,12 @@ function createMultipartUploadHandler(
 
   const uploadHandler = async (event: H3Event) => {
     const { pathname } = await getValidatedRouterParams(event, z.object({
-      pathname: z.string().min(1),
+      pathname: z.string().min(1)
     }).parse)
 
     const { uploadId, partNumber } = await getValidatedQuery(event, z.object({
       uploadId: z.string(),
-      partNumber: z.coerce.number(),
+      partNumber: z.coerce.number()
     }).parse)
 
     const contentLength = Number(getHeader(event, 'content-length') || '0')
@@ -509,17 +509,17 @@ function createMultipartUploadHandler(
 
   const completeHandler = async (event: H3Event) => {
     const { pathname } = await getValidatedRouterParams(event, z.object({
-      pathname: z.string().min(1),
+      pathname: z.string().min(1)
     }).parse)
 
     const { uploadId } = await getValidatedQuery(event, z.object({
-      uploadId: z.string().min(1),
+      uploadId: z.string().min(1)
     }).parse)
 
-    const { parts } = await readValidatedBody(event,z.object({
+    const { parts } = await readValidatedBody(event, z.object({
       parts: z.array(z.object({
         partNumber: z.number(),
-        etag: z.string(),
+        etag: z.string()
       }))
     }).parse)
 
@@ -534,19 +534,18 @@ function createMultipartUploadHandler(
 
   const abortHandler = async (event: H3Event) => {
     const { pathname } = await getValidatedRouterParams(event, z.object({
-      pathname: z.string().min(1),
+      pathname: z.string().min(1)
     }).parse)
 
     const { uploadId } = await getValidatedQuery(event, z.object({
-      uploadId: z.string().min(1),
+      uploadId: z.string().min(1)
     }).parse)
 
     const mpu = resumeMultipartUpload(pathname, uploadId)
 
     try {
       await mpu.abort()
-    }
-    catch (e: any) {
+    } catch (e: any) {
       throw createError({ status: 400, message: e.message })
     }
   }
@@ -554,34 +553,34 @@ function createMultipartUploadHandler(
   const handler = async (event: H3Event) => {
     const method = event.method
     const { action } = await getValidatedRouterParams(event, z.object({
-      action: z.enum(['create', 'upload', 'complete', 'abort']),
+      action: z.enum(['create', 'upload', 'complete', 'abort'])
     }).parse)
 
     if (action === 'create' && method === 'POST') {
       return {
         action,
-        data: await createHandler(event),
+        data: await createHandler(event)
       }
     }
 
     if (action === 'upload' && method === 'PUT') {
       return {
         action,
-        data: await uploadHandler(event),
+        data: await uploadHandler(event)
       }
     }
 
     if (action === 'complete' && method === 'POST') {
       return {
         action,
-        data: await completeHandler(event),
+        data: await completeHandler(event)
       }
     }
 
     if (action === 'abort' && method === 'DELETE') {
       return {
         action,
-        data: await abortHandler(event),
+        data: await abortHandler(event)
       }
     }
 

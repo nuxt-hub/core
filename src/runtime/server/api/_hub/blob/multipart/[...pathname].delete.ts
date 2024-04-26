@@ -13,17 +13,15 @@ export default eventHandler(async (event) => {
   }).parse)
 
   const { uploadId } = await getValidatedQuery(event, z.object({
-    uploadId: z.string(),
+    uploadId: z.string()
   }).parse)
-
 
   const { resumeMultipartUpload } = hubBlob()
   const { abort } = resumeMultipartUpload(pathname, uploadId)
 
   try {
     await abort()
-  }
-  catch (e: any) {
+  } catch (e: any) {
     throw createError({
       statusCode: 500,
       message: `Storage error: ${e.message}`
