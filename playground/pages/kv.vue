@@ -9,10 +9,10 @@ const editedEntryValue = ref(null)
 const toast = useToast()
 const { data: entries } = await useFetch('/api/kv')
 
-async function addEntry () {
+async function addEntry() {
   const key = newEntryKey.value.trim().replace(/\s/g, '-')
   const value = newEntryValue.value.trim()
-  if (!key || !value) { return }
+  if (!key || !value) return
 
   loading.value = true
 
@@ -43,12 +43,12 @@ async function addEntry () {
   loading.value = false
 }
 
-function editEntry (entry) {
+function editEntry(entry) {
   editedEntryValue.value = entry.value
   editedEntryKey.value = entry.key
 }
 
-async function updateEntry () {
+async function updateEntry() {
   const entry = await $fetch('/api/kv', {
     method: 'PUT',
     body: {
@@ -66,7 +66,7 @@ async function updateEntry () {
   editedEntryValue.value = null
 }
 
-async function deleteEntry (entry) {
+async function deleteEntry(entry) {
   await $fetch(`/api/kv/${entry.key}`, { method: 'DELETE' })
   entries.value = entries.value.filter(t => t.key !== entry.key)
   toast.add({ title: `Entry "${entry.key}" deleted.` })
@@ -108,7 +108,6 @@ async function deleteEntry (entry) {
         class="flex items-center gap-4 py-2"
       >
         <span class="flex-1 font-medium">{{ entry.key }}</span>
-
 
         <div class="flex-1 flex items-center">
           <span v-if="editedEntryKey !== entry.key" class="flex-1 font-medium">{{ entry.value }}</span>

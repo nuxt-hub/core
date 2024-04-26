@@ -1,8 +1,8 @@
-import { useRuntimeConfig } from '#imports'
 import { createHooks } from 'hookable'
+import { useRuntimeConfig } from '#imports'
 
 export interface HubHooks {
-  'bindings:ready': () => any | void
+  'bindings:ready': () => void
 }
 
 /**
@@ -27,7 +27,7 @@ export const hubHooks = createHooks<HubHooks>()
  * ```
  * @see https://hub.nuxt.com/docs/recipes/hooks#onhubready
  */
-export function onHubReady (cb: HubHooks['bindings:ready']) {
+export function onHubReady(cb: HubHooks['bindings:ready']) {
   const hub = useRuntimeConfig().hub
   if (import.meta.dev && !hub.remote) {
     return hubHooks.hookOnce('bindings:ready', cb)

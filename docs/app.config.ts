@@ -9,7 +9,7 @@ export default defineAppConfig({
     }
   },
   seo: {
-    siteName: 'NuxtHub',
+    siteName: 'NuxtHub'
   },
   toc: {
     title: 'Table of Contents',
@@ -20,12 +20,12 @@ export default defineAppConfig({
         icon: 'i-heroicons-star',
         label: 'Star on GitHub',
         to: 'https://github.com/nuxt-hub/core',
-        target: '_blank',
+        target: '_blank'
       }, {
         icon: 'i-simple-icons-nuxtdotjs',
         label: 'NuxtHub Admin',
         to: 'https://admin.hub.nuxt.com',
-        target: '_blank',
+        target: '_blank'
       }]
     }
   }

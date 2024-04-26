@@ -1,7 +1,7 @@
 import { eventHandler } from 'h3'
 import { requireNuxtHubAuthorization } from '../../../utils/auth'
 import { requireNuxtHubFeature } from '../../../utils/features'
-// @ts-ignore
+// @ts-expect-error (No types for #imports)
 import { useStorage } from '#imports'
 
 export default eventHandler(async (event) => {
@@ -12,12 +12,12 @@ export default eventHandler(async (event) => {
 
   const stats: Record<string, number> = {
     handlers: 0,
-    functions: 0,
+    functions: 0
   }
 
   for (const key of cache) {
     if (!key.includes(':')) continue
-    const group = key.split(':').slice(0, -1).join(':')
+    const [group] = key.split(':')
 
     stats[group] = (stats[group] || 0) + 1
   }

@@ -31,13 +31,26 @@ export function proxyHubCache(projectUrl: string, secretKey?: string) {
       })
     },
     async get(key: string) {
-      return cacheAPI<any>(`/${key}`, {
+      return cacheAPI(`/${key}`, {
         method: 'GET'
       })
     },
     async del(key: string) {
-      await cacheAPI<void>(`/${key}`, {
+      await cacheAPI(`/${key}`, {
         method: 'DELETE'
+      })
+      return
+    },
+    async clear(base: string) {
+      await cacheAPI(`/clear/${base}`, {
+        method: 'DELETE'
+      })
+      return
+    },
+    async batchDel(keys: string[]) {
+      await cacheAPI('/batch-delete', {
+        method: 'POST',
+        body: { keys }
       })
       return
     }

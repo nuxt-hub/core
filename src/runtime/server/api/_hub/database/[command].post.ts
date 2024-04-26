@@ -6,13 +6,13 @@ import { requireNuxtHubFeature } from '../../../utils/features'
 
 const statementValidation = z.object({
   query: z.string().min(1).max(1e6).trim(),
-  params: z.any().array(),
+  params: z.any().array()
 })
 
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
   requireNuxtHubFeature('database')
-  
+
   // https://developers.cloudflare.com/d1/build-databases/query-databases/
   const { command } = await getValidatedRouterParams(event, z.object({
     command: z.enum(['first', 'all', 'raw', 'run', 'dump', 'exec', 'batch'])
@@ -43,7 +43,7 @@ export default eventHandler(async (event) => {
   if (command === 'batch') {
     const statements = await readValidatedBody(event, z.array(z.object({
       query: z.string().min(1).max(1e6).trim(),
-      params: z.any().array(),
+      params: z.any().array()
     })).parse)
     return db.batch(
       statements.map(stmt => db.prepare(stmt.query).bind(...stmt.params))
@@ -56,7 +56,7 @@ export default eventHandler(async (event) => {
       params: z.any().array(),
       columnNames: z.boolean().default(false)
     }).parse)
-    // @ts-ignore
+    // @ts-expect-error overload on columnNames
     return db.prepare(query).bind(...params).raw({ columnNames })
   }
 

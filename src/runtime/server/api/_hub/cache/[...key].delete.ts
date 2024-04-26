@@ -1,7 +1,7 @@
-import { eventHandler, getRouterParam, createError } from 'h3'
+import { eventHandler, getRouterParam, createError, sendNoContent } from 'h3'
 import { requireNuxtHubAuthorization } from '../../../utils/auth'
 import { requireNuxtHubFeature } from '../../../utils/features'
-// @ts-ignore
+// @ts-expect-error useStorage not yet typed
 import { useStorage } from '#imports'
 
 export default eventHandler(async (event) => {
@@ -16,12 +16,7 @@ export default eventHandler(async (event) => {
     })
   }
   const storage = useStorage('cache:nitro')
-  const itemExists = await storage.hasItem(key)
-  if (!itemExists) {
-    throw createError({
-      statusCode: 404,
-      message: 'Item not found'
-    })
-  }
-  return await storage.removeItem(key)
+  await storage.removeItem(key)
+
+  return sendNoContent(event)
 })
