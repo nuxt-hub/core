@@ -98,9 +98,9 @@ onMounted(() => {
 
     <div class="bg-gray-50 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative">
       <UColorModeImage light="/images/landing/pricing-line-light.svg" dark="/images/landing/pricing-line-dark.svg"
-        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0" alt="Database pricing section background" />
+        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0 pointer-events-none z-0" alt="Database pricing section background" />
       <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
-        <div class="flex flex-col gap-y-2">
+        <div class="flex flex-col gap-y-2 z-10">
           <h2 class="font-semibold">
             {{ page?.database.pricing.title }}
           </h2>
@@ -110,7 +110,7 @@ onMounted(() => {
             <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
           </ULink>
         </div>
-        <div class="flex flex-col sm:flex-row sm:justify-between gap-y-4 sm:gap-y-0 sm:gap-x-8 pt-8 lg:pt-0">
+        <div class="flex flex-col sm:flex-row sm:justify-between gap-y-4 sm:gap-y-0 sm:gap-x-8 pt-8 lg:pt-0 z-10">
           <div v-for="price in page?.database.pricing.features" :key="price.title" class="flex flex-col gap-y-2">
             <h2 class="font-semibold">
               {{ price.title }}
@@ -138,9 +138,9 @@ onMounted(() => {
 
     <div class="bg-gray-50 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative">
       <UColorModeImage light="/images/landing/pricing-line-light.svg" dark="/images/landing/pricing-line-dark.svg"
-        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0" alt="Blob pricing section background" />
+        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0 z-0 pointer-events-none" alt="Blob pricing section background" />
       <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
-        <div class="flex flex-col gap-y-2">
+        <div class="flex flex-col gap-y-2 z-10">
           <h2 class="font-semibold">
             {{ page?.blob.pricing.title }}
           </h2>
@@ -151,7 +151,7 @@ onMounted(() => {
           </ULink>
         </div>
 
-        <div class="flex flex-col gap-y-4 sm:flex-row sm:justify-between sm:gap-y-0 sm:gap-x-8 pt-8 lg:pt-0">
+        <div class="flex flex-col gap-y-4 sm:flex-row sm:justify-between sm:gap-y-0 sm:gap-x-8 pt-8 lg:pt-0 z-10">
           <div v-for="price in page?.blob.pricing.features" :key="price.title" class="flex flex-col gap-y-2">
             <h2 class="font-semibold">
               {{ price.title }}
@@ -179,9 +179,9 @@ onMounted(() => {
 
     <div class="bg-gray-50 dark:bg-gray-900/30 py-10 border border-price border-x-transparent relative">
       <UColorModeImage light="/images/landing/pricing-line-light.svg" dark="/images/landing/pricing-line-dark.svg"
-        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0" alt="KV pricing section background" />
+        class="absolute left-0 right-0 w-full sm:w-auto sm:h-full inset-y-0 z-0 pointer-events-none" alt="KV pricing section background" />
       <UContainer class="grid grid-cols-1 lg:grid-cols-2 items-center">
-        <div class="flex flex-col gap-y-2">
+        <div class="flex flex-col gap-y-2 z-10">
           <h2 class="font-semibold">
             {{ page?.kv.pricing.title }}
           </h2>
@@ -191,7 +191,7 @@ onMounted(() => {
             <UIcon name="i-ph-arrow-up-right-light" class="h-4 w-4" />
           </ULink>
         </div>
-        <div class="grid grid-cols-1 gap-8 sm:flex justify-between gap-x-8 pt-8 lg:pt-0">
+        <div class="grid grid-cols-1 gap-8 sm:flex justify-between gap-x-8 pt-8 lg:pt-0 z-10">
           <div v-for="price in page?.kv.pricing.features" :key="price.title" class="flex flex-col gap-y-2">
             <h2 class="font-semibold">
               {{ price.title }}

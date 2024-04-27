@@ -3,7 +3,8 @@ import { joinURL } from 'ufo'
 
 const { data: page } = await useAsyncData('pricing', () => queryContent('/pricing').findOne())
 
-const isYearly = ref(false)
+const isYearly = ref(true)
+const isWorkersPaid = ref(false)
 const appear = ref(false)
 
 const { url } = useSiteConfig()
@@ -42,9 +43,9 @@ onMounted(() => {
       </UPageHero>
 
 
-      <div class="pt-12 pb-24 lg:py-24">
+      <div class="py-12">
         <div class="w-full flex justify-center">
-          <UPricingToggle v-model="isYearly" class="max-w-xs mb-12" />
+          <UPricingToggle v-model="isYearly" class="max-w-xs mb-12" right="Yearly (-20%)"/>
         </div>
 
         <UPricingGrid :compact="false">
@@ -71,10 +72,13 @@ onMounted(() => {
 
       <div class="py-24">
         <UPageHeader :title="page?.cloudflare.title" :description="page?.cloudflare.description" align="center" :ui="{ title: 'text-center w-full', wrapper: 'border-0' }" />
-
-        <UPageGrid :ui="{ wrapper: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-8' }">
-          <UPageCard v-for="plan in page?.cloudflare.plans" :key="plan.title" :title="plan.title" :description="plan.description" :to="plan.to">
+        <div class="w-full flex justify-center">
+          <UPricingToggle v-model="isWorkersPaid" class="max-w-[400px] mb-12" left="Workers Free" right="Workers Paid: $5/month"/>
+        </div>
+        <UPageGrid :ui="{ wrapper: 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-8' }">
+          <UPageCard v-for="plan in page?.cloudflare.plans" :key="plan.title" :title="plan.title" :to="plan.to">
             <UIcon name="i-ph-arrow-up-right" class="absolute top-2 right-2 h-4 w-4 text-gray-500 dark:text-gray-400 group-hover:text-gray-950 group-hover:dark:text-white cursor-pointer" />
+            <template #description><p v-html="plan[isWorkersPaid ? 'paid' : 'free']" /></template>
           </UPageCard>
         </UPageGrid>
 
@@ -83,12 +87,13 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="py-24">
-        <h2 class="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight text-center w-full pb-12">
-          {{ page?.faq.title }}
-        </h2>
-        <ULandingFAQ :items="page?.faq.items" class="pt-[64px]" />
-      </div>
+      <ULandingSection :title="page.faq.title" :description="page.faq.description" :ui="{ container: 'max-w-5xl' }">
+        <ULandingFAQ :items="page?.faq.items" multiple>
+          <template #item="{ item }">
+            <MDC :value="item.content" class="prose prose-primary dark:prose-invert max-w-none text-gray-500 dark:text-gray-400" />
+          </template>
+        </ULandingFAQ>
+      </ULandingSection>
     </UContainer>
   </div>
 </template>

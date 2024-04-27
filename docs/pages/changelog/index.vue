@@ -16,9 +16,6 @@ const { y } = useWindowScroll()
 const { isScrolling, arrivedState } = useScroll(document)
 const { url } = useSiteConfig()
 
-
-
-
 useSeoMeta({
   title: page.value.title,
   ogTitle: page.value.title,
@@ -73,7 +70,7 @@ await fetchList()
 
 <template>
   <UContainer v-if="page">
-    <UPageHero v-bind="page?.hero" :ui="{ wrapper: 'border-none' }" />
+    <UPageHero v-bind="page?.hero" />
     <div class="relative">
       <div ref="dot" class="hidden lg:block absolute w-[2px] rounded-full bg-gray-500 dark:bg-gray-400 z-10 neon dot"
         :style="{ top: `${scrollTop}px`, height: `${isScrolling ? 40 : (clotherPoint || arrivedState.top || arrivedState.bottom) ? 0 : 40}px`, width: `${isScrolling ? 1 : clotherPoint ? 0 : 1}px` }" />

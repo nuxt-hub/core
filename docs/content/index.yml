@@ -12,7 +12,9 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: Currently in alpha
+    label: Introducing NuxtHub beta
+    to: /blob/introducing-nuxthub
+    icon: i-ph-arrow-right
   links:
     - label: Get started
       trailing-icon: i-heroicons-arrow-right-20-solid
