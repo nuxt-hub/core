@@ -148,11 +148,6 @@ export default defineNuxtModule<ModuleOptions>({
       })
     }
 
-    // nuxt prepare, stop here
-    if (nuxt.options._prepare) {
-      return
-    }
-
     // Fallback to custom placeholder when openAPI is disabled
     nuxt.options.alias['#hub/openapi'] = nuxt.options.nitro?.experimental?.openAPI === true
       ? '#internal/nitro/routes/openapi'
@@ -161,6 +156,11 @@ export default defineNuxtModule<ModuleOptions>({
     // Register composables
     addServerImportsDir(resolve('./runtime/server/utils'))
     addImportsDir(resolve('./runtime/composables'))
+
+    // nuxt prepare, stop here
+    if (nuxt.options._prepare) {
+      return
+    }
 
     // Within CF Pages CI/CD to notice NuxtHub about the build and hub config
     if (!nuxt.options.dev && process.env.CF_PAGES && process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN && process.env.NUXT_HUB_PROJECT_KEY && process.env.NUXT_HUB_ENV) {
