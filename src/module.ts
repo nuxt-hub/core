@@ -238,6 +238,11 @@ export default defineNuxtModule<ModuleOptions>({
       })
     }
 
+    if (!nuxt.options.dev) {
+      // Make sure we force the cloudflare-pages preset
+      nuxt.options.nitro.preset = 'cloudflare-pages'
+    }
+
     if (hub.remote) {
       // Can either use projectKey or projectUrl
       if (hub.projectKey && hub.projectUrl) {
