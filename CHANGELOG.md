@@ -1,6 +1,35 @@
 # Changelog
 
 
+## v0.5.15
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.14...v0.5.15)
+
+### 🚀 Enhancements
+
+- Force cloudflare-pages preset ([ccdfb21](https://github.com/nuxt-hub/core/commit/ccdfb21))
+- Send build errors back to NuxtHub admin ([#92](https://github.com/nuxt-hub/core/pull/92))
+
+### 🩹 Fixes
+
+- **blob:** Give options for blob dashboard as query ([a245a38](https://github.com/nuxt-hub/core/commit/a245a38))
+- Ensure types for server utils are written in prepare step ([#91](https://github.com/nuxt-hub/core/pull/91))
+
+### 📖 Documentation
+
+- Invert cloudflare pages ci and cli ([456a8fb](https://github.com/nuxt-hub/core/commit/456a8fb))
+
+### 🏡 Chore
+
+- Update deps ([2eb119f](https://github.com/nuxt-hub/core/commit/2eb119f))
+- Update deps ([ad671c1](https://github.com/nuxt-hub/core/commit/ad671c1))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Farnabaz <farnabaz@gmail.com>
+- Daniel Roe ([@danielroe](http://github.com/danielroe))
+
 ## v0.5.14
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.13...v0.5.14)
