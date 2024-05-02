@@ -204,6 +204,26 @@ export default defineNuxtModule<ModuleOptions>({
         }
       })
 
+      nuxt.hook('build:error', async (error) => {
+        await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/error`, {
+          baseURL: hub.url,
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
+          },
+          body: {
+            pagesUrl: process.env.CF_PAGES_URL,
+            error: {
+              message: error.message,
+              name: error.name,
+              stack: error.stack
+            }
+          }
+        }).catch(() => {
+          // ignore api call error
+        })
+      })
+
       nuxt.hook('build:done', async () => {
         await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/done`, {
           baseURL: hub.url,
