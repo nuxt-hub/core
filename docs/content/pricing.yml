@@ -14,7 +14,7 @@ hero:
 pricing:
   plans:
     - title: 'Solo'
-      description: 'Great for personal projects, freelances & indie hackers.'
+      description: 'Great for personal projects, freelance & indie hackers.'
       price: '$0'
       cycle: ''
       features:
@@ -67,14 +67,14 @@ pricing:
   info: 'Prices does not include your <a href="https://www.cloudflare.com/plans/developer-platform/" target="_blank" class="underline underline-offset-4 dark:hover:text-white hover:text-gray-900">Cloudflare costs</a>.'
   contact:
     title: 'Are you an Open Source Organization?'
-    description: "If you want to use NuxtHub to manage open source projects, we have a special offer for you."
+    description: "If you want to use NuxtHub to manage open source projects, we have a special offer for you!"
     button:
       label: 'Contact us'
       color: gray
       to: 'mailto:hub@nuxt.com?subject=Open%20Source%20Organization%20Offer&body=Hi%20NuxtHub%20Team%2C%0A%0AI%20am%20interested%20in%20the%20special%20offer%20for%20Open%20Source%20Organizations.%0A%0AKind%20regards%2C'
 cloudflare:
   title: 'What about Cloudflare pricing?'
-  description: 'You can start for free with Cloudflare and seamlessly upgrade to a paid as your needs grow.'
+  description: 'You can start for free with Cloudflare and seamlessly upgrade to Workers Paid plan when needed.'
   plans:
     - title: 'Cloudflare Workers (Nuxt application)'
       free: >
@@ -119,7 +119,7 @@ cloudflare:
         - Storage: 10 GB
       to: 'https://developers.cloudflare.com/kv/platform/pricing/'
   button:
-    label: 'Learn more on Cloudflare'
+    label: 'Learn more about Cloudflare pricing'
     external: true
     trailingIcon: 'i-ph-arrow-square-out'
     color: gray
@@ -129,10 +129,10 @@ faq:
   description: "If you can't find what you're looking for, email our support team and will get back to you."
   items:
     - label: 'Can I try NuxtHub before paying for it?'
-      content: 'The free plans on both Cloudflare and NuxtHub let\s you try NuxtHub without adding your credit card, these plans are suitable for personal websites (including a database, blob storage, KV & caching).'
+      content: 'The free plans on both Cloudflare and NuxtHub let you try NuxtHub without adding your credit card, these plans are suitable for personal websites (including a database, blob storage, KV & caching).'
     - label: 'Do you have a free trial?'
-      content: 'We don\t have a free trial for now, the Solo plan should give you everything you need to get started with all NuxtHub features.'
-    - label: How can I contact your support?
+      content: "We don't have a free trial for now, the Solo plan should give you everything you need to get started with all NuxtHub features."
+    - label: How can I contact your support team?
       content: 'You can contact us anytime at hub@nuxt.com, we are also on X/Twitter ([@nuxt_hub](https://x.com/nuxt_hub)) and we have a [Discord server](https://discord.gg/e25qqXb2mF).'
     - label: How can I cancel my subscription?
       content: 'In the billing section of your team, you can downgrade or cancel your subscription with one click.'
