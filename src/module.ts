@@ -219,14 +219,8 @@ export default defineNuxtModule<ModuleOptions>({
               stack: error.stack
             }
           }
-        }).catch((e) => {
-          if (e.response?._data?.message) {
-            log.error(e.response._data.message)
-          } else {
-            log.error('Failed run build:error hook on NuxtHub.', e)
-          }
-
-          process.exit(1)
+        }).catch(() => {
+          // ignore api call error
         })
       })
 
