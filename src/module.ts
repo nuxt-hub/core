@@ -204,7 +204,7 @@ export default defineNuxtModule<ModuleOptions>({
         }
       })
 
-      nuxt.hook('build:error', async (error) => {        
+      nuxt.hook('build:error', async (error) => {
         await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/error`, {
           baseURL: hub.url,
           method: 'POST',
