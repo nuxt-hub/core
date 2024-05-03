@@ -259,8 +259,15 @@ export default defineNuxtModule<ModuleOptions>({
     }
 
     if (!nuxt.options.dev) {
-      // Make sure we force the cloudflare-pages preset
-      nuxt.options.nitro.preset = 'cloudflare-pages'
+      // Make sure to fallback to cloudflare-pages preset
+      let preset = nuxt.options.nitro.preset = nuxt.options.nitro.preset || 'cloudflare-pages'
+      // Support also cloudflare_module
+      preset = String(preset).replace('_', '-')
+
+      if (preset !== 'cloudflare-pages' && preset !== 'cloudflare-module') {
+        log.error('NuxtHub is only compatible with the `cloudflare-pages` and `cloudflare-module` presets.')
+        process.exit(1)
+      }
     }
 
     if (hub.remote) {
