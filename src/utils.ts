@@ -1,38 +1,49 @@
 import { addCustomTab } from '@nuxt/devtools-kit'
 import type { Nuxt } from 'nuxt/schema'
+import { stringifyTOML } from 'confbox'
 
 export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, cache: boolean, analytics: boolean }) {
-  return [
-    hub.analytics
-      ? [
-          'analytics_engine_datasets = [',
-          '  { binding = "ANALYTICS", dataset = "default" }',
-          ']'
-        ]
-      : [],
-    hub.blob
-      ? [
-          'r2_buckets = [',
-          '  { binding = "BLOB", bucket_name = "default" }',
-          ']'
-        ]
-      : [],
-    hub.cache || hub.kv
-      ? [
-          'kv_namespaces = [',
-          hub.kv ? '  { binding = "KV", id = "kv_default" },' : '',
-          hub.cache ? '  { binding = "CACHE", id = "cache_default" },' : '',
-          ']'
-        ]
-      : [],
-    hub.database
-      ? [
-          'd1_databases = [',
-          '  { binding = "DB", database_name = "default", database_id = "default" }',
-          ']'
-        ]
-      : []
-  ].flat().join('\n')
+  const wranger: { [key: string]: any } = {}
+
+  if (hub.analytics) {
+    wranger['analytics_engine_datasets'] = [{
+      binding: 'ANALYTICS',
+      dataset: 'default'
+    }]
+  }
+
+  if (hub.blob) {
+    wranger['r2_buckets'] = [{
+      binding: 'BLOB',
+      bucket_name: 'default'
+    }]
+  }
+
+  if (hub.cache || hub.kv) {
+    wranger['kv_namespaces'] = []
+    if (hub.kv) {
+      wranger['kv_namespaces'].push({
+        binding: 'KV',
+        id: 'kv_default'
+      })
+    }
+    if (hub.cache) {
+      wranger['kv_namespaces'].push({
+        binding: 'CACHE',
+        id: 'cache_default'
+      })
+    }
+  }
+
+  if (hub.database) {
+    wranger['d1_databases'] = [{
+      binding: 'DB',
+      database_name: 'default',
+      database_id: 'default'
+    }]
+  }
+
+  return stringifyTOML(wranger)
 }
 
 export function addDevtoolsCustomTabs(nuxt: Nuxt, hub: { kv: boolean, database: boolean, blob: boolean, cache: boolean, analytics: boolean }) {
