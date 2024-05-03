@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.5.16
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.15...v0.5.16)
+
+### 🩹 Fixes
+
+- Support also cloudflare-module preset ([89cf607](https://github.com/nuxt-hub/core/commit/89cf607))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.5.15
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.14...v0.5.15)
