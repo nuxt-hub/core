@@ -3,32 +3,32 @@ import type { Nuxt } from 'nuxt/schema'
 import { stringifyTOML } from 'confbox'
 
 export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, cache: boolean, analytics: boolean }) {
-  const wranger: { [key: string]: any } = {}
+  const wrangler: { [key: string]: any } = {}
 
   if (hub.analytics) {
-    wranger['analytics_engine_datasets'] = [{
+    wrangler['analytics_engine_datasets'] = [{
       binding: 'ANALYTICS',
       dataset: 'default'
     }]
   }
 
   if (hub.blob) {
-    wranger['r2_buckets'] = [{
+    wrangler['r2_buckets'] = [{
       binding: 'BLOB',
       bucket_name: 'default'
     }]
   }
 
   if (hub.cache || hub.kv) {
-    wranger['kv_namespaces'] = []
+    wrangler['kv_namespaces'] = []
     if (hub.kv) {
-      wranger['kv_namespaces'].push({
+      wrangler['kv_namespaces'].push({
         binding: 'KV',
         id: 'kv_default'
       })
     }
     if (hub.cache) {
-      wranger['kv_namespaces'].push({
+      wrangler['kv_namespaces'].push({
         binding: 'CACHE',
         id: 'cache_default'
       })
@@ -36,14 +36,14 @@ export function generateWrangler(hub: { kv: boolean, database: boolean, blob: bo
   }
 
   if (hub.database) {
-    wranger['d1_databases'] = [{
+    wrangler['d1_databases'] = [{
       binding: 'DB',
       database_name: 'default',
       database_id: 'default'
     }]
   }
 
-  return stringifyTOML(wranger)
+  return stringifyTOML(wrangler)
 }
 
 export function addDevtoolsCustomTabs(nuxt: Nuxt, hub: { kv: boolean, database: boolean, blob: boolean, cache: boolean, analytics: boolean }) {
