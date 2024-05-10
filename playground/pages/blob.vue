@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const loading = ref(false)
 const newFilesValue = ref<File[]>([])
-const uploadRef = ref()
+const uploadRef = ref<HTMLInputElement>()
 
 const toast = useToast()
-const { data: files } = await useFetch('/api/blob')
+const { data: files } = await useFetch<BlobObject[]>('/api/blob')
 
 async function addFile() {
   if (!newFilesValue.value.length) {
@@ -15,12 +15,8 @@ async function addFile() {
   loading.value = true
 
   try {
-    const formData = new FormData()
-    newFilesValue.value.forEach(file => formData.append('files', file))
-    const uploadedFiles = await $fetch('/api/blob', {
-      method: 'PUT',
-      body: formData
-    })
+    const uploadedFiles = await useUpload('/api/blob', { method: 'PUT' })(newFilesValue.value)
+
     files.value!.push(...uploadedFiles)
     toast.add({ title: `File${uploadedFiles.length > 1 ? 's' : ''} uploaded.` })
     newFilesValue.value = []

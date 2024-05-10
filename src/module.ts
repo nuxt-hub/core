@@ -1,7 +1,7 @@
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
 import { execSync } from 'node:child_process'
 import { argv } from 'node:process'
-import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule, addServerImportsDir } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule, addServerImportsDir, addImportsDir } from '@nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { findWorkspaceDir } from 'pkg-types'
@@ -153,8 +153,11 @@ export default defineNuxtModule<ModuleOptions>({
       ? '#internal/nitro/routes/openapi'
       : resolve('./runtime/templates/openapi')
 
-    // Register composables
+    // Register server utils
     addServerImportsDir(resolve('./runtime/server/utils'))
+
+    // Register client composables
+    addImportsDir(resolve('./runtime/compsables'))
 
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {
