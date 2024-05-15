@@ -205,6 +205,26 @@ export default defineNuxtModule<ModuleOptions>({
         }
       })
 
+      nuxt.hook('build:error', async (error) => {
+        await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/error`, {
+          baseURL: hub.url,
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
+          },
+          body: {
+            pagesUrl: process.env.CF_PAGES_URL,
+            error: {
+              message: error.message,
+              name: error.name,
+              stack: error.stack
+            }
+          }
+        }).catch(() => {
+          // ignore api call error
+        })
+      })
+
       nuxt.hook('build:done', async () => {
         await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/done`, {
           baseURL: hub.url,
@@ -237,6 +257,18 @@ export default defineNuxtModule<ModuleOptions>({
         }
         await writeFile(join(nitro.options.output.publicDir, 'hub.config.json'), JSON.stringify(hubConfig, null, 2), 'utf-8')
       })
+    }
+
+    if (!nuxt.options.dev && !hub.remote) {
+      // Make sure to fallback to cloudflare-pages preset
+      let preset = nuxt.options.nitro.preset = nuxt.options.nitro.preset || 'cloudflare-pages'
+      // Support also cloudflare_module
+      preset = String(preset).replace('_', '-')
+
+      if (preset !== 'cloudflare-pages' && preset !== 'cloudflare-module') {
+        log.error('NuxtHub is only compatible with the `cloudflare-pages` and `cloudflare-module` presets.')
+        process.exit(1)
+      }
     }
 
     if (hub.remote) {
