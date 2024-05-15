@@ -258,7 +258,7 @@ export default defineNuxtModule<ModuleOptions>({
       })
     }
 
-    if (!nuxt.options.dev) {
+    if (!nuxt.options.dev && !hub.remote) {
       // Make sure to fallback to cloudflare-pages preset
       let preset = nuxt.options.nitro.preset = nuxt.options.nitro.preset || 'cloudflare-pages'
       // Support also cloudflare_module
