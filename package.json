@@ -3,10 +3,6 @@
   "private": false,
   "version": "0.5.16",
   "description": "Build full-stack Nuxt applications on Cloudflare, with zero configuration.",
-  "engines": {
-    "node": ">=20",
-    "pnpm": ">=9"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nuxt-hub/core.git"
