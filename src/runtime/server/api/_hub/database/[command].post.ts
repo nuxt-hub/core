@@ -6,7 +6,7 @@ import { requireNuxtHubFeature } from '../../../utils/features'
 
 const statementValidation = z.object({
   query: z.string().min(1).max(1e6).trim(),
-  params: z.any().array().default([]),
+  params: z.any().array().default([])
 })
 
 export default eventHandler(async (event) => {
