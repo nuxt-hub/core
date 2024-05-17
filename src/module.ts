@@ -80,6 +80,11 @@ export interface ModuleOptions {
    * @default process.env.NUXT_HUB_PROJECT_SECRET_KEY
    */
   projectSecretKey?: string
+  /**
+   * The directory used for local miniflare storage (D1, KV, R2, etc.)
+   * @default '.data/hub'
+   */
+  dataHubDir?: string
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -107,6 +112,8 @@ export default defineNuxtModule<ModuleOptions>({
       // Remote storage
       remote: remoteArg || process.env.NUXT_HUB_REMOTE,
       remoteManifest: undefined,
+      // Local storage
+      dataHubDir: '.data/hub',
       // NuxtHub features
       analytics: false,
       blob: false,
@@ -378,10 +385,10 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Local development without remote connection
     if (nuxt.options.dev && !hub.remote) {
-      log.info('Using local storage from `.data/hub`')
+      log.info(`Using local storage from [${hub.dataHubDir}]`)
 
-      // Create the .data/hub/ directory
-      const hubDir = join(rootDir, './.data/hub')
+      // Create the hub.dataHubDir directory
+      const hubDir = join(rootDir, hub.dataHubDir)
       try {
         await mkdir(hubDir, { recursive: true })
       } catch (e: any) {
