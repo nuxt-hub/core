@@ -8,7 +8,9 @@ import { findWorkspaceDir } from 'pkg-types'
 import { $fetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { parseArgs } from 'citty'
+import { stringifyTOML } from 'confbox'
 import { version } from '../package.json'
+import type { WranglerConfiguration } from './utils'
 import { addDevtoolsCustomTabs, generateWrangler } from './utils'
 
 const log = logger.withTag('nuxt:hub')
@@ -80,6 +82,11 @@ export interface ModuleOptions {
    * @default process.env.NUXT_HUB_PROJECT_SECRET_KEY
    */
   projectSecretKey?: string
+  /**
+   * A custom wrangler configuration that will be merged to the generated wrangler.toml. Be careful to not overwrite the default configuration.
+   * This is useful to add custom bindings in development mode to access to uncovered features.
+   */
+  wranglerConfiguration?: WranglerConfiguration
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -401,7 +408,9 @@ export default defineNuxtModule<ModuleOptions>({
 
       // Generate the wrangler.toml file
       const wranglerPath = join(hubDir, './wrangler.toml')
-      await writeFile(wranglerPath, generateWrangler(hub), 'utf-8')
+
+      const wranglerConfiguration = defu(options.wranglerConfiguration, generateWrangler(hub))
+      await writeFile(wranglerPath, stringifyTOML(wranglerConfiguration), 'utf-8')
       // @ts-expect-error cloudflareDev is not typed here
       nuxt.options.nitro.cloudflareDev = {
         persistDir: hubDir,

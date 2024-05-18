@@ -1,9 +1,10 @@
 import { addCustomTab } from '@nuxt/devtools-kit'
 import type { Nuxt } from 'nuxt/schema'
-import { stringifyTOML } from 'confbox'
 
-export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, cache: boolean, analytics: boolean }) {
-  const wrangler: { [key: string]: any } = {}
+export type WranglerConfiguration = { [key: string]: any }
+
+export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, cache: boolean, analytics: boolean }): WranglerConfiguration {
+  const wrangler: WranglerConfiguration = {}
 
   if (hub.analytics) {
     wrangler['analytics_engine_datasets'] = [{
@@ -43,7 +44,7 @@ export function generateWrangler(hub: { kv: boolean, database: boolean, blob: bo
     }]
   }
 
-  return stringifyTOML(wrangler)
+  return wrangler
 }
 
 export function addDevtoolsCustomTabs(nuxt: Nuxt, hub: { kv: boolean, database: boolean, blob: boolean, cache: boolean, analytics: boolean }) {
