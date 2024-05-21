@@ -80,6 +80,11 @@ export interface ModuleOptions {
    * @default process.env.NUXT_HUB_PROJECT_SECRET_KEY
    */
   projectSecretKey?: string
+  /**
+   * The directory used for storage (D1, KV, R2, etc.) in development mode.
+   * @default '.data/hub'
+   */
+  dir?: string
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -107,6 +112,8 @@ export default defineNuxtModule<ModuleOptions>({
       // Remote storage
       remote: remoteArg || process.env.NUXT_HUB_REMOTE,
       remoteManifest: undefined,
+      // Local storage
+      dir: '.data/hub',
       // NuxtHub features
       analytics: false,
       blob: false,
@@ -378,10 +385,10 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Local development without remote connection
     if (nuxt.options.dev && !hub.remote) {
-      log.info('Using local storage from `.data/hub`')
+      log.info(`Using local storage from \`${hub.dir}\``)
 
-      // Create the .data/hub/ directory
-      const hubDir = join(rootDir, './.data/hub')
+      // Create the hub.dir directory
+      const hubDir = join(rootDir, hub.dir)
       try {
         await mkdir(hubDir, { recursive: true })
       } catch (e: any) {
