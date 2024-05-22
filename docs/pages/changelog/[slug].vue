@@ -16,7 +16,6 @@ const { data: surround } = await useAsyncData(`${route.path}-surround`, () => qu
   .findSurround(withoutTrailingSlash(route.path))
 )
 
-
 const title = changelog.value.head?.title || changelog.value.title
 const description = changelog.value.head?.description || changelog.value.description
 
@@ -38,7 +37,7 @@ if (changelog.value.image) {
     <UPage>
       <UPageHeader :title="changelog.title" :description="changelog.description" :ui="{ headline: 'flex flex-col gap-y-8 items-start' }">
         <template #headline>
-          <UBreadcrumb :links="[{ label: 'Changelog', icon: 'i-ph-newspaper-duotone', to: '/blog' }, { label: changelog.title }]" />
+          <UBreadcrumb :links="[{ label: 'Changelog', icon: 'i-ph-newspaper-duotone', to: '/changelog' }, { label: changelog.title }]" />
 
           <time class="text-gray-500 dark:text-gray-400">{{ formatDateByLocale('en', changelog.date) }}</time>
         </template>

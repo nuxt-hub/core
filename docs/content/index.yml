@@ -5,7 +5,6 @@ navigation: false
 hero:
   title: 'Build, deploy & manage <br /> <span class="text-primary">Nuxt apps</span>, globally.'
   description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare.<br />Deploy your app with a database, key-value and blob storage with zero configuration, on your Cloudflare account.<br />NuxtHub lets you affordably run your high performance Nuxt apps everywhere.'
-  orientation: horizontal
   img:
     width: '1439'
     height: '681'
