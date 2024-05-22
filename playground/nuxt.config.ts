@@ -12,8 +12,8 @@ export default defineNuxtConfig({
     database: true,
     kv: true,
     blob: true,
-    cache: true,
-    projectUrl: ({ branch }) => branch === 'main' ? 'https://playground.nuxt.dev' : `https://${encodeHost(branch).replace(/\//g, '-')}.playground-to39.pages.dev`
+    cache: true
+    // projectUrl: ({ branch }) => branch === 'main' ? 'https://playground.nuxt.dev' : `https://${encodeHost(branch).replace(/\//g, '-')}.playground-to39.pages.dev`
   },
   ui: {
     icons: ['heroicons', 'simple-icons']
