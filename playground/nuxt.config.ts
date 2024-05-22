@@ -1,4 +1,4 @@
-import { encodeHost } from 'ufo'
+// import { encodeHost } from 'ufo'
 import module from '../src/module'
 
 export default defineNuxtConfig({
