@@ -1,6 +1,32 @@
 # Changelog
 
 
+## v0.5.18
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.17...v0.5.18)
+
+### 🚀 Enhancements
+
+- Option to specify storage directory in development ([#112](https://github.com/nuxt-hub/core/pull/112))
+- Support dynamic project url ([#117](https://github.com/nuxt-hub/core/pull/117))
+
+### 📖 Documentation
+
+- Update drizzle instructions ([#106](https://github.com/nuxt-hub/core/pull/106))
+- Add seed configuration for database population with Nitro Tasks ([#107](https://github.com/nuxt-hub/core/pull/107))
+
+### 🏡 Chore
+
+- Clean zod validation in database api endpoints ([#109](https://github.com/nuxt-hub/core/pull/109))
+- Update deps ([d3cdb5c](https://github.com/nuxt-hub/core/commit/d3cdb5c))
+- Lint fix ([641a461](https://github.com/nuxt-hub/core/commit/641a461))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Max ([@onmax](http://github.com/onmax))
+- Jonathan Beckman ([@unibeck](http://github.com/unibeck))
+
 ## v0.5.17
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.16...v0.5.17)
