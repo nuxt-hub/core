@@ -101,7 +101,7 @@ export default defineNuxtModule<ModuleOptions>({
     let remoteArg = parseArgs(argv, { remote: { type: 'string' } }).remote as string
     remoteArg = (remoteArg === '' ? 'true' : remoteArg)
     const runtimeConfig = nuxt.options.runtimeConfig
-    const hub = runtimeConfig.hub = defu(runtimeConfig.hub || {}, options, {
+    const hub = defu(runtimeConfig.hub || {}, options, {
       // Self-hosted project
       projectUrl: process.env.NUXT_HUB_PROJECT_URL || '',
       projectSecretKey: process.env.NUXT_HUB_PROJECT_SECRET_KEY || '',
@@ -125,11 +125,12 @@ export default defineNuxtModule<ModuleOptions>({
       env: process.env.NUXT_HUB_ENV || 'production',
       openapi: nuxt.options.nitro.experimental?.openAPI === true
     })
+    // @ts-expect-error issue with defu and projectUrl type
+    runtimeConfig.hub = hub
     // validate remote option
     if (hub.remote && !['true', 'production', 'preview'].includes(String(hub.remote))) {
       log.error('Invalid remote option, should be `false`, `true`, `\'production\'` or `\'preview\'`')
-      delete hub.remote
-      delete hub.remoteManifest
+      hub.remote = false
     }
     // Log when using a different Hub url
     if (hub.url !== 'https://admin.hub.nuxt.com') {
