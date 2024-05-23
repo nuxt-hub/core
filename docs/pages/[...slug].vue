@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { joinURL } from 'ufo'
-import { withoutTrailingSlash } from 'ufo'
+import { joinURL, withoutTrailingSlash } from 'ufo'
 
 definePageMeta({
   layout: 'docs'
@@ -44,7 +43,7 @@ const links = computed(() => [toc?.bottom?.edit && {
   label: 'Edit this page',
   to: `${toc.bottom.edit}/${page?.value?._file}`,
   target: '_blank'
-}, ...(toc?.bottom?.links || [])].filter(Boolean))
+}, ...asideLinks].filter(Boolean))
 </script>
 
 <template>
@@ -65,7 +64,7 @@ const links = computed(() => [toc?.bottom?.edit && {
           <div class="hidden lg:block space-y-6" :class="{ '!mt-6': page.body?.toc?.links?.length }">
             <UDivider v-if="page.body?.toc?.links?.length" type="dashed" />
 
-            <UPageLinks :title="toc.bottom.title" :links="links" />
+            <UPageLinks title="Links" :links="links" />
           </div>
         </template>
       </UContentToc>

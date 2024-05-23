@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { withoutTrailingSlash } from 'ufo'
-import type { ChangelogArticle } from '~/types'
+import type { ChangelogPost } from '~/types'
 
 const route = useRoute()
 const { copy } = useCopyToClipboard()
 
-const { data: changelog } = await useAsyncData(route.path, () => queryContent<ChangelogArticle>(route.path).findOne())
+const { data: changelog } = await useAsyncData(route.path, () => queryContent<ChangelogPost>(route.path).findOne())
 if (!changelog.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Article not found', fatal: true })
+  throw createError({ statusCode: 404, statusMessage: 'Post not found', fatal: true })
 }
 
 const { data: surround } = await useAsyncData(`${route.path}-surround`, () => queryContent('/blog')
@@ -42,24 +42,6 @@ const socialLinks = computed(() => [{
 function copyLink() {
   copy(`https://hub.nuxt.com${changelog.value._path}`, { title: 'URL copied to clipboard' })
 }
-const links = [
-  {
-    icon: 'i-ph-shooting-star-duotone',
-    label: 'Star on GitHub',
-    to: 'https://github.com/nuxt-hub/core',
-    target: '_blank'
-  }, {
-    icon: 'i-ph-megaphone-duotone',
-    label: 'Follow on X',
-    to: 'https://x.com/nuxt_hub',
-    target: '_blank'
-  }, {
-    icon: 'i-ph-chat-centered-text-duotone',
-    label: 'Chat on Discord',
-    to: 'https://discord.com/invite/nuxt',
-    target: '_blank'
-  }
-]
 </script>
 
 <template>
@@ -76,20 +58,20 @@ const links = [
           <UButton
             v-for="(author, index) in changelog.authors"
             :key="index"
-            :to="author.link"
+            :to="author.to"
             target="_blank"
             color="white"
             variant="ghost"
             class="-my-1.5 -mx-2.5"
           >
-            <UAvatar :src="author.avatarUrl" :alt="author.name" />
+            <UAvatar :src="author.avatar?.src" :alt="author.name" />
 
             <div class="text-left">
               <p class="font-medium">
                 {{ author.name }}
               </p>
               <p class="text-gray-500 dark:text-gray-400 leading-4">
-                {{ `@${author.link.split('/').pop()}` }}
+                {{ `@${author.username}` }}
               </p>
             </div>
           </UButton>
@@ -128,7 +110,7 @@ const links = [
           <UContentToc v-if="changelog.body && changelog.body.toc" :links="changelog.body.toc.links">
             <template #bottom>
               <div class="hidden lg:block space-y-6">
-                <UPageLinks title="Links" :links="links" />
+                <UPageLinks title="Links" :links="asideLinks" />
               </div>
             </template>
           </UContentToc>

@@ -1,48 +1,28 @@
-
 import type { ParsedContent } from '@nuxt/content/dist/runtime/types'
-export interface ChangelogAuthor {
+
+export interface Author {
   name: string
-  avatarUrl: string
-  link: string
-  twitter: string
+  avatar: {
+    src: string
+  }
+  to: string
+  username: string
 }
 
-export interface Changelog {
+export interface ChangelogPost extends ParsedContent {
   title: string
   description: string
-  date: Date
-  authors: ChangelogAuthor[]
-  _path: string
-  img: string
+  date: string
+  image: string
+  authors: Author[]
 }
 
-
-export interface ChangelogArticle extends ParsedContent {
+export interface BlogPost extends ParsedContent {
   title: string
   description: string
-  date: Date
-  authors: ChangelogAuthor[]
-  img: string
-}
-
-export interface BlogArticleAuthor extends ChangelogAuthor {}
-
-export interface blog {
-  title: string
-  description: string
-  date: Date
-  authors: ChangelogAuthor[]
-  _path: string
-  img: string
-}
-
-
-export interface BlogArticle extends ParsedContent {
-  description: string
-  date: Date
-  img: string
-  authors: BlogArticleAuthor[]
-  tags: string[]
+  date: string
+  image: string
+  authors: Author[]
   category: string
 }
 

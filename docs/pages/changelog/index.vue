@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { joinURL } from 'ufo'
-import { formatDateByLocale } from '~/utils'
 
 const { data: page } = await useAsyncData('changelog', () => queryContent('/changelog').findOne())
 
@@ -96,11 +95,12 @@ await fetchList()
           <div class="w-full pb-32">
             <NuxtLink :to="changelog._path">
               <div class="space-y-4 -mt-1">
-                <div class="inline-block overflow-hidden">
+                <div class="inline-block overflow-hidden rounded-md">
                   <NuxtImg
                     :alt="changelog.title || ''" loading="lazy" width="915" height="515" :src="changelog.img"
-                    class="aspect-[16/9] object-cover rounded-md hover:scale-105 transition duration-300 h-full"
-                  /></div>
+                    class="aspect-[16/9] object-cover hover:scale-105 transition duration-300 h-full"
+                  />
+                </div>
 
                 <div class="flex flex-col">
                   <h2 class="text-4xl font-semibold">
@@ -109,17 +109,17 @@ await fetchList()
                     changelog.description }}</p>
                   <div class="mt-4 flex flex-wrap items-center gap-6">
                     <UButton
-                      v-for="(author, index) in changelog.authors" :key="index" :to="author.link" target="_blank"
+                      v-for="author in changelog.authors" :key="author.username" :to="author.to" target="_blank"
                       color="white" variant="ghost" class="-my-1.5 -mx-2.5"
                     >
-                      <UAvatar :src="author.avatarUrl" :alt="author.name" />
+                      <UAvatar :src="author.avatar?.src" :alt="author.name" />
 
                       <div class="text-left">
                         <p class="font-medium">
                           {{ author.name }}
                         </p>
                         <p class="text-gray-500 dark:text-gray-400 leading-4">
-                          {{ `@${author.link.split('/').pop()}` }}
+                          {{ `@${author.username}` }}
                         </p>
                       </div>
                     </UButton>

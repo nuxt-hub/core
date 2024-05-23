@@ -23,8 +23,8 @@ onMounted(() => {
 
 <template>
   <div>
-    <HeroDark class="absolute hidden right-0 left-0 top-0 xl:top-16 w-full dark:block" />
-    <HeroLight class="absolute right-0 left-0 top-0 xl:top-16 w-full dark:hidden" />
+    <HeroDark class="absolute hidden right-0 left-0 top-0 xl:top-16 w-full dark:block pointer-events-none" />
+    <HeroLight class="absolute right-0 left-0 top-0 xl:top-16 w-full dark:hidden pointer-events-none" />
 
     <ULandingHero
       :title="page?.hero.title" :description="page?.hero.description" :links="page.hero.links" orientation="horizontal"
