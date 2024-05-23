@@ -69,5 +69,8 @@
     "typescript": "^5.4.5",
     "vitest": "^1.6.0",
     "wrangler": "^3.57.1"
+  },
+  "resolutions": {
+    "@nuxt/ui": "2.15.2"
   }
 }
