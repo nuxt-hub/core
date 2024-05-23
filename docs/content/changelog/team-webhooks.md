@@ -14,13 +14,30 @@ authors:
 
 We are excited to announce that we have added a new feature to NuxtHub: **Team Webhooks**!
 
+::tip
+This feature is available for all [NuxtHub plans](/pricing).
+::
+
 ## What are Team Webhooks?
 
-Team Webhooks allow you to trigger webhooks for your team's projects when a new deployment is created or if a deployment status changes.
+They allow you to get notified about your project deployments. You can use them to trigger custom actions, like sending notifications to your team's chat, updating your project management tool and more.
 
 :nuxt-img{src="/images/changelog/team-webhooks.png" alt="Team Webhooks" width="915" height="515"}
 
-## How to use Team Webhooks?
+## Creating a Webhook
 
 To create a webhook, go to your team settings and click on the "Webhooks" tab. You can then add a new webhook by providing an endpoint, and selecting the events you want to trigger the webhook for.
 
+:nuxt-img{src="/images/changelog/team-webhooks-new.png" alt="Creating a NuxtHub Webhook" width="915" height="515"}
+
+## Slack & Discord Integration
+
+We have also added built-in integrations for [Slack Incoming Webhooks](https://api.slack.com/messaging/webhooks) and [Discord Webhooks](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks).
+
+When pasting a webhook URL from these services, we will automatically send a per-formatted message to your channel or user.
+
+:nuxt-img{src="/images/changelog/team-webhooks-slack.png" alt="NuxtHub Slack Integration" width="915" height="515"}
+
+::callout{icon="i-ph-heart-duotone"}
+Thank you to [Israel Ortuno](https://github.com/IsraelOrtuno) for suggestion this feature on [nuxt-hub/core#102](https://github.com/nuxt-hub/core/issues/102).
+::

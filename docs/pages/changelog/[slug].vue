@@ -3,6 +3,7 @@ import { withoutTrailingSlash } from 'ufo'
 import type { ChangelogArticle } from '~/types'
 
 const route = useRoute()
+const { copy } = useCopyToClipboard()
 
 const { data: changelog } = await useAsyncData(route.path, () => queryContent<ChangelogArticle>(route.path).findOne())
 if (!changelog.value) {
@@ -30,6 +31,35 @@ useSeoMeta({
 if (changelog.value.image) {
   defineOgImage({ url: changelog.value.image })
 }
+const socialLinks = computed(() => [{
+  icon: 'i-simple-icons-linkedin',
+  to: `https://www.linkedin.com/sharing/share-offsite/?url=https://hub.nuxt.com${changelog.value._path}`
+}, {
+  icon: 'i-simple-icons-twitter',
+  to: `https://twitter.com/intent/tweet?text=${encodeURIComponent(`NuxtHub: ${changelog.value.title}\n\n`)}https://hub.nuxt.com${changelog.value._path}`
+}])
+
+function copyLink() {
+  copy(`https://hub.nuxt.com${changelog.value._path}`, { title: 'URL copied to clipboard' })
+}
+const links = [
+  {
+    icon: 'i-ph-shooting-star-duotone',
+    label: 'Star on GitHub',
+    to: 'https://github.com/nuxt-hub/core',
+    target: '_blank'
+  }, {
+    icon: 'i-ph-megaphone-duotone',
+    label: 'Follow on X',
+    to: 'https://x.com/nuxt_hub',
+    target: '_blank'
+  }, {
+    icon: 'i-ph-chat-centered-text-duotone',
+    label: 'Chat on Discord',
+    to: 'https://discord.com/invite/nuxt',
+    target: '_blank'
+  }
+]
 </script>
 
 <template>
@@ -74,6 +104,19 @@ if (changelog.value.image) {
             <NuxtLink href="/changelog" class="text-primary">
               ← Back to changelog
             </NuxtLink>
+            <div class="flex justify-end items-center gap-1.5">
+              <UButton icon="i-ph-link-simple" v-bind="($ui.button.secondary as any)" @click="copyLink">
+                Copy URL
+              </UButton>
+              <UButton
+                v-for="(link, index) in socialLinks"
+                :key="index"
+                v-bind="link"
+                variant="ghost"
+                color="gray"
+                target="_blank"
+              />
+            </div>
           </div>
 
           <hr v-if="surround?.length">
@@ -82,7 +125,13 @@ if (changelog.value.image) {
         </UPageBody>
 
         <template #right>
-          <UContentToc v-if="changelog.body && changelog.body.toc" :links="changelog.body.toc.links" />
+          <UContentToc v-if="changelog.body && changelog.body.toc" :links="changelog.body.toc.links">
+            <template #bottom>
+              <div class="hidden lg:block space-y-6">
+                <UPageLinks title="Links" :links="links" />
+              </div>
+            </template>
+          </UContentToc>
         </template>
       </UPage>
     </UPage>
