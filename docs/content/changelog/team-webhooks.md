@@ -15,7 +15,7 @@ authors:
 We are excited to announce that we have added a new feature to NuxtHub: **Team Webhooks**!
 
 ::tip
-This feature is available for all [NuxtHub plans](/pricing).
+This feature is available on all [NuxtHub plans](/pricing).
 ::
 
 ## What are Team Webhooks?
