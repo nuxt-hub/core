@@ -80,9 +80,11 @@ await fetchList()
           class="relative flex w-full flex-col lg:flex-row last:mb-[2px] group"
         >
           <div class="flex w-full pb-4 lg:w-[200px] lg:pb-0 -mt-1">
-            <p class="text-sm text-gray-600 dark:text-gray-300">
-              <time class="top-24">{{ formatDateByLocale('en', changelog.date) }}</time>
-            </p>
+            <div>
+              <NuxtLink :to="changelog._path" class="text-sm text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100">
+                <time class="top-24">{{ formatDateByLocale('en', changelog.date) }}</time>
+              </NuxtLink>
+            </div>
           </div>
           <div ref="container" class="relative hidden lg:flex lg:min-w-[150px] lg:w-[150px]">
             <div
@@ -92,41 +94,44 @@ await fetchList()
 
             <div class="absolute left-[3.5px] top-0.5 h-full w-[1px] bg-gray-400 dark:bg-gray-500" />
           </div>
-          <div class="w-full pb-32">
-            <NuxtLink :to="changelog._path">
-              <div class="space-y-4 -mt-1">
-                <div class="inline-block overflow-hidden rounded-md">
-                  <NuxtImg
-                    :alt="changelog.title || ''" loading="lazy" width="915" height="515" :src="changelog.img"
-                    class="aspect-[16/9] object-cover hover:scale-105 transition duration-300 h-full"
-                  />
-                </div>
+          <div class="w-full mb-32 relative">
+            <div class="space-y-4 -mt-1">
+              <NuxtLink :to="changelog._path" :aria-label="changelog.titke" class="inline-block overflow-hidden rounded-md">
+                <NuxtImg
+                  :alt="changelog.title || ''" loading="lazy" width="915" height="515" :src="changelog.img"
+                  class="aspect-[16/9] object-cover hover:scale-105 transition duration-300 h-full"
+                />
+              </NuxtLink>
 
-                <div class="flex flex-col">
-                  <h2 class="text-4xl font-semibold">
-                    {{ changelog.title }}</h2>
-                  <p class="text-lg pt-2 pb-4 text-gray-500 dark:text-gray-400">{{
-                    changelog.description }}</p>
-                  <div class="mt-4 flex flex-wrap items-center gap-6">
-                    <UButton
-                      v-for="author in changelog.authors" :key="author.username" :to="author.to" target="_blank"
-                      color="white" variant="ghost" class="-my-1.5 -mx-2.5"
-                    >
-                      <UAvatar :src="author.avatar?.src" :alt="author.name" />
+              <div class="flex flex-col">
+                <h2 class="text-4xl font-semibold">
+                  <NuxtLink :to="changelog._path" class="hover:underline underline-offset-4 decoration-2">
+                    {{ changelog.title }}
+                  </NuxtLink>
+                </h2>
+                <p class="text-lg pt-2 pb-4 text-gray-500 dark:text-gray-400">
+                  {{
+                    changelog.description }}
+                </p>
+                <div class="mt-4 flex flex-wrap items-center gap-6">
+                  <UButton
+                    v-for="author in changelog.authors" :key="author.username" :to="author.to" target="_blank"
+                    color="white" variant="ghost" class="-my-1.5 -mx-2.5"
+                  >
+                    <UAvatar :src="author.avatar?.src" :alt="author.name" />
 
-                      <div class="text-left">
-                        <p class="font-medium">
-                          {{ author.name }}
-                        </p>
-                        <p class="text-gray-500 dark:text-gray-400 leading-4">
-                          {{ `@${author.username}` }}
-                        </p>
-                      </div>
-                    </UButton>
-                  </div>
+                    <div class="text-left">
+                      <p class="font-medium">
+                        {{ author.name }}
+                      </p>
+                      <p class="text-gray-500 dark:text-gray-400 leading-4">
+                        {{ `@${author.username}` }}
+                      </p>
+                    </div>
+                  </UButton>
                 </div>
               </div>
-            </NuxtLink>
+            </div>
           </div>
         </li>
       </ul>

@@ -3,7 +3,7 @@ const { metaSymbol } = useShortcuts()
 const links = [
   {
     label: 'Docs',
-    to: '/docs/getting-started',
+    to: '/docs/getting-started'
   }, {
     label: 'Templates',
     to: '/templates'

@@ -30,14 +30,16 @@ onMounted(() => {
       :title="page?.hero.title" :description="page?.hero.description" :links="page.hero.links" orientation="horizontal"
       :ui="{ container: 'flex flex-row justify-start items-center' }"
     >
-      <template #headline>
-        <UBadge v-if="page?.hero.headline" variant="subtle" size="lg" class="relative rounded-full font-semibold">
-          {{ page?.hero.headline.label }}
-          <UIcon
-            v-if="page?.hero.headline.icon" :name="page?.hero.headline.icon"
-            class="ml-1 w-4 h-4 pointer-events-none"
-          />
-        </UBadge>
+      <template v-if="page?.hero.headline" #headline>
+        <NuxtLink :to="page.hero.headline.to">
+          <UBadge variant="subtle" size="lg" class="relative rounded-full font-semibold dark:hover:bg-primary-400/15 dark:hover:ring-primary-700">
+            {{ page?.hero.headline.label }}
+            <UIcon
+              v-if="page?.hero.headline.icon" :name="page?.hero.headline.icon"
+              class="ml-1 w-4 h-4 pointer-events-none"
+            />
+          </UBadge>
+        </NuxtLink>
       </template>
 
       <template #title>

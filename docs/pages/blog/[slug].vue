@@ -41,7 +41,7 @@ const socialLinks = computed(() => [{
 }])
 
 function copyLink() {
-  copy(`https://hub.nuxt.com${post.value._path}`, { title: 'Copied to clipboard' })
+  copy(`https://hub.nuxt.com${post.value._path}`, { title: 'Post URL to clipboard' })
 }
 const links = [
   {
@@ -92,9 +92,9 @@ const links = [
           <ContentRenderer v-if="post && post.body" :value="post" />
 
           <div class="flex items-center justify-between mt-12 not-prose">
-            <NuxtLink href="/blog" class="text-primary">
+            <UButton to="/blog" variant="link" :padded="false">
               ← Back to blog
-            </NuxtLink>
+            </UButton>
             <div class="flex justify-end items-center gap-1.5">
               <UButton icon="i-ph-link-simple" v-bind="($ui.button.secondary as any)" @click="copyLink">
                 Copy URL

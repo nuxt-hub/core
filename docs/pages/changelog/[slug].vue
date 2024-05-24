@@ -83,9 +83,9 @@ function copyLink() {
           <ContentRenderer v-if="changelog && changelog.body" :value="changelog" />
 
           <div class="flex items-center justify-between mt-12 not-prose">
-            <NuxtLink href="/changelog" class="text-primary">
+            <UButton to="/changelog" variant="link" :padded="false">
               ← Back to changelog
-            </NuxtLink>
+            </UButton>
             <div class="flex justify-end items-center gap-1.5">
               <UButton icon="i-ph-link-simple" v-bind="($ui.button.secondary as any)" @click="copyLink">
                 Copy URL

@@ -14,7 +14,7 @@ hero:
 pricing:
   plans:
     - title: 'Solo'
-      description: 'Great for personal projects, freelance & indie hackers.'
+      description: 'Great for personal projects, freelancers & indie hackers.'
       price: '$0'
       cycle: ''
       features:
@@ -78,51 +78,51 @@ cloudflare:
   plans:
     - title: 'Cloudflare Workers (Nuxt application)'
       free: >
-        - 100,000 requests / day<br>
-        - 1 MB worker size (small Nuxt app)<br>
-        - 10ms CPU time per invocation<br>
-        - 100 applications<br>
+        100,000 requests / day<br>
+        1 MB worker size (small Nuxt app)<br>
+        10ms CPU time per invocation<br>
+        100 applications<br>
       paid: >
-        - 10,000,000 requests / month<br>
-        - 10 MB worker size<br>
-        - 30s CPU time per invocation<br>
-        - 500 applications<br>
+        10 million requests / month + +$0.30/million<br>
+        10 MB worker size<br>
+        30s CPU time per invocation<br>
+        500 applications<br>
       to: 'https://developers.cloudflare.com/workers/platform/pricing/'
     - title: 'Cloudflare D1 (Database)'
       free: >
-        - 5,000,000 rows read / day<br>
-        - 100,000 rows written / day<br>
-        - 5 GB storage
+        5 million rows read / day<br>
+        100,000 rows written / day<br>
+        5 GB storage
       paid: >
-        - 25,000,000,000 rows read / month<br>
-        - 50,000,000 rows written / day<br>
-        - 5 GB storage included + $0.75 / GB-month
+        25 billion rows read / month + $0.001/million<br>
+        50 million rows written / month + $1.00/million<br>
+        5 GB storage included + $0.75/GB-month
       to: 'https://developers.cloudflare.com/d1/platform/pricing/'
     - title: 'Cloudflare R2 (Blob)'
       free: >
-        - Class A operations: 1 million requests / month<br>
-        - Class B operations: 10 million requests / month<br>
-        - Storage: 10 GB / month<br>
-        - Unlimited Egress (data transfer to Internet)
+        1 million class A requests / month (list + write)<br>
+        10 million class B requests / month (read)<br>
+        10 GB storage / month<br>
+        Unlimited egress (data transfer to Internet)
       paid: >
-        - Class A: 1 million requests / month + $4.50 / million requests<br>
-        - Class B: 50 million requests / month + $0.015 / GB-month<br>
-        - Storage: 10 GB / month + $0.015 / GB-month<br>
-        - Unlimited Egress (data transfer to Internet)
+        1 million class A requests / month + $4.50/million<br>
+        10 million class B requests / month + $0.36/million<br>
+        10 GB storage / month + $0.015/GB-month<br>
+        Unlimited egress (data transfer to Internet)
       to: 'https://developers.cloudflare.com/r2/pricing/'
     - title: 'Cloudflare KV (KV & Cache)'
       free: >
-        - Read: 100,000 / day<br>
-        - List: 1,000 / day<br>
-        - Write: 1,000 / day<br>
-        - Delete: 1,000 / day<br>
-        - Storage: 1 GB
+        100,000 read / day<br>
+        1,000 list / day<br>
+        1,000 write / day<br>
+        1,000 delete / day<br>
+        1 GB storage
       paid: >
-        - Read: 10,000,000 / day<br>
-        - List: 1,00,000 / day<br>
-        - Write: 1,000,000 / day<br>
-        - Delete: 1,000,000 / day<br>
-        - Storage: 1 GB + $0.50/ GB-month
+        10 million read / day + $0.50/million<br>
+        1 million list / day + $5.00/million<br>
+        1 million write / day + $5.00/million<br>
+        1 million delete / day + $5.00/million<br>
+        1 GB storage + $0.50/GB-month
       to: 'https://developers.cloudflare.com/kv/platform/pricing/'
   button:
     label: 'Learn more about Cloudflare pricing'
