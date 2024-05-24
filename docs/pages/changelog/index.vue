@@ -104,12 +104,12 @@ await fetchList()
               </NuxtLink>
 
               <div class="flex flex-col">
-                <h2 class="text-4xl font-semibold">
-                  <NuxtLink :to="changelog._path" class="hover:underline underline-offset-4 decoration-2">
+                <h2 class="text-3xl font-semibold">
+                  <NuxtLink :to="changelog._path" class="hover:underline underline-offset-4 decoration-1">
                     {{ changelog.title }}
                   </NuxtLink>
                 </h2>
-                <p class="text-lg pt-2 pb-4 text-gray-500 dark:text-gray-400">
+                <p class="text-lg pt-1 pb-2 text-gray-500 dark:text-gray-400">
                   {{
                     changelog.description }}
                 </p>
