@@ -163,7 +163,10 @@ export default defineNuxtModule<ModuleOptions>({
       return
     }
 
-    const localWranglerConfiguration: WranglerConfiguration = await readFile(join(rootDir, './wrangler.toml'), 'utf-8').then(file => parseTOML(file)).catch(() => {})
+    // Read user wrangler.toml configuration to merge with the generated one. Be careful, the local configuration will takes precedence.
+    const localWranglerConfiguration: WranglerConfiguration = await readFile(join(rootDir, './wrangler.toml'), 'utf-8')
+      .then(file => parseTOML<WranglerConfiguration>(file))
+      .catch(() => { return {} })
 
     // Within CF Pages CI/CD to notice NuxtHub about the build and hub config
     if (!nuxt.options.dev && process.env.CF_PAGES && process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN && process.env.NUXT_HUB_PROJECT_KEY && process.env.NUXT_HUB_ENV) {
