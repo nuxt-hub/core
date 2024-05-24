@@ -33,6 +33,7 @@
     "docs:build": "nuxi generate docs",
     "release": "npm run lint && npm run test && changelogen --release && npm publish && git push --follow-tags",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "vitest run",
     "test:watch": "vitest watch"
   },
