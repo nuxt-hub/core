@@ -2,9 +2,21 @@
 const loading = ref(false)
 const newFilesValue = ref<File[]>([])
 const uploadRef = ref()
+const prefixToDirectory = ref(false)
+const prefixes = ref([])
 
+const delimiter = computed(() => prefixToDirectory.value ? '/' : undefined)
+const prefix = computed(() => prefixes.value?.[prefixes.value.length - 1])
 const toast = useToast()
-const { data: files } = await useFetch('/api/blob')
+const { data: blobData } = await useFetch('/api/blob', {
+  params: {
+    delimiter,
+    prefix
+  }
+})
+
+const files = computed(() => delimiter.value ? blobData.value?.objects || [] : blobData.value)
+const folders = computed(() => delimiter.value ? blobData.value?.delimitedPrefixes || [] : [])
 
 async function addFile() {
   if (!newFilesValue.value.length) {
@@ -17,8 +29,12 @@ async function addFile() {
   try {
     const formData = new FormData()
     newFilesValue.value.forEach(file => formData.append('files', file))
+    // TODO: support upload prefix
     const uploadedFiles = await $fetch('/api/blob', {
       method: 'PUT',
+      params: {
+        prefix: String(prefix.value || '')
+      },
       body: formData
     })
     files.value!.push(...uploadedFiles)
@@ -86,7 +102,28 @@ async function deleteFile(pathname: string) {
       </UButtonGroup>
     </div>
 
+    <UCheckbox v-model="prefixToDirectory" class="mt-2" label="View prefixes as directory" />
+
     <UProgress v-if="loading" class="mt-2" />
+
+    <div v-if="folders?.length || prefixes?.length" class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4">
+      <UButton
+        v-if="prefixes?.length"
+        class="cursor-pointer font-mono text-sm"
+        label="Back"
+        color="gray"
+        @click="prefixes.pop()"
+      />
+      <UCard
+        v-for="folder of folders"
+        :key="folder"
+        class="cursor-pointer font-mono text-xs"
+        :ui="{ body: { padding: '!p-2' } }"
+        @click="prefixes.push(folder)"
+      >
+        {{ folder }}
+      </UCard>
+    </div>
 
     <div v-if="files?.length" class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4">
       <UCard

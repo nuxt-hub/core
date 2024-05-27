@@ -45,6 +45,10 @@ export interface BlobListOptions {
    * The cursor to list the blobs from (used for pagination).
    */
   cursor?: string
+  /**
+   * View prefixes as directory.
+   */
+  delimiter?: string
 }
 
 export interface BlobPutOptions {
@@ -61,6 +65,10 @@ export interface BlobPutOptions {
    * @default false
    */
   addRandomSuffix?: boolean
+  /**
+   * The prefix to use for the blob pathname.
+   */
+  prefix?: string
   [key: string]: any
 }
 
@@ -168,7 +176,14 @@ export function hubBlob(): HubBlob {
         cursor = next.truncated ? next.cursor : undefined
       }
 
-      return listed.objects.map(mapR2ObjectToBlob)
+      if (!options.delimiter) {
+        return listed.objects.map(mapR2ObjectToBlob)
+      }
+
+      return {
+        objects: listed.objects.map(mapR2ObjectToBlob),
+        delimitedPrefixes: listed.delimitedPrefixes
+      }
     },
     async serve(event: H3Event, pathname: string) {
       const object = await bucket.get(decodeURI(pathname))
@@ -184,7 +199,7 @@ export function hubBlob(): HubBlob {
     },
     async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = {}) {
       pathname = decodeURI(pathname)
-      const { contentType: optionsContentType, contentLength, addRandomSuffix, ...customMetadata } = options
+      const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, ...customMetadata } = options
       const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
 
       const { dir, ext, name: filename } = parse(pathname)
@@ -192,6 +207,10 @@ export function hubBlob(): HubBlob {
         pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}-${randomUUID().split('-')[0]}${ext}`)
       } else {
         pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}${ext}`)
+      }
+
+      if (prefix) {
+        pathname = joinURL(prefix, pathname)
       }
 
       const httpMetadata: Record<string, string> = { contentType }
