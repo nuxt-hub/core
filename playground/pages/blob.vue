@@ -62,7 +62,12 @@ function onFileSelect(e: any) {
 async function deleteFile(pathname: string) {
   try {
     await $fetch(`/api/blob/${pathname}`, { method: 'DELETE' })
-    files.value = files.value!.filter(t => t.pathname !== pathname)
+    if (delimiter.value) {
+      blobData.value.objects = blobData.value.objects!.filter(t => t.pathname !== pathname)
+    } else {
+      blobData.value = blobData.value!.filter(t => t.pathname !== pathname)
+    }
+
     toast.add({ title: `File "${pathname}" deleted.` })
   } catch (err: any) {
     const title = err.data?.data?.issues?.map((issue: any) => issue.message).join('\n') || err.message
