@@ -47,7 +47,6 @@ async function addFile() {
   try {
     const formData = new FormData()
     newFilesValue.value.forEach(file => formData.append('files', file))
-    // TODO: support upload prefix
     const uploadedFiles = await $fetch('/api/blob', {
       method: 'PUT',
       params: {
