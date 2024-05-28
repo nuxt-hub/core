@@ -173,9 +173,9 @@ export function hubBlob(): HubBlob {
   const bucket = _useBucket()
 
   const blob = {
-    async list(options: BlobListOptions = { limit: 1000 }) {
+    async list(options?: BlobListOptions) {
       const resolvedOptions = defu(options, {
-        limit: 500,
+        limit: 1000,
         include: ['httpMetadata' as const, 'customMetadata' as const],
         delimiter: options.folded ? '/' : undefined
       })
