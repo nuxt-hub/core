@@ -182,12 +182,12 @@ export function hubBlob(): HubBlob {
 
       // https://developers.cloudflare.com/r2/api/workers/workers-api-reference/#r2listoptions
       const listed = await bucket.list(resolvedOptions)
-      const truncated = listed.truncated
+      const hasMore = listed.truncated
       const cursor = listed.truncated ? listed.cursor : undefined
 
       return {
         blobs: listed.objects.map(mapR2ObjectToBlob),
-        hasMore: truncated,
+        hasMore,
         cursor,
         folders: resolvedOptions.delimiter ? listed.delimitedPrefixes : undefined
       }
