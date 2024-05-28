@@ -2,21 +2,20 @@
 const loading = ref(false)
 const newFilesValue = ref<File[]>([])
 const uploadRef = ref()
-const prefixToDirectory = ref(false)
+const folded = ref(false)
 const prefixes = ref([])
 
-const delimiter = computed(() => prefixToDirectory.value ? '/' : undefined)
 const prefix = computed(() => prefixes.value?.[prefixes.value.length - 1])
 const toast = useToast()
 const { data: blobData } = await useFetch('/api/blob', {
   params: {
-    delimiter,
+    folded,
     prefix
   }
 })
 
-const files = computed(() => delimiter.value ? blobData.value?.objects || [] : blobData.value)
-const folders = computed(() => delimiter.value ? blobData.value?.delimitedPrefixes || [] : [])
+const files = computed(() => blobData.value?.blobs || [])
+const folders = computed(() => blobData.value?.folders || [])
 
 async function addFile() {
   if (!newFilesValue.value.length) {
@@ -62,11 +61,8 @@ function onFileSelect(e: any) {
 async function deleteFile(pathname: string) {
   try {
     await $fetch(`/api/blob/${pathname}`, { method: 'DELETE' })
-    if (delimiter.value) {
-      blobData.value.objects = blobData.value.objects!.filter(t => t.pathname !== pathname)
-    } else {
-      blobData.value = blobData.value!.filter(t => t.pathname !== pathname)
-    }
+
+    blobData.value.blobs = blobData.value.blobs!.filter(t => t.pathname !== pathname)
 
     toast.add({ title: `File "${pathname}" deleted.` })
   } catch (err: any) {
@@ -107,7 +103,7 @@ async function deleteFile(pathname: string) {
       </UButtonGroup>
     </div>
 
-    <UCheckbox v-model="prefixToDirectory" class="mt-2" label="View prefixes as directory" />
+    <UCheckbox v-model="folded" class="mt-2" label="View prefixes as directory" />
 
     <UProgress v-if="loading" class="mt-2" />
 

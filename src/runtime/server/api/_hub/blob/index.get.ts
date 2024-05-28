@@ -9,7 +9,7 @@ export default eventHandler(async (event) => {
   requireNuxtHubFeature('blob')
 
   const listOptions = await getValidatedQuery(event, z.object({
-    delimiter: z.string().optional(),
+    folded: z.string().toLowerCase().transform(x => x === 'true').optional(),
     limit: z.number().optional(),
     prefix: z.string().optional()
   }).parse)

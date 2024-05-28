@@ -48,7 +48,7 @@ export interface BlobListOptions {
   /**
    * View prefixes as directory.
    */
-  delimiter?: string
+  folded?: boolean
 }
 
 export interface BlobPutOptions {
@@ -91,13 +91,32 @@ function _useBucket(name: string = 'BLOB') {
   throw createError(`Missing Cloudflare ${name} binding (R2)`)
 }
 
+interface BlobListResult {
+  /**
+   * The list of blobs.
+   */
+  blobs: BlobObject[]
+  /**
+   * The Boolean indicating if there are more blobs to list.
+   */
+  hasMore: boolean
+  /**
+   * The cursor to use for pagination.
+   */
+  cursor?: string
+  /**
+   * The list of folders with `/` delimiter.
+   */
+  folders?: string[]
+}
+
 interface HubBlob {
   /**
    * List all the blobs in the bucket.
    *
    * @param options The list options
    */
-  list(options?: BlobListOptions): Promise<BlobObject[]>
+  list(options?: BlobListOptions): Promise<BlobListResult>
   /**
    * Serve the blob from the bucket.
    *
@@ -157,32 +176,20 @@ export function hubBlob(): HubBlob {
     async list(options: BlobListOptions = { limit: 1000 }) {
       const resolvedOptions = defu(options, {
         limit: 500,
-        include: ['httpMetadata' as const, 'customMetadata' as const]
+        include: ['httpMetadata' as const, 'customMetadata' as const],
+        delimiter: options.folded ? '/' : undefined
       })
 
       // https://developers.cloudflare.com/r2/api/workers/workers-api-reference/#r2listoptions
       const listed = await bucket.list(resolvedOptions)
-      let truncated = listed.truncated
-      let cursor = listed.truncated ? listed.cursor : undefined
-
-      while (truncated) {
-        const next = await bucket.list({
-          ...options,
-          cursor: cursor
-        })
-        listed.objects.push(...next.objects)
-
-        truncated = next.truncated
-        cursor = next.truncated ? next.cursor : undefined
-      }
-
-      if (!options.delimiter) {
-        return listed.objects.map(mapR2ObjectToBlob)
-      }
+      const truncated = listed.truncated
+      const cursor = listed.truncated ? listed.cursor : undefined
 
       return {
-        objects: listed.objects.map(mapR2ObjectToBlob),
-        delimitedPrefixes: listed.delimitedPrefixes
+        blobs: listed.objects.map(mapR2ObjectToBlob),
+        hasMore: truncated,
+        cursor,
+        folders: options.folded ? listed.delimitedPrefixes : undefined
       }
     },
     async serve(event: H3Event, pathname: string) {
@@ -270,7 +277,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
 
   const blob = {
     async list(options: BlobListOptions = { limit: 1000 }) {
-      return blobAPI<BlobObject[]>('/', {
+      return blobAPI<BlobListResult>('/', {
         method: 'GET',
         query: options
       })
