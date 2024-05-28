@@ -23,7 +23,10 @@ useHead({
 
 useSeoMeta({
   ogSiteName: seo?.siteName,
-  twitterCard: 'summary_large_image'
+  twitterCard: 'summary_large_image',
+  titleTemplate(title) {
+    return title.includes('NuxtHub') ? title : `${title} · NuxtHub`
+  }
 })
 
 const docsNavigation = computed(() => navigation.value.filter(nav => nav._path === '/docs'))

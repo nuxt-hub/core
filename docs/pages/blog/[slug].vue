@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { withoutTrailingSlash } from 'ufo'
+import { withoutTrailingSlash, joinURL } from 'ufo'
 import type { BlogPost } from '~/types'
 
 const route = useRoute()
 const { copy } = useCopyToClipboard()
+const { url } = useSiteConfig()
 
 const { data: post } = await useAsyncData(route.path, () => queryContent<BlogPost>(route.path).findOne())
 if (!post.value) {
@@ -29,7 +30,7 @@ useSeoMeta({
 })
 
 if (post.value.image) {
-  defineOgImage({ url: post.value.image })
+  defineOgImage({ url: joinURL(url, post.value.image) })
 }
 
 const socialLinks = computed(() => [{
@@ -43,14 +44,6 @@ const socialLinks = computed(() => [{
 function copyLink() {
   copy(`https://hub.nuxt.com${post.value._path}`, { title: 'Post URL to clipboard' })
 }
-const links = [
-  {
-    icon: 'i-ph-shooting-star-duotone',
-    label: 'Star on GitHub',
-    to: 'https://github.com/nuxt-hub/platform',
-    target: '_blank'
-  }
-]
 </script>
 
 <template>

@@ -20,7 +20,10 @@ useSeoMeta({
   title,
   description,
   ogDescription: description,
-  ogTitle: title
+  ogTitle: `${title} · NuxtHub`
+})
+defineOgImageComponent('Docs', {
+  title: 'Blog'
 })
 </script>
 

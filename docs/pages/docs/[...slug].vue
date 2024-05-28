@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { joinURL, withoutTrailingSlash } from 'ufo'
+import { withoutTrailingSlash } from 'ufo'
 
 definePageMeta({
   layout: 'docs'
@@ -7,7 +7,6 @@ definePageMeta({
 
 const route = useRoute()
 const { toc, seo } = useAppConfig()
-const { url } = useSiteConfig()
 
 const { data: page } = await useAsyncData(route.path, () => queryContent(route.path).findOne())
 if (!page.value) {
@@ -18,7 +17,6 @@ const { data: surround } = await useAsyncData(`${route.path}-surround`, () => qu
   .where({ _extension: 'md', navigation: { $ne: false } })
   .only(['title', 'description', '_path'])
   .findSurround(withoutTrailingSlash(route.path))
-
 )
 
 useSeoMeta({
@@ -26,14 +24,11 @@ useSeoMeta({
   title: page.value.title,
   ogTitle: `${page.value.title} - ${seo?.siteName}`,
   description: page.value.description,
-  ogDescription: page.value.description,
-  ogImage: joinURL(url, '/social-card.png')
+  ogDescription: page.value.description
 })
 
-defineOgImage({
-  component: 'Docs',
-  title: page.value.title,
-  description: page.value.description
+defineOgImageComponent('Docs', {
+  category: 'Docs'
 })
 
 const headline = computed(() => findPageHeadline(page.value))

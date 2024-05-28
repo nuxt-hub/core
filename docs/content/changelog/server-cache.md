@@ -2,7 +2,7 @@
 title: Server Cache UI
 description: "It's now possible to manage your server cache with our new Server Cache UI."
 date: 2024-04-18
-img: '/images/changelog/server-cache.png'
+image: '/images/changelog/server-cache.png'
 authors:
   - name: Sebastien Chopin
     avatar:

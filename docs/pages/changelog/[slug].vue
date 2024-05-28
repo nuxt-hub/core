@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { withoutTrailingSlash } from 'ufo'
+import { withoutTrailingSlash, joinURL } from 'ufo'
 import type { ChangelogPost } from '~/types'
 
 const route = useRoute()
 const { copy } = useCopyToClipboard()
+const { url } = useSiteConfig()
 
 const { data: changelog } = await useAsyncData(route.path, () => queryContent<ChangelogPost>(route.path).findOne())
 if (!changelog.value) {
@@ -25,11 +26,11 @@ useSeoMeta({
   title,
   description,
   ogDescription: description,
-  ogTitle: `${title} ·  NuxtHub Changelog`
+  ogTitle: `${title} · NuxtHub Changelog`
 })
 
 if (changelog.value.image) {
-  defineOgImage({ url: changelog.value.image })
+  defineOgImage({ url: joinURL(url, changelog.value.image) })
 }
 const socialLinks = computed(() => [{
   icon: 'i-simple-icons-linkedin',

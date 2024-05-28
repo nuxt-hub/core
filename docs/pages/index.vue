@@ -8,7 +8,7 @@ const { url } = useSiteConfig()
 
 useSeoMeta({
   title: page.value.title,
-  ogTitle: page.value.title,
+  ogTitle: `${page.value.title} · NuxtHub`,
   description: page.value.description,
   ogDescription: page.value.description,
   ogImage: joinURL(url, '/social-card.png')

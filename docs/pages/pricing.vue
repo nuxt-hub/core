@@ -1,21 +1,18 @@
 <script setup lang="ts">
-import { joinURL } from 'ufo'
-
 const { data: page } = await useAsyncData('pricing', () => queryContent('/pricing').findOne())
 
 const isYearly = ref(true)
 const isWorkersPaid = ref(false)
 const appear = ref(false)
 
-const { url } = useSiteConfig()
-
 useSeoMeta({
   title: page.value.title,
-  ogTitle: page.value.title,
+  ogTitle: `${page.value.title} · NuxtHub`,
   description: page.value.description,
-  ogDescription: page.value.description,
-  ogImage: joinURL(url, '/social-card.png')
+  ogDescription: page.value.description
 })
+
+defineOgImageComponent('Docs')
 
 onMounted(() => {
   setTimeout(() => {

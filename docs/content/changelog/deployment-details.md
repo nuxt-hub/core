@@ -2,7 +2,7 @@
 title: Deployment Details
 description: "We redesigned the deployment listing as well as added the deployment page to provide more information about each deployment."
 date: 2024-05-28
-img: '/images/changelog/deployment-details.png'
+image: '/images/changelog/deployment-details.png'
 authors:
   - name: Sebastien Chopin
     avatar: 

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { joinURL } from 'ufo'
-
 const { data: page } = await useAsyncData('changelog', () => queryContent('/changelog').findOne())
 
 const { fetchList, changelogs } = useChangelog()
@@ -13,15 +11,15 @@ const scrollTop = ref(0)
 
 const { y } = useWindowScroll()
 const { isScrolling, arrivedState } = useScroll(document)
-const { url } = useSiteConfig()
 
 useSeoMeta({
   title: page.value.title,
-  ogTitle: page.value.title,
+  ogTitle: `${page.value.title} · NuxtHub`,
   description: page.value.description,
-  ogDescription: page.value.description,
-  ogImage: joinURL(url, '/social-card.png')
+  ogDescription: page.value.description
 })
+
+defineOgImageComponent('Docs')
 
 onMounted(() => {
   dot.value.style.left = `${container.value[0].offsetLeft + 3}px`
@@ -98,7 +96,7 @@ await fetchList()
             <div class="space-y-4 -mt-1">
               <NuxtLink :to="changelog._path" :aria-label="changelog.titke" class="inline-block overflow-hidden rounded-md">
                 <NuxtImg
-                  :alt="changelog.title || ''" loading="lazy" width="915" height="515" :src="changelog.img"
+                  :alt="changelog.title || ''" loading="lazy" width="915" height="515" :src="changelog.image"
                   class="aspect-[16/9] object-cover hover:scale-105 transition duration-300 h-full"
                 />
               </NuxtLink>
