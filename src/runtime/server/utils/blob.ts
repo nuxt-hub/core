@@ -177,7 +177,7 @@ export function hubBlob(): HubBlob {
       const resolvedOptions = defu(options, {
         limit: 1000,
         include: ['httpMetadata' as const, 'customMetadata' as const],
-        delimiter: options.folded ? '/' : undefined
+        delimiter: options?.folded ? '/' : undefined
       })
 
       // https://developers.cloudflare.com/r2/api/workers/workers-api-reference/#r2listoptions
@@ -189,7 +189,7 @@ export function hubBlob(): HubBlob {
         blobs: listed.objects.map(mapR2ObjectToBlob),
         hasMore: truncated,
         cursor,
-        folders: options.folded ? listed.delimitedPrefixes : undefined
+        folders: resolvedOptions.delimiter ? listed.delimitedPrefixes : undefined
       }
     },
     async serve(event: H3Event, pathname: string) {

@@ -4,18 +4,37 @@ const newFilesValue = ref<File[]>([])
 const uploadRef = ref()
 const folded = ref(false)
 const prefixes = ref([])
+const limit = ref(5)
 
 const prefix = computed(() => prefixes.value?.[prefixes.value.length - 1])
 const toast = useToast()
 const { data: blobData } = await useFetch('/api/blob', {
   params: {
     folded,
-    prefix
+    prefix,
+    limit
   }
 })
 
 const files = computed(() => blobData.value?.blobs || [])
 const folders = computed(() => blobData.value?.folders || [])
+
+async function loadMore() {
+  if (blobData.value.hasMore) {
+    const nextPage = await $fetch('/api/blob', {
+      params: {
+        folded: folded.value,
+        prefix: prefix.value,
+        limit: limit.value,
+        cursor: blobData.value.cursor
+      }
+    })
+
+    blobData.value.blobs = [...blobData.value.blobs, ...nextPage.blobs]
+    blobData.value.cursor = nextPage.cursor
+    blobData.value.hasMore = nextPage.hasMore
+  }
+}
 
 async function addFile() {
   if (!newFilesValue.value.length) {
@@ -157,5 +176,8 @@ async function deleteFile(pathname: string) {
         <UButton icon="i-heroicons-x-mark" variant="link" color="primary" class="absolute top-0 right-0" @click="deleteFile(file.pathname)" />
       </UCard>
     </div>
+    <UButton v-if="blobData?.hasMore" block color="black" variant="outline" class="mt-2" @click="loadMore">
+      Load more
+    </UButton>
   </UCard>
 </template>
