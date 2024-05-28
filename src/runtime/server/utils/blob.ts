@@ -157,7 +157,7 @@ interface HubBlob {
  *
  * @example ```ts
  * const blob = hubBlob()
- * const blobs = await blob.list()
+ * const { blobs } = await blob.list()
  * ```
  *
  * @see https://hub.nuxt.com/docs/storage/blob
@@ -260,7 +260,7 @@ export function hubBlob(): HubBlob {
  *
  * @example ```ts
  * const blob = proxyHubBlob('https://my-deployed-project.nuxt.dev', 'my-secret-key')
- * const blobs = await blob.list()
+ * const { blobs } = await blob.list()
  * ```
  *
  * @see https://hub.nuxt.com/docs/storage/blob
