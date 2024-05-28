@@ -91,7 +91,7 @@ function _useBucket(name: string = 'BLOB') {
   throw createError(`Missing Cloudflare ${name} binding (R2)`)
 }
 
-interface BlobListResult {
+export interface BlobListResult {
   /**
    * The list of blobs.
    */
