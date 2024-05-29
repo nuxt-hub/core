@@ -1,6 +1,60 @@
 # Changelog
 
 
+## v0.5.18
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.17...v0.5.18)
+
+### 🚀 Enhancements
+
+- Option to specify storage directory in development ([#112](https://github.com/nuxt-hub/core/pull/112))
+- Support dynamic project url ([#117](https://github.com/nuxt-hub/core/pull/117))
+
+### 📖 Documentation
+
+- Update drizzle instructions ([#106](https://github.com/nuxt-hub/core/pull/106))
+- Add seed configuration for database population with Nitro Tasks ([#107](https://github.com/nuxt-hub/core/pull/107))
+
+### 🏡 Chore
+
+- Clean zod validation in database api endpoints ([#109](https://github.com/nuxt-hub/core/pull/109))
+- Update deps ([d3cdb5c](https://github.com/nuxt-hub/core/commit/d3cdb5c))
+- Lint fix ([641a461](https://github.com/nuxt-hub/core/commit/641a461))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Max ([@onmax](http://github.com/onmax))
+- Jonathan Beckman ([@unibeck](http://github.com/unibeck))
+
+## v0.5.17
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.16...v0.5.17)
+
+### 🩹 Fixes
+
+- Force nitro preset only in production when remote is disabled ([caed55b](https://github.com/nuxt-hub/core/commit/caed55b))
+- **auth:** Use Map instead of plain object ([1ae0f90](https://github.com/nuxt-hub/core/commit/1ae0f90))
+
+### 📖 Documentation
+
+- Remove `\n` for sql queries ([4266acb](https://github.com/nuxt-hub/core/commit/4266acb))
+- Force tailwind and ui version ([2429335](https://github.com/nuxt-hub/core/commit/2429335))
+- Set pnpm version in engine ([e3dc5a2](https://github.com/nuxt-hub/core/commit/e3dc5a2))
+
+### 🏡 Chore
+
+- Generate wrangler using `confbox` ([927c1b7](https://github.com/nuxt-hub/core/commit/927c1b7))
+- Fix wrangler typo in utils ([#96](https://github.com/nuxt-hub/core/pull/96))
+- Add issue templates ([48a1065](https://github.com/nuxt-hub/core/commit/48a1065))
+- Update deps ([69994d7](https://github.com/nuxt-hub/core/commit/69994d7))
+- Remove engines ([3c53e95](https://github.com/nuxt-hub/core/commit/3c53e95))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Dominik Opyd <dominik.opyd@gmail.com>
+
 ## v0.5.16
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.15...v0.5.16)

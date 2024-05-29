@@ -13,7 +13,6 @@ defineProps({
     required: true
   }
 })
-
 useHead({
   htmlAttrs: {
     lang: 'en'

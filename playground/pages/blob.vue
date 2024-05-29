@@ -2,9 +2,39 @@
 const loading = ref(false)
 const newFilesValue = ref<File[]>([])
 const uploadRef = ref<HTMLInputElement>()
+const folded = ref(false)
+const prefixes = ref([])
+const limit = ref(5)
 
+const prefix = computed(() => prefixes.value?.[prefixes.value.length - 1])
 const toast = useToast()
-const { data: files } = await useFetch<BlobObject[]>('/api/blob')
+const { data: blobData } = await useFetch('/api/blob', {
+  params: {
+    folded,
+    prefix,
+    limit
+  }
+})
+
+const files = computed(() => blobData.value?.blobs || [])
+const folders = computed(() => blobData.value?.folders || [])
+
+async function loadMore() {
+  if (!blobData.value?.hasMore) return
+  const nextPage = await $fetch('/api/blob', {
+    params: {
+      folded: folded.value,
+      prefix: prefix.value,
+      limit: limit.value,
+      cursor: blobData.value.cursor
+    }
+  })
+
+  blobData.value.blobs = [...blobData.value.blobs, ...nextPage.blobs]
+  blobData.value.folders = [...blobData.value.folders || [], ...(nextPage.folders || [])]
+  blobData.value.cursor = nextPage.cursor
+  blobData.value.hasMore = nextPage.hasMore
+}
 
 async function addFile() {
   if (!newFilesValue.value.length) {
@@ -15,7 +45,7 @@ async function addFile() {
   loading.value = true
 
   try {
-    const uploadedFiles = await useUpload('/api/blob', { method: 'PUT' })(newFilesValue.value)
+    const uploadedFiles = await useUpload('/api/blob', { method: 'PUT', prefix: String(prefix.value || '') })(newFilesValue.value)
 
     files.value!.push(...uploadedFiles)
     toast.add({ title: `File${uploadedFiles.length > 1 ? 's' : ''} uploaded.` })
@@ -42,7 +72,9 @@ function onFileSelect(e: any) {
 async function deleteFile(pathname: string) {
   try {
     await $fetch(`/api/blob/${pathname}`, { method: 'DELETE' })
-    files.value = files.value!.filter(t => t.pathname !== pathname)
+
+    blobData.value!.blobs = blobData.value!.blobs!.filter(t => t.pathname !== pathname)
+
     toast.add({ title: `File "${pathname}" deleted.` })
   } catch (err: any) {
     const title = err.data?.data?.issues?.map((issue: any) => issue.message).join('\n') || err.message
@@ -82,7 +114,28 @@ async function deleteFile(pathname: string) {
       </UButtonGroup>
     </div>
 
+    <UCheckbox v-model="folded" class="mt-2" label="View prefixes as directory" />
+
     <UProgress v-if="loading" class="mt-2" />
+
+    <div v-if="folders?.length || prefixes?.length" class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4">
+      <UButton
+        v-if="prefixes?.length"
+        class="cursor-pointer font-mono text-sm"
+        label="Back"
+        color="gray"
+        @click="prefixes.pop()"
+      />
+      <UCard
+        v-for="folder of folders"
+        :key="folder"
+        class="cursor-pointer font-mono text-xs"
+        :ui="{ body: { padding: '!p-2' } }"
+        @click="prefixes.push(folder)"
+      >
+        {{ folder }}
+      </UCard>
+    </div>
 
     <div v-if="files?.length" class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4">
       <UCard
@@ -115,5 +168,8 @@ async function deleteFile(pathname: string) {
         <UButton icon="i-heroicons-x-mark" variant="link" color="primary" class="absolute top-0 right-0" @click="deleteFile(file.pathname)" />
       </UCard>
     </div>
+    <UButton v-if="blobData?.hasMore" block color="black" variant="outline" class="mt-2" @click="loadMore">
+      Load more
+    </UButton>
   </UCard>
 </template>
