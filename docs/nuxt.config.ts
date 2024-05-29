@@ -25,7 +25,8 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/css/style.css'],
   routeRules: {
-    '/api/search.json': { prerender: true }
+    '/api/search.json': { prerender: true },
+    '/api/templates.json': { prerender: true }
   },
   nitro: {
     prerender: {

@@ -1,7 +1,16 @@
-head.title: NuxtHub Templates
-title: NuxtHub Templates
-navigation.title: NuxtHub Templates
-description: 'Explore NuxtHub templates to get up and running in a few seconds.'
+title: Templates
+description: 'Explore full-stack Nuxt templates to get up and running in a few seconds.'
 hero:
   title: 'NuxtHub Templates'
-  description: 'Explore NuxtHub templates to get up and running in a few seconds.'
+  description: 'Explore full-stack Nuxt templates to get up and running in a few seconds.'
+  align: center
+  links:
+    - label: Deploy a template
+      icon: i-ph-rocket-launch-duotone
+      color: black
+      to: https://admin.hub.nuxt.com
+      target: _blank
+    - label: Read the documentation
+      icon: i-ph-book-open
+      color: white
+      to: /docs/getting-started

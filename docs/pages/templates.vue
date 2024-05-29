@@ -1,7 +1,6 @@
 <script setup lang="ts">
+const { data: templates } = await useFetch('/api/templates.json')
 const { data: page } = await useAsyncData('templates', () => queryContent('/templates').findOne())
-
-const { templates, fetchList } = useTemplate()
 
 useSeoMeta({
   title: page.value.title,
@@ -13,20 +12,18 @@ useSeoMeta({
 defineOgImageComponent('Docs', {
   title: 'Templates'
 })
-
-await fetchList()
 </script>
 
 <template>
   <UContainer>
-    <UPageHeader align="center" class="my-16" v-bind="page.hero" :ui="{ title: 'w-full text-center', wrapper: 'border-0' }" />
-    <UPageGrid>
+    <UPageHero v-bind="page?.hero" />
+    <UPageGrid class="pb-8">
       <UPageCard
         v-for="(template, index) in templates" :key="index"
         :ui="{ wrapper: 'overflow-hidden flex flex-col', body: { base: '!p-0 relative group' } }"
       >
         <div class="w-full aspect-[16/9] h-full">
-          <div v-if="template.demoUrl">
+          <div>
             <img
               :src="template.imageUrl"
               class="object-cover object-top w-full h-full xl:hidden" :alt="template.title" width="600" height="300"
@@ -38,24 +35,6 @@ await fetchList()
               height="140" format="webp" :modifiers="{ pos: 'top' }"
             >
           </div>
-
-          <div
-            v-else
-            class="w-full h-full bg-gray-200 dark:bg-gray-800 flex flex-col gap-2 items-center justify-center text-gray-400 dark:text-gray-500 font-semibold"
-          >
-            <UIcon name="i-ph-camera-slash-duotone" class="w-8 h-8" />
-            <span>No preview</span>
-          </div>
-        </div>
-
-        <div class="group-hover:opacity-100 opacity-0 absolute inset-0 bg-gray-900/40 transition-opacity">
-          <div class="h-full flex flex-col items-center justify-center gap-2">
-            <UButton label="View on GitHub" color="black" size="lg" icon="i-simple-icons-github" trailing-icon="i-ph-arrow-up-right" :to="`https://github.com/${template.repo}`" external />
-            <UButton
-              v-if="template.demoUrl" label="View demo" size="lg" :to="template.demoUrl"
-              color="gray" trailing-icon="i-ph-arrow-up-right" :ui="{ color: { gray: { solid: 'hover:dark:bg-gray-700' } } }" external
-            />
-          </div>
         </div>
 
         <template #footer>
@@ -66,6 +45,48 @@ await fetchList()
             <p class="text-sm">
               {{ template.description }}
             </p>
+            <div class="flex items-center flex-wrap gap-1">
+              <UBadge
+                v-if="template.workersPaid"
+                label="Workers Paid"
+                color="amber"
+                variant="subtle"
+                size="sm"
+                class="rounded-full"
+              />
+              <UBadge
+                v-for="feature of template.features"
+                :key="feature"
+                :label="feature"
+                size="sm"
+                color="gray"
+                class="rounded-full"
+              />
+            </div>
+            <UButtonGroup class="mt-3 w-full">
+              <UButton
+                v-if="template.demoUrl"
+                label="Demo"
+                icon="i-ph-desktop-duotone"
+                :to="template.demoUrl"
+                target="_blank"
+                size="sm"
+                color="gray"
+                class="w-1/2 justify-center"
+                :ui="{ icon: { size: { sm: 'w-4 h-4' } } }"
+              />
+              <UButton
+                label="GitHub"
+                icon="i-simple-icons-github"
+                :to="`https://github.com/${template.owner}/${template.repo}`"
+                target="_blank"
+                size="sm"
+                color="gray"
+                class="justify-center"
+                :class="template.demoUrl ? 'w-1/2' : 'w-full'"
+                :ui="{ icon: { size: { sm: 'w-4 h-4' } } }"
+              />
+            </UButtonGroup>
           </div>
         </template>
       </UPageCard>
