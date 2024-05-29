@@ -125,7 +125,6 @@ export default defineNuxtModule<ModuleOptions>({
       env: process.env.NUXT_HUB_ENV || 'production',
       openapi: nuxt.options.nitro.experimental?.openAPI === true
     })
-    // @ts-expect-error issue with defu and projectUrl type
     runtimeConfig.hub = hub
     // validate remote option
     if (hub.remote && !['true', 'production', 'preview'].includes(String(hub.remote))) {
