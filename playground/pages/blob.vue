@@ -20,20 +20,20 @@ const files = computed(() => blobData.value?.blobs || [])
 const folders = computed(() => blobData.value?.folders || [])
 
 async function loadMore() {
-  if (blobData.value.hasMore) {
-    const nextPage = await $fetch('/api/blob', {
-      params: {
-        folded: folded.value,
-        prefix: prefix.value,
-        limit: limit.value,
-        cursor: blobData.value.cursor
-      }
-    })
+  if (!blobData.value.hasMore) return
+  const nextPage = await $fetch('/api/blob', {
+    params: {
+      folded: folded.value,
+      prefix: prefix.value,
+      limit: limit.value,
+      cursor: blobData.value.cursor
+    }
+  })
 
-    blobData.value.blobs = [...blobData.value.blobs, ...nextPage.blobs]
-    blobData.value.cursor = nextPage.cursor
-    blobData.value.hasMore = nextPage.hasMore
-  }
+  blobData.value.blobs = [...blobData.value.blobs, ...nextPage.blobs]
+  blobData.value.folders = [...blobData.value.folders || [], ...(nextPage.folders || [])]
+  blobData.value.cursor = nextPage.cursor
+  blobData.value.hasMore = nextPage.hasMore
 }
 
 async function addFile() {
