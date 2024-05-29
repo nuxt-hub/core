@@ -1,9 +1,9 @@
 title: 'Pricing'
-description: 'Discover the pricing plans for NuxtHub to build & deploy full-stack applications globally.'
+description: 'Get started with NuxtHub for free and upgrade as you grow.'
 navigation: false
 hero:
   headline: '-20% off with yearly plan'
-  title: 'Discover the right plan <span class="text-primary">for you</span>'
+  title: 'Start for free, upgrade <span class="text-primary">as you grow</span>'
   description: 'NuxtHub is built on Cloudflare for optimal performance. While separate subscriptions are required, you get the combined power of both, with plans to suit your specific needs.'
   orientation: horizontal
   img:
@@ -41,7 +41,8 @@ pricing:
         - 'Unlimited projects'
         - 'Unlimited deployments'
         - 'Collaborate with your team'
-        - 'Access control on remote storage (soon)'
+        - 'Access control on remote storage'
+        - 'Early access to new features'
         - 'Priority support'
       button:
         label: 'Get started as a team'
@@ -86,7 +87,8 @@ cloudflare:
         10 million requests / month + +$0.30/million<br>
         10 MB worker size<br>
         30s CPU time per invocation<br>
-        500 applications<br>
+        30 million CPU milliseconds + $0.02/million<br>
+        500 applications
       to: 'https://developers.cloudflare.com/workers/platform/pricing/'
     - title: 'Cloudflare D1 (Database)'
       free: >

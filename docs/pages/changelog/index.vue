@@ -1,7 +1,20 @@
 <script setup lang="ts">
-const { data: page } = await useAsyncData('changelog', () => queryContent('/changelog').findOne())
+import type { ChangelogPost } from '~/types'
 
-const { fetchList, changelogs } = useChangelog()
+definePageMeta({
+  primary: 'purple'
+})
+const { data: page } = await useAsyncData('changelog', () => queryContent('/changelog').findOne())
+const { data: changelogs } = await useAsyncData('changelog-items', async () => {
+  let items = await queryContent<ChangelogPost>('/changelog')
+    .where({ _extension: 'md' })
+    .without(['body', 'excerpt'])
+    .sort({ date: -1 })
+    .find()
+
+  items = (items as ChangelogPost[]).filter(changelog => changelog._path !== '/changelog')
+  return items
+})
 
 const dot = ref<HTMLElement>()
 const dots = ref<HTMLElement[]>()
@@ -60,8 +73,6 @@ watch(() => arrivedState.bottom, () => {
     dots.value[dots.value.length - 1].classList.add('neon')
   }
 })
-
-await fetchList()
 </script>
 
 <template>

@@ -2,6 +2,11 @@
 import { withoutTrailingSlash, joinURL } from 'ufo'
 import type { ChangelogPost } from '~/types'
 
+definePageMeta({
+  primary: 'purple',
+  heroBackground: 'opacity-20'
+})
+
 const route = useRoute()
 const { copy } = useCopyToClipboard()
 const { url } = useSiteConfig()
@@ -11,8 +16,8 @@ if (!changelog.value) {
   throw createError({ statusCode: 404, statusMessage: 'Post not found', fatal: true })
 }
 
-const { data: surround } = await useAsyncData(`${route.path}-surround`, () => queryContent('/blog')
-  .where({ _extension: 'md' })
+const { data: surround } = await useAsyncData(`${route.path}-surround`, () => queryContent('/changelog')
+  .where({ _extension: 'md', navigation: { $ne: false }, _path: { $regex: /^\/changelog/ } })
   .without(['body', 'excerpt'])
   .sort({ date: -1 })
   .findSurround(withoutTrailingSlash(route.path))

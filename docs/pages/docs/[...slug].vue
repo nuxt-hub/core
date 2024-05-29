@@ -2,7 +2,9 @@
 import { withoutTrailingSlash } from 'ufo'
 
 definePageMeta({
-  layout: 'docs'
+  layout: 'docs',
+  primary: 'green',
+  heroBackground: 'opacity-30'
 })
 
 const route = useRoute()
@@ -14,7 +16,7 @@ if (!page.value) {
 }
 
 const { data: surround } = await useAsyncData(`${route.path}-surround`, () => queryContent()
-  .where({ _extension: 'md', navigation: { $ne: false } })
+  .where({ _extension: 'md', navigation: { $ne: false }, _path: { $regex: /^\/docs/ } })
   .only(['title', 'description', '_path'])
   .findSurround(withoutTrailingSlash(route.path))
 )
@@ -54,7 +56,7 @@ const links = computed(() => [toc?.bottom?.edit && {
     </UPageBody>
 
     <template v-if="page.toc !== false" #right>
-      <UContentToc :title="toc?.title" :links="page.body?.toc?.links" class="bg-white dark:bg-gray-950">
+      <UContentToc :title="toc?.title" :links="page.body?.toc?.links" class="bg-transparent dark:bg-transparent backdrop-blur-none">
         <template v-if="toc?.bottom" #bottom>
           <div class="hidden lg:block space-y-6" :class="{ '!mt-6': page.body?.toc?.links?.length }">
             <UDivider v-if="page.body?.toc?.links?.length" type="dashed" />

@@ -6,7 +6,8 @@ const links = [
     to: '/docs/getting-started'
   }, {
     label: 'Templates',
-    to: '/templates'
+    to: '/templates',
+    color: 'cyan'
   }, {
     label: 'Pricing',
     to: '/pricing'
@@ -23,7 +24,10 @@ const links = [
 <template>
   <UHeader :ui="{}" :links="links">
     <template #logo>
-      <UColorModeImage light="/images/logo-light.svg" dark="/images/logo-dark.svg" class="h-6" alt="NuxtHub logo" />
+      <HubLogo class="h-6" />
+      <UBadge variant="subtle" size="xs" class="-mb-[2px] rounded font-semibold">
+        beta
+      </UBadge>
     </template>
 
     <template #right>
@@ -31,7 +35,7 @@ const links = [
         <UContentSearchButton :label="null" />
       </UTooltip>
       <UButton variant="ghost" label="Log in" to="https://admin.hub.nuxt.com/" color="black" size="md" class="hidden sm:block" external />
-      <UButton variant="solid" label="Sign up" to="https://admin.hub.nuxt.com/" size="md" class="text-gray-900 bg-green-400 hidden sm:block" external />
+      <UButton variant="solid" label="Sign up" to="https://admin.hub.nuxt.com/" size="md" class="hidden sm:block" external />
     </template>
 
     <template #panel>

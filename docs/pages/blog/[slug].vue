@@ -2,6 +2,11 @@
 import { withoutTrailingSlash, joinURL } from 'ufo'
 import type { BlogPost } from '~/types'
 
+definePageMeta({
+  primary: 'green',
+  heroBackground: 'opacity-30'
+})
+
 const route = useRoute()
 const { copy } = useCopyToClipboard()
 const { url } = useSiteConfig()
@@ -11,12 +16,13 @@ if (!post.value) {
   throw createError({ statusCode: 404, statusMessage: 'Post not found', fatal: true })
 }
 
-const { data: surround } = await useAsyncData(`${route.path}-surround`, () => queryContent('/blog')
-  .where({ _extension: 'md' })
+const { data: surround } = await useAsyncData(`${route.path}-surround`, () => queryContent()
+  .where({ _extension: 'md', navigation: { $ne: false }, _path: { $regex: /^\/blog/ } })
   .without(['body', 'excerpt'])
   .sort({ date: -1 })
   .findSurround(withoutTrailingSlash(route.path))
 )
+console.log('surround', route.path, surround.value)
 
 const title = post.value.head?.title || post.value.title
 const description = post.value.head?.description || post.value.description

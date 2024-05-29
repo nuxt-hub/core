@@ -1,9 +1,11 @@
 <script setup lang="ts">
+definePageMeta({
+  primary: 'amber'
+})
 const { data: page } = await useAsyncData('pricing', () => queryContent('/pricing').findOne())
 
 const isYearly = ref(true)
 const isWorkersPaid = ref(false)
-const appear = ref(false)
 
 useSeoMeta({
   title: page.value.title,
@@ -13,88 +15,79 @@ useSeoMeta({
 })
 
 defineOgImageComponent('Docs')
-
-onMounted(() => {
-  setTimeout(() => {
-    appear.value = true
-  }, 0)
-})
 </script>
 
 <template>
-  <div class="relative">
-    <img src="/images/pricing/background.svg" class="absolute w-full inset-0 transition-opacity duration-1000" :class="appear ? 'opacity-100' : 'opacity-0'" alt="Pricing hero background">
-    <UContainer>
-      <UPageHero v-bind="page?.hero" align="center" :ui="{ wrapper: 'relative !pt-[144px] !pb-[92px]' }">
-        <template #icon>
+  <UContainer>
+    <UPageHero v-bind="page?.hero" align="center">
+      <!-- <template #icon>
           <UBadge :label="page?.hero.headline" icon="" variant="outline" :ui="{ rounded: 'rounded-full' }" class="badge dark:border border-primary" />
-        </template>
+        </template> -->
 
-        <template #title>
-          <span v-html="page?.hero.title" />
-        </template>
+      <template #title>
+        <span v-html="page?.hero.title" />
+      </template>
 
-        <template #description>
-          {{ page?.hero.description }}
-        </template>
-      </UPageHero>
+      <template #description>
+        {{ page?.hero.description }}
+      </template>
+    </UPageHero>
 
-      <div class="py-12">
-        <div class="w-full flex justify-center">
-          <UPricingToggle v-model="isYearly" class="max-w-xs mb-12" right="Yearly (-20%)" />
-        </div>
+    <div class="py-12">
+      <div class="w-full flex justify-center">
+        <UPricingToggle v-model="isYearly" class="max-w-xs mb-12" right="Yearly (-20%)" />
+      </div>
 
-        <UPricingGrid :compact="false">
-          <UPricingCard
-            v-for="pricing in page?.pricing.plans" :key="pricing.title" v-bind="pricing"
-            :price="pricing.price.monthly ? isYearly ? pricing.price.yearly : pricing.price.monthly : pricing.price"
-            :cycle="pricing.cycle.monthly ? isYearly ? pricing.cycle.yearly : pricing.cycle.monthly : pricing.cycle"
-          />
-        </UPricingGrid>
+      <UPricingGrid :compact="false">
+        <UPricingCard
+          v-for="pricing in page?.pricing.plans" :key="pricing.title" v-bind="pricing"
+          :price="pricing.price.monthly ? isYearly ? pricing.price.yearly : pricing.price.monthly : pricing.price"
+          :cycle="pricing.cycle.monthly ? isYearly ? pricing.cycle.yearly : pricing.cycle.monthly : pricing.cycle"
+        />
+      </UPricingGrid>
 
-        <div class="w-full text-center pt-8 italic text-gray-500 dark:text-gray-400 text-sm" v-html="page?.pricing.info" />
+      <div class="w-full text-center pt-8 italic text-gray-500 dark:text-gray-400 text-sm" v-html="page?.pricing.info" />
 
-        <UCard class="mt-8" :ui="{ body: { padding: 'md:p-[40px]' } }">
-          <div class="flex flex-col gap-y-4 text-center sm:text-left sm:flex-row sm:gap-y-0 justify-between items-center gap-x-8">
-            <div class="flex flex-col gap-y-2">
-              <h2 class="text-2xl font-semibold text-gray-950 dark:text-white">
-                {{ page?.pricing.contact.title }}
-              </h2>
-              <p class="text-gray-500 dark:text-gray-400" v-html="page?.pricing.contact.description" />
-            </div>
-            <UButton v-bind="page?.pricing.contact.button" />
+      <UCard class="mt-8" :ui="{ body: { padding: 'md:p-[40px]' } }">
+        <div class="flex flex-col gap-y-4 text-center sm:text-left sm:flex-row sm:gap-y-0 justify-between items-center gap-x-8">
+          <div class="flex flex-col gap-y-2">
+            <h2 class="text-2xl font-semibold text-gray-950 dark:text-white">
+              {{ page?.pricing.contact.title }}
+            </h2>
+            <p class="text-gray-500 dark:text-gray-400" v-html="page?.pricing.contact.description" />
           </div>
-        </UCard>
-      </div>
-
-      <div class="py-24">
-        <UPageHeader :title="page?.cloudflare.title" :description="page?.cloudflare.description" align="center" :ui="{ title: 'text-center w-full', wrapper: 'border-0' }" />
-        <div class="w-full flex justify-center">
-          <UPricingToggle v-model="isWorkersPaid" class="max-w-[400px] mb-12" left="Workers Free" right="Workers Paid: $5/month" />
+          <UButton v-bind="page?.pricing.contact.button" />
         </div>
-        <UPageGrid :ui="{ wrapper: 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-8' }">
-          <UPageCard v-for="plan in page?.cloudflare.plans" :key="plan.title" :title="plan.title" :to="plan.to">
-            <UIcon name="i-ph-arrow-up-right" class="absolute top-2 right-2 h-4 w-4 text-gray-500 dark:text-gray-400 group-hover:text-gray-950 group-hover:dark:text-white cursor-pointer" />
-            <template #description>
-              <p v-html="plan[isWorkersPaid ? 'paid' : 'free']" />
-            </template>
-          </UPageCard>
-        </UPageGrid>
+      </UCard>
+    </div>
 
-        <div class="flex justify-center w-full pt-[64px]">
-          <UButton v-bind="page?.cloudflare.button" size="lg" class="w-fit" />
-        </div>
+    <div class="py-24">
+      <UPageHeader :title="page?.cloudflare.title" :description="page?.cloudflare.description" align="center" :ui="{ title: 'text-center w-full', wrapper: 'border-0' }" />
+      <div class="w-full flex justify-center">
+        <UPricingToggle v-model="isWorkersPaid" class="max-w-[400px] mb-12" left="Workers Free" right="Workers Paid: $5/month" />
       </div>
-
-      <ULandingSection :title="page.faq.title" :description="page.faq.description" :ui="{ container: 'max-w-5xl' }">
-        <ULandingFAQ :items="page?.faq.items" multiple>
-          <template #item="{ item }">
-            <MDC :value="item.content" class="prose prose-primary dark:prose-invert max-w-none text-gray-500 dark:text-gray-400" />
+      <UPageGrid :ui="{ wrapper: 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-8' }">
+        <UPageCard v-for="plan in page?.cloudflare.plans" :key="plan.title" :title="plan.title" :to="plan.to">
+          <UIcon name="i-ph-arrow-up-right" class="absolute top-2 right-2 h-4 w-4 text-gray-500 dark:text-gray-400 group-hover:text-gray-950 group-hover:dark:text-white cursor-pointer" />
+          <template #description>
+            <span v-html="plan[isWorkersPaid ? 'paid' : 'free']" />
           </template>
-        </ULandingFAQ>
-      </ULandingSection>
-    </UContainer>
-  </div>
+        </UPageCard>
+      </UPageGrid>
+
+      <div class="flex justify-center w-full pt-[64px]">
+        <UButton v-bind="page?.cloudflare.button" size="lg" class="w-fit" />
+      </div>
+    </div>
+
+    <ULandingSection :title="page.faq.title" :description="page.faq.description" :ui="{ container: 'max-w-5xl' }">
+      <ULandingFAQ :items="page?.faq.items" multiple>
+        <template #item="{ item }">
+          <MDC :value="item.content" class="prose prose-primary dark:prose-invert max-w-none text-gray-500 dark:text-gray-400" />
+        </template>
+      </ULandingFAQ>
+    </ULandingSection>
+  </UContainer>
 </template>
 
 <style scoped lang="postcss">

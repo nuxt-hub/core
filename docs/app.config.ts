@@ -6,6 +6,9 @@ export default defineAppConfig({
       dark: {
         background: 'var(--color-gray-950)'
       }
+    },
+    header: {
+      wrapper: 'lg:mb-0 border-0'
     }
   },
   seo: {
