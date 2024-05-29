@@ -55,6 +55,23 @@ onMounted(() => {
     }, 1000)
   }, 0)
 })
+
+const links = [{
+  label: 'NuxtHub Admin',
+  to: 'https://admin.hub.nuxt.com',
+  target: '_blank',
+  icon: 'i-simple-icons-nuxtdotjs'
+}, {
+  label: 'NuxtHub repository',
+  to: 'https://github.com/nuxt-hub/core',
+  target: '_blank',
+  icon: 'i-simple-icons-github'
+}, {
+  label: 'NuxtHub on X',
+  to: 'https://x.com/nuxt_hub',
+  target: '_blank',
+  icon: 'i-simple-icons-x'
+}]
 </script>
 
 <template>
@@ -77,7 +94,7 @@ onMounted(() => {
     <AppFooter />
 
     <ClientOnly>
-      <LazyUContentSearch :files="files" :navigation="navigation" />
+      <LazyUContentSearch :files="files" :navigation="navigation" :links="links" />
     </ClientOnly>
 
     <UNotifications />
