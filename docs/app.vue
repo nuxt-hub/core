@@ -62,7 +62,7 @@ onMounted(() => {
     <AppHeader />
     <UMain class="relative">
       <HeroBackground
-        class="absolute w-full inset-0 transition-all text-primary"
+        class="absolute w-full top-[1px] transition-all text-primary flex-shrink-0"
         :class="[
           isLoading ? 'animate-pulse' : (appear ? 'opacity-100' : 'opacity-0'),
           appeared ? 'duration-[400ms]': 'duration-1000',
