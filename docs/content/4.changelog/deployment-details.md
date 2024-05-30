@@ -27,9 +27,9 @@ We are excited to announce that we have added a new page to NuxtHub: **Deploymen
 
 
 You can now access more information about each deployment such as:
-- Details: Status, Branch, Commit, and more
-- Build Logs: Access the build logs of your deployment
-- Server Logs: Access the server logs of your deployment in real-time
+- **Details:** Status, Branch, Commit and more
+- **Build Logs:** Access your deployment build logs
+- **Server Logs:** Access your deployment server logs in real-time
 
 Based on the deployment status, you can also manage your deployment by:
 - Retrying the deployment
