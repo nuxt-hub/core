@@ -80,6 +80,10 @@ export interface BlobListOptions {
    * The cursor to list the blobs from (used for pagination).
    */
   cursor?: string
+  /**
+   * View prefixes as directory.
+   */
+  folded?: boolean
 }
 
 export interface BlobPutOptions {
@@ -96,6 +100,10 @@ export interface BlobPutOptions {
    * @default false
    */
   addRandomSuffix?: boolean
+  /**
+   * The prefix to use for the blob pathname.
+   */
+  prefix?: string
   [key: string]: any
 }
 
@@ -152,13 +160,32 @@ function _useBucket(name: string = 'BLOB') {
   throw createError(`Missing Cloudflare ${name} binding (R2)`)
 }
 
+export interface BlobListResult {
+  /**
+   * The list of blobs.
+   */
+  blobs: BlobObject[]
+  /**
+   * The Boolean indicating if there are more blobs to list.
+   */
+  hasMore: boolean
+  /**
+   * The cursor to use for pagination.
+   */
+  cursor?: string
+  /**
+   * The list of folders with `/` delimiter.
+   */
+  folders?: string[]
+}
+
 interface HubBlob {
   /**
    * List all the blobs in the bucket.
    *
    * @param options The list options
    */
-  list(options?: BlobListOptions): Promise<BlobObject[]>
+  list(options?: BlobListOptions): Promise<BlobListResult>
   /**
    * Serve the blob from the bucket.
    *
@@ -212,7 +239,7 @@ interface HubBlob {
  *
  * @example ```ts
  * const blob = hubBlob()
- * const blobs = await blob.list()
+ * const { blobs } = await blob.list()
  * ```
  *
  * @see https://hub.nuxt.com/docs/storage/blob
@@ -228,29 +255,24 @@ export function hubBlob(): HubBlob {
   const bucket = _useBucket()
 
   const blob = {
-    async list(options: BlobListOptions = { limit: 1000 }) {
+    async list(options?: BlobListOptions) {
       const resolvedOptions = defu(options, {
-        limit: 500,
-        include: ['httpMetadata' as const, 'customMetadata' as const]
+        limit: 1000,
+        include: ['httpMetadata' as const, 'customMetadata' as const],
+        delimiter: options?.folded ? '/' : undefined
       })
 
       // https://developers.cloudflare.com/r2/api/workers/workers-api-reference/#r2listoptions
       const listed = await bucket.list(resolvedOptions)
-      let truncated = listed.truncated
-      let cursor = listed.truncated ? listed.cursor : undefined
+      const hasMore = listed.truncated
+      const cursor = listed.truncated ? listed.cursor : undefined
 
-      while (truncated) {
-        const next = await bucket.list({
-          ...options,
-          cursor: cursor
-        })
-        listed.objects.push(...next.objects)
-
-        truncated = next.truncated
-        cursor = next.truncated ? next.cursor : undefined
+      return {
+        blobs: listed.objects.map(mapR2ObjectToBlob),
+        hasMore,
+        cursor,
+        folders: resolvedOptions.delimiter ? listed.delimitedPrefixes : undefined
       }
-
-      return listed.objects.map(mapR2ObjectToBlob)
     },
     async serve(event: H3Event, pathname: string) {
       const object = await bucket.get(decodeURI(pathname))
@@ -266,7 +288,7 @@ export function hubBlob(): HubBlob {
     },
     async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = {}) {
       pathname = decodeURI(pathname)
-      const { contentType: optionsContentType, contentLength, addRandomSuffix, ...customMetadata } = options
+      const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, ...customMetadata } = options
       const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
 
       const { dir, ext, name: filename } = parse(pathname)
@@ -274,6 +296,10 @@ export function hubBlob(): HubBlob {
         pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}-${randomUUID().split('-')[0]}${ext}`)
       } else {
         pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}${ext}`)
+      }
+
+      if (prefix) {
+        pathname = joinURL(prefix, pathname)
       }
 
       const httpMetadata: Record<string, string> = { contentType }
@@ -343,7 +369,7 @@ export function hubBlob(): HubBlob {
  *
  * @example ```ts
  * const blob = proxyHubBlob('https://my-deployed-project.nuxt.dev', 'my-secret-key')
- * const blobs = await blob.list()
+ * const { blobs } = await blob.list()
  * ```
  *
  * @see https://hub.nuxt.com/docs/storage/blob
@@ -360,7 +386,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
 
   const blob = {
     async list(options: BlobListOptions = { limit: 1000 }) {
-      return blobAPI<BlobObject[]>('/', {
+      return blobAPI<BlobListResult>('/', {
         method: 'GET',
         query: options
       })

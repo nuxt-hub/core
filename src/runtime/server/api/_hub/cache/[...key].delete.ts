@@ -9,7 +9,7 @@ export default eventHandler(async (event) => {
   requireNuxtHubFeature('cache')
 
   const key = getRouterParam(event, 'key') || ''
-  if (!/\.([a-z0-9]+)$/i.test(key)) {
+  if (!/\.[a-z0-9]+$/i.test(key)) {
     throw createError({
       statusCode: 400,
       message: 'Invalid key'

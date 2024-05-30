@@ -328,6 +328,13 @@ testimonials:
         avatar:
           src: 'https://avatars.githubusercontent.com/u/11247099?v=4'
           loading: 'lazy'
+    - quote: "NuxtHub and Cloudflare are my go to for full stack apps. The DX is joyous and far superior to any other platform I've used. My team is able to iterate quickly, and build beautiful, performant apps with ease."
+      author:
+        name: 'Jonathan Beckman'
+        description: 'Founder of GuaranTee Time'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/90707158?v=4'
+          loading: 'lazy'
 journey:
     title: 'Begin your NuxtHub journey <span class="text-primary">today</span>'
     images:
