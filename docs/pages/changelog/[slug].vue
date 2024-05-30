@@ -3,7 +3,7 @@ import { withoutTrailingSlash, joinURL } from 'ufo'
 import type { ChangelogPost } from '~/types'
 
 definePageMeta({
-  primary: 'purple',
+  primary: 'green',
   heroBackground: 'opacity-20'
 })
 

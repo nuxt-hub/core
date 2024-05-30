@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  primary: 'amber'
+  primary: 'green'
 })
 const { data: page } = await useAsyncData('pricing', () => queryContent('/pricing').findOne())
 

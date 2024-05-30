@@ -2,7 +2,7 @@
 import type { ChangelogPost } from '~/types'
 
 definePageMeta({
-  primary: 'purple'
+  primary: 'green'
 })
 const { data: page } = await useAsyncData('changelog', () => queryContent('/changelog').findOne())
 const { data: changelogs } = await useAsyncData('changelog-items', async () => {

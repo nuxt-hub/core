@@ -79,7 +79,7 @@ onMounted(() => {
         <li v-for="step in page?.deploy.steps" :key="step.title" class="flex flex-col gap-y-8 justify-center group">
           <NuxtImg
             :src="step.img.src" :width="step.img.width" :height="step.img.height" :alt="step.title"
-            class="rounded-xl bg-gradient-to-r from-green-300 to-teal-500 group-hover:opacity-100 xl:opacity-90 transition duration-300"
+            class="rounded-xl bg-gradient-to-r from-green-300 to-teal-500 group-hover:opacity-100 lg:opacity-90 transition duration-300"
           />
           <div>
             <h2 class="font-semibold" v-html="step.title" />

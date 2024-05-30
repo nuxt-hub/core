@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  primary: 'sky'
+  primary: 'green'
 })
 const { data: templates } = await useFetch('/api/templates.json')
 const { data: page } = await useAsyncData('templates', () => queryContent('/templates').findOne())
