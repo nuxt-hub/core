@@ -107,7 +107,13 @@ watch(() => arrivedState.bottom, () => {
             <div class="space-y-4 -mt-1">
               <NuxtLink :to="changelog._path" :aria-label="changelog.titke" class="inline-block overflow-hidden rounded-md">
                 <NuxtImg
-                  :alt="changelog.title || ''" loading="lazy" width="915" height="515" :src="changelog.image"
+                  :alt="changelog.title || ''"
+                  loading="lazy"
+                  width="915"
+                  height="515"
+                  :src="changelog.image"
+                  :placeholder="[91, 51, 50, 4]"
+                  format="webp"
                   class="aspect-[16/9] object-cover hover:scale-105 transition duration-300 h-full"
                 />
               </NuxtLink>

@@ -43,7 +43,7 @@ defineOgImageComponent('Docs', {
             :to="post._path"
             :title="post.title"
             :description="post.description"
-            :image="{ src: post.image, width: 592, height: 333 }"
+            :image="{ src: post.image, width: 592, height: 333, placeholder: [59, 33, 50, 4], format: 'webp' }"
             :date="formatDateByLocale('en', post.date)"
             :authors="post.authors"
             :badge="{ label: post.category, color: 'gray', variant: 'solid' }"
