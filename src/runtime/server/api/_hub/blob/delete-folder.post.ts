@@ -14,8 +14,14 @@ export default eventHandler(async (event) => {
 
   const blob = hubBlob()
 
-  const blobs = await blob.list({ prefix, limit: 1000 })
-  const pathnames = blobs.blobs.map(blob => blob.pathname)
+  let cursor = undefined
+  const pathnames = []
+
+  do {
+    const blobs = await blob.list({ prefix, limit: 1000, cursor })
+    pathnames.push(...blobs.blobs.map(blob => blob.pathname))
+    cursor = blobs.cursor
+  } while (cursor)
 
   await blob.delete(pathnames)
 
