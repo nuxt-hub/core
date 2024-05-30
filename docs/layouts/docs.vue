@@ -2,6 +2,8 @@
 import type { NavItem } from '@nuxt/content/dist/runtime/types'
 
 const navigation = inject<Ref<NavItem[]>>('navigation')
+
+const links = mapContentNavigation(navigation.value).find(link => link.label === 'Docs').children
 </script>
 
 <template>
@@ -9,7 +11,7 @@ const navigation = inject<Ref<NavItem[]>>('navigation')
     <UPage>
       <template #left>
         <UAside>
-          <UNavigationTree :links="mapContentNavigation(navigation)" />
+          <UNavigationTree :links="links" />
         </UAside>
       </template>
       <slot />
