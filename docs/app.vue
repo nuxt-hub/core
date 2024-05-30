@@ -17,7 +17,9 @@ const heroBackgroundClass = computed(() => route.meta?.heroBackground || '')
 
 const appear = ref(false)
 const appeared = ref(false)
-const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())
+const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation(), {
+  default: () => []
+})
 const { data: files } = useLazyFetch<ParsedContent[]>('/api/search.json', {
   default: () => [],
   server: false
@@ -43,9 +45,7 @@ useSeoMeta({
   }
 })
 
-const docsNavigation = computed(() => navigation.value.filter(nav => nav._path === '/docs'))
-
-provide('navigation', docsNavigation.value?.[0]?.children || [])
+provide('navigation', navigation)
 
 onMounted(() => {
   setTimeout(() => {

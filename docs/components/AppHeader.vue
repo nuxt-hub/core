@@ -1,5 +1,7 @@
 <script setup lang="ts">
 const { metaSymbol } = useShortcuts()
+const navigation = inject('navigation')
+
 const links = [
   {
     label: 'Docs',
@@ -19,6 +21,20 @@ const links = [
     to: '/blog'
   }
 ]
+const navLinks = links.map((link) => {
+  if (link.label === 'Docs') {
+    return {
+      ...link,
+      children: mapContentNavigation(navigation.value)
+        .find(link => link.label === 'Docs')
+        .children
+        .map(({ icon, ...link }) => link)
+    }
+  }
+  return {
+    ...link
+  }
+})
 </script>
 
 <template>
@@ -39,7 +55,7 @@ const links = [
     </template>
 
     <template #panel>
-      <UNavigationTree :links="links" />
+      <UNavigationTree :links="navLinks" :default-open="1" :multiple="false" :ui="{ accordion: { button: { label: 'font-normal' } } }" />
 
       <div class="flex flex-col gap-y-2 mt-4">
         <UButton variant="solid" label="Log in" to="https://admin.hub.nuxt.com/" color="white" size="md" class="flex justify-center sm:hidden" external />
