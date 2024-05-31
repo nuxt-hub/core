@@ -12,7 +12,6 @@ interface UploadOptions extends FetchOptions {
    * @default true
    */
   multiple?: boolean
-
 }
 
 export function useUpload(apiBase: string, options: UploadOptions & { multiple: false }): (data: FileList | HTMLInputElement | File[] | File) => Promise<BlobObject>
