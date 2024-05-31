@@ -160,9 +160,12 @@ export default defineNuxtModule<ModuleOptions>({
       ? '#internal/nitro/routes/openapi'
       : resolve('./runtime/templates/openapi')
 
-    // Register composables
+    // Register server utils
     addServerImportsDir(resolve('./runtime/server/utils'))
     addImportsDir(resolve('./runtime/composables'))
+
+    // Register client composables
+    addImportsDir(resolve('./runtime/compsables'))
 
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {

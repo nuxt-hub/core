@@ -2,7 +2,7 @@
 const loading = ref(false)
 const loadingProgress = ref<number | undefined>(undefined)
 const newFilesValue = ref<File[]>([])
-const uploadRef = ref()
+const uploadRef = ref<HTMLInputElement>()
 const folded = ref(false)
 const prefixes = ref([])
 const limit = ref(5)
@@ -21,7 +21,7 @@ const files = computed(() => blobData.value?.blobs || [])
 const folders = computed(() => blobData.value?.folders || [])
 
 async function loadMore() {
-  if (!blobData.value.hasMore) return
+  if (!blobData.value?.hasMore) return
   const nextPage = await $fetch('/api/blob', {
     params: {
       folded: folded.value,
@@ -42,7 +42,6 @@ async function addFile() {
     toast.add({ title: 'Missing files.', color: 'red' })
     return
   }
-
   loading.value = true
 
   try {
@@ -65,17 +64,17 @@ async function uploadFiles(files: File[]) {
   const bigFiles = files.filter(file => file.size > bigFileLimit)
   const smallFiles = files.filter(file => file.size <= bigFileLimit)
 
+  let uploadedFiles: any[] = []
   // upload small files
-  const formData = new FormData()
-  smallFiles.forEach(file => formData.append('files', file))
-
-  const uploadedFiles = await $fetch('/api/blob', {
-    method: 'PUT',
-    body: formData,
-    params: {
-      prefix: String(prefix.value || '')
-    }
-  })
+  console.log('upload small files', smallFiles.length)
+  if (smallFiles.length) {
+    uploadedFiles = await useUpload('/api/blob', {
+      method: 'PUT',
+      query: {
+        prefix: String(prefix.value || '')
+      }
+    })(smallFiles)
+  }
 
   // upload big files
   const uploadLarge = useMultipartUpload('/api/blob/multipart', {
@@ -139,7 +138,7 @@ async function deleteFile(pathname: string) {
     // @ts-expect-error method DELETE is not typed
     await $fetch(`/api/blob/${pathname}`, { method: 'DELETE' })
 
-    blobData.value.blobs = blobData.value.blobs!.filter(t => t.pathname !== pathname)
+    blobData.value!.blobs = blobData.value!.blobs!.filter(t => t.pathname !== pathname)
 
     toast.add({ title: `File "${pathname}" deleted.` })
   } catch (err: any) {
