@@ -11,7 +11,7 @@ export default eventHandler(async (event) => {
 
   const key = getRouterParam(event, 'key') || ''
   // If ends with an extension
-  if (/\.([a-z0-9]+)$/i.test(key)) {
+  if (/\.[a-z0-9]+$/i.test(key)) {
     return await useStorage('cache:nitro').getItem(key)
   }
   const storage = useStorage(`cache:nitro:${key}`)

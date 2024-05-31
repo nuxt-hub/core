@@ -9,7 +9,7 @@ export default eventHandler(async (event) => {
   requireNuxtHubFeature('cache')
 
   const base = getRouterParam(event, 'base') || ''
-  if (/\.([a-z0-9]+)$/i.test(base)) {
+  if (/\.[a-z0-9]+$/i.test(base)) {
     throw createError({
       statusCode: 400,
       message: 'Invalid base'
