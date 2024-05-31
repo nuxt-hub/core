@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const loading = ref(false)
+const loadingProgress = ref<number | undefined>(undefined)
 const newFilesValue = ref<File[]>([])
 const uploadRef = ref<HTMLInputElement>()
 const folded = ref(false)
@@ -41,20 +42,83 @@ async function addFile() {
     toast.add({ title: 'Missing files.', color: 'red' })
     return
   }
-
   loading.value = true
 
   try {
-    const uploadedFiles = await useUpload('/api/blob', { method: 'PUT', prefix: String(prefix.value || '') })(newFilesValue.value)
-
+    const uploadedFiles = await uploadFiles(newFilesValue.value)
     files.value!.push(...uploadedFiles)
-    toast.add({ title: `File${uploadedFiles.length > 1 ? 's' : ''} uploaded.` })
+    if (uploadedFiles.length > 0) {
+      toast.add({ title: `File${uploadedFiles.length > 1 ? 's' : ''} uploaded.` })
+    }
     newFilesValue.value = []
   } catch (err: any) {
     const title = err.data?.data?.issues?.map((issue: any) => issue.message).join('\n') || err.message
     toast.add({ title, color: 'red' })
   }
   loading.value = false
+}
+
+async function uploadFiles(files: File[]) {
+  const bigFileLimit = 10 * 1024 * 1024 // 10MB
+
+  const bigFiles = files.filter(file => file.size > bigFileLimit)
+  const smallFiles = files.filter(file => file.size <= bigFileLimit)
+
+  let uploadedFiles: any[] = []
+  // upload small files
+  console.log('upload small files', smallFiles.length)
+  if (smallFiles.length) {
+    uploadedFiles = await useUpload('/api/blob', {
+      method: 'PUT',
+      query: {
+        prefix: String(prefix.value || '')
+      }
+    })(smallFiles)
+  }
+
+  // upload big files
+  const uploadLarge = useMultipartUpload('/api/blob/multipart', {
+    concurrent: 2,
+    prefix: String(prefix.value || '')
+  })
+
+  for (const file of bigFiles) {
+    const { completed, progress, abort } = uploadLarge(file)
+
+    const uploadingToast = toast.add({
+      title: `Uploading ${file.name}...`,
+      description: file.name,
+      color: 'sky',
+      timeout: 0,
+      closeButton: {
+        color: 'red',
+        variant: 'solid'
+      },
+      callback: () => {
+        if (progress.value !== 100) {
+          abort()
+        }
+      }
+    })
+    const stopWatch = watch(progress, v => loadingProgress.value = v / 100)
+
+    const complete = await completed
+
+    stopWatch()
+    loadingProgress.value = undefined
+    toast.remove(uploadingToast.id)
+
+    if (complete) {
+      uploadedFiles.push(complete)
+    } else {
+      toast.add({
+        title: `Failed to upload ${file.name}.`,
+        color: 'red'
+      })
+    }
+  }
+
+  return uploadedFiles
 }
 
 function onFileSelect(e: any) {
@@ -71,6 +135,7 @@ function onFileSelect(e: any) {
 
 async function deleteFile(pathname: string) {
   try {
+    // @ts-expect-error method DELETE is not typed
     await $fetch(`/api/blob/${pathname}`, { method: 'DELETE' })
 
     blobData.value!.blobs = blobData.value!.blobs!.filter(t => t.pathname !== pathname)
@@ -116,7 +181,7 @@ async function deleteFile(pathname: string) {
 
     <UCheckbox v-model="folded" class="mt-2" label="View prefixes as directory" />
 
-    <UProgress v-if="loading" class="mt-2" />
+    <UProgress v-if="loading" :value="loadingProgress" :max="1" class="mt-2" />
 
     <div v-if="folders?.length || prefixes?.length" class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4">
       <UButton
