@@ -162,6 +162,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Register server utils
     addServerImportsDir(resolve('./runtime/server/utils'))
+    addImportsDir(resolve('./runtime/composables'))
 
     // Register client composables
     addImportsDir(resolve('./runtime/compsables'))

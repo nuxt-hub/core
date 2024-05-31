@@ -3,22 +3,7 @@ import { z } from 'zod'
 import { hubBlob } from '../../../utils/blob'
 import { requireNuxtHubAuthorization } from '../../../utils/auth'
 import { requireNuxtHubFeature } from '../../../utils/features'
-
-async function streamToArrayBuffer(stream: ReadableStream, streamSize: number) {
-  const result = new Uint8Array(streamSize)
-  let bytesRead = 0
-  const reader = stream.getReader()
-
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) {
-      break
-    }
-    result.set(value, bytesRead)
-    bytesRead += value.length
-  }
-  return result
-}
+import { streamToArrayBuffer } from '../../../internal/utils/stream'
 
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
