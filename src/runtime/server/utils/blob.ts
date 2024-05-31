@@ -69,7 +69,32 @@ export interface BlobPutOptions {
    * The prefix to use for the blob pathname.
    */
   prefix?: string
+
   [key: string]: any
+}
+
+export interface BlobUploadOptions extends BlobPutOptions, BlobValidateOptions {
+  /**
+   * The key to get the file/files from the request form.
+   * @default 'file'
+   */
+  formKey?: string
+  /**
+   * Whether to allow multiple files to be uploaded.
+   * @default true
+   */
+  multiple?: boolean
+}
+
+export interface BlobValidateOptions {
+  /**
+   * The maximum size of the blob (e.g. '1MB')
+   */
+  maxSize?: BlobSize
+  /**
+   * The allowed types of the blob (e.g. ['image/png', 'application/json', 'video'])
+   */
+  types?: BlobType[]
 }
 
 const _r2_buckets: Record<string, R2Bucket> = {}
@@ -150,6 +175,14 @@ interface HubBlob {
    * @param pathnames The pathname of the blob
    */
   delete(pathnames: string | string[]): Promise<void>
+
+  /**
+   * Handle a file upload.
+   *
+   * @param event The H3 event (needed to set headers for the response)
+   * @param options The upload options
+   */
+  handleUpload(event: H3Event, options?: BlobUploadOptions): Promise<BlobObject[]>
 }
 
 /**
@@ -244,6 +277,39 @@ export function hubBlob(): HubBlob {
       } else {
         return await bucket.delete(decodeURI(pathnames))
       }
+    },
+    async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
+      const opts = { formKey: 'file', multiple: true, ...options } as BlobUploadOptions
+
+      const form = await readFormData(event)
+      const files = form.getAll(opts.formKey || 'file') as File[]
+      if (!files) {
+        throw createError({ statusCode: 400, message: 'Missing files' })
+      }
+      if (!opts.multiple && files.length > 1) {
+        throw createError({ statusCode: 400, message: 'Multiple files are not allowed' })
+      }
+
+      const objects: BlobObject[] = []
+      try {
+        // Ensure the files meet the requirements
+        if (options.maxSize || options.types?.length) {
+          for (const file of files) {
+            ensureBlob(file, opts)
+          }
+        }
+        for (const file of files) {
+          const object = await blob.put(file.name!, file, opts)
+          objects.push(object)
+        }
+      } catch (e: any) {
+        throw createError({
+          statusCode: 500,
+          message: `Storage error: ${e.message}`
+        })
+      }
+
+      return objects
     }
   }
   return {
@@ -322,6 +388,13 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
         })
       }
       return
+    },
+    async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
+      return await blobAPI('/', {
+        method: 'POST',
+        body: await readFormData(event),
+        query: options
+      })
     }
   }
 
@@ -383,7 +456,7 @@ function fileSizeToBytes(input: string) {
  *
  * @throws If the blob does not meet the requirements
  */
-export function ensureBlob(blob: Blob, options: { maxSize?: BlobSize, types?: BlobType[] }) {
+export function ensureBlob(blob: Blob, options: BlobValidateOptions) {
   requireNuxtHubFeature('blob')
 
   if (!options.maxSize && !options.types?.length) {
