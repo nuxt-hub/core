@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const loading = ref(false)
 const newFilesValue = ref<File[]>([])
-const uploadRef = ref()
+const uploadRef = ref<HTMLInputElement>()
 const folded = ref(false)
 const prefixes = ref([])
 const limit = ref(5)
@@ -20,7 +20,7 @@ const files = computed(() => blobData.value?.blobs || [])
 const folders = computed(() => blobData.value?.folders || [])
 
 async function loadMore() {
-  if (!blobData.value.hasMore) return
+  if (!blobData.value?.hasMore) return
   const nextPage = await $fetch('/api/blob', {
     params: {
       folded: folded.value,
@@ -45,15 +45,8 @@ async function addFile() {
   loading.value = true
 
   try {
-    const formData = new FormData()
-    newFilesValue.value.forEach(file => formData.append('files', file))
-    const uploadedFiles = await $fetch('/api/blob', {
-      method: 'PUT',
-      params: {
-        prefix: String(prefix.value || '')
-      },
-      body: formData
-    })
+    const uploadedFiles = await useUpload('/api/blob', { method: 'PUT', prefix: String(prefix.value || '') })(newFilesValue.value)
+
     files.value!.push(...uploadedFiles)
     toast.add({ title: `File${uploadedFiles.length > 1 ? 's' : ''} uploaded.` })
     newFilesValue.value = []
@@ -80,7 +73,7 @@ async function deleteFile(pathname: string) {
   try {
     await $fetch(`/api/blob/${pathname}`, { method: 'DELETE' })
 
-    blobData.value.blobs = blobData.value.blobs!.filter(t => t.pathname !== pathname)
+    blobData.value!.blobs = blobData.value!.blobs!.filter(t => t.pathname !== pathname)
 
     toast.add({ title: `File "${pathname}" deleted.` })
   } catch (err: any) {
