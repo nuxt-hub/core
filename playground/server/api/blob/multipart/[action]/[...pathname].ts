@@ -1,3 +1,5 @@
 export default eventHandler(async (event) => {
-  await hubBlob().handleMultipartUpload(event)
+  return await hubBlob().handleMultipartUpload(event, {
+    addRandomSuffix: true
+  })
 })

@@ -231,7 +231,7 @@ interface HubBlob {
    * Handle the multipart upload request.
    * Make sure your route includes `[action]` and `[...pathname]` params.
    */
-  handleMultipartUpload(event: H3Event): Promise<HandleMPUResponse>
+  handleMultipartUpload(event: H3Event, options?: BlobMultipartOptions): Promise<HandleMPUResponse>
 }
 
 /**
@@ -488,12 +488,10 @@ function createMultipartUploadHandler(
 ): HubBlob['handleMultipartUpload'] {
   const { createMultipartUpload, resumeMultipartUpload } = hub
 
-  const createHandler = async (event: H3Event) => {
+  const createHandler = async (event: H3Event, options?: BlobMultipartOptions) => {
     const { pathname } = await getValidatedRouterParams(event, z.object({
       pathname: z.string().min(1)
     }).parse)
-
-    const options = await readValidatedBody(event, z.record(z.string(), z.any()).optional().parse)
 
     try {
       const object = await createMultipartUpload(pathname, options)
@@ -576,7 +574,7 @@ function createMultipartUploadHandler(
     }
   }
 
-  const handler = async (event: H3Event) => {
+  const handler = async (event: H3Event, options?: BlobMultipartOptions) => {
     const method = event.method
     const { action } = await getValidatedRouterParams(event, z.object({
       action: z.enum(['create', 'upload', 'complete', 'abort'])
@@ -585,7 +583,7 @@ function createMultipartUploadHandler(
     if (action === 'create' && method === 'POST') {
       return {
         action,
-        data: await createHandler(event)
+        data: await createHandler(event, options)
       }
     }
 
@@ -613,8 +611,8 @@ function createMultipartUploadHandler(
     throw createError({ status: 405 })
   }
 
-  return async (event: H3Event) => {
-    const result = await handler(event)
+  return async (event: H3Event, options?: BlobMultipartOptions) => {
+    const result = await handler(event, options)
 
     if (result.data) {
       event.respondWith(Response.json(result.data))
