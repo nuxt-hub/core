@@ -1,6 +1,41 @@
 # Changelog
 
 
+## v0.5.19
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.18...v0.5.19)
+
+### 🚀 Enhancements
+
+- **blob:** Support folded option in list() ([#121](https://github.com/nuxt-hub/core/pull/121))
+- **blob:** Create `delete-folder` to delete blob folders ([#125](https://github.com/nuxt-hub/core/pull/125))
+- `handleUpload()` util and `useUpload()` composable ([#99](https://github.com/nuxt-hub/core/pull/99))
+- **blob:** Multipart upload ([#71](https://github.com/nuxt-hub/core/pull/71))
+
+### 🩹 Fixes
+
+- Build ([#123](https://github.com/nuxt-hub/core/pull/123))
+
+### 📖 Documentation
+
+- Add Jonathan Beckman testimonial ([c114f1a](https://github.com/nuxt-hub/core/commit/c114f1a))
+- Add tailwindcss ([6323883](https://github.com/nuxt-hub/core/commit/6323883))
+- Test nuxt ui resolution ([a5b7468](https://github.com/nuxt-hub/core/commit/a5b7468))
+- Update error.vue ([be8e306](https://github.com/nuxt-hub/core/commit/be8e306))
+- Add pre-rendering page ([91b0910](https://github.com/nuxt-hub/core/commit/91b0910))
+
+### 🏡 Chore
+
+- Add lint fix script ([#118](https://github.com/nuxt-hub/core/pull/118))
+- Update dependencies ([6f6a338](https://github.com/nuxt-hub/core/commit/6f6a338))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Teages ([@Teages](http://github.com/Teages))
+- Farnabaz <farnabaz@gmail.com>
+- Estéban ([@Barbapapazes](http://github.com/Barbapapazes))
+
 ## v0.5.18
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.17...v0.5.18)
