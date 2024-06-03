@@ -92,10 +92,12 @@ cloudflare:
       to: 'https://developers.cloudflare.com/workers/platform/pricing/'
     - title: 'Cloudflare D1 (Database)'
       free: >
+        10 databases<br>
         5 million rows read / day<br>
         100,000 rows written / day<br>
         5 GB storage
       paid: >
+        50,000 databases<br>
         25 billion rows read / month + $0.001/million<br>
         50 million rows written / month + $1.00/million<br>
         5 GB storage included + $0.75/GB-month
