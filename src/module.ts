@@ -288,13 +288,15 @@ export default defineNuxtModule<ModuleOptions>({
       if (String(env) === 'true') {
         try {
           branch = execSync('git branch --show-current', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+          env = (branch === 'main' ? 'production' : 'preview')
         } catch {
           // ignore
           log.warn('Could not guess the environment from the branch name, using `production` as default')
           env = 'production'
         }
       }
-      if (typeof hub.projectUrl === 'function') {
+      // If projectUrl is a function and we cannot know the productionBranch
+      if (typeof hub.projectUrl === 'function' && !hub.projectKey) {
         // @ts-expect-error issue with defu transform
         hub.projectUrl = hub.projectUrl({ env, branch })
       }
@@ -320,6 +322,10 @@ export default defineNuxtModule<ModuleOptions>({
         })
         // Adapt env based on project defined production branch
         env = (branch === project.productionBranch ? 'production' : 'preview')
+        if (typeof hub.projectUrl === 'function') {
+          // @ts-expect-error issue with defu transform
+          hub.projectUrl = hub.projectUrl({ env, branch })
+        }
 
         const adminUrl = joinURL(hub.url, project.teamSlug, project.slug)
         log.info(`Linked to \`${adminUrl}\``)
