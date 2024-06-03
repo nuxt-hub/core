@@ -30,7 +30,7 @@ provide('navigation', navigation.value?.[0]?.children || [])
 
 <template>
   <div>
-    <Header />
+    <AppHeader />
 
     <UMain>
       <UContainer>
@@ -40,7 +40,7 @@ provide('navigation', navigation.value?.[0]?.children || [])
       </UContainer>
     </UMain>
 
-    <Footer />
+    <AppFooter />
 
     <ClientOnly>
       <LazyUContentSearch :files="files" :navigation="navigation" />

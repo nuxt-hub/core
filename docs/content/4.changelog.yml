@@ -1,0 +1,20 @@
+title: 'Changelog'
+description: 'Follow the latest updates and improvements of NuxtHub.'
+navigation: false
+hero:
+  title: 'Changelog'
+  description: 'Follow the latest updates and improvements of NuxtHub.'
+  align: center
+  links:
+    - label: '@nuxt_hub'
+      icon: i-simple-icons-x
+      color: white
+      size: lg
+      to: https://x.com/nuxt_hub
+      target: _blank
+    - label: nuxt-hub/core
+      icon: i-simple-icons-github
+      color: white
+      size: lg
+      to: https://github.com/nuxt-hub/core
+      target: _blank

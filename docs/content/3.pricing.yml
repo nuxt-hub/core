@@ -1,0 +1,148 @@
+title: 'Pricing'
+description: 'Get started with NuxtHub for free and upgrade as you grow.'
+navigation: false
+hero:
+  headline: '-20% off with yearly plan'
+  title: 'Start for free, upgrade <span class="text-primary">as you grow</span>'
+  description: 'NuxtHub is built on Cloudflare for optimal performance. While separate subscriptions are required, you get the combined power of both, with plans to suit your specific needs.'
+  orientation: horizontal
+  img:
+    width: '1140'
+    height: '632'
+    light: '/images/pricing/hero-light.webp'
+    dark: '/images/pricing/hero-dark.webp'
+pricing:
+  plans:
+    - title: 'Solo'
+      description: 'Great for personal projects, freelancers & indie hackers.'
+      price: '$0'
+      cycle: ''
+      features:
+        - 'One user'
+        - 'Up to 20 projects'
+        - 'Unlimited deployments'
+        - 'NuxtHub CLI'
+        - 'Remote Storage'
+        - 'Deploy on your Cloudflare account'
+      button:
+        label: 'Get started for free'
+        color: 'gray'
+        to: https://admin.hub.nuxt.com
+    - title: 'Pro'
+      description: 'Everything in Solo, plus higher limits and team features.'
+      price:
+        monthly: '$12'
+        yearly: '$10'
+      cycle:
+        monthly: '/user/month'
+        yearly: '/user/month'
+      highlight: true
+      features:
+        - 'Unlimited projects'
+        - 'Unlimited deployments'
+        - 'Collaborate with your team'
+        - 'Access control on remote storage'
+        - 'Early access to new features'
+        - 'Priority support'
+      button:
+        label: 'Get started as a team'
+        to: https://admin.hub.nuxt.com
+      ui:
+        inner: 'justify-between'
+        body:
+          background: 'bg-gradient-to-t from-primary/10 via-white to-white dark:from-primary/10 dark:via-gray-900 dark:to-gray-900 rounded-xl'
+    - title: 'On-Premise'
+      description: 'Deploy NuxtHub on your own infrastructure.'
+      cycle: ''
+      price: 'Custom'
+      features:
+        - 'Unlimited projects'
+        - 'Unlimited teams'
+        - 'Unlimited users'
+        - 'Self-host NuxtHub Admin'
+        - 'Priority Support'
+      button:
+        label: 'Contact us'
+        color: black
+        to: 'mailto:hub@nuxt.com?subject=On-Premise%20Deployment&body=Hi%20NuxtHub%20Team%2C%0A%0AI%20am%20interested%20in%20deploying%20NuxtHub%20on%20my%20own%20infrastructure.%0A%0AKind%20regards%2C'
+  info: 'Prices does not include your <a href="https://www.cloudflare.com/plans/developer-platform/" target="_blank" class="underline underline-offset-4 dark:hover:text-white hover:text-gray-900">Cloudflare costs</a>.'
+  contact:
+    title: 'Are you an Open Source Organization?'
+    description: "If you want to use NuxtHub to manage open source projects, we have a special offer for you!"
+    button:
+      label: 'Contact us'
+      color: gray
+      to: 'mailto:hub@nuxt.com?subject=Open%20Source%20Organization%20Offer&body=Hi%20NuxtHub%20Team%2C%0A%0AI%20am%20interested%20in%20the%20special%20offer%20for%20Open%20Source%20Organizations.%0A%0AKind%20regards%2C'
+cloudflare:
+  title: 'What about Cloudflare pricing?'
+  description: 'You can start for free with Cloudflare and seamlessly upgrade to Workers Paid plan when needed.'
+  plans:
+    - title: 'Cloudflare Workers (Nuxt application)'
+      free: >
+        100,000 requests / day<br>
+        1 MB worker size (small Nuxt app)<br>
+        10ms CPU time per invocation<br>
+        100 applications<br>
+      paid: >
+        10 million requests / month + +$0.30/million<br>
+        10 MB worker size<br>
+        30s CPU time per invocation<br>
+        30 million CPU milliseconds + $0.02/million<br>
+        500 applications
+      to: 'https://developers.cloudflare.com/workers/platform/pricing/'
+    - title: 'Cloudflare D1 (Database)'
+      free: >
+        10 databases<br>
+        5 million rows read / day<br>
+        100,000 rows written / day<br>
+        5 GB storage
+      paid: >
+        50,000 databases<br>
+        25 billion rows read / month + $0.001/million<br>
+        50 million rows written / month + $1.00/million<br>
+        5 GB storage included + $0.75/GB-month
+      to: 'https://developers.cloudflare.com/d1/platform/pricing/'
+    - title: 'Cloudflare R2 (Blob)'
+      free: >
+        1 million class A requests / month (list + write)<br>
+        10 million class B requests / month (read)<br>
+        10 GB storage / month<br>
+        Unlimited egress (data transfer to Internet)
+      paid: >
+        1 million class A requests / month + $4.50/million<br>
+        10 million class B requests / month + $0.36/million<br>
+        10 GB storage / month + $0.015/GB-month<br>
+        Unlimited egress (data transfer to Internet)
+      to: 'https://developers.cloudflare.com/r2/pricing/'
+    - title: 'Cloudflare KV (KV & Cache)'
+      free: >
+        100,000 read / day<br>
+        1,000 list / day<br>
+        1,000 write / day<br>
+        1,000 delete / day<br>
+        1 GB storage
+      paid: >
+        10 million read / day + $0.50/million<br>
+        1 million list / day + $5.00/million<br>
+        1 million write / day + $5.00/million<br>
+        1 million delete / day + $5.00/million<br>
+        1 GB storage + $0.50/GB-month
+      to: 'https://developers.cloudflare.com/kv/platform/pricing/'
+  button:
+    label: 'Learn more about Cloudflare pricing'
+    external: true
+    trailingIcon: 'i-ph-arrow-square-out'
+    color: gray
+    to: 'https://www.cloudflare.com/plans/developer-platform/'
+faq:
+  title: 'Frequently Asked Questions'
+  description: "If you can't find what you're looking for, email our support team and will get back to you."
+  items:
+    - label: 'Can I try NuxtHub before paying for it?'
+      content: 'The free plans on both Cloudflare and NuxtHub let you try NuxtHub without adding your credit card, these plans are suitable for personal websites (including a database, blob storage, KV & caching).'
+    - label: 'Do you have a free trial?'
+      content: "We don't have a free trial for now, the Solo plan should give you everything you need to get started with all NuxtHub features."
+    - label: How can I contact your support team?
+      content: 'You can contact us anytime at hub@nuxt.com, we are also on X/Twitter ([@nuxt_hub](https://x.com/nuxt_hub)) and we have a [Discord server](https://discord.gg/e25qqXb2mF).'
+    - label: How can I cancel my subscription?
+      content: 'In the billing section of your team, you can downgrade or cancel your subscription with one click.'

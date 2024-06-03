@@ -1,0 +1,7 @@
+title: The NuxtHub Blog
+navigation.title: Blog
+description: 'Read the latest news about NuxtHub or articles about fullstack development with Nuxt.'
+hero:
+  title: 'Blog'
+  description: 'Read the latest news about NuxtHub.'
+  align: center
