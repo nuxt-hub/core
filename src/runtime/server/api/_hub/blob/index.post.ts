@@ -1,4 +1,4 @@
-import { eventHandler } from 'h3'
+import { eventHandler, getQuery } from 'h3'
 import { hubBlob } from '../../../utils/blob'
 import { requireNuxtHubAuthorization } from '../../../utils/auth'
 
