@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.6.1
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.0...v0.6.1)
+
+### 🩹 Fixes
+
+- **blob:** Add missing readFormData import ([fbfb8af](https://github.com/nuxt-hub/core/commit/fbfb8af))
+
+### 🏡 Chore
+
+- **types:** Add missing imports ([9b81e7e](https://github.com/nuxt-hub/core/commit/9b81e7e))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.6.0
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.18...v0.6.0)
