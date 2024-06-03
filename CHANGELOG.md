@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.6.2
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.1...v0.6.2)
+
+### 🩹 Fixes
+
+- **manifest:** Handle new format with list() ([0496a29](https://github.com/nuxt-hub/core/commit/0496a29))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.6.1
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.0...v0.6.1)
