@@ -1,6 +1,193 @@
 # Changelog
 
 
+## v0.6.3
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.2...v0.6.3)
+
+### 🩹 Fixes
+
+- Ensure env is set before calling `projectUrl()` ([40dfa3d](https://github.com/nuxt-hub/core/commit/40dfa3d))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
+## v0.6.2
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.1...v0.6.2)
+
+### 🩹 Fixes
+
+- **manifest:** Handle new format with list() ([0496a29](https://github.com/nuxt-hub/core/commit/0496a29))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
+## v0.6.1
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.0...v0.6.1)
+
+### 🩹 Fixes
+
+- **blob:** Add missing readFormData import ([fbfb8af](https://github.com/nuxt-hub/core/commit/fbfb8af))
+
+### 🏡 Chore
+
+- **types:** Add missing imports ([9b81e7e](https://github.com/nuxt-hub/core/commit/9b81e7e))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
+## v0.6.0
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.18...v0.6.0)
+
+### 🚀 Enhancements
+
+- **blob:** Support folded option in list() ([#121](https://github.com/nuxt-hub/core/pull/121))
+- **blob:** Create `delete-folder` to delete blob folders ([#125](https://github.com/nuxt-hub/core/pull/125))
+- `handleUpload()` util and `useUpload()` composable ([#99](https://github.com/nuxt-hub/core/pull/99))
+- **blob:** Multipart upload ([#71](https://github.com/nuxt-hub/core/pull/71))
+
+### 🩹 Fixes
+
+- Build ([#123](https://github.com/nuxt-hub/core/pull/123))
+
+### 📖 Documentation
+
+- Add Jonathan Beckman testimonial ([c114f1a](https://github.com/nuxt-hub/core/commit/c114f1a))
+- Add tailwindcss ([6323883](https://github.com/nuxt-hub/core/commit/6323883))
+- Test nuxt ui resolution ([a5b7468](https://github.com/nuxt-hub/core/commit/a5b7468))
+- Update error.vue ([be8e306](https://github.com/nuxt-hub/core/commit/be8e306))
+- Add pre-rendering page ([91b0910](https://github.com/nuxt-hub/core/commit/91b0910))
+
+### 🏡 Chore
+
+- Add lint fix script ([#118](https://github.com/nuxt-hub/core/pull/118))
+- Update dependencies ([6f6a338](https://github.com/nuxt-hub/core/commit/6f6a338))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Teages ([@Teages](http://github.com/Teages))
+- Farnabaz <farnabaz@gmail.com>
+- Estéban ([@Barbapapazes](http://github.com/Barbapapazes))
+
+## v0.5.18
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.17...v0.5.18)
+
+### 🚀 Enhancements
+
+- Option to specify storage directory in development ([#112](https://github.com/nuxt-hub/core/pull/112))
+- Support dynamic project url ([#117](https://github.com/nuxt-hub/core/pull/117))
+
+### 📖 Documentation
+
+- Update drizzle instructions ([#106](https://github.com/nuxt-hub/core/pull/106))
+- Add seed configuration for database population with Nitro Tasks ([#107](https://github.com/nuxt-hub/core/pull/107))
+
+### 🏡 Chore
+
+- Clean zod validation in database api endpoints ([#109](https://github.com/nuxt-hub/core/pull/109))
+- Update deps ([d3cdb5c](https://github.com/nuxt-hub/core/commit/d3cdb5c))
+- Lint fix ([641a461](https://github.com/nuxt-hub/core/commit/641a461))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Max ([@onmax](http://github.com/onmax))
+- Jonathan Beckman ([@unibeck](http://github.com/unibeck))
+
+## v0.5.17
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.16...v0.5.17)
+
+### 🩹 Fixes
+
+- Force nitro preset only in production when remote is disabled ([caed55b](https://github.com/nuxt-hub/core/commit/caed55b))
+- **auth:** Use Map instead of plain object ([1ae0f90](https://github.com/nuxt-hub/core/commit/1ae0f90))
+
+### 📖 Documentation
+
+- Remove `\n` for sql queries ([4266acb](https://github.com/nuxt-hub/core/commit/4266acb))
+- Force tailwind and ui version ([2429335](https://github.com/nuxt-hub/core/commit/2429335))
+- Set pnpm version in engine ([e3dc5a2](https://github.com/nuxt-hub/core/commit/e3dc5a2))
+
+### 🏡 Chore
+
+- Generate wrangler using `confbox` ([927c1b7](https://github.com/nuxt-hub/core/commit/927c1b7))
+- Fix wrangler typo in utils ([#96](https://github.com/nuxt-hub/core/pull/96))
+- Add issue templates ([48a1065](https://github.com/nuxt-hub/core/commit/48a1065))
+- Update deps ([69994d7](https://github.com/nuxt-hub/core/commit/69994d7))
+- Remove engines ([3c53e95](https://github.com/nuxt-hub/core/commit/3c53e95))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Dominik Opyd <dominik.opyd@gmail.com>
+
+## v0.5.16
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.15...v0.5.16)
+
+### 🩹 Fixes
+
+- Support also cloudflare-module preset ([89cf607](https://github.com/nuxt-hub/core/commit/89cf607))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
+## v0.5.15
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.14...v0.5.15)
+
+### 🚀 Enhancements
+
+- Force cloudflare-pages preset ([ccdfb21](https://github.com/nuxt-hub/core/commit/ccdfb21))
+- Send build errors back to NuxtHub admin ([#92](https://github.com/nuxt-hub/core/pull/92))
+
+### 🩹 Fixes
+
+- **blob:** Give options for blob dashboard as query ([a245a38](https://github.com/nuxt-hub/core/commit/a245a38))
+- Ensure types for server utils are written in prepare step ([#91](https://github.com/nuxt-hub/core/pull/91))
+
+### 📖 Documentation
+
+- Invert cloudflare pages ci and cli ([456a8fb](https://github.com/nuxt-hub/core/commit/456a8fb))
+
+### 🏡 Chore
+
+- Update deps ([2eb119f](https://github.com/nuxt-hub/core/commit/2eb119f))
+- Update deps ([ad671c1](https://github.com/nuxt-hub/core/commit/ad671c1))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Farnabaz <farnabaz@gmail.com>
+- Daniel Roe ([@danielroe](http://github.com/danielroe))
+
+## v0.5.14
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.5.13...v0.5.14)
+
+### 🩹 Fixes
+
+- Don't add random suffix by default ([#89](https://github.com/nuxt-hub/core/pull/89))
+
+### 📖 Documentation
+
+- Add server features ([#79](https://github.com/nuxt-hub/core/pull/79))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Farnabaz <farnabaz@gmail.com>
+
 ## v0.5.13
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.5.12...v0.5.13)

@@ -1,14 +1,15 @@
 import type { extensions } from '@uploadthing/mime-types'
 import slugify from '@sindresorhus/slugify'
-import type { R2Bucket, ReadableStream } from '@cloudflare/workers-types/experimental'
+import type { R2Bucket, ReadableStream, R2MultipartUpload } from '@cloudflare/workers-types/experimental'
 import { ofetch } from 'ofetch'
 import mime from 'mime'
 import type { H3Event } from 'h3'
-import { setHeader, createError } from 'h3'
+import { setHeader, createError, readFormData } from 'h3'
 import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
 import { parse } from 'pathe'
 import { joinURL } from 'ufo'
+import { streamToArrayBuffer } from '../internal/utils/stream'
 import { requireNuxtHubFeature } from './features'
 import { useRuntimeConfig } from '#imports'
 
@@ -31,6 +32,40 @@ export interface BlobObject {
   uploadedAt: Date
 }
 
+export interface BlobUploadedPart {
+  /**
+   * The number of the part.
+   */
+  partNumber: number
+  /**
+   * The etag of the part.
+   */
+  etag: string
+}
+
+export interface BlobMultipartUpload {
+  /**
+   * The pathname of the multipart upload.
+   */
+  readonly pathname: string
+  /**
+   * The upload id of the multipart upload.
+   */
+  readonly uploadId: string
+  /**
+   * Upload a single part to this multipart upload.
+   */
+  uploadPart(partNumber: number, value: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob): Promise<BlobUploadedPart>
+  /**
+   * Abort the multipart upload.
+   */
+  abort(): Promise<void>
+  /**
+   * Completes the multipart upload.
+   */
+  complete(uploadedParts: BlobUploadedPart[]): Promise<BlobObject>
+}
+
 export interface BlobListOptions {
   /**
    * The maximum number of blobs to return per request.
@@ -45,6 +80,10 @@ export interface BlobListOptions {
    * The cursor to list the blobs from (used for pagination).
    */
   cursor?: string
+  /**
+   * View prefixes as directory.
+   */
+  folded?: boolean
 }
 
 export interface BlobPutOptions {
@@ -58,9 +97,77 @@ export interface BlobPutOptions {
   contentLength?: string
   /**
    * If a random suffix is added to the blob pathname.
+   * @default false
    */
   addRandomSuffix?: boolean
+  /**
+   * The prefix to use for the blob pathname.
+   */
+  prefix?: string
+
   [key: string]: any
+}
+
+export interface BlobMultipartOptions {
+  /**
+   * The content type of the blob.
+   */
+  contentType?: string
+  /**
+   * The content length of the blob.
+   */
+  contentLength?: string
+  /**
+   * If a random suffix is added to the blob pathname.
+   * @default false
+   */
+  addRandomSuffix?: boolean
+  /**
+   * The prefix to use for the blob pathname.
+   */
+  prefix?: string
+  [key: string]: any
+}
+
+export type HandleMPUResponse =
+  | {
+    action: 'create'
+    data: Pick<BlobMultipartUpload, 'pathname' | 'uploadId'>
+  }
+  | {
+    action: 'upload'
+    data: BlobUploadedPart
+  }
+  | {
+    action: 'complete'
+    data: BlobObject
+  }
+  | {
+    action: 'abort'
+  }
+
+export interface BlobUploadOptions extends BlobPutOptions, BlobValidateOptions {
+  /**
+   * The key to get the file/files from the request form.
+   * @default 'file'
+   */
+  formKey?: string
+  /**
+   * Whether to allow multiple files to be uploaded.
+   * @default true
+   */
+  multiple?: boolean
+}
+
+export interface BlobValidateOptions {
+  /**
+   * The maximum size of the blob (e.g. '1MB')
+   */
+  maxSize?: BlobSize
+  /**
+   * The allowed types of the blob (e.g. ['image/png', 'application/json', 'video'])
+   */
+  types?: BlobType[]
 }
 
 const _r2_buckets: Record<string, R2Bucket> = {}
@@ -82,13 +189,32 @@ function _useBucket(name: string = 'BLOB') {
   throw createError(`Missing Cloudflare ${name} binding (R2)`)
 }
 
+export interface BlobListResult {
+  /**
+   * The list of blobs.
+   */
+  blobs: BlobObject[]
+  /**
+   * The Boolean indicating if there are more blobs to list.
+   */
+  hasMore: boolean
+  /**
+   * The cursor to use for pagination.
+   */
+  cursor?: string
+  /**
+   * The list of folders with `/` delimiter.
+   */
+  folders?: string[]
+}
+
 interface HubBlob {
   /**
    * List all the blobs in the bucket.
    *
    * @param options The list options
    */
-  list(options?: BlobListOptions): Promise<BlobObject[]>
+  list(options?: BlobListOptions): Promise<BlobListResult>
   /**
    * Serve the blob from the bucket.
    *
@@ -122,6 +248,26 @@ interface HubBlob {
    * @param pathnames The pathname of the blob
    */
   delete(pathnames: string | string[]): Promise<void>
+  /**
+   * Create a multipart upload.
+   */
+  createMultipartUpload(pathname: string, options?: BlobMultipartOptions): Promise<BlobMultipartUpload>
+  /**
+   * Get the specified multipart upload.
+   */
+  resumeMultipartUpload(pathname: string, uploadId: string): BlobMultipartUpload
+  /**
+   * Handle the multipart upload request.
+   * Make sure your route includes `[action]` and `[...pathname]` params.
+   */
+  handleMultipartUpload(event: H3Event, options?: BlobMultipartOptions): Promise<HandleMPUResponse>
+  /**
+   * Handle a file upload.
+   *
+   * @param event The H3 event (needed to set headers for the response)
+   * @param options The upload options
+   */
+  handleUpload(event: H3Event, options?: BlobUploadOptions): Promise<BlobObject[]>
 }
 
 /**
@@ -129,7 +275,7 @@ interface HubBlob {
  *
  * @example ```ts
  * const blob = hubBlob()
- * const blobs = await blob.list()
+ * const { blobs } = await blob.list()
  * ```
  *
  * @see https://hub.nuxt.com/docs/storage/blob
@@ -145,29 +291,24 @@ export function hubBlob(): HubBlob {
   const bucket = _useBucket()
 
   const blob = {
-    async list(options: BlobListOptions = { limit: 1000 }) {
+    async list(options?: BlobListOptions) {
       const resolvedOptions = defu(options, {
-        limit: 500,
-        include: ['httpMetadata' as const, 'customMetadata' as const]
+        limit: 1000,
+        include: ['httpMetadata' as const, 'customMetadata' as const],
+        delimiter: options?.folded ? '/' : undefined
       })
 
       // https://developers.cloudflare.com/r2/api/workers/workers-api-reference/#r2listoptions
       const listed = await bucket.list(resolvedOptions)
-      let truncated = listed.truncated
-      let cursor = listed.truncated ? listed.cursor : undefined
+      const hasMore = listed.truncated
+      const cursor = listed.truncated ? listed.cursor : undefined
 
-      while (truncated) {
-        const next = await bucket.list({
-          ...options,
-          cursor: cursor
-        })
-        listed.objects.push(...next.objects)
-
-        truncated = next.truncated
-        cursor = next.truncated ? next.cursor : undefined
+      return {
+        blobs: listed.objects.map(mapR2ObjectToBlob),
+        hasMore,
+        cursor,
+        folders: resolvedOptions.delimiter ? listed.delimitedPrefixes : undefined
       }
-
-      return listed.objects.map(mapR2ObjectToBlob)
     },
     async serve(event: H3Event, pathname: string) {
       const object = await bucket.get(decodeURI(pathname))
@@ -181,9 +322,9 @@ export function hubBlob(): HubBlob {
 
       return object.body
     },
-    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = { addRandomSuffix: true }) {
+    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = {}) {
       pathname = decodeURI(pathname)
-      const { contentType: optionsContentType, contentLength, addRandomSuffix, ...customMetadata } = options
+      const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, ...customMetadata } = options
       const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
 
       const { dir, ext, name: filename } = parse(pathname)
@@ -191,6 +332,10 @@ export function hubBlob(): HubBlob {
         pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}-${randomUUID().split('-')[0]}${ext}`)
       } else {
         pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}${ext}`)
+      }
+
+      if (prefix) {
+        pathname = joinURL(prefix, pathname)
       }
 
       const httpMetadata: Record<string, string> = { contentType }
@@ -217,11 +362,74 @@ export function hubBlob(): HubBlob {
       } else {
         return await bucket.delete(decodeURI(pathnames))
       }
+    },
+    async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}): Promise<BlobMultipartUpload> {
+      pathname = decodeURI(pathname)
+      const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, ...customMetadata } = options
+      const contentType = optionsContentType || getContentType(pathname)
+
+      const { dir, ext, name: filename } = parse(pathname)
+      if (addRandomSuffix) {
+        pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}-${randomUUID().split('-')[0]}${ext}`)
+      } else {
+        pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}${ext}`)
+      }
+      if (prefix) {
+        pathname = joinURL(prefix, pathname)
+      }
+
+      const httpMetadata: Record<string, string> = { contentType }
+      if (contentLength) {
+        httpMetadata.contentLength = contentLength
+      }
+
+      const mpu = await bucket.createMultipartUpload(pathname, { httpMetadata, customMetadata })
+
+      return mapR2MpuToBlobMpu(mpu)
+    },
+    resumeMultipartUpload(pathname: string, uploadId: string) {
+      const mpu = bucket.resumeMultipartUpload(pathname, uploadId)
+
+      return mapR2MpuToBlobMpu(mpu)
+    },
+    async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
+      const opts = { formKey: 'file', multiple: true, ...options } as BlobUploadOptions
+
+      const form = await readFormData(event)
+      const files = form.getAll(opts.formKey || 'file') as File[]
+      if (!files) {
+        throw createError({ statusCode: 400, message: 'Missing files' })
+      }
+      if (!opts.multiple && files.length > 1) {
+        throw createError({ statusCode: 400, message: 'Multiple files are not allowed' })
+      }
+
+      const objects: BlobObject[] = []
+      try {
+        // Ensure the files meet the requirements
+        if (options.maxSize || options.types?.length) {
+          for (const file of files) {
+            ensureBlob(file, opts)
+          }
+        }
+        for (const file of files) {
+          const object = await blob.put(file.name!, file, opts)
+          objects.push(object)
+        }
+      } catch (e: any) {
+        throw createError({
+          statusCode: 500,
+          message: `Storage error: ${e.message}`
+        })
+      }
+
+      return objects
     }
   }
   return {
     ...blob,
-    delete: blob.del
+    delete: blob.del,
+    handleMultipartUpload: createMultipartUploadHandler(blob)
   }
 }
 
@@ -233,12 +441,12 @@ export function hubBlob(): HubBlob {
  *
  * @example ```ts
  * const blob = proxyHubBlob('https://my-deployed-project.nuxt.dev', 'my-secret-key')
- * const blobs = await blob.list()
+ * const { blobs } = await blob.list()
  * ```
  *
  * @see https://hub.nuxt.com/docs/storage/blob
  */
-export function proxyHubBlob(projectUrl: string, secretKey?: string) {
+export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
   requireNuxtHubFeature('blob')
 
   const blobAPI = ofetch.create({
@@ -250,7 +458,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
 
   const blob = {
     async list(options: BlobListOptions = { limit: 1000 }) {
-      return blobAPI<BlobObject[]>('/', {
+      return blobAPI<BlobListResult>('/', {
         method: 'GET',
         query: options
       })
@@ -260,7 +468,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
         method: 'GET'
       })
     },
-    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = { addRandomSuffix: true }) {
+    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = {}) {
       const { contentType, contentLength, ...query } = options
       const headers: Record<string, string> = {}
       if (contentType) {
@@ -295,12 +503,202 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string) {
         })
       }
       return
+    },
+    async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}) {
+      return await blobAPI<BlobMultipartUpload>(`/multipart/${decodeURI(pathname)}`, {
+        method: 'POST',
+        body: options
+      })
+    },
+    resumeMultipartUpload(pathname: string, uploadId: string): BlobMultipartUpload {
+      return {
+        pathname,
+        uploadId,
+        async uploadPart(partNumber: number, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob): Promise<BlobUploadedPart> {
+          return await blobAPI<BlobUploadedPart>(`/multipart/${decodeURI(pathname)}`, {
+            method: 'PUT',
+            query: {
+              uploadId,
+              partNumber
+            },
+            body
+          })
+        },
+        async abort(): Promise<void> {
+          await blobAPI(`/multipart/${decodeURI(pathname)}`, {
+            method: 'DELETE',
+            query: {
+              uploadId
+            }
+          })
+        },
+        async complete(parts: BlobUploadedPart[]): Promise<BlobObject> {
+          return await blobAPI<BlobObject>('/multipart/complete', {
+            method: 'POST',
+            query: {
+              pathname,
+              uploadId
+            },
+            body: {
+              parts
+            }
+          })
+        }
+      }
+    },
+    async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
+      return await blobAPI('/', {
+        method: 'POST',
+        body: await readFormData(event),
+        query: options
+      })
     }
   }
 
   return {
     ...blob,
-    delete: blob.del
+    delete: blob.del,
+    handleMultipartUpload: createMultipartUploadHandler(blob)
+  }
+}
+
+function createMultipartUploadHandler(
+  hub: Pick<HubBlob, 'createMultipartUpload' | 'resumeMultipartUpload'>
+): HubBlob['handleMultipartUpload'] {
+  const { createMultipartUpload, resumeMultipartUpload } = hub
+
+  const createHandler = async (event: H3Event, options?: BlobMultipartOptions) => {
+    const { pathname } = await getValidatedRouterParams(event, z.object({
+      pathname: z.string().min(1)
+    }).parse)
+
+    try {
+      const object = await createMultipartUpload(pathname, options)
+      return {
+        uploadId: object.uploadId,
+        pathname: object.pathname
+      }
+    } catch (e: any) {
+      throw createError({
+        statusCode: 400,
+        message: e.message
+      })
+    }
+  }
+
+  const uploadHandler = async (event: H3Event) => {
+    const { pathname } = await getValidatedRouterParams(event, z.object({
+      pathname: z.string().min(1)
+    }).parse)
+
+    const { uploadId, partNumber } = await getValidatedQuery(event, z.object({
+      uploadId: z.string(),
+      partNumber: z.coerce.number()
+    }).parse)
+
+    const contentLength = Number(getHeader(event, 'content-length') || '0')
+
+    const stream = getRequestWebStream(event)!
+    const body = await streamToArrayBuffer(stream, contentLength)
+
+    const mpu = resumeMultipartUpload(pathname, uploadId)
+
+    try {
+      return await mpu.uploadPart(partNumber, body)
+    } catch (e: any) {
+      throw createError({ status: 400, message: e.message })
+    }
+  }
+
+  const completeHandler = async (event: H3Event) => {
+    const { pathname } = await getValidatedRouterParams(event, z.object({
+      pathname: z.string().min(1)
+    }).parse)
+
+    const { uploadId } = await getValidatedQuery(event, z.object({
+      uploadId: z.string().min(1)
+    }).parse)
+
+    const { parts } = await readValidatedBody(event, z.object({
+      parts: z.array(z.object({
+        partNumber: z.number(),
+        etag: z.string()
+      }))
+    }).parse)
+
+    const mpu = resumeMultipartUpload(pathname, uploadId)
+    try {
+      const object = await mpu.complete(parts)
+      return object
+    } catch (e: any) {
+      throw createError({ status: 400, message: e.message })
+    }
+  }
+
+  const abortHandler = async (event: H3Event) => {
+    const { pathname } = await getValidatedRouterParams(event, z.object({
+      pathname: z.string().min(1)
+    }).parse)
+
+    const { uploadId } = await getValidatedQuery(event, z.object({
+      uploadId: z.string().min(1)
+    }).parse)
+
+    const mpu = resumeMultipartUpload(pathname, uploadId)
+
+    try {
+      await mpu.abort()
+    } catch (e: any) {
+      throw createError({ status: 400, message: e.message })
+    }
+  }
+
+  const handler = async (event: H3Event, options?: BlobMultipartOptions) => {
+    const method = event.method
+    const { action } = await getValidatedRouterParams(event, z.object({
+      action: z.enum(['create', 'upload', 'complete', 'abort'])
+    }).parse)
+
+    if (action === 'create' && method === 'POST') {
+      return {
+        action,
+        data: await createHandler(event, options)
+      }
+    }
+
+    if (action === 'upload' && method === 'PUT') {
+      return {
+        action,
+        data: await uploadHandler(event)
+      }
+    }
+
+    if (action === 'complete' && method === 'POST') {
+      return {
+        action,
+        data: await completeHandler(event)
+      }
+    }
+
+    if (action === 'abort' && method === 'DELETE') {
+      return {
+        action,
+        data: await abortHandler(event)
+      }
+    }
+
+    throw createError({ status: 405 })
+  }
+
+  return async (event: H3Event, options?: BlobMultipartOptions) => {
+    const result = await handler(event, options)
+
+    if (result.data) {
+      event.respondWith(Response.json(result.data))
+    } else {
+      sendNoContent(event)
+    }
+    return result
   }
 }
 
@@ -314,6 +712,21 @@ function mapR2ObjectToBlob(object: R2Object): BlobObject {
     contentType: object.httpMetadata?.contentType,
     size: object.size,
     uploadedAt: object.uploaded
+  }
+}
+
+function mapR2MpuToBlobMpu(mpu: R2MultipartUpload): BlobMultipartUpload {
+  return {
+    pathname: mpu.key,
+    uploadId: mpu.uploadId,
+    async uploadPart(partNumber: number, value: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob) {
+      return await mpu.uploadPart(partNumber, value as any)
+    },
+    abort: mpu.abort,
+    async complete(uploadedParts: BlobUploadedPart[]) {
+      const object = await mpu.complete(uploadedParts)
+      return mapR2ObjectToBlob(object)
+    }
   }
 }
 
@@ -356,7 +769,7 @@ function fileSizeToBytes(input: string) {
  *
  * @throws If the blob does not meet the requirements
  */
-export function ensureBlob(blob: Blob, options: { maxSize?: BlobSize, types?: BlobType[] }) {
+export function ensureBlob(blob: Blob, options: BlobValidateOptions) {
   requireNuxtHubFeature('blob')
 
   if (!options.maxSize && !options.types?.length) {

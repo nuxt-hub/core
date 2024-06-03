@@ -2,7 +2,7 @@ import type { H3Event } from 'h3'
 import { getHeader, createError, handleCors } from 'h3'
 import { $fetch } from 'ofetch'
 
-const localCache: Record<string, boolean> = {}
+const localCache: Map<string, boolean> = new Map()
 
 export async function requireNuxtHubAuthorization(event: H3Event) {
   // Skip if in development
@@ -39,7 +39,7 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
 
   // Hosted on NuxtHub
   if (projectKey) {
-    if (localCache[secretKeyOrUserToken]) {
+    if (localCache.has(secretKeyOrUserToken)) {
       return
     }
     // Here the secretKey is a user token
@@ -50,7 +50,7 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
         authorization: `Bearer ${secretKeyOrUserToken}`
       }
     })
-    localCache[secretKeyOrUserToken] = true
+    localCache.set(secretKeyOrUserToken, true)
     return
   }
 

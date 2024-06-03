@@ -6,7 +6,7 @@ import { requireNuxtHubFeature } from '../../../utils/features'
 
 const statementValidation = z.object({
   query: z.string().min(1).max(1e6).trim(),
-  params: z.any().array()
+  params: z.any().array().default([])
 })
 
 export default eventHandler(async (event) => {
@@ -20,20 +20,17 @@ export default eventHandler(async (event) => {
   const db = hubDatabase()
 
   if (command === 'exec') {
-    const { query } = await readValidatedBody(event, z.object({
-      query: z.string().min(1).max(1e6).trim()
-    }).parse)
+    const { query } = await readValidatedBody(event, statementValidation.pick({ query: true }).parse)
     return db.exec(query)
   }
   if (command === 'dump') {
     return db.dump()
   }
   if (command === 'first') {
-    const { query, params, colName } = await readValidatedBody(event, z.object({
-      query: z.string().min(1).max(1e6).trim(),
-      params: z.any().array(),
-      colName: z.string().optional()
-    }).parse)
+    const { query, params, colName } = await readValidatedBody(event, z.intersection(
+      statementValidation,
+      z.object({ colName: z.string().optional() })
+    ).parse)
     if (colName) {
       return db.prepare(query).bind(...params).first(colName)
     }
@@ -41,21 +38,17 @@ export default eventHandler(async (event) => {
   }
 
   if (command === 'batch') {
-    const statements = await readValidatedBody(event, z.array(z.object({
-      query: z.string().min(1).max(1e6).trim(),
-      params: z.any().array()
-    })).parse)
+    const statements = await readValidatedBody(event, z.array(statementValidation).parse)
     return db.batch(
       statements.map(stmt => db.prepare(stmt.query).bind(...stmt.params))
     )
   }
 
   if (command === 'raw') {
-    const { query, params, columnNames } = await readValidatedBody(event, z.object({
-      query: z.string().min(1).max(1e6).trim(),
-      params: z.any().array(),
-      columnNames: z.boolean().default(false)
-    }).parse)
+    const { query, params, columnNames } = await readValidatedBody(event, z.intersection(
+      statementValidation,
+      z.object({ columnNames: z.boolean().default(false) })
+    ).parse)
     // @ts-expect-error overload on columnNames
     return db.prepare(query).bind(...params).raw({ columnNames })
   }
