@@ -4,7 +4,7 @@ import type { R2Bucket, ReadableStream, R2MultipartUpload } from '@cloudflare/wo
 import { ofetch } from 'ofetch'
 import mime from 'mime'
 import type { H3Event } from 'h3'
-import { setHeader, createError } from 'h3'
+import { setHeader, createError, readFormData } from 'h3'
 import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
 import { parse } from 'pathe'
