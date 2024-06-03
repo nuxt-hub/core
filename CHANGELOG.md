@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.6.3
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.2...v0.6.3)
+
+### 🩹 Fixes
+
+- Ensure env is set before calling `projectUrl()` ([40dfa3d](https://github.com/nuxt-hub/core/commit/40dfa3d))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.6.2
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.1...v0.6.2)
