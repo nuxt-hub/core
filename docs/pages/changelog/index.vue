@@ -77,7 +77,7 @@ watch(() => arrivedState.bottom, () => {
 
 <template>
   <UContainer v-if="page">
-    <UPageHero v-bind="page?.hero" />
+    <UPageHero v-bind="page?.hero" :ui="{ base: 'z-10' }" />
     <div class="relative">
       <div
         ref="dot" class="hidden lg:block absolute w-[2px] rounded-full bg-gray-500 dark:bg-gray-400 z-10 neon dot"

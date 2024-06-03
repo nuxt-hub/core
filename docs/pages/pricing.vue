@@ -19,7 +19,7 @@ defineOgImageComponent('Docs')
 
 <template>
   <UContainer>
-    <UPageHero v-bind="page?.hero" align="center">
+    <UPageHero align="center" :ui="{ base: 'z-10' }">
       <!-- <template #icon>
           <UBadge :label="page?.hero.headline" icon="" variant="outline" :ui="{ rounded: 'rounded-full' }" class="badge dark:border border-primary" />
         </template> -->

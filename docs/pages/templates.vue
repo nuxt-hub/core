@@ -17,7 +17,7 @@ defineOgImageComponent('Docs')
 
 <template>
   <UContainer>
-    <UPageHero v-bind="page?.hero" />
+    <UPageHero v-bind="page?.hero" :ui="{ base: 'z-10' }" />
     <UPageGrid class="lg:grid-cols-3 xl:grid-cols-4">
       <UPageCard
         v-for="(template, index) in templates"
