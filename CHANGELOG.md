@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.6.4
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.3...v0.6.4)
+
+### 🩹 Fixes
+
+- **blob:** Add missing import for getQuery ([56e69e0](https://github.com/nuxt-hub/core/commit/56e69e0))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.6.3
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.2...v0.6.3)
