@@ -17,7 +17,7 @@ We partnered with the Drizzle team to leverage [Drizzle Studio](https://orm.driz
 
 We improved the experience so Drizzle Studio remembers you current state when you navigate away and come back. When opening the database tab, you will be taken back to the same table you were last time with the same filters applied.
 
-::video{poster="https://res.cloudinary.com/nuxt/video/upload/so_0/v1717513926/nuxthub/drizzle-studio-remember_m5b6hl.jpg" controls autoplay}
+::video{poster="https://res.cloudinary.com/nuxt/video/upload/so_0/v1717513926/nuxthub/drizzle-studio-remember_m5b6hl.jpg" controls class="w-full h-auto"}
   :source{src="https://res.cloudinary.com/nuxt/video/upload/v1717513926/nuxthub/drizzle-studio-remember_m5b6hl.webm" type="video/webm"}
   :source{src="https://res.cloudinary.com/nuxt/video/upload/v1717513926/nuxthub/drizzle-studio-remember_m5b6hl.mp4" type="video/mp4"}
   :source{src="https://res.cloudinary.com/nuxt/video/upload/v1717513926/nuxthub/drizzle-studio-remember_m5b6hl.ogg" type="video/ogg"}
