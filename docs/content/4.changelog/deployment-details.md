@@ -25,7 +25,6 @@ We are excited to announce that we have added a new page to NuxtHub: **Deploymen
 
 :nuxt-img{src="/images/changelog/deployment-details.png" alt="NuxtHub Deployment Details" width="915" height="515"}
 
-
 You can now access more information about each deployment such as:
 - **Details:** Status, Branch, Commit and more
 - **Build Logs:** Access your deployment build logs
