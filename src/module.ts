@@ -1,7 +1,7 @@
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
 import { execSync } from 'node:child_process'
 import { argv } from 'node:process'
-import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule, addServerImportsDir, addImportsDir } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule, addServerImportsDir, addImportsDir, addServerHandler } from '@nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { findWorkspaceDir } from 'pkg-types'
@@ -159,13 +159,6 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.alias['#hub/openapi'] = nuxt.options.nitro?.experimental?.openAPI === true
       ? '#internal/nitro/routes/openapi'
       : resolve('./runtime/templates/openapi')
-
-    // Register server utils
-    addServerImportsDir(resolve('./runtime/server/utils'))
-    addImportsDir(resolve('./runtime/composables'))
-
-    // Register client composables
-    addImportsDir(resolve('./runtime/compsables'))
 
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {
@@ -389,10 +382,28 @@ export default defineNuxtModule<ModuleOptions>({
       }
     }
 
-    // Add Proxy routes only if not remote or in development (used for devtools)
-    if (nuxt.options.dev || !hub.remote) {
-      addServerScanDir(resolve('./runtime/server'))
+    // Register general server utils
+    addServerScanDir(resolve(`./runtime/server`))
+    for (const feature of ['blob', 'cache', 'database', 'kv']) {
+      if (hub[feature as keyof typeof hub]) {
+        // Add Proxy routes only if not remote or in development (used for devtools)
+        if (nuxt.options.dev || !hub.remote) {
+          addServerScanDir(resolve(`./runtime/server/${feature}`))
+        }
+      }
     }
+
+    addServerHandler({
+      route: '/api/_hub/**',
+      handler: resolve('./runtime/server/fallback-handler')
+    })
+
+    // Register server utils
+    addServerImportsDir(resolve('./runtime/server/utils'))
+    addImportsDir(resolve('./runtime/composables'))
+
+    // Register client composables
+    addImportsDir(resolve('./runtime/compsables'))
 
     // Add custom tabs to Nuxt Devtools
     if (nuxt.options.dev) {

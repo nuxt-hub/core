@@ -7,11 +7,11 @@ import { useRuntimeConfig } from '#imports'
 
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
-  const { version, cache } = useRuntimeConfig().hub
+  const { version, cache, blob, kv, database } = useRuntimeConfig().hub
   const [dbCheck, kvCheck, blobCheck] = await Promise.all([
-    falseIfFail(() => hubDatabase().exec('PRAGMA table_list')),
-    falseIfFail(() => hubKV().getKeys('__check__')),
-    falseIfFail(() => hubBlob().list({ prefix: '__check__' }))
+    falseIfFail(() => database && hubDatabase().exec('PRAGMA table_list')),
+    falseIfFail(() => kv && hubKV().getKeys('__check__')),
+    falseIfFail(() => blob && hubBlob().list({ prefix: '__check__' }))
   ])
 
   return {

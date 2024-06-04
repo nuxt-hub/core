@@ -1,4 +1,4 @@
-import { eventHandler, createError } from 'h3'
+import { eventHandler, createError, type H3Event } from 'h3'
 import { requireNuxtHubAuthorization } from '../../utils/auth'
 import { useRuntimeConfig } from '#imports'
 
@@ -14,7 +14,7 @@ export default eventHandler(async (event) => {
   }
 
   // @ts-expect-error #hub/openapi has no exported types
-  const openapi = await import('#hub/openapi')
+  const openapi: (event: H3Event) => any = await import('#hub/openapi')
     .then(mod => mod.default)
     .catch(() => undefined)
 
