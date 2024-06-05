@@ -1,4 +1,4 @@
-import { handleCors, eventHandler, sendNoContent } from 'h3'
+import { handleCors, eventHandler } from 'h3'
 
 export default eventHandler((event) => {
   // add cors for devtools embed
