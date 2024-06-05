@@ -157,7 +157,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     if (nuxt.options.dev) {
       addServerHandler({
-        route: '',
+        route: '/api/_hub',
         middleware: true,
         handler: resolve('./runtime/cors.dev')
       })
