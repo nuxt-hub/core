@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.6.8
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.7...v0.6.8)
+
+### 🩹 Fixes
+
+- **blob:** Sanitize pathname to avoid doubleslash ([2079b6a](https://github.com/nuxt-hub/core/commit/2079b6a))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.6.7
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.6...v0.6.7)
