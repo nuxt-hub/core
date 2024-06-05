@@ -74,6 +74,15 @@ describe('Blob', async () => {
         body: form
       })
       expect(result).toMatchObject([{ ...images[0], pathname: 'foo/' + images[0].pathname }])
+
+      const file2 = await fs.readFile(fileURLToPath(new URL('./fixtures/blob/public/' + images[1].pathname, import.meta.url)))
+      const form2 = new FormData()
+      form2.append('files', new File([file2], images[1].pathname, { type: images[1].contentType }))
+      await $fetch('/api/_hub/blob', {
+        method: 'POST',
+        params: { prefix: 'foo/' },
+        body: form2
+      })
     })
 
     it('Upload multiple files', async () => {
@@ -163,6 +172,59 @@ describe('Blob', async () => {
       expect(
         page2.blobs.find(blob => page1.blobs[0].pathname === blob.pathname)
       ).toBeUndefined()
+    })
+  })
+
+  describe('Get', () => {
+    it('Get single file', async () => {
+      const image = images[0]
+      const result = await $fetch<Blob>(`/api/_hub/blob/${image.pathname}`)
+      expect(result.size).toMatchObject(image.size)
+      expect(result.type).toMatchObject(image.contentType)
+    })
+  })
+
+  describe('Delete', () => {
+    it('Delete single file', async () => {
+      const blobsBeforeDelete = await $fetch<BlobListResult>('/api/_hub/blob')
+      const image = images[0]
+      const result = await $fetch(`/api/_hub/blob/${image.pathname}`, { method: 'DELETE' })
+      expect(result).toMatchObject(undefined)
+      const blobsAfterDelete = await $fetch<BlobListResult>('/api/_hub/blob')
+
+      expect(blobsAfterDelete.blobs).toMatchObject(blobsBeforeDelete.blobs.filter(blob => blob.pathname !== image.pathname))
+      expect(blobsAfterDelete.blobs.length).not.toBe(blobsBeforeDelete.blobs.length)
+    })
+
+    it('Delete multiple file', async () => {
+      const blobsBeforeDelete = await $fetch<BlobListResult>('/api/_hub/blob')
+      const result = await $fetch('/api/_hub/blob/delete', {
+        method: 'POST',
+        body: {
+          pathnames: images.map(image => `multiple/${image.pathname}`)
+        }
+      })
+      expect(result).toMatchObject(undefined)
+      const blobsAfterDelete = await $fetch<BlobListResult>('/api/_hub/blob')
+
+      expect(blobsAfterDelete.blobs).toMatchObject(blobsBeforeDelete.blobs.filter(blob => !blob.pathname.startsWith('multiple/')))
+      expect(blobsAfterDelete.blobs.length).not.toBe(blobsBeforeDelete.blobs.length)
+    })
+
+    it('Delete folder', async () => {
+      const blobsBeforeDelete = await $fetch<BlobListResult>('/api/_hub/blob')
+
+      const result = await $fetch('/api/_hub/blob/delete-folder', {
+        method: 'POST',
+        body: {
+          prefix: 'foo/'
+        }
+      })
+      expect(result).toMatchObject(undefined)
+      const blobsAfterDelete = await $fetch<BlobListResult>('/api/_hub/blob')
+
+      expect(blobsAfterDelete.blobs).toMatchObject(blobsBeforeDelete.blobs.filter(blob => !blob.pathname.startsWith('foo/')))
+      expect(blobsAfterDelete.blobs.length).not.toBe(blobsBeforeDelete.blobs.length)
     })
   })
 })
