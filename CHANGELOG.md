@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.6.7
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.6...v0.6.7)
+
+### 🩹 Fixes
+
+- **blob:** Add last missing import ([8cb7866](https://github.com/nuxt-hub/core/commit/8cb7866))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.6.6
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.5...v0.6.6)
