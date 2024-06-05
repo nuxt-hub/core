@@ -149,7 +149,7 @@ export type HandleMPUResponse =
 export interface BlobUploadOptions extends BlobPutOptions, BlobValidateOptions {
   /**
    * The key to get the file/files from the request form.
-   * @default 'file'
+   * @default 'files'
    */
   formKey?: string
   /**
@@ -393,10 +393,11 @@ export function hubBlob(): HubBlob {
       return mapR2MpuToBlobMpu(mpu)
     },
     async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
-      const opts = { formKey: 'file', multiple: true, ...options } as BlobUploadOptions
-
+      const opts = { formKey: 'files', multiple: true, ...options } as BlobUploadOptions
+      console.log(opts);
+      
       const form = await readFormData(event)
-      const files = form.getAll(opts.formKey || 'file') as File[]
+      const files = form.getAll(opts.formKey || 'files') as File[]
       if (!files) {
         throw createError({ statusCode: 400, message: 'Missing files' })
       }
@@ -404,6 +405,8 @@ export function hubBlob(): HubBlob {
         throw createError({ statusCode: 400, message: 'Multiple files are not allowed' })
       }
 
+      console.log(files);
+      
       const objects: BlobObject[] = []
       try {
         // Ensure the files meet the requirements
@@ -547,9 +550,20 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
       }
     },
     async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
+      const a= await readFormData(event)
+      console.log({
+        method: 'POST',
+        body: a,
+        query: options
+      }, await blobAPI('/', {
+        method: 'POST',
+        body: a,
+        query: options
+      }));
+      
       return await blobAPI('/', {
         method: 'POST',
-        body: await readFormData(event),
+        body: a,
         query: options
       })
     }
