@@ -1,8 +1,7 @@
-import { handleCors, eventHandler } from 'h3'
+import { handleCors, eventHandler, sendNoContent } from 'h3'
 
 export default eventHandler((event) => {
-  // Skip if in development
-  if (import.meta.dev) {
+  if (event.method === 'OPTIONS') {
     // add cors for devtools embed
     handleCors(event, {
       methods: '*',
@@ -10,5 +9,6 @@ export default eventHandler((event) => {
         'https://admin.hub.nuxt.com'
       ]
     })
+    return sendNoContent(event)
   }
 })
