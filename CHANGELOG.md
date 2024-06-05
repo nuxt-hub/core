@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.6.6
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.5...v0.6.6)
+
+### 🩹 Fixes
+
+- Missing imports for blob & multipart ([36a8e66](https://github.com/nuxt-hub/core/commit/36a8e66))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.6.5
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.4...v0.6.5)
