@@ -368,8 +368,6 @@ export default defineNuxtModule<ModuleOptions>({
         }
       })
         .catch(async (err) => {
-          console.log(err);
-          
           let message = 'Project not found.\nMake sure to deploy the project using `nuxthub deploy` or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable.'
           if (err.status >= 500) {
             message = 'Internal server error'
