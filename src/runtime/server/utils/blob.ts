@@ -335,7 +335,7 @@ export function hubBlob(): HubBlob {
       }
 
       if (prefix) {
-        pathname = joinURL(prefix, pathname)
+        pathname = joinURL(prefix, pathname).replace(/\/+/g, '/').replace(/^\/+/, '')
       }
 
       const httpMetadata: Record<string, string> = { contentType }
@@ -375,7 +375,7 @@ export function hubBlob(): HubBlob {
         pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}${ext}`)
       }
       if (prefix) {
-        pathname = joinURL(prefix, pathname)
+        pathname = joinURL(prefix, pathname).replace(/\/+/g, '/').replace(/^\/+/, '')
       }
 
       const httpMetadata: Record<string, string> = { contentType }
