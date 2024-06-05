@@ -402,9 +402,6 @@ export default defineNuxtModule<ModuleOptions>({
     addServerImportsDir(resolve('./runtime/server/utils'))
     addImportsDir(resolve('./runtime/composables'))
 
-    // Register client composables
-    addImportsDir(resolve('./runtime/compsables'))
-
     // Add custom tabs to Nuxt Devtools
     if (nuxt.options.dev) {
       addDevtoolsCustomTabs(nuxt, hub)

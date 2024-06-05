@@ -1,8 +1,9 @@
 import { eventHandler, createError } from 'h3'
-import { requireNuxtHubFeature } from './utils/features'
+import { requireNuxtHubFeature } from '../../../../utils/features'
 
+// catch all handler for /api/_hub/**
 export default eventHandler((event) => {
-  const [feature] = event.path.replace(/^\/api\/_hub\//, '').split('/')
+  const [feature] = (event.context.params?.feature || '').split('/')
 
   requireNuxtHubFeature(feature as any)
 
