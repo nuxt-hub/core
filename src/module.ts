@@ -1,7 +1,7 @@
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
 import { execSync } from 'node:child_process'
 import { argv } from 'node:process'
-import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule, addServerImportsDir, addImportsDir } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule, addServerImportsDir, addImportsDir, addServerHandler } from '@nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { findWorkspaceDir } from 'pkg-types'
@@ -152,6 +152,14 @@ export default defineNuxtModule<ModuleOptions>({
             base: join(rootDir, '.data/cache')
           }
         }
+      })
+    }
+
+    if (nuxt.options.dev) {
+      addServerHandler({
+        route: '/api/_hub',
+        middleware: true,
+        handler: resolve('./runtime/cors.dev')
       })
     }
 
