@@ -394,7 +394,7 @@ export function hubBlob(): HubBlob {
     },
     async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
       const opts = { formKey: 'files', multiple: true, ...options } as BlobUploadOptions
-      
+
       const form = await readFormData(event)
       const files = form.getAll(opts.formKey || 'files') as File[]
       if (!files) {
