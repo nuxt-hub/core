@@ -1,6 +1,31 @@
 # Changelog
 
 
+## v0.6.5
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.4...v0.6.5)
+
+### 🩹 Fixes
+
+- Blobs & cors issue ([#145](https://github.com/nuxt-hub/core/pull/145))
+
+### 📖 Documentation
+
+- Announce public beta ([#56](https://github.com/nuxt-hub/core/pull/56))
+- Update serve example ([3a06bed](https://github.com/nuxt-hub/core/commit/3a06bed))
+- Add drizzle studio update ([4772f65](https://github.com/nuxt-hub/core/commit/4772f65))
+- Update video size ([e79a30a](https://github.com/nuxt-hub/core/commit/e79a30a))
+
+### 🏡 Chore
+
+- Update deps ([a2b0d93](https://github.com/nuxt-hub/core/commit/a2b0d93))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Farnabaz <farnabaz@gmail.com>
+- Florent Delerue <florentdelerue@hotmail.com>
+
 ## v0.6.4
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.3...v0.6.4)
