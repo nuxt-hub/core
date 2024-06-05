@@ -30,6 +30,10 @@ export interface BlobObject {
    * The date the blob was uploaded at.
    */
   uploadedAt: Date
+  /**
+   * The custom metadata of the blob.
+   */
+  customMetadata?: Record<string, string> | undefined
 }
 
 export interface BlobUploadedPart {
@@ -711,7 +715,8 @@ function mapR2ObjectToBlob(object: R2Object): BlobObject {
     pathname: object.key,
     contentType: object.httpMetadata?.contentType,
     size: object.size,
-    uploadedAt: object.uploaded
+    uploadedAt: object.uploaded,
+    customMetadata: object.customMetadata ? object.customMetadata : undefined
   }
 }
 
