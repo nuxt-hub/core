@@ -1,4 +1,4 @@
-import { eventHandler } from 'h3'
+import { eventHandler, readValidatedBody } from 'h3'
 import { z } from 'zod'
 import { hubBlob } from '../../../utils/blob'
 import { requireNuxtHubAuthorization } from '../../../utils/auth'
