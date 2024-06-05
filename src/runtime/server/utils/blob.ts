@@ -149,7 +149,7 @@ export type HandleMPUResponse =
 export interface BlobUploadOptions extends BlobPutOptions, BlobValidateOptions {
   /**
    * The key to get the file/files from the request form.
-   * @default 'file'
+   * @default 'files'
    */
   formKey?: string
   /**
@@ -393,10 +393,10 @@ export function hubBlob(): HubBlob {
       return mapR2MpuToBlobMpu(mpu)
     },
     async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
-      const opts = { formKey: 'file', multiple: true, ...options } as BlobUploadOptions
+      const opts = { formKey: 'files', multiple: true, ...options } as BlobUploadOptions
 
       const form = await readFormData(event)
-      const files = form.getAll(opts.formKey || 'file') as File[]
+      const files = form.getAll(opts.formKey || 'files') as File[]
       if (!files) {
         throw createError({ statusCode: 400, message: 'Missing files' })
       }
