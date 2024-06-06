@@ -30,6 +30,10 @@ export interface BlobObject {
    * The date the blob was uploaded at.
    */
   uploadedAt: Date
+  /**
+   * The custom metadata of the blob.
+   */
+  customMetadata?: Record<string, string>
 }
 
 export interface BlobUploadedPart {
@@ -146,7 +150,7 @@ export type HandleMPUResponse =
     action: 'abort'
   }
 
-export interface BlobUploadOptions extends BlobPutOptions, BlobValidateOptions {
+export interface BlobUploadOptions extends BlobPutOptions, BlobEnsureOptions {
   /**
    * The key to get the file/files from the request form.
    * @default 'files'
@@ -159,7 +163,7 @@ export interface BlobUploadOptions extends BlobPutOptions, BlobValidateOptions {
   multiple?: boolean
 }
 
-export interface BlobValidateOptions {
+export interface BlobEnsureOptions {
   /**
    * The maximum size of the blob (e.g. '1MB')
    */
@@ -394,14 +398,19 @@ export function hubBlob(): HubBlob {
       return mapR2MpuToBlobMpu(mpu)
     },
     async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
-      const opts = { formKey: 'files', multiple: true, ...options } as BlobUploadOptions
+      options = defu(options, {
+        formKey: 'files',
+        multiple: true
+      })
+      const { formKey, multiple, ...opts } = options
+      const { maxSize, types, ...putOptions } = opts
 
       const form = await readFormData(event)
-      const files = form.getAll(opts.formKey || 'files') as File[]
+      const files = form.getAll(formKey || 'files') as File[]
       if (!files) {
         throw createError({ statusCode: 400, message: 'Missing files' })
       }
-      if (!opts.multiple && files.length > 1) {
+      if (!multiple && files.length > 1) {
         throw createError({ statusCode: 400, message: 'Multiple files are not allowed' })
       }
 
@@ -410,11 +419,11 @@ export function hubBlob(): HubBlob {
         // Ensure the files meet the requirements
         if (options.maxSize || options.types?.length) {
           for (const file of files) {
-            ensureBlob(file, opts)
+            ensureBlob(file, { maxSize, types })
           }
         }
         for (const file of files) {
-          const object = await blob.put(file.name!, file, opts)
+          const object = await blob.put(file.name!, file, putOptions)
           objects.push(object)
         }
       } catch (e: any) {
@@ -712,7 +721,8 @@ function mapR2ObjectToBlob(object: R2Object): BlobObject {
     pathname: object.key,
     contentType: object.httpMetadata?.contentType,
     size: object.size,
-    uploadedAt: object.uploaded
+    uploadedAt: object.uploaded,
+    customMetadata: object.customMetadata || {}
   }
 }
 
@@ -770,7 +780,7 @@ function fileSizeToBytes(input: string) {
  *
  * @throws If the blob does not meet the requirements
  */
-export function ensureBlob(blob: Blob, options: BlobValidateOptions) {
+export function ensureBlob(blob: Blob, options: BlobEnsureOptions) {
   requireNuxtHubFeature('blob')
 
   if (!options.maxSize && !options.types?.length) {
