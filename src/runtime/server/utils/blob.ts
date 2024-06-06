@@ -398,9 +398,7 @@ export function hubBlob(): HubBlob {
       return mapR2MpuToBlobMpu(mpu)
     },
     async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
-      if (!['POST', 'PUT', 'PATCH'].includes(event.method.toUpperCase())) {
-        throw createError({ statusCode: 405, message: 'Method not allowed' })
-      }
+      assertMethod(event, ['POST', 'PUT', 'PATCH'])
 
       options = defu(options, {
         formKey: 'files',
