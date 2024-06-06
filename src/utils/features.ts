@@ -1,10 +1,10 @@
-import { type Nuxt } from '@nuxt/schema'
 import { execSync } from 'node:child_process'
+import { type Nuxt } from '@nuxt/schema'
 import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createResolver } from '@nuxt/kit'
-import { addDevtoolsCustomTabs } from './devtools'
 import { joinURL } from 'ufo'
 import { join } from 'pathe'
 import { defu } from 'defu'
+import { addDevtoolsCustomTabs } from './devtools'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -43,10 +43,9 @@ export function setupBase(nuxt: Nuxt, hub: HubConfig) {
   if (nuxt.options.dev) {
     addDevtoolsCustomTabs(nuxt, hub)
   }
-  
 }
 
-export function setupBlob(ـnuxt: Nuxt) {
+export function setupBlob(_nuxt: Nuxt) {
   const { resolve } = createResolver(import.meta.url)
 
   // Add Server scanning
@@ -81,7 +80,7 @@ export function setupCache(nuxt: Nuxt) {
   addServerScanDir(resolve('../runtime/cache/server'))
 }
 
-export function setupDatabase(ـnuxt: Nuxt) {
+export function setupDatabase(_nuxt: Nuxt) {
   const { resolve } = createResolver(import.meta.url)
 
   // Add Server scanning
@@ -89,7 +88,7 @@ export function setupDatabase(ـnuxt: Nuxt) {
   addServerImportsDir(resolve('../runtime/database/server/utils'))
 }
 
-export function setupKV(ـnuxt: Nuxt) {
+export function setupKV(_nuxt: Nuxt) {
   const { resolve } = createResolver(import.meta.url)
 
   // Add Server scanning
@@ -99,11 +98,11 @@ export function setupKV(ـnuxt: Nuxt) {
 
 export function setupOpenAPI(nuxt: Nuxt) {
   const { resolve } = createResolver(import.meta.url)
-  
+
   // Fallback to custom placeholder when openAPI is disabled
   nuxt.options.alias['#hub/openapi'] = nuxt.options.nitro?.experimental?.openAPI === true
-  ? '#internal/nitro/routes/openapi'
-  : resolve('../runtime/openapi/templates/openapi')
+    ? '#internal/nitro/routes/openapi'
+    : resolve('../runtime/openapi/templates/openapi')
 
   addServerScanDir(resolve('../runtime/openapi/server'))
 }

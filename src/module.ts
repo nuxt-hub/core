@@ -1,16 +1,13 @@
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
-import { execSync } from 'node:child_process'
 import { argv } from 'node:process'
-import { defineNuxtModule, createResolver, logger, addServerScanDir, installModule, addServerImportsDir, addImportsDir, addServerHandler } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, logger, installModule, addServerHandler } from '@nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { findWorkspaceDir } from 'pkg-types'
-import { $fetch } from 'ofetch'
-import { joinURL } from 'ufo'
 import { parseArgs } from 'citty'
 import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
-import {setupCache, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote} from './utils/features'
+import { setupCache, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './utils/features'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -137,17 +134,18 @@ export default defineNuxtModule<ModuleOptions>({
       log.info(`Using \`${hub.url}\` as NuxtHub Admin URL`)
     }
 
+    // nuxt prepare, stop here
+    if (nuxt.options._prepare) {
+      return
+    }
+
+    // Register a server middleware to handle cors requests in devtools
     if (nuxt.options.dev) {
       addServerHandler({
         route: '/api/_hub',
         middleware: true,
         handler: resolve('./runtime/cors.dev')
       })
-    }
-
-    // nuxt prepare, stop here
-    if (nuxt.options._prepare) {
-      return
     }
 
     setupBase(nuxt, hub)

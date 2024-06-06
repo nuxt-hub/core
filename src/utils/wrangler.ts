@@ -1,4 +1,3 @@
-
 import { stringifyTOML } from 'confbox'
 
 export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, cache: boolean, analytics: boolean }) {
