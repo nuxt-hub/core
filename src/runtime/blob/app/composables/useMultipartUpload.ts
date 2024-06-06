@@ -4,7 +4,7 @@ import { joinURL } from 'ufo'
 import { readonly, type Ref } from 'vue'
 import type { FetchOptions } from 'ofetch'
 import type { SerializeObject } from 'nitropack'
-import type { BlobUploadedPart, BlobObject } from '../server/utils/blob'
+import type { BlobUploadedPart, BlobObject } from '../../server/utils/blob'
 import { useState } from '#imports'
 
 /**

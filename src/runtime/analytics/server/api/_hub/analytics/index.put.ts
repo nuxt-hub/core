@@ -1,9 +1,9 @@
 import type { AnalyticsEngineDataPoint } from '@cloudflare/workers-types/experimental'
 import { eventHandler, readValidatedBody } from 'h3'
 import { z } from 'zod'
-import { hubAnalytics } from '../../../../utils/analytics'
-import { requireNuxtHubAuthorization } from '../../../../utils/auth'
-import { requireNuxtHubFeature } from '../../../../utils/features'
+import { hubAnalytics } from '../../../utils/analytics'
+import { requireNuxtHubAuthorization } from '../../../../../utils/auth'
+import { requireNuxtHubFeature } from '../../../../../utils/features'
 
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)

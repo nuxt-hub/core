@@ -1,5 +1,5 @@
 import type { FetchOptions } from 'ofetch'
-import type { BlobObject } from '../server/utils/blob'
+import type { BlobObject } from '../../server/utils/blob'
 
 interface UploadOptions extends FetchOptions {
   /**

@@ -1,8 +1,8 @@
 import { eventHandler, readValidatedBody } from 'h3'
 import { z } from 'zod'
-import { hubDatabase } from '../../../../utils/database'
-import { requireNuxtHubAuthorization } from '../../../../utils/auth'
-import { requireNuxtHubFeature } from '../../../../utils/features'
+import { hubDatabase } from '../../../utils/database'
+import { requireNuxtHubAuthorization } from '../../../../../utils/auth'
+import { requireNuxtHubFeature } from '../../../../../utils/features'
 
 const statementValidation = z.object({
   query: z.string().min(1).max(1e6).trim(),

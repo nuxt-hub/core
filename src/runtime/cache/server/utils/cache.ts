@@ -1,6 +1,6 @@
 import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
-import { requireNuxtHubFeature } from './features'
+import { requireNuxtHubFeature } from '../../../utils/features'
 
 /**
  * Manage server cache

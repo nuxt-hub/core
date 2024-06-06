@@ -9,8 +9,8 @@ import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
 import { parse } from 'pathe'
 import { joinURL } from 'ufo'
-import { streamToArrayBuffer } from '../internal/utils/stream'
-import { requireNuxtHubFeature } from './features'
+import { streamToArrayBuffer } from '../../../utils/stream'
+import { requireNuxtHubFeature } from '../../../utils/features'
 import { useRuntimeConfig } from '#imports'
 
 export interface BlobObject {

@@ -1,5 +1,5 @@
 import { eventHandler, createError, type H3Event } from 'h3'
-import { requireNuxtHubAuthorization } from '../../utils/auth'
+import { requireNuxtHubAuthorization } from '../../../../utils/auth'
 import { useRuntimeConfig } from '#imports'
 
 export default eventHandler(async (event) => {

@@ -4,7 +4,7 @@ import httpDriver from 'unstorage/drivers/http'
 import cloudflareKVBindingDriver from 'unstorage/drivers/cloudflare-kv-binding'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
-import { requireNuxtHubFeature } from './features'
+import { requireNuxtHubFeature } from '../../../utils/features'
 import { useRuntimeConfig } from '#imports'
 
 export interface HubKV extends Storage {

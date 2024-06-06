@@ -9,7 +9,8 @@ import { $fetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { parseArgs } from 'citty'
 import { version } from '../package.json'
-import { addDevtoolsCustomTabs, generateWrangler } from './utils'
+import { generateWrangler } from './utils/wrangler'
+import {setupCache, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote} from './utils/features'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -110,7 +111,7 @@ export default defineNuxtModule<ModuleOptions>({
       projectKey: process.env.NUXT_HUB_PROJECT_KEY || '',
       userToken: process.env.NUXT_HUB_USER_TOKEN || '',
       // Remote storage
-      remote: remoteArg || process.env.NUXT_HUB_REMOTE,
+      remote: (remoteArg || process.env.NUXT_HUB_REMOTE) as string | boolean,
       remoteManifest: undefined,
       // Local storage
       dir: '.data/hub',
@@ -136,25 +137,6 @@ export default defineNuxtModule<ModuleOptions>({
       log.info(`Using \`${hub.url}\` as NuxtHub Admin URL`)
     }
 
-    if (hub.cache) {
-      // Add Server caching (Nitro)
-      nuxt.options.nitro = defu(nuxt.options.nitro, {
-        storage: {
-          cache: {
-            driver: 'cloudflare-kv-binding',
-            binding: 'CACHE',
-            base: 'cache'
-          }
-        },
-        devStorage: {
-          cache: {
-            driver: 'fs',
-            base: join(rootDir, '.data/cache')
-          }
-        }
-      })
-    }
-
     if (nuxt.options.dev) {
       addServerHandler({
         route: '/api/_hub',
@@ -163,114 +145,26 @@ export default defineNuxtModule<ModuleOptions>({
       })
     }
 
-    // Fallback to custom placeholder when openAPI is disabled
-    nuxt.options.alias['#hub/openapi'] = nuxt.options.nitro?.experimental?.openAPI === true
-      ? '#internal/nitro/routes/openapi'
-      : resolve('./runtime/templates/openapi')
-
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {
       return
     }
 
-    // Within CF Pages CI/CD to notice NuxtHub about the build and hub config
-    if (!nuxt.options.dev && process.env.CF_PAGES && process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN && process.env.NUXT_HUB_PROJECT_KEY && process.env.NUXT_HUB_ENV) {
-      // Disable remote option (if set also for prod)
-      hub.remote = false
-      // Wait for modules to be done to send config to NuxtHub
-      nuxt.hook('modules:done', async () => {
-        const { bindingsChanged } = await $fetch<{ bindingsChanged: boolean }>(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/before`, {
-          baseURL: hub.url,
-          method: 'POST',
-          headers: {
-            authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
-          },
-          body: {
-            pagesUrl: process.env.CF_PAGES_URL,
-            analytics: hub.analytics,
-            blob: hub.blob,
-            cache: hub.cache,
-            database: hub.database,
-            kv: hub.kv
-          }
-        }).catch((e) => {
-          if (e.response?._data?.message) {
-            log.error(e.response._data.message)
-          } else {
-            log.error('Failed run build:before hook on NuxtHub.', e)
-          }
+    setupBase(nuxt, hub)
+    setupOpenAPI(nuxt)
+    hub.blob && setupBlob(nuxt)
+    hub.cache && setupCache(nuxt)
+    hub.database && setupDatabase(nuxt)
+    hub.kv && setupKV(nuxt)
 
-          process.exit(1)
-        })
-
-        if (bindingsChanged) {
-          log.box([
-            'NuxtHub detected some changes in this project bindings and updated your Pages project on your Cloudflare account.',
-            'In order to enable this changes, this deployment will be cancelled and a new one has been created.'
-          ].join('\n'))
-
-          // Wait 2 seconds to make sure NuxtHub cancel the deployment before exiting
-          await new Promise(resolve => setTimeout(resolve, 2000))
-
-          process.exit(1)
-        }
-      })
-
-      nuxt.hook('build:error', async (error) => {
-        await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/error`, {
-          baseURL: hub.url,
-          method: 'POST',
-          headers: {
-            authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
-          },
-          body: {
-            pagesUrl: process.env.CF_PAGES_URL,
-            error: {
-              message: error.message,
-              name: error.name,
-              stack: error.stack
-            }
-          }
-        }).catch(() => {
-          // ignore api call error
-        })
-      })
-
-      nuxt.hook('build:done', async () => {
-        await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/done`, {
-          baseURL: hub.url,
-          method: 'POST',
-          headers: {
-            authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
-          },
-          body: {
-            pagesUrl: process.env.CF_PAGES_URL
-          }
-        }).catch((e) => {
-          if (e.response?._data?.message) {
-            log.error(e.response._data.message)
-          } else {
-            log.error('Failed run build:done hook on NuxtHub.', e)
-          }
-
-          process.exit(1)
-        })
-      })
-    } else {
-      // Write `dist/hub.config.json` after public assets are built
-      nuxt.hook('nitro:build:public-assets', async (nitro) => {
-        const hubConfig = {
-          analytics: hub.analytics,
-          blob: hub.blob,
-          cache: hub.cache,
-          database: hub.database,
-          kv: hub.kv
-        }
-        await writeFile(join(nitro.options.output.publicDir, 'hub.config.json'), JSON.stringify(hubConfig, null, 2), 'utf-8')
-      })
+    if (hub.remote) {
+      await setupRemote(nuxt, hub)
+      return
     }
 
-    if (!nuxt.options.dev && !hub.remote) {
+    // Folowing lines are only executed when remove storage is disabled
+
+    if (!nuxt.options.dev) {
       // Make sure to fallback to cloudflare-pages preset
       let preset = nuxt.options.nitro.preset = nuxt.options.nitro.preset || 'cloudflare-pages'
       // Support also cloudflare_module
@@ -282,141 +176,8 @@ export default defineNuxtModule<ModuleOptions>({
       }
     }
 
-    if (hub.remote) {
-      let env = hub.remote
-      // Guess the environment from the branch name if env is 'true'
-      let branch = 'main'
-      if (String(env) === 'true') {
-        try {
-          branch = execSync('git branch --show-current', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
-          env = (branch === 'main' ? 'production' : 'preview')
-        } catch {
-          // ignore
-          log.warn('Could not guess the environment from the branch name, using `production` as default')
-          env = 'production'
-        }
-      }
-      // If projectUrl is a function and we cannot know the productionBranch
-      if (typeof hub.projectUrl === 'function' && !hub.projectKey) {
-        // @ts-expect-error issue with defu transform
-        hub.projectUrl = hub.projectUrl({ env, branch })
-      }
-      // Check if the project is linked to a NuxtHub project
-      // it should have a projectKey and a userToken
-      // Then we fill the projectUrl
-      if (hub.projectKey) {
-        if (hub.projectSecretKey) {
-          log.warn('Ignoring `NUXT_HUB_PROJECT_SECRET_KEY` as `NUXT_HUB_PROJECT_KEY` is set.')
-        }
-        const project = await $fetch(`/api/projects/${hub.projectKey}`, {
-          baseURL: hub.url,
-          headers: {
-            authorization: `Bearer ${hub.userToken}`
-          }
-        }).catch((err) => {
-          if (err.status === 401) {
-            log.error('It seems that you are not logged in, make sure to run `nuxthub login`.')
-          } else {
-            log.error('Failed to fetch linked project on NuxtHub, make sure to run `nuxthub link` again.')
-          }
-          process.exit(1)
-        })
-        // Adapt env based on project defined production branch
-        env = (branch === project.productionBranch ? 'production' : 'preview')
-        if (typeof hub.projectUrl === 'function') {
-          // @ts-expect-error issue with defu transform
-          hub.projectUrl = hub.projectUrl({ env, branch })
-        }
-
-        const adminUrl = joinURL(hub.url, project.teamSlug, project.slug)
-        log.info(`Linked to \`${adminUrl}\``)
-        log.info(`Using \`${env}\` environment`)
-        hub.projectUrl = hub.projectUrl || (env === 'production' ? project.url : project.previewUrl)
-        // No production or preview URL found
-        if (!hub.projectUrl) {
-          log.error(`No deployment found for \`${env}\`, make sure to deploy the project using \`nuxthub deploy\`.`)
-          process.exit(1)
-        }
-        // Update hub.env in runtimeConfig
-        hub.env = env
-      }
-
-      // Make sure we have a projectUrl when using the remote option
-      if (!hub.projectUrl) {
-        log.error('No project URL defined, make sure to link your project with `nuxthub link` or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable (if self-hosted).')
-        process.exit(1)
-      }
-
-      // Make sure we have a secret when using the remote option
-      if (!hub.projectKey && !hub.projectSecretKey && !hub.userToken) {
-        log.error('No project secret key found, make sure to add the `NUXT_HUB_PROJECT_SECRET_KEY` environment variable.')
-        process.exit(1)
-      }
-
-      // If using the remote option with a projectUrl and a projectSecretKey
-      log.info(`Using remote storage from \`${hub.projectUrl}\``)
-      const remoteManifest = hub.remoteManifest = await $fetch('/api/_hub/manifest', {
-        baseURL: hub.projectUrl as string,
-        headers: {
-          authorization: `Bearer ${hub.projectSecretKey || hub.userToken}`
-        }
-      })
-        .catch(async (err) => {
-          let message = 'Project not found.\nMake sure to deploy the project using `nuxthub deploy` or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable.'
-          if (err.status >= 500) {
-            message = 'Internal server error'
-          } else if (err.status === 401) {
-            message = 'Authorization failed.\nMake sure to provide a valid NUXT_HUB_PROJECT_SECRET_KEY or being logged in with `nuxthub login`'
-          }
-          log.error(`Failed to fetch remote storage: ${message}`)
-          process.exit(1)
-        })
-      if (remoteManifest.version !== hub.version) {
-        log.warn(`\`${hub.projectUrl}\` is running \`@nuxthub/core@${remoteManifest.version}\` while the local project is running \`@nuxthub/core@${hub.version}\`. Make sure to use the same version on both sides for a smooth experience.`)
-      }
-
-      Object.keys(remoteManifest.storage).filter(k => hub[k as keyof typeof hub] && !remoteManifest.storage[k]).forEach((k) => {
-        if (!remoteManifest.storage[k]) {
-          log.warn(`Remote storage \`${k}\` is enabled locally but it's not enabled in the remote project. Deploy a new version with \`${k}\` enabled to use it remotely.`)
-        }
-      })
-
-      const availableStorages = Object.keys(remoteManifest.storage).filter(k => hub[k as keyof typeof hub] && remoteManifest.storage[k])
-      if (availableStorages.length > 0) {
-        logger.info(`Remote storage available: ${availableStorages.map(k => `\`${k}\``).join(', ')} `)
-      } else {
-        log.fatal('No remote storage available: make sure to enable at least one of the storage options in your `nuxt.config.ts` and deploy new version before using remote storage. Read more at https://hub.nuxt.com/docs/getting-started/remote-storage')
-        process.exit(1)
-      }
-    }
-
-    // Register general server utils
-    addServerScanDir(resolve(`./runtime/server`))
-    for (const feature of ['blob', 'cache', 'database', 'kv']) {
-      if (hub[feature as keyof typeof hub]) {
-        // Add Proxy routes only if not remote or in development (used for devtools)
-        if (nuxt.options.dev || !hub.remote) {
-          addServerScanDir(resolve(`./runtime/server/${feature}`))
-        }
-      }
-    }
-
-    addServerHandler({
-      route: '/api/_hub/**',
-      handler: resolve('./runtime/server/fallback-handler')
-    })
-
-    // Register server utils
-    addServerImportsDir(resolve('./runtime/server/utils'))
-    addImportsDir(resolve('./runtime/composables'))
-
-    // Add custom tabs to Nuxt Devtools
-    if (nuxt.options.dev) {
-      addDevtoolsCustomTabs(nuxt, hub)
-    }
-
     // Local development without remote connection
-    if (nuxt.options.dev && !hub.remote) {
+    if (nuxt.options.dev) {
       log.info(`Using local storage from \`${hub.dir}\``)
 
       // Create the hub.dir directory

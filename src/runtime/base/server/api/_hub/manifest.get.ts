@@ -1,8 +1,8 @@
 import { eventHandler } from 'h3'
-import { hubDatabase } from '../../utils/database'
-import { hubKV } from '../../utils/kv'
-import { hubBlob } from '../../utils/blob'
-import { requireNuxtHubAuthorization } from '../../utils/auth'
+import { hubDatabase } from '../../../../database/server/utils/database'
+import { hubKV } from '../../../../kv/server/utils/kv'
+import { hubBlob } from '../../../../blob/server/utils/blob'
+import { requireNuxtHubAuthorization } from '../../../../utils/auth'
 import { useRuntimeConfig } from '#imports'
 
 export default eventHandler(async (event) => {
