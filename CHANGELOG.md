@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.6.9
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.8...v0.6.9)
+
+### 🚀 Enhancements
+
+- Use etag in blob.serve ([#147](https://github.com/nuxt-hub/core/pull/147))
+
+### 🩹 Fixes
+
+- **blob:** Set correct customMetadata ([#146](https://github.com/nuxt-hub/core/pull/146))
+
+### ❤️ Contributors
+
+- Murzin Artem ([@FutureExcited](http://github.com/FutureExcited))
+- Estéban <e.soubiran25@gmail.com>
+
 ## v0.6.8
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.7...v0.6.8)
