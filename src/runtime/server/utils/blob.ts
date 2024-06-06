@@ -323,6 +323,7 @@ export function hubBlob(): HubBlob {
 
       setHeader(event, 'Content-Type', object.httpMetadata?.contentType || getContentType(pathname))
       setHeader(event, 'Content-Length', object.size)
+      setHeader(event, 'etag', object.httpEtag)
 
       return object.body
     },
