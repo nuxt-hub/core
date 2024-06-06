@@ -155,6 +155,14 @@ export default defineNuxtModule<ModuleOptions>({
       })
     }
 
+    if (nuxt.options.dev) {
+      addServerHandler({
+        route: '/api/_hub',
+        middleware: true,
+        handler: resolve('./runtime/cors.dev')
+      })
+    }
+
     // Fallback to custom placeholder when openAPI is disabled
     nuxt.options.alias['#hub/openapi'] = nuxt.options.nitro?.experimental?.openAPI === true
       ? '#internal/nitro/routes/openapi'

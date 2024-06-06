@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import { getHeader, createError, handleCors } from 'h3'
+import { getHeader, createError } from 'h3'
 import { $fetch } from 'ofetch'
 
 const localCache: Map<string, boolean> = new Map()
@@ -7,13 +7,6 @@ const localCache: Map<string, boolean> = new Map()
 export async function requireNuxtHubAuthorization(event: H3Event) {
   // Skip if in development
   if (import.meta.dev) {
-    // add cors for devtools embed
-    handleCors(event, {
-      methods: '*',
-      origin: [
-        'https://admin.hub.nuxt.com'
-      ]
-    })
     return
   }
 

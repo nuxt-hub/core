@@ -1,6 +1,84 @@
 # Changelog
 
 
+## v0.6.9
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.8...v0.6.9)
+
+### 🚀 Enhancements
+
+- Use etag in blob.serve ([#147](https://github.com/nuxt-hub/core/pull/147))
+
+### 🩹 Fixes
+
+- **blob:** Set correct customMetadata ([#146](https://github.com/nuxt-hub/core/pull/146))
+
+### ❤️ Contributors
+
+- Murzin Artem ([@FutureExcited](http://github.com/FutureExcited))
+- Estéban <e.soubiran25@gmail.com>
+
+## v0.6.8
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.7...v0.6.8)
+
+### 🩹 Fixes
+
+- **blob:** Sanitize pathname to avoid doubleslash ([2079b6a](https://github.com/nuxt-hub/core/commit/2079b6a))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
+## v0.6.7
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.6...v0.6.7)
+
+### 🩹 Fixes
+
+- **blob:** Add last missing import ([8cb7866](https://github.com/nuxt-hub/core/commit/8cb7866))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
+## v0.6.6
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.5...v0.6.6)
+
+### 🩹 Fixes
+
+- Missing imports for blob & multipart ([36a8e66](https://github.com/nuxt-hub/core/commit/36a8e66))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
+## v0.6.5
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.4...v0.6.5)
+
+### 🩹 Fixes
+
+- Blobs & cors issue ([#145](https://github.com/nuxt-hub/core/pull/145))
+
+### 📖 Documentation
+
+- Announce public beta ([#56](https://github.com/nuxt-hub/core/pull/56))
+- Update serve example ([3a06bed](https://github.com/nuxt-hub/core/commit/3a06bed))
+- Add drizzle studio update ([4772f65](https://github.com/nuxt-hub/core/commit/4772f65))
+- Update video size ([e79a30a](https://github.com/nuxt-hub/core/commit/e79a30a))
+
+### 🏡 Chore
+
+- Update deps ([a2b0d93](https://github.com/nuxt-hub/core/commit/a2b0d93))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Farnabaz <farnabaz@gmail.com>
+- Florent Delerue <florentdelerue@hotmail.com>
+
 ## v0.6.4
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.3...v0.6.4)

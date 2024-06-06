@@ -4,7 +4,7 @@ import type { BlobObject } from '../server/utils/blob'
 interface UploadOptions extends FetchOptions {
   /**
    * The key to add the file/files to the request form.
-   * @default 'file'
+   * @default 'files'
    */
   formKey?: string
 
@@ -18,7 +18,7 @@ interface UploadOptions extends FetchOptions {
 export function useUpload(apiBase: string, options: UploadOptions & { multiple: false }): (data: FileList | HTMLInputElement | File[] | File) => Promise<BlobObject>
 export function useUpload(apiBase: string, options: UploadOptions): ((data: File) => Promise<BlobObject>) & ((data: FileList | HTMLInputElement | File[]) => Promise<BlobObject[]>)
 export function useUpload(apiBase: string, options: UploadOptions = {}) {
-  const { formKey = 'file', multiple = true, method, ...fetchOptions } = options || {}
+  const { formKey = 'files', multiple = true, method, ...fetchOptions } = options || {}
 
   async function upload(data: File): Promise<BlobObject>
   async function upload(data: FileList | HTMLInputElement | File[] | File): Promise<BlobObject[] | BlobObject> {
