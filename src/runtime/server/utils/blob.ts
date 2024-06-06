@@ -398,6 +398,8 @@ export function hubBlob(): HubBlob {
       return mapR2MpuToBlobMpu(mpu)
     },
     async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
+      assertMethod(event, ['POST', 'PUT', 'PATCH'])
+
       options = defu(options, {
         formKey: 'files',
         multiple: true
