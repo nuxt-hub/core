@@ -1,6 +1,24 @@
 # Changelog
 
 
+## v0.6.10
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.9...v0.6.10)
+
+### 🩹 Fixes
+
+- **handleUpload:** Ensure valid http method ([#148](https://github.com/nuxt-hub/core/pull/148))
+- Support upcoming nitro release ([475fa04](https://github.com/nuxt-hub/core/commit/475fa04))
+
+### 🏡 Chore
+
+- Update deps ([0e5100f](https://github.com/nuxt-hub/core/commit/0e5100f))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Farnabaz <farnabaz@gmail.com>
+
 ## v0.6.9
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.8...v0.6.9)
