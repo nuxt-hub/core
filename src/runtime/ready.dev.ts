@@ -1,4 +1,4 @@
-import { defineNitroPlugin } from 'nitropack/runtime/plugin'
+import { defineNitroPlugin } from 'nitropack/runtime'
 import { hubHooks } from './server/utils/hooks'
 
 export default defineNitroPlugin(async () => {
