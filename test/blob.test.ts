@@ -3,7 +3,8 @@ import fs from 'node:fs/promises'
 import { describe, it, expect } from 'vitest'
 import { setup, $fetch } from '@nuxt/test-utils'
 import { version } from '../package.json'
-import type { BlobListResult } from '../src/runtime/server/utils/blob'
+import type { BlobListResult } from '../src/runtime/blob/server/utils/blob'
+import { useUpload } from '../src/runtime/blob/app/composables/useUpload'
 
 const images = [
   {
@@ -20,6 +21,9 @@ const images = [
 describe('Blob', async () => {
   // clean up
   cleanUpBlobs()
+
+  // Make $fetch available in composables
+  global.$fetch = $fetch
 
   await setup({
     rootDir: fileURLToPath(new URL('./fixtures/blob', import.meta.url)),
@@ -47,6 +51,18 @@ describe('Blob', async () => {
     expect(result).toMatchObject({
       blobs: [],
       hasMore: false
+    })
+  })
+
+  describe('Composables', () => {
+    describe('useUpload', () => {
+      const upload = useUpload('/api/_hub/blob')
+      it('should be defined', () => {
+        expect(upload).toBeDefined()
+      })
+      it('should be a function', () => {
+        expect(typeof upload).toBe('function')
+      })
     })
   })
 
@@ -114,6 +130,39 @@ describe('Blob', async () => {
       })
 
       expect(result).toBeNull()
+    })
+
+    describe('with useUpload composable', () => {
+      it('single file', async () => {
+        const upload = useUpload('/api/_hub/blob')
+        const files = [
+          new File([await fs.readFile(fileURLToPath(new URL('./fixtures/blob/public/' + images[0].pathname, import.meta.url)))], images[0].pathname, { type: images[0].contentType })
+        ]
+        const result = await upload(files)
+        expect(result).toMatchObject([{ ...images[0], pathname: images[0].pathname }])
+      })
+
+      it('multiple files', async () => {
+        const upload = useUpload('/api/_hub/blob', {
+          prefix: 'multiple2/'
+        })
+        const files = []
+        for (const image of images) {
+          files.push(new File([await fs.readFile(fileURLToPath(new URL('./fixtures/blob/public/' + image.pathname, import.meta.url)))], image.pathname, { type: image.contentType }))
+        }
+        const result = await upload(files)
+        expect(result).toMatchObject(images.map(image => ({ ...image, pathname: 'multiple2/' + image.pathname })))
+      })
+
+      it('multiple files but accept only one', async () => {
+        const upload = useUpload('/api/_hub/blob', { multiple: false })
+        const files = []
+        for (const image of images) {
+          files.push(new File([await fs.readFile(fileURLToPath(new URL('./fixtures/blob/public/' + image.pathname, import.meta.url)))], image.pathname, { type: image.contentType }))
+        }
+        const result = await upload(files)
+        expect(result).toMatchObject({ ...images[0], pathname: images[0].pathname })
+      })
     })
 
     // TODO: upload multipart

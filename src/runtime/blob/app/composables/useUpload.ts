@@ -13,6 +13,11 @@ interface UploadOptions extends FetchOptions {
    * @default true
    */
   multiple?: boolean
+
+  /**
+   * The prefix to use for the blobs pathname.
+   */
+  prefix?: string
 }
 
 export function useUpload(apiBase: string, options?: UploadOptions & { multiple: false }): (data: FileList | HTMLInputElement | File[] | File) => Promise<BlobObject>
@@ -22,28 +27,33 @@ export function useUpload(apiBase: string, options: UploadOptions = {}) {
 
   async function upload(data: File): Promise<BlobObject>
   async function upload(data: FileList | HTMLInputElement | File[] | File): Promise<BlobObject[] | BlobObject> {
-    if (data instanceof HTMLInputElement) {
-      data = data.files!
+    let files: File[] = Array.isArray(data) ? data : []
+    if (String((data as HTMLInputElement)?.files).includes('FileList')) {
+      files = Array.from((data as HTMLInputElement).files!)
     }
     if (data instanceof File) {
-      data = [data]
+      files = [data]
     }
-    if (!data || !data.length) {
+    if (!data || !(data as Array<File>).length) {
       throw createError({ statusCode: 400, message: 'Missing files' })
     }
 
     const formData = new FormData()
     if (multiple) {
-      for (const file of data) {
+      for (const file of files) {
         formData.append(formKey, file)
       }
     } else {
-      formData.append(formKey, data[0])
+      formData.append(formKey, files[0])
     }
 
     return $fetch<BlobObject[]>(apiBase, {
       ...fetchOptions,
       method: (method || 'POST') as any,
+      params: {
+        ...fetchOptions.params,
+        prefix: options.prefix
+      },
       body: formData
     }).then(result => (multiple === false || data instanceof File) ? result[0] : result)
   }
