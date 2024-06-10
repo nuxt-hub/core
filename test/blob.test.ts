@@ -1,10 +1,11 @@
 import { fileURLToPath } from 'node:url'
 import fs from 'node:fs/promises'
 import { describe, it, expect } from 'vitest'
-import { setup, $fetch } from '@nuxt/test-utils'
+import { setup, $fetch, url } from '@nuxt/test-utils'
 import { version } from '../package.json'
 import type { BlobListResult } from '../src/runtime/blob/server/utils/blob'
 import { useUpload } from '../src/runtime/blob/app/composables/useUpload'
+import { useMultipartUpload } from '../src/runtime/blob/app/composables/useMultipartUpload'
 
 const images = [
   {
@@ -18,6 +19,7 @@ const images = [
     size: 2094540
   }
 ]
+
 describe('Blob', async () => {
   // clean up
   cleanUpBlobs()
@@ -27,8 +29,7 @@ describe('Blob', async () => {
 
   await setup({
     rootDir: fileURLToPath(new URL('./fixtures/blob', import.meta.url)),
-    dev: true,
-    configFile: 'nuxt.config.blob'
+    dev: true
   })
 
   it('Check manifest (Blob is enabled)', async () => {
@@ -62,6 +63,16 @@ describe('Blob', async () => {
       })
       it('should be a function', () => {
         expect(typeof upload).toBe('function')
+      })
+    })
+
+    describe('useMultipartUpload', () => {
+      const uploader = useMultipartUpload('/api/_hub/blob/multipart')
+      it('should be defined', () => {
+        expect(uploader).toBeDefined()
+      })
+      it('should be a function', () => {
+        expect(typeof uploader).toBe('function')
       })
     })
   })
@@ -165,7 +176,24 @@ describe('Blob', async () => {
       })
     })
 
-    // TODO: upload multipart
+    describe('with useMultipartUpload composable', () => {
+      let video: Blob
+      it ('download big video', async () => {
+        video = await fetch('https://www.pexels.com/download/video/6133212/').then(res => res.blob())
+        expect(video).toBeInstanceOf(Blob)
+      })
+
+      it('upload single file', async () => {
+        const upload = useMultipartUpload(url('/api/_hub/blob/multipart'))
+
+        const files = [
+          new File([video], 'sample-video.mp4', { type: 'video/mp4' })
+        ]
+        const uploader = upload(files[0])
+        const result = await uploader.completed
+        expect(result).toMatchObject({ contentType: 'video/mp4', size: video.size, pathname: 'sample-video.mp4' })
+      })
+    })
   })
 
   describe('List', () => {
@@ -176,7 +204,7 @@ describe('Blob', async () => {
       expect(result.folders).toBeUndefined()
       expect(result.cursor).toBeUndefined()
       for (const blob of result.blobs) {
-        expect(blob.contentType).toMatch('image/jpeg')
+        expect(['image/jpeg', 'video/mp4'].includes(blob.contentType!)).toBe(true)
         expect(blob.size).toBeGreaterThan(0)
       }
     })
@@ -188,7 +216,7 @@ describe('Blob', async () => {
       expect(result.cursor).toBeUndefined()
       expect(result.folders).not.toBeUndefined()
       for (const blob of result.blobs) {
-        expect(blob.contentType).toMatch('image/jpeg')
+        expect(['image/jpeg', 'video/mp4'].includes(blob.contentType!)).toBe(true)
         expect(blob.size).toBeGreaterThan(0)
       }
 
@@ -205,7 +233,7 @@ describe('Blob', async () => {
       expect(page1.folders).toBeUndefined()
       expect(page1.blobs.length).toBe(2)
       for (const blob of page1.blobs) {
-        expect(blob.contentType).toMatch('image/jpeg')
+        expect(['image/jpeg', 'video/mp4'].includes(blob.contentType!)).toBe(true)
         expect(blob.size).toBeGreaterThan(0)
       }
 
@@ -214,7 +242,7 @@ describe('Blob', async () => {
       expect(page2.folders).toBeUndefined()
       expect(page2.blobs.length).toBe(2)
       for (const blob of page2.blobs) {
-        expect(blob.contentType).toMatch('image/jpeg')
+        expect(['image/jpeg', 'video/mp4'].includes(blob.contentType!)).toBe(true)
         expect(blob.size).toBeGreaterThan(0)
       }
 

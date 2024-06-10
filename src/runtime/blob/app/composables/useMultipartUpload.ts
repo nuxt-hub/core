@@ -1,11 +1,9 @@
 import defu from 'defu'
-import { randomUUID } from 'uncrypto'
+import { ofetch, type FetchOptions } from 'ofetch'
 import { joinURL } from 'ufo'
-import { readonly, type Ref } from 'vue'
-import type { FetchOptions } from 'ofetch'
+import { readonly, ref, type Ref } from 'vue'
 import type { SerializeObject } from 'nitropack'
 import type { BlobUploadedPart, BlobObject } from '../../server/utils/blob'
-import { useState } from '#imports'
 
 /**
  * Create a multipart uploader.
@@ -25,10 +23,10 @@ export function useMultipartUpload(
     concurrent: 1, // no concurrent upload by default
     maxRetry: 3
   })
-  const ofetch = $fetch.create({ baseURL, ...fetchOptions })
+  const _fetch = ofetch.create({ baseURL, ...fetchOptions })
   const queryOptions = options?.fetchOptions?.query || {}
 
-  const create = (file: File) => ofetch<{
+  const create = (file: File) => _fetch<{
     pathname: string
     uploadId: string
   }>(prefix ? joinURL('/create', prefix, file.name) : joinURL('/create', file.name), {
@@ -38,7 +36,7 @@ export function useMultipartUpload(
   const upload = (
     { partNumber, chunkBody }: MultipartUploadChunk,
     { pathname, uploadId }: Awaited<ReturnType<typeof create>>
-  ) => ofetch<BlobUploadedPart>(`/upload/${pathname}`, {
+  ) => _fetch<BlobUploadedPart>(`/upload/${pathname}`, {
     method: 'PUT',
     query: {
       ...queryOptions,
@@ -51,7 +49,7 @@ export function useMultipartUpload(
   const complete = (
     parts: Awaited<ReturnType<typeof upload>>[],
     { pathname, uploadId }: Awaited<ReturnType<typeof create>>
-  ) => ofetch<SerializeObject<BlobObject>>(`/complete/${pathname}`,
+  ) => _fetch<SerializeObject<BlobObject>>(`/complete/${pathname}`,
     {
       method: 'POST',
       query: {
@@ -65,7 +63,7 @@ export function useMultipartUpload(
   const abort = async (
     { pathname, uploadId }: Awaited<ReturnType<typeof create>>
   ) => {
-    await ofetch(`/abort/${pathname}`, {
+    await _fetch(`/abort/${pathname}`, {
       method: 'DELETE',
       query: {
         ...queryOptions,
@@ -80,7 +78,7 @@ export function useMultipartUpload(
 
     const queue = Array.from({ length: chunks }, (_, i) => i + 1)
     const parts: Awaited<ReturnType<typeof upload>>[] = []
-    const progress = useState(randomUUID(), () => 0)
+    const progress = ref(0)
     const errors: Error[] = []
     let canceled = false
 
