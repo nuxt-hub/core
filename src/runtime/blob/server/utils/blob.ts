@@ -4,7 +4,7 @@ import type { R2Bucket, ReadableStream, R2MultipartUpload } from '@cloudflare/wo
 import { ofetch } from 'ofetch'
 import mime from 'mime'
 import type { H3Event } from 'h3'
-import { setHeader, createError, readFormData, getValidatedQuery, getValidatedRouterParams, readValidatedBody, sendNoContent } from 'h3'
+import { setHeader, createError, readFormData, getValidatedQuery, getValidatedRouterParams, readValidatedBody, sendNoContent, assertMethod } from 'h3'
 import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
 import { parse } from 'pathe'
@@ -398,6 +398,8 @@ export function hubBlob(): HubBlob {
       return mapR2MpuToBlobMpu(mpu)
     },
     async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
+      assertMethod(event, ['POST', 'PUT', 'PATCH'])
+
       options = defu(options, {
         formKey: 'files',
         multiple: true
