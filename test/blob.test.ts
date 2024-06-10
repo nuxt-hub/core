@@ -266,7 +266,7 @@ describe('Blob', async () => {
       const blobsBeforeDelete = await $fetch<BlobListResult>('/api/_hub/blob')
       const image = images[0]
       const result = await $fetch(`/api/_hub/blob/${image.pathname}`, { method: 'DELETE' })
-      expect(result).toMatchObject(undefined)
+      expect(result).toBe(undefined)
       const blobsAfterDelete = await $fetch<BlobListResult>('/api/_hub/blob')
 
       expect(blobsAfterDelete.blobs).toMatchObject(blobsBeforeDelete.blobs.filter(blob => blob.pathname !== image.pathname))
@@ -281,7 +281,7 @@ describe('Blob', async () => {
           pathnames: images.map(image => `multiple/${image.pathname}`)
         }
       })
-      expect(result).toMatchObject(undefined)
+      expect(result).toBe(undefined)
       const blobsAfterDelete = await $fetch<BlobListResult>('/api/_hub/blob')
 
       expect(blobsAfterDelete.blobs).toMatchObject(blobsBeforeDelete.blobs.filter(blob => !blob.pathname.startsWith('multiple/')))
@@ -297,7 +297,7 @@ describe('Blob', async () => {
           prefix: 'foo/'
         }
       })
-      expect(result).toMatchObject(undefined)
+      expect(result).toBe(undefined)
       const blobsAfterDelete = await $fetch<BlobListResult>('/api/_hub/blob')
 
       expect(blobsAfterDelete.blobs).toMatchObject(blobsBeforeDelete.blobs.filter(blob => !blob.pathname.startsWith('foo/')))
