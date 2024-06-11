@@ -1,5 +1,6 @@
+import { createError } from 'h3'
 import type { FetchOptions } from 'ofetch'
-import type { BlobObject } from '../../server/utils/blob'
+import type { BlobObject } from '../../../../types/blob'
 
 interface UploadOptions extends FetchOptions {
   /**

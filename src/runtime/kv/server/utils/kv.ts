@@ -1,53 +1,11 @@
-import type { Storage } from 'unstorage'
 import { createStorage } from 'unstorage'
 import httpDriver from 'unstorage/drivers/http'
 import cloudflareKVBindingDriver from 'unstorage/drivers/cloudflare-kv-binding'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import { requireNuxtHubFeature } from '../../../utils/features'
+import type { HubKV } from '../../../../types/kv'
 import { useRuntimeConfig } from '#imports'
-
-export interface HubKV extends Storage {
-  /**
-   * Get all keys from the storage.
-   *
-   * @see https://hub.nuxt.com/docs/storage/kv#keys
-   */
-  keys: Storage['getKeys']
-  /**
-   * Get an item from the storage.
-   *
-   * @param key The key to get
-   *
-   * @see https://hub.nuxt.com/docs/storage/kv#get
-   */
-  get: Storage['getItem']
-  /**
-   * Set an item in the storage.
-   *
-   * @param key The key to set
-   * @param value The value to set
-   *
-   * @see https://hub.nuxt.com/docs/storage/kv#set
-   */
-  set: Storage['setItem']
-  /**
-   * Check if an item exists in the storage.
-   *
-   * @param key The key to check
-   *
-   * @see https://hub.nuxt.com/docs/storage/kv#has
-   */
-  has: Storage['hasItem']
-  /**
-   * Delete an item from the storage.
-   *
-   * @param key The key to delete
-   *
-   * @see https://hub.nuxt.com/docs/storage/kv#del
-   */
-  del: Storage['removeItem']
-}
 
 let _kv: HubKV
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useFetch } from '#app'
 
-const { data: manifest } = useFetch('/api/_hub/manifest')
+const { data: manifest } = useFetch<Record<string, any>>('/api/_hub/manifest')
 </script>
 
 <template>

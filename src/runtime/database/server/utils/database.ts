@@ -1,9 +1,9 @@
-import type { D1Database } from '@cloudflare/workers-types/experimental'
 import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import type { H3Error } from 'h3'
 import { requireNuxtHubFeature } from '../../../utils/features'
+import type { D1Database } from '../../../../types/database'
 import { useRuntimeConfig } from '#imports'
 
 let _db: D1Database

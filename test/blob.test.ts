@@ -3,7 +3,7 @@ import fs from 'node:fs/promises'
 import { describe, it, expect } from 'vitest'
 import { setup, $fetch, url } from '@nuxt/test-utils'
 import { version } from '../package.json'
-import type { BlobListResult } from '../src/runtime/blob/server/utils/blob'
+import type { BlobListResult } from '../src/types/blob'
 import { useUpload } from '../src/runtime/blob/app/composables/useUpload'
 import { useMultipartUpload } from '../src/runtime/blob/app/composables/useMultipartUpload'
 
