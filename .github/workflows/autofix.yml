@@ -29,4 +29,4 @@ jobs:
       - uses: autofix-ci/action@8bc06253bec489732e5f9c52884c7cace15c0160
 
       - name: Release PR version
-        run: pnpx pkg-pr-new publish
+        run: pnpm dlx pkg-pr-new@0.0 publish --compact --pnpm
