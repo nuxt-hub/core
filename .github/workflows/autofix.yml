@@ -23,10 +23,13 @@ jobs:
       - name: prepare
         run: pnpm dev:prepare
 
+      - name: Build
+        run: pnpm build
+
+      - name: Release PR version
+        run: pnpm dlx pkg-pr-new@0.0 publish
+
       - name: Lint (code)
         run: pnpm lint --fix
 
       - uses: autofix-ci/action@8bc06253bec489732e5f9c52884c7cace15c0160
-
-      - name: Release PR version
-        run: pnpm dlx pkg-pr-new@0.0 publish --compact --pnpm
