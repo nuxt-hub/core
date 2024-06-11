@@ -20,9 +20,6 @@ importers:
       '@nuxt/kit':
         specifier: ^3.11.2
         version: 3.11.2(rollup@4.14.0)
-      '@sindresorhus/slugify':
-        specifier: ^2.2.1
-        version: 2.2.1
       '@uploadthing/mime-types':
         specifier: ^0.2.10
         version: 0.2.10
