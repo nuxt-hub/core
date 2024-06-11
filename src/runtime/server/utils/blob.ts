@@ -1,5 +1,4 @@
-import type { extensions } from '@uploadthing/mime-types'
-import slugify from '@sindresorhus/slugify'
+import type { MimeType } from '@uploadthing/mime-types'
 import type { R2Bucket, ReadableStream, R2MultipartUpload } from '@cloudflare/workers-types/experimental'
 import { ofetch } from 'ofetch'
 import mime from 'mime'
@@ -334,9 +333,9 @@ export function hubBlob(): HubBlob {
 
       const { dir, ext, name: filename } = parse(pathname)
       if (addRandomSuffix) {
-        pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}-${randomUUID().split('-')[0]}${ext}`)
+        pathname = joinURL(dir === '.' ? '' : dir, `${filename}-${randomUUID().split('-')[0]}${ext}`)
       } else {
-        pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}${ext}`)
+        pathname = joinURL(dir === '.' ? '' : dir, `${filename}${ext}`)
       }
 
       if (prefix) {
@@ -375,9 +374,9 @@ export function hubBlob(): HubBlob {
 
       const { dir, ext, name: filename } = parse(pathname)
       if (addRandomSuffix) {
-        pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}-${randomUUID().split('-')[0]}${ext}`)
+        pathname = joinURL(dir === '.' ? '' : dir, `${filename}-${randomUUID().split('-')[0]}${ext}`)
       } else {
-        pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}${ext}`)
+        pathname = joinURL(dir === '.' ? '' : dir, `${filename}${ext}`)
       }
       if (prefix) {
         pathname = joinURL(prefix, pathname).replace(/\/+/g, '/').replace(/^\/+/, '')
@@ -747,7 +746,7 @@ function mapR2MpuToBlobMpu(mpu: R2MultipartUpload): BlobMultipartUpload {
 type PowOf2 = 1 | 2 | 4 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024
 type SizeUnit = 'B' | 'KB' | 'MB' | 'GB'
 type BlobSize = `${PowOf2}${SizeUnit}`
-type BlobType = 'image' | 'video' | 'audio' | 'pdf' | 'text' | 'blob' | keyof typeof extensions
+type BlobType = 'image' | 'video' | 'audio' | 'pdf' | 'text' | 'blob' | MimeType
 const FILESIZE_UNITS = ['B', 'KB', 'MB', 'GB']
 type FileSizeUnit = (typeof FILESIZE_UNITS)[number]
 
