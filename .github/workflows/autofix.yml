@@ -19,6 +19,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+      
+      - name: prepare
+        run: pnpm dev:prepare
 
       - name: Lint (code)
         run: pnpm lint --fix

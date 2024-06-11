@@ -1,9 +1,9 @@
 import { defineNitroPlugin } from 'nitropack/runtime'
-import { hubHooks } from './server/utils/hooks'
+import { hubHooks } from './base/server/utils/hooks'
 
 export default defineNitroPlugin(async () => {
   // Wait for nitro-cloudflare-dev to be ready
   // @ts-except-error globalThis.__env__ not yet typed
-  await globalThis.__env__
+  await (globalThis as any).__env__
   await hubHooks.callHookParallel('bindings:ready')
 })
