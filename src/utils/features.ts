@@ -4,6 +4,7 @@ import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createRes
 import { joinURL } from 'ufo'
 import { join } from 'pathe'
 import { defu } from 'defu'
+import { $fetch } from 'ofetch'
 import { addDevtoolsCustomTabs } from './devtools'
 
 const log = logger.withTag('nuxt:hub')

@@ -1,6 +1,7 @@
 import { writeFile } from 'node:fs/promises'
 import { logger } from '@nuxt/kit'
 import { join } from 'pathe'
+import { $fetch } from 'ofetch'
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig } from './features'
 
