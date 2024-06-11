@@ -15,8 +15,8 @@ interface UploadOptions extends FetchOptions {
   multiple?: boolean
 }
 
-export function useUpload(apiBase: string, options: UploadOptions & { multiple: false }): (data: FileList | HTMLInputElement | File[] | File) => Promise<BlobObject>
-export function useUpload(apiBase: string, options: UploadOptions): ((data: File) => Promise<BlobObject>) & ((data: FileList | HTMLInputElement | File[]) => Promise<BlobObject[]>)
+export function useUpload(apiBase: string, options?: UploadOptions & { multiple: false }): (data: FileList | HTMLInputElement | File[] | File) => Promise<BlobObject>
+export function useUpload(apiBase: string, options?: UploadOptions): ((data: File) => Promise<BlobObject>) & ((data: FileList | HTMLInputElement | File[]) => Promise<BlobObject[]>)
 export function useUpload(apiBase: string, options: UploadOptions = {}) {
   const { formKey = 'files', multiple = true, method, ...fetchOptions } = options || {}
 

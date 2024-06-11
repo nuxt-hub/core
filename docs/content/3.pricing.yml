@@ -84,7 +84,7 @@ cloudflare:
         10ms CPU time per invocation<br>
         100 applications<br>
       paid: >
-        10 million requests / month + +$0.30/million<br>
+        10 million requests / month + $0.30/million<br>
         10 MB worker size<br>
         30s CPU time per invocation<br>
         30 million CPU milliseconds + $0.02/million<br>

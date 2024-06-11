@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.6.11
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.10...v0.6.11)
+
+### 🩹 Fixes
+
+- **blob:** Missing import and fix types for `useUpload` ([#156](https://github.com/nuxt-hub/core/pull/156))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.6.10
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.9...v0.6.10)
