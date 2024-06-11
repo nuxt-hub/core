@@ -22,7 +22,7 @@
     "@vueuse/core": "^10.10.0",
     "@vueuse/nuxt": "^10.10.0",
     "medium-zoom": "^1.1.0",
-    "nuxt": "^3.11.2",
+    "nuxt": "^3.12.1",
     "nuxt-cloudflare-analytics": "^1.0.8",
     "nuxt-og-image": "^3.0.0-rc.53",
     "three": "^0.164.1",
