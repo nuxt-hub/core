@@ -1,6 +1,33 @@
 # Changelog
 
 
+## v0.6.12
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.11...v0.6.12)
+
+### 🚀 Enhancements
+
+- Optimize bundle ([#138](https://github.com/nuxt-hub/core/pull/138))
+
+### 🩹 Fixes
+
+- **blob:** Remove slugify ([#154](https://github.com/nuxt-hub/core/pull/154))
+
+### 📖 Documentation
+
+- Remove extra + ([bf850fe](https://github.com/nuxt-hub/core/commit/bf850fe))
+
+### 🏡 Chore
+
+- **action:** Add pr version release ([415e9a3](https://github.com/nuxt-hub/core/commit/415e9a3))
+- Disable pkg-pr-new ([fcb2994](https://github.com/nuxt-hub/core/commit/fcb2994))
+
+### ❤️ Contributors
+
+- Farnabaz <farnabaz@gmail.com>
+- Quandabase ([@quandabase](http://github.com/quandabase))
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.6.11
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.10...v0.6.11)
