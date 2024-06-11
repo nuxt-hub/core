@@ -1,11 +1,11 @@
 import type { ReadableStream } from '@cloudflare/workers-types/experimental'
-import type { mimeTypes } from '@uploadthing/mime-types'
+import type { MimeType } from '@uploadthing/mime-types'
 
 // Credits from shared utils of https://github.com/pingdotgg/uploadthing
 export type PowOf2 = 1 | 2 | 4 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024
 export type SizeUnit = 'B' | 'KB' | 'MB' | 'GB'
 export type BlobSize = `${PowOf2}${SizeUnit}`
-export type BlobType = 'image' | 'video' | 'audio' | 'pdf' | 'text' | 'blob' | keyof typeof mimeTypes
+export type BlobType = 'image' | 'video' | 'audio' | 'pdf' | 'text' | 'blob' | MimeType
 export type FileSizeUnit = 'B' | 'KB' | 'MB' | 'GB'
 
 export interface BlobObject {

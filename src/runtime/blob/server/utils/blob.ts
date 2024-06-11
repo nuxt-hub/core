@@ -1,4 +1,3 @@
-import slugify from '@sindresorhus/slugify'
 import type { R2Bucket, ReadableStream, R2MultipartUpload } from '@cloudflare/workers-types/experimental'
 import { ofetch } from 'ofetch'
 import mime from 'mime'
@@ -155,9 +154,9 @@ export function hubBlob(): HubBlob {
 
       const { dir, ext, name: filename } = parse(pathname)
       if (addRandomSuffix) {
-        pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}-${randomUUID().split('-')[0]}${ext}`)
+        pathname = joinURL(dir === '.' ? '' : dir, `${filename}-${randomUUID().split('-')[0]}${ext}`)
       } else {
-        pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}${ext}`)
+        pathname = joinURL(dir === '.' ? '' : dir, `${filename}${ext}`)
       }
 
       if (prefix) {
@@ -196,9 +195,9 @@ export function hubBlob(): HubBlob {
 
       const { dir, ext, name: filename } = parse(pathname)
       if (addRandomSuffix) {
-        pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}-${randomUUID().split('-')[0]}${ext}`)
+        pathname = joinURL(dir === '.' ? '' : dir, `${filename}-${randomUUID().split('-')[0]}${ext}`)
       } else {
-        pathname = joinURL(dir === '.' ? '' : dir, `${slugify(filename)}${ext}`)
+        pathname = joinURL(dir === '.' ? '' : dir, `${filename}${ext}`)
       }
       if (prefix) {
         pathname = joinURL(prefix, pathname).replace(/\/+/g, '/').replace(/^\/+/, '')
