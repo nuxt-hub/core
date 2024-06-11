@@ -64,8 +64,8 @@ jobs:
       - name: Prepare environment
         run: pnpm dev:prepare
 
-      # - name: Run test suite
-      #   run: pnpm test
+      - name: Run test suite
+        run: pnpm test
 
       - name: Release Nightly
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

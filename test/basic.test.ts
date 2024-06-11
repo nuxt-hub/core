@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import { describe, it, expect } from 'vitest'
 import { setup, $fetch } from '@nuxt/test-utils/e2e'
+import { version } from '../package.json'
 
 describe('ssr', async () => {
   await setup({
@@ -8,11 +9,18 @@ describe('ssr', async () => {
     dev: true
   })
 
-  it('renders the index page', async () => {
-    // Get response to a server-rendered page with `$fetch`.
-    const html = await $fetch('/')
-    expect(html).toContain('<li>database</li>')
-    expect(html).toContain('<li>kv</li>')
-    expect(html).toContain('<li>blob</li>')
+  it('Fetch Hub manifetst', async () => {
+    const manifest = await $fetch('/api/_hub/manifest')
+    expect(manifest).toMatchObject({
+      version,
+      storage: {
+        database: false,
+        kv: false,
+        blob: false
+      },
+      features: {
+        cache: false
+      }
+    })
   })
 })
