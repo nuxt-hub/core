@@ -63,11 +63,6 @@ export default defineNuxtModule<ModuleOptions>({
       log.info(`Using \`${hub.url}\` as NuxtHub Admin URL`)
     }
 
-    // nuxt prepare, stop here
-    if (nuxt.options._prepare) {
-      return
-    }
-
     // Register a server middleware to handle cors requests in devtools
     if (nuxt.options.dev) {
       addServerHandler({
@@ -83,6 +78,11 @@ export default defineNuxtModule<ModuleOptions>({
     hub.cache && setupCache(nuxt)
     hub.database && setupDatabase(nuxt)
     hub.kv && setupKV(nuxt)
+
+    // nuxt prepare, stop here
+    if (nuxt.options._prepare) {
+      return
+    }
 
     if (hub.remote) {
       await setupRemote(nuxt, hub)

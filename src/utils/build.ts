@@ -13,7 +13,7 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
     hub.remote = false
     // Wait for modules to be done to send config to NuxtHub
     nuxt.hook('modules:done', async () => {
-      const { bindingsChanged } = await $fetch<{ bindingsChanged: boolean }>(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/before`, {
+      const { bindingsChanged } = await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/before`, {
         baseURL: hub.url,
         method: 'POST',
         headers: {

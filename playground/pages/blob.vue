@@ -4,7 +4,7 @@ const loadingProgress = ref<number | undefined>(undefined)
 const newFilesValue = ref<File[]>([])
 const uploadRef = ref<HTMLInputElement>()
 const folded = ref(false)
-const prefixes = ref([])
+const prefixes = ref<string[]>([])
 const limit = ref(5)
 
 const prefix = computed(() => prefixes.value?.[prefixes.value.length - 1])
@@ -153,7 +153,7 @@ async function deleteFile(pathname: string) {
     <div class="flex">
       <UButtonGroup class="flex-1">
         <UInput
-          :model-value="newFilesValue?.map((file) => file.name).join(', ')"
+          :model-value="newFilesValue?.map((file: File) => file.name).join(', ')"
           name="fileValue"
           disabled
           class="flex-1"
@@ -174,7 +174,7 @@ async function deleteFile(pathname: string) {
         <UButton
           label="Select file(s)"
           color="gray"
-          @click="uploadRef.click()"
+          @click="uploadRef?.click()"
         />
       </UButtonGroup>
     </div>

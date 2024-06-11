@@ -48,7 +48,7 @@ export function useUpload(apiBase: string, options: UploadOptions = {}) {
       formData.append(formKey, files[0])
     }
 
-    return $fetch<BlobObject[]>(apiBase, {
+    return $fetch(apiBase, {
       ...fetchOptions,
       method: (method || 'POST') as any,
       params: {
