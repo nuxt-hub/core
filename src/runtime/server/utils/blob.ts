@@ -1,4 +1,4 @@
-import type { extensions } from '@uploadthing/mime-types'
+import type { MimeType } from '@uploadthing/mime-types'
 import type { R2Bucket, ReadableStream, R2MultipartUpload } from '@cloudflare/workers-types/experimental'
 import { ofetch } from 'ofetch'
 import mime from 'mime'
@@ -746,7 +746,7 @@ function mapR2MpuToBlobMpu(mpu: R2MultipartUpload): BlobMultipartUpload {
 type PowOf2 = 1 | 2 | 4 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024
 type SizeUnit = 'B' | 'KB' | 'MB' | 'GB'
 type BlobSize = `${PowOf2}${SizeUnit}`
-type BlobType = 'image' | 'video' | 'audio' | 'pdf' | 'text' | 'blob' | keyof typeof extensions
+type BlobType = 'image' | 'video' | 'audio' | 'pdf' | 'text' | 'blob' | MimeType
 const FILESIZE_UNITS = ['B', 'KB', 'MB', 'GB']
 type FileSizeUnit = (typeof FILESIZE_UNITS)[number]
 
