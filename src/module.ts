@@ -8,7 +8,9 @@ import { findWorkspaceDir } from 'pkg-types'
 import { $fetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { parseArgs } from 'citty'
+import { parseTOML, stringifyTOML } from 'confbox'
 import { version } from '../package.json'
+import type { WranglerConfiguration } from './utils'
 import { addDevtoolsCustomTabs, generateWrangler } from './utils'
 
 const log = logger.withTag('nuxt:hub')
@@ -179,6 +181,11 @@ export default defineNuxtModule<ModuleOptions>({
     if (nuxt.options._prepare) {
       return
     }
+
+    // Read user wrangler.toml configuration to merge with the generated one. Be careful, the local configuration will takes precedence.
+    const localWranglerConfiguration: WranglerConfiguration = await readFile(join(rootDir, './wrangler.toml'), 'utf-8')
+      .then(file => parseTOML<WranglerConfiguration>(file))
+      .catch(() => { return {} })
 
     // Within CF Pages CI/CD to notice NuxtHub about the build and hub config
     if (!nuxt.options.dev && process.env.CF_PAGES && process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN && process.env.NUXT_HUB_PROJECT_KEY && process.env.NUXT_HUB_ENV) {
@@ -432,7 +439,9 @@ export default defineNuxtModule<ModuleOptions>({
 
       // Generate the wrangler.toml file
       const wranglerPath = join(hubDir, './wrangler.toml')
-      await writeFile(wranglerPath, generateWrangler(hub), 'utf-8')
+
+      const wranglerConfiguration = defu(generateWrangler(hub), localWranglerConfiguration)
+      await writeFile(wranglerPath, stringifyTOML(wranglerConfiguration), 'utf-8')
       // @ts-expect-error cloudflareDev is not typed here
       nuxt.options.nitro.cloudflareDev = {
         persistDir: hubDir,
