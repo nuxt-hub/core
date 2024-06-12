@@ -9,6 +9,7 @@ import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
 import { setupCache, setupAnalytics, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './features'
 import type { ModuleOptions } from './types/module'
+import { addBuildHooks } from './utils/build'
 
 export * from './types'
 
@@ -84,6 +85,8 @@ export default defineNuxtModule<ModuleOptions>({
     if (nuxt.options._prepare) {
       return
     }
+
+    addBuildHooks(nuxt, hub)
 
     if (hub.remote) {
       await setupRemote(nuxt, hub)

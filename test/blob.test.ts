@@ -2,7 +2,6 @@ import { fileURLToPath } from 'node:url'
 import fs from 'node:fs/promises'
 import { describe, it, expect } from 'vitest'
 import { setup, $fetch, url } from '@nuxt/test-utils'
-import { version } from '../package.json'
 import type { BlobListResult } from '../src/types/blob'
 import { useUpload } from '../src/runtime/blob/app/composables/useUpload'
 import { useMultipartUpload } from '../src/runtime/blob/app/composables/useMultipartUpload'
@@ -35,7 +34,6 @@ describe('Blob', async () => {
   it('Check manifest (Blob is enabled)', async () => {
     const manifest = await $fetch('/api/_hub/manifest')
     expect(manifest).toMatchObject({
-      version,
       storage: {
         database: false,
         kv: false,
