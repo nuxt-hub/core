@@ -7,7 +7,7 @@ import { findWorkspaceDir } from 'pkg-types'
 import { parseArgs } from 'citty'
 import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
-import { setupCache, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './utils/features'
+import { setupCache, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './features'
 import type { ModuleOptions } from './types/module'
 
 export * from './types'
