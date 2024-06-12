@@ -8,6 +8,7 @@ import { $fetch } from 'ofetch'
 import { addDevtoolsCustomTabs } from './utils/devtools'
 
 const log = logger.withTag('nuxt:hub')
+const { resolve } = createResolver(import.meta.url)
 
 export interface HubConfig {
   remote: string | boolean
@@ -34,8 +35,6 @@ export interface HubConfig {
 }
 
 export function setupBase(nuxt: Nuxt, hub: HubConfig) {
-  const { resolve } = createResolver(import.meta.url)
-
   // Add Server scanning
   addServerScanDir(resolve('./runtime/base/server'))
   addServerImportsDir(resolve('./runtime/base/server/utils'))
@@ -46,9 +45,13 @@ export function setupBase(nuxt: Nuxt, hub: HubConfig) {
   }
 }
 
-export function setupBlob(_nuxt: Nuxt) {
-  const { resolve } = createResolver(import.meta.url)
+export function setupAnalytics(_nuxt: Nuxt) {
+  // Add Server scanning
+  addServerScanDir(resolve('./runtime/analytics/server'))
+  addServerImportsDir(resolve('./runtime/analytics/server/utils'))
+}
 
+export function setupBlob(_nuxt: Nuxt) {
   // Add Server scanning
   addServerScanDir(resolve('./runtime/blob/server'))
   addServerImportsDir(resolve('./runtime/blob/server/utils'))
@@ -58,8 +61,6 @@ export function setupBlob(_nuxt: Nuxt) {
 }
 
 export function setupCache(nuxt: Nuxt) {
-  const { resolve } = createResolver(import.meta.url)
-
   // Add Server caching (Nitro)
   nuxt.options.nitro = defu(nuxt.options.nitro, {
     storage: {
@@ -82,24 +83,18 @@ export function setupCache(nuxt: Nuxt) {
 }
 
 export function setupDatabase(_nuxt: Nuxt) {
-  const { resolve } = createResolver(import.meta.url)
-
   // Add Server scanning
   addServerScanDir(resolve('./runtime/database/server'))
   addServerImportsDir(resolve('./runtime/database/server/utils'))
 }
 
 export function setupKV(_nuxt: Nuxt) {
-  const { resolve } = createResolver(import.meta.url)
-
   // Add Server scanning
   addServerScanDir(resolve('./runtime/kv/server'))
   addServerImportsDir(resolve('./runtime/kv/server/utils'))
 }
 
 export function setupOpenAPI(nuxt: Nuxt) {
-  const { resolve } = createResolver(import.meta.url)
-
   // Fallback to custom placeholder when openAPI is disabled
   nuxt.options.alias['#hub/openapi'] = nuxt.options.nitro?.experimental?.openAPI === true
     ? '#internal/nitro/routes/openapi'

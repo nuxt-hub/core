@@ -7,7 +7,7 @@ import { findWorkspaceDir } from 'pkg-types'
 import { parseArgs } from 'citty'
 import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
-import { setupCache, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './features'
+import { setupCache, setupAnalytics, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './features'
 import type { ModuleOptions } from './types/module'
 
 export * from './types'
@@ -74,6 +74,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     setupBase(nuxt, hub)
     setupOpenAPI(nuxt)
+    hub.analytics && setupAnalytics(nuxt)
     hub.blob && setupBlob(nuxt)
     hub.cache && setupCache(nuxt)
     hub.database && setupDatabase(nuxt)
@@ -91,6 +92,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Folowing lines are only executed when remove storage is disabled
 
+    // Production mode without remote storage
     if (!nuxt.options.dev) {
       // Make sure to fallback to cloudflare-pages preset
       let preset = nuxt.options.nitro.preset = nuxt.options.nitro.preset || 'cloudflare-pages'

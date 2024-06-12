@@ -7,24 +7,38 @@ import { useRuntimeConfig } from '#imports'
 
 const _datasets: Record<string, AnalyticsEngineDataset> = {}
 
-function getAnalyticsBinding(name: string = 'ANALYTICS') {
+function getAnalyticsBinding(name: string = 'ANALYTICS'): AnalyticsEngineDataset | undefined {
   // @ts-expect-error globalThis.__env__ is injected by the runtime
   return process.env[name] || globalThis.__env__?.[name] || globalThis[name]
 }
 
-function _useDataset(name: string = 'ANALYTICS') {
+function _useDataset(name: string = 'ANALYTICS'): AnalyticsEngineDataset {
   if (_datasets[name]) {
-    return _datasets[name]
+    return _datasets[name] as AnalyticsEngineDataset
   }
 
   const binding = getAnalyticsBinding()
   if (binding) {
-    _datasets[name] = binding as AnalyticsEngineDataset
-    return _datasets[name]
+    _datasets[name] = binding
+    return _datasets[name] as AnalyticsEngineDataset
   }
   throw createError(`Missing Cloudflare ${name} binding (Analytics Engine)`)
 }
 
+/**
+ * Access the Workers Analytics Engine
+ *
+ * @example ```ts
+ * const analytics = useAnalytics()
+ * await analytics.put({
+ *   blobs: ['Seattle', 'USA', 'pro_sensor_9000'],
+ *   doubles: [1.1, 2.2, 3.3],
+ *   indexes: ['a3cd45']
+ * })
+ * ```
+ *
+ * @see https://developers.cloudflare.com/analytics/analytics-engine/get-started/
+ */
 export function hubAnalytics() {
   requireNuxtHubFeature('analytics')
 
