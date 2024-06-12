@@ -25,7 +25,6 @@
     "blob"
   ],
   "scripts": {
-    "prepare": "nuxt-module-build prepare",
     "prepack": "nuxt-module-build build",
     "dev:prepare": "nuxt-module-build build --stub; nuxi prepare playground",
     "dev": "nuxi dev playground",
