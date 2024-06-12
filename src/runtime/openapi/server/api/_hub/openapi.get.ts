@@ -20,7 +20,7 @@ export default eventHandler(async (event) => {
 
   if (typeof openapi !== 'function') {
     throw createError({
-      statusCode: 404,
+      statusCode: 409,
       message: 'not found'
     })
   }

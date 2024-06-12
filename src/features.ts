@@ -98,7 +98,7 @@ export function setupOpenAPI(nuxt: Nuxt) {
   // Fallback to custom placeholder when openAPI is disabled
   nuxt.options.alias['#hub/openapi'] = nuxt.options.nitro?.experimental?.openAPI === true
     ? '#internal/nitro/routes/openapi'
-    : resolve('./runtime/openapi/templates/openapi')
+    : resolve('./runtime/openapi/server/templates/openapi')
 
   addServerScanDir(resolve('./runtime/openapi/server'))
 }

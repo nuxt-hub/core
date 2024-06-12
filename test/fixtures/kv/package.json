@@ -1,5 +1,5 @@
 {
   "private": true,
-  "name": "basic",
+  "name": "hub-kv-test",
   "type": "module"
 }
