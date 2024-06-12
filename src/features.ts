@@ -49,9 +49,6 @@ export function setupAnalytics(_nuxt: Nuxt) {
   // Add Server scanning
   addServerScanDir(resolve('./runtime/analytics/server'))
   addServerImportsDir(resolve('./runtime/analytics/server/utils'))
-
-  // Add Composables
-  addImportsDir(resolve('./runtime/analytics/app/composables'))
 }
 
 export function setupBlob(_nuxt: Nuxt) {
