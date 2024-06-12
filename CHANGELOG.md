@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.6.14
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.13...v0.6.14)
+
+### ✅ Tests
+
+- Improve tests and integrity ([#163](https://github.com/nuxt-hub/core/pull/163))
+
+### ❤️ Contributors
+
+- Farnabaz <farnabaz@gmail.com>
+
 ## v0.6.13
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.11...v0.6.13)
