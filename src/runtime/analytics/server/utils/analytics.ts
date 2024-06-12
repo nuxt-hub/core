@@ -1,7 +1,4 @@
-import type {
-  AnalyticsEngineDataPoint,
-  AnalyticsEngineDataset
-} from '@cloudflare/workers-types/experimental'
+import type { AnalyticsEngineDataPoint, AnalyticsEngineDataset } from '@cloudflare/workers-types/experimental'
 import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
@@ -34,10 +31,7 @@ export function hubAnalytics() {
   const hub = useRuntimeConfig().hub
   const binding = getAnalyticsBinding()
   if (hub.remote && hub.projectUrl && !binding) {
-    return proxyHubAnalytics(
-      hub.projectUrl,
-      hub.projectSecretKey || hub.userToken
-    )
+    return proxyHubAnalytics(hub.projectUrl, hub.projectSecretKey || hub.userToken)
   }
   const dataset = _useDataset()
 
