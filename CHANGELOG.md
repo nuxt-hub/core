@@ -1,6 +1,49 @@
 # Changelog
 
 
+## v0.6.14
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.13...v0.6.14)
+
+### ✅ Tests
+
+- Improve tests and integrity ([#163](https://github.com/nuxt-hub/core/pull/163))
+
+### ❤️ Contributors
+
+- Farnabaz <farnabaz@gmail.com>
+
+## v0.6.13
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.11...v0.6.13)
+
+### 🚀 Enhancements
+
+- Optimize bundle ([#138](https://github.com/nuxt-hub/core/pull/138))
+
+### 🩹 Fixes
+
+- **blob:** Remove slugify ([#154](https://github.com/nuxt-hub/core/pull/154))
+- **module:** Invalid resolved path in npm package ([#161](https://github.com/nuxt-hub/core/pull/161))
+- **analytics:** Setup analytics worker ([#162](https://github.com/nuxt-hub/core/pull/162))
+
+### 📖 Documentation
+
+- Remove extra + ([bf850fe](https://github.com/nuxt-hub/core/commit/bf850fe))
+
+### 🏡 Chore
+
+- **release:** V0.6.11 ([a7bdb0c](https://github.com/nuxt-hub/core/commit/a7bdb0c))
+- **action:** Add pr version release ([415e9a3](https://github.com/nuxt-hub/core/commit/415e9a3))
+- Disable pkg-pr-new ([fcb2994](https://github.com/nuxt-hub/core/commit/fcb2994))
+- **release:** V0.6.12 ([389a633](https://github.com/nuxt-hub/core/commit/389a633))
+
+### ❤️ Contributors
+
+- Farnabaz <farnabaz@gmail.com>
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Quandabase ([@quandabase](http://github.com/quandabase))
+
 ## v0.6.12
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.11...v0.6.12)

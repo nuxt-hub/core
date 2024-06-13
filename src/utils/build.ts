@@ -3,7 +3,7 @@ import { logger } from '@nuxt/kit'
 import { join } from 'pathe'
 import { $fetch } from 'ofetch'
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig } from './features'
+import type { HubConfig } from '../features'
 
 const log = logger.withTag('nuxt:hub')
 

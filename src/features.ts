@@ -5,9 +5,10 @@ import { joinURL } from 'ufo'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { $fetch } from 'ofetch'
-import { addDevtoolsCustomTabs } from './devtools'
+import { addDevtoolsCustomTabs } from './utils/devtools'
 
 const log = logger.withTag('nuxt:hub')
+const { resolve } = createResolver(import.meta.url)
 
 export interface HubConfig {
   remote: string | boolean
@@ -34,11 +35,9 @@ export interface HubConfig {
 }
 
 export function setupBase(nuxt: Nuxt, hub: HubConfig) {
-  const { resolve } = createResolver(import.meta.url)
-
   // Add Server scanning
-  addServerScanDir(resolve('../runtime/base/server'))
-  addServerImportsDir(resolve('../runtime/base/server/utils'))
+  addServerScanDir(resolve('./runtime/base/server'))
+  addServerImportsDir(resolve('./runtime/base/server/utils'))
 
   // Add custom tabs to Nuxt Devtools
   if (nuxt.options.dev) {
@@ -46,20 +45,22 @@ export function setupBase(nuxt: Nuxt, hub: HubConfig) {
   }
 }
 
-export function setupBlob(_nuxt: Nuxt) {
-  const { resolve } = createResolver(import.meta.url)
-
+export function setupAnalytics(_nuxt: Nuxt) {
   // Add Server scanning
-  addServerScanDir(resolve('../runtime/blob/server'))
-  addServerImportsDir(resolve('../runtime/blob/server/utils'))
+  addServerScanDir(resolve('./runtime/analytics/server'))
+  addServerImportsDir(resolve('./runtime/analytics/server/utils'))
+}
+
+export function setupBlob(_nuxt: Nuxt) {
+  // Add Server scanning
+  addServerScanDir(resolve('./runtime/blob/server'))
+  addServerImportsDir(resolve('./runtime/blob/server/utils'))
 
   // Add Composables
-  addImportsDir(resolve('../runtime/blob/app/composables'))
+  addImportsDir(resolve('./runtime/blob/app/composables'))
 }
 
 export function setupCache(nuxt: Nuxt) {
-  const { resolve } = createResolver(import.meta.url)
-
   // Add Server caching (Nitro)
   nuxt.options.nitro = defu(nuxt.options.nitro, {
     storage: {
@@ -78,34 +79,28 @@ export function setupCache(nuxt: Nuxt) {
   })
 
   // Add Server scanning
-  addServerScanDir(resolve('../runtime/cache/server'))
+  addServerScanDir(resolve('./runtime/cache/server'))
 }
 
 export function setupDatabase(_nuxt: Nuxt) {
-  const { resolve } = createResolver(import.meta.url)
-
   // Add Server scanning
-  addServerScanDir(resolve('../runtime/database/server'))
-  addServerImportsDir(resolve('../runtime/database/server/utils'))
+  addServerScanDir(resolve('./runtime/database/server'))
+  addServerImportsDir(resolve('./runtime/database/server/utils'))
 }
 
 export function setupKV(_nuxt: Nuxt) {
-  const { resolve } = createResolver(import.meta.url)
-
   // Add Server scanning
-  addServerScanDir(resolve('../runtime/kv/server'))
-  addServerImportsDir(resolve('../runtime/kv/server/utils'))
+  addServerScanDir(resolve('./runtime/kv/server'))
+  addServerImportsDir(resolve('./runtime/kv/server/utils'))
 }
 
 export function setupOpenAPI(nuxt: Nuxt) {
-  const { resolve } = createResolver(import.meta.url)
-
   // Fallback to custom placeholder when openAPI is disabled
   nuxt.options.alias['#hub/openapi'] = nuxt.options.nitro?.experimental?.openAPI === true
     ? '#internal/nitro/routes/openapi'
-    : resolve('../runtime/openapi/templates/openapi')
+    : resolve('./runtime/openapi/server/templates/openapi')
 
-  addServerScanDir(resolve('../runtime/openapi/server'))
+  addServerScanDir(resolve('./runtime/openapi/server'))
 }
 
 export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
