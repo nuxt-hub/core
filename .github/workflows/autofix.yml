@@ -23,9 +23,6 @@ jobs:
       - name: prepare
         run: pnpm dev:prepare
 
-      - name: Build
-        run: pnpm build
-
       - name: Release PR version
         run: pnpm dlx pkg-pr-new@0.0 publish
 
