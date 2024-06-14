@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v0.6.15
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.14...v0.6.15)
+
+### 🩹 Fixes
+
+- Import runtime types from `@nuxthub/core` ([#168](https://github.com/nuxt-hub/core/pull/168))
+
+### 🏡 Chore
+
+- **release:** V0.6.14 ([8351707](https://github.com/nuxt-hub/core/commit/8351707))
+- Improve server types ([#160](https://github.com/nuxt-hub/core/pull/160))
+
+### ❤️ Contributors
+
+- Daniel Roe ([@danielroe](http://github.com/danielroe))
+- Estéban <e.soubiran25@gmail.com>
+- Farnabaz <farnabaz@gmail.com>
+
 ## v0.6.14
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.13...v0.6.14)

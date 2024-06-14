@@ -1,6 +1,6 @@
 import { createError } from 'h3'
 import type { FetchOptions } from 'ofetch'
-import type { BlobObject } from '../../../../types/blob'
+import type { BlobObject } from '@nuxthub/core'
 
 interface UploadOptions extends FetchOptions {
   /**

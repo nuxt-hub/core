@@ -3,8 +3,8 @@ import httpDriver from 'unstorage/drivers/http'
 import cloudflareKVBindingDriver from 'unstorage/drivers/cloudflare-kv-binding'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
+import type { HubKV } from '@nuxthub/core'
 import { requireNuxtHubFeature } from '../../../utils/features'
-import type { HubKV } from '../../../../types/kv'
 import { useRuntimeConfig } from '#imports'
 
 let _kv: HubKV
