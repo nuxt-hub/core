@@ -3,7 +3,7 @@ import { ofetch, type FetchOptions } from 'ofetch'
 import { joinURL } from 'ufo'
 import { readonly, ref, type Ref } from 'vue'
 import type { SerializeObject } from 'nitropack'
-import type { BlobUploadedPart, BlobObject } from '../../../../types/blob'
+import type { BlobUploadedPart, BlobObject } from '@nuxthub/core'
 
 /**
  * Create a multipart uploader.
