@@ -1,6 +1,6 @@
 import { stringifyTOML } from 'confbox'
 
-export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, cache: boolean, analytics: boolean }) {
+export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, analytics: boolean }) {
   const wrangler: { [key: string]: any } = {}
 
   if (hub.analytics) {
@@ -17,20 +17,11 @@ export function generateWrangler(hub: { kv: boolean, database: boolean, blob: bo
     }]
   }
 
-  if (hub.cache || hub.kv) {
-    wrangler['kv_namespaces'] = []
-    if (hub.kv) {
-      wrangler['kv_namespaces'].push({
-        binding: 'KV',
-        id: 'kv_default'
-      })
-    }
-    if (hub.cache) {
-      wrangler['kv_namespaces'].push({
-        binding: 'CACHE',
-        id: 'cache_default'
-      })
-    }
+  if (hub.kv) {
+    wrangler['kv_namespaces'] = [{
+      binding: 'KV',
+      id: 'kv_default'
+    }]
   }
 
   if (hub.database) {

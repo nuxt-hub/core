@@ -131,16 +131,19 @@ export default defineNuxtModule<ModuleOptions>({
         await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}.data`, 'utf-8')
       }
 
-      // Generate the wrangler.toml file
-      const wranglerPath = join(hubDir, './wrangler.toml')
-      await writeFile(wranglerPath, generateWrangler(hub), 'utf-8')
-      // @ts-expect-error cloudflareDev is not typed here
-      nuxt.options.nitro.cloudflareDev = {
-        persistDir: hubDir,
-        configPath: wranglerPath,
-        silent: true
+      const needWrangler = Boolean(hub.analytics || hub.blob || hub.database || hub.kv)
+      if (needWrangler) {
+        // Generate the wrangler.toml file
+        const wranglerPath = join(hubDir, './wrangler.toml')
+        await writeFile(wranglerPath, generateWrangler(hub), 'utf-8')
+        // @ts-expect-error cloudflareDev is not typed here
+        nuxt.options.nitro.cloudflareDev = {
+          persistDir: hubDir,
+          configPath: wranglerPath,
+          silent: true
+        }
+        await installModule('nitro-cloudflare-dev')
       }
-      await installModule('nitro-cloudflare-dev')
       nuxt.options.nitro.plugins = nuxt.options.nitro.plugins || []
       nuxt.options.nitro.plugins.push(resolve('./runtime/ready.dev'))
     }
