@@ -3,6 +3,7 @@ title: Drizzle Studio Remembers
 description: "The database admin UI now remembers where you were last time, speeding up your workflow."
 date: 2024-06-04
 image: '/images/changelog/drizzle-studio-remembers.png'
+category: Admin
 authors:
   - name: Sebastien Chopin
     avatar: 

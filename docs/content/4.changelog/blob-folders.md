@@ -3,6 +3,7 @@ title: Blob Folders
 description: "It is now possible to change the view of your blobs to a folder structure."
 date: 2024-06-03
 image: '/images/changelog/blob-folders.png'
+category: Admin
 authors:
   - name: Sebastien Chopin
     avatar: 
