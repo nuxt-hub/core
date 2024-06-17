@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v0.6.16
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.15...v0.6.16)
+
+### 🩹 Fixes
+
+- **blob:** Check correct variable in useUpload ([889acbc](https://github.com/nuxt-hub/core/commit/889acbc))
+
+### 📖 Documentation
+
+- Add team-webhooks-env selection ([8b27277](https://github.com/nuxt-hub/core/commit/8b27277))
+
+### 🏡 Chore
+
+- **ci:** Add pkg.pr.new for package preview on pull requests ([#164](https://github.com/nuxt-hub/core/pull/164))
+- Update deps ([f55098c](https://github.com/nuxt-hub/core/commit/f55098c))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Mohammad Bagher Abiyat ([@Aslemammad](http://github.com/Aslemammad))
+
 ## v0.6.15
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.14...v0.6.15)
