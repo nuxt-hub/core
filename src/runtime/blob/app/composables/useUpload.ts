@@ -35,7 +35,7 @@ export function useUpload(apiBase: string, options: UploadOptions = {}) {
     if (data instanceof File) {
       files = [data]
     }
-    if (!data || !(data as Array<File>).length) {
+    if (!files || !(files as Array<File>).length) {
       throw createError({ statusCode: 400, message: 'Missing files' })
     }
 
