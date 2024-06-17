@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.6.17
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.16...v0.6.17)
+
+### 🏡 Chore
+
+- **dx:** Require `wrangler` only when required ([04efdfa](https://github.com/nuxt-hub/core/commit/04efdfa))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v0.6.16
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.15...v0.6.16)
