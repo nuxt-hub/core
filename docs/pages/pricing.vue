@@ -3,6 +3,7 @@ definePageMeta({
   primary: 'green'
 })
 const { data: page } = await useAsyncData('pricing', () => queryContent('/pricing').findOne())
+const { data: home } = await useAsyncData('index', () => queryContent('/').findOne())
 
 const isYearly = ref(true)
 const isWorkersPaid = ref(false)
@@ -86,6 +87,33 @@ defineOgImageComponent('Docs')
           <MDC :value="item.content" class="prose prose-primary dark:prose-invert max-w-none text-gray-500 dark:text-gray-400" />
         </template>
       </ULandingFAQ>
+    </ULandingSection>
+
+    <ULandingSection class="sm:pt-12">
+      <template #title>
+        <span v-html="home?.testimonials.title" />
+      </template>
+      <template #description>
+        <span v-html="home?.testimonials.description" />
+      </template>
+
+      <UPageColumns :ui="{ wrapper: 'column-1 md:columns-2 lg:columns-4 gap-8 space-y-8' }">
+        <UPageCard
+          :title="home?.testimonials.cloudflare.title" :description="home?.testimonials.cloudflare.description"
+          :ui="{ title: 'whitespace-normal text-white dark:text-gray-950', description: 'text-gray-400 dark:text-gray-500', background: 'bg-gray-900 dark:bg-white' }"
+        >
+          <template #icon>
+            <UColorModeImage
+              :light="home?.testimonials.cloudflare.img.dark"
+              :dark="home?.testimonials.cloudflare.img.light" alt="Cloudflare logo"
+            />
+          </template>
+        </UPageCard>
+
+        <div v-for="(testimonial, index) in home?.testimonials.items" :key="index" class="break-inside-avoid">
+          <ULandingTestimonial v-bind="testimonial" />
+        </div>
+      </UPageColumns>
     </ULandingSection>
   </UContainer>
 </template>
