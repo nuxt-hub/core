@@ -20,6 +20,7 @@ export interface HubConfig {
   env?: string
   version?: string
 
+  ai: boolean
   analytics?: boolean
   blob?: boolean
   cache?: boolean

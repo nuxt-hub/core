@@ -1,5 +1,12 @@
 export interface ModuleOptions {
   /**
+   * Set `true` to enable AI for the project.
+   *
+   * @default false
+   * @see https://developers.cloudflare.com/workers-ai/configuration/bindings/#methods
+   */
+  ai?: boolean
+  /**
    * Set `true` to enable the analytics for the project.
    *
    * @default false

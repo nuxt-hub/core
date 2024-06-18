@@ -2,6 +2,9 @@ import { createError } from 'h3'
 import { useRuntimeConfig } from '#imports'
 
 const featureMessages = {
+  ai: [
+    'NuxtHub AI is not enabled, set `hub.ai = true` in your `nuxt.config.ts`'
+  ].join('\n'),
   analytics: [
     'NuxtHub Analytics is not enabled, set `hub.analytics = true` in your `nuxt.config.ts`'
   ].join('\n'),
