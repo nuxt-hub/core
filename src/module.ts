@@ -7,7 +7,7 @@ import { findWorkspaceDir } from 'pkg-types'
 import { parseArgs } from 'citty'
 import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
-import { setupCache, setupAnalytics, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './features'
+import { setupAi, setupCache, setupAnalytics, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './features'
 import type { ModuleOptions } from './types/module'
 import { addBuildHooks } from './utils/build'
 
@@ -76,6 +76,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     setupBase(nuxt, hub)
     setupOpenAPI(nuxt)
+    hub.ai && setupAi(nuxt)
     hub.analytics && setupAnalytics(nuxt)
     hub.blob && setupBlob(nuxt)
     hub.cache && setupCache(nuxt)

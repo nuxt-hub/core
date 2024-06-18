@@ -46,6 +46,12 @@ export function setupBase(nuxt: Nuxt, hub: HubConfig) {
   }
 }
 
+export function setupAi(_nuxt: Nuxt) {
+  // Add Server scanning
+  addServerScanDir(resolve('./runtime/ai/server'))
+  addServerImportsDir(resolve('./runtime/ai/server/utils'))
+}
+
 export function setupAnalytics(_nuxt: Nuxt) {
   // Add Server scanning
   addServerScanDir(resolve('./runtime/analytics/server'))
