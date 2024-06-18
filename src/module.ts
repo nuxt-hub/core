@@ -30,6 +30,7 @@ export default defineNuxtModule<ModuleOptions>({
     remoteArg = (remoteArg === '' ? 'true' : remoteArg)
     const runtimeConfig = nuxt.options.runtimeConfig
     const hub = defu(runtimeConfig.hub || {}, options, {
+      accountId: process.env.CLOUDFLARE_ACCOUNT_ID || '',
       // Self-hosted project
       projectUrl: process.env.NUXT_HUB_PROJECT_URL || '',
       projectSecretKey: process.env.NUXT_HUB_PROJECT_SECRET_KEY || '',
