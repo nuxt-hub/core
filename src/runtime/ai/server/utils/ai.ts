@@ -22,7 +22,8 @@ export function hubAi(): Ai {
   if (_ai) {
     return _ai
   }
-  const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
+  // @ts-expect-error globalThis.__env__ is not defined
+  const binding = process.env.AI || globalThis.__env__?.AI || globalThis.AI;
   if (binding) {
     _ai = binding as Ai
     return _ai
