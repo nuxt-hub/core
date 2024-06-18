@@ -5,10 +5,10 @@ import { requireNuxtHubFeature } from '../../../utils/features'
 let _ai: Ai
 
 /**
- * Access Workers Ai
+ * Access Workers AI
  *
  * @example ```ts
- * const ai = useAi()
+ * const ai = hubAi()
  * await ai.run('@cf/meta/llama-3-8b-instruct', {
  *   prompt: "What is the origin of the phrase 'Hello, World'"
  * })
