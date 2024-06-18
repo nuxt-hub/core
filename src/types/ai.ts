@@ -1,1 +1,1 @@
-export type { Ai as CFAi } from '@cloudflare/workers-types/experimental'
+export type { Ai } from '@cloudflare/workers-types/experimental'
