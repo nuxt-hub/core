@@ -49,6 +49,12 @@ export interface ModuleOptions {
    * @default process.env.NUXT_HUB_REMOTE or --remote option when running `nuxt dev`
    * @see https://hub.nuxt.com/docs/getting-started/remote-storage
    */
+  /**
+   * Set `true` to enable the database for the project.
+   *
+   * @default false
+   */
+  vectorize?: boolean
   remote?: boolean | 'production' | 'preview'
   /**
    * The URL of the NuxtHub Admin

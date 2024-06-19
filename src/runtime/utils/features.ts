@@ -22,6 +22,9 @@ const featureMessages = {
   kv: [
     'NuxtHub KV is not enabled, set `hub.kv = true` in your `nuxt.config.ts`',
     'Read more at `https://hub.nuxt.com/docs/features/kv`'
+  ].join('\n'),
+  vectorize: [
+    'NuxtHub Vectorize is not enabled, set `hub.vectorize = true` in your `nuxt.config.ts`'
   ].join('\n')
 }
 

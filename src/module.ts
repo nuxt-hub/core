@@ -7,7 +7,7 @@ import { findWorkspaceDir } from 'pkg-types'
 import { parseArgs } from 'citty'
 import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
-import { setupAI, setupCache, setupAnalytics, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './features'
+import { setupAI, setupCache, setupAnalytics, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupVectorize, setupBase, setupRemote } from './features'
 import type { ModuleOptions } from './types/module'
 import { addBuildHooks } from './utils/build'
 
@@ -50,6 +50,7 @@ export default defineNuxtModule<ModuleOptions>({
       cache: false,
       database: false,
       kv: false,
+      vectorize: false,
       // Other options
       version,
       env: process.env.NUXT_HUB_ENV || 'production',
@@ -83,6 +84,7 @@ export default defineNuxtModule<ModuleOptions>({
     hub.cache && setupCache(nuxt)
     hub.database && setupDatabase(nuxt)
     hub.kv && setupKV(nuxt)
+    hub.vectorize && setupVectorize(nuxt)
 
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {
@@ -138,7 +140,7 @@ export default defineNuxtModule<ModuleOptions>({
         await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}.data`, 'utf-8')
       }
 
-      const needWrangler = Boolean(hub.ai || hub.analytics || hub.blob || hub.database || hub.kv)
+      const needWrangler = Boolean(hub.ai || hub.analytics || hub.blob || hub.database || hub.kv || hub.vectorize)
       if (needWrangler) {
         // Generate the wrangler.toml file
         const wranglerPath = join(hubDir, './wrangler.toml')

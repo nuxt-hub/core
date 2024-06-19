@@ -16,7 +16,8 @@ export default defineNuxtConfig({
     database: true,
     kv: true,
     blob: true,
-    cache: true
+    cache: true,
+    vectorize: true
     // projectUrl: ({ branch }) => branch === 'main' ? 'https://playground.nuxt.dev' : `https://${encodeHost(branch).replace(/\//g, '-')}.playground-to39.pages.dev`
   },
 
