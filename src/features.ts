@@ -26,6 +26,7 @@ export interface HubConfig {
   cache?: boolean
   database?: boolean
   kv?: boolean
+  vectorize?: boolean
 
   remoteManifest?: {
     version: string
@@ -99,6 +100,12 @@ export function setupKV(_nuxt: Nuxt) {
   // Add Server scanning
   addServerScanDir(resolve('./runtime/kv/server'))
   addServerImportsDir(resolve('./runtime/kv/server/utils'))
+}
+
+export function setupVectorize(_nuxt: Nuxt) {
+  // Add Server scanning
+  addServerScanDir(resolve('./runtime/vectorize/server'))
+  addServerImportsDir(resolve('./runtime/vectorize/server/utils'))
 }
 
 export function setupOpenAPI(nuxt: Nuxt) {

@@ -1,6 +1,6 @@
 import { stringifyTOML } from 'confbox'
 
-export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, analytics: boolean, ai: boolean, accountId?: string }) {
+export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, analytics: boolean, ai: boolean, accountId?: string, vectorize: boolean }) {
   const wrangler: { [key: string]: any } = {}
 
   if (hub.accountId) {
@@ -39,6 +39,13 @@ export function generateWrangler(hub: { kv: boolean, database: boolean, blob: bo
       binding: 'DB',
       database_name: 'default',
       database_id: 'default'
+    }]
+  }
+
+  if (hub.vectorize) {
+    wrangler['vectorize'] = [{
+      binding: 'VECTORIZE',
+      index_name: 'default',
     }]
   }
 
