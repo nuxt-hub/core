@@ -28,5 +28,5 @@ export function hubAi(): Ai {
     _ai = binding as Ai
     return _ai
   }
-  throw createError('Missing Cloudflare DB binding (AI)')
+  throw createError('Missing Cloudflare AI binding (AI)')
 }
