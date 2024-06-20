@@ -30,5 +30,5 @@ export function hubVectorize(): VectorizeIndex {
     _vectorize = binding as VectorizeIndex
     return _vectorize
   }
-  throw createError('Missing Cloudflare DB binding (Vectorize)')
+  throw createError('Missing Cloudflare Vectorize binding (Vectorize)')
 }
