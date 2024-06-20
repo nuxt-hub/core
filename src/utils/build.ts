@@ -27,7 +27,8 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
           blob: hub.blob,
           cache: hub.cache,
           database: hub.database,
-          kv: hub.kv
+          kv: hub.kv,
+          vectorize: hub.vectorize
         }
       }).catch((e) => {
         if (e.response?._data?.message) {
