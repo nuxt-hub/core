@@ -1,8 +1,8 @@
 import { eventHandler, getValidatedRouterParams, readValidatedBody } from 'h3'
 import { z } from 'zod'
-import { hubVectorize } from '../../../server/utils/vectorize'
-import { requireNuxtHubAuthorization } from '../../../../utils/auth'
-import { requireNuxtHubFeature } from '../../../../utils/features'
+import { hubVectorize } from '../../../../server/utils/vectorize'
+import { requireNuxtHubAuthorization } from '../../../../../utils/auth'
+import { requireNuxtHubFeature } from '../../../../../utils/features'
 
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
