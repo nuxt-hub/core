@@ -45,7 +45,7 @@ export function generateWrangler(hub: { kv: boolean, database: boolean, blob: bo
   if (hub.vectorize) {
     wrangler['vectorize'] = [{
       binding: 'VECTORIZE',
-      index_name: 'default',
+      index_name: 'default'
     }]
   }
 
