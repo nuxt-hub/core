@@ -3,17 +3,19 @@ import { hubAI } from '../../../../ai/server/utils/ai'
 import { hubDatabase } from '../../../../database/server/utils/database'
 import { hubKV } from '../../../../kv/server/utils/kv'
 import { hubBlob } from '../../../../blob/server/utils/blob'
+import { hubVectorize } from '../../../../vectorize/server/utils/vectorize'
 import { requireNuxtHubAuthorization } from '../../../../utils/auth'
 import { useRuntimeConfig } from '#imports'
 
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
-  const { version, cache, ai, analytics, blob, kv, database } = useRuntimeConfig().hub
-  const [aiCheck, dbCheck, kvCheck, blobCheck] = await Promise.all([
+  const { version, cache, ai, analytics, blob, kv, database, vectorize } = useRuntimeConfig().hub
+  const [aiCheck, dbCheck, kvCheck, blobCheck, vectorizeCheck] = await Promise.all([
     falseIfFail(() => ai && hubAI().run('@cf/baai/bge-small-en-v1.5', { text: 'check' })),
     falseIfFail(() => database && hubDatabase().exec('PRAGMA table_list')),
     falseIfFail(() => kv && hubKV().getKeys('__check__')),
-    falseIfFail(() => blob && hubBlob().list({ prefix: '__check__' }))
+    falseIfFail(() => blob && hubBlob().list({ prefix: '__check__' })),
+    falseIfFail(() => vectorize && hubVectorize().describe())
   ])
 
   return {
@@ -21,7 +23,8 @@ export default eventHandler(async (event) => {
     storage: {
       database: Boolean(dbCheck),
       kv: Array.isArray(kvCheck),
-      blob: Array.isArray(blobCheck?.blobs)
+      blob: Array.isArray(blobCheck?.blobs),
+      vectorize: Boolean(vectorizeCheck)
     },
     features: {
       ai: Boolean(aiCheck),
