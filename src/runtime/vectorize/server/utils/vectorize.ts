@@ -84,12 +84,12 @@ export function proxyHubVectorize(projectUrl: string, secretKey?: string): Vecto
       return vectorizeAPI('/query', { body: { query, params } }).catch(handleProxyError)
     },
 
-    async getByIds(ids: string[], namespace?: string) {
-      return vectorizeAPI('/getByIds', { body: { ids, namespace } }).catch(handleProxyError)
+    async getByIds(ids: string[]) {
+      return vectorizeAPI('/getByIds', { body: { ids } }).catch(handleProxyError)
     },
 
-    async deleteByIds(ids: string[], namespace?: string) {
-      return vectorizeAPI('/deleteByIds', { body: { ids, namespace } }).catch(handleProxyError)
+    async deleteByIds(ids: string[]) {
+      return vectorizeAPI('/deleteByIds', { body: { ids } }).catch(handleProxyError)
     },
 
     async describe() {
