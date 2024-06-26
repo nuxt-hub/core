@@ -36,7 +36,7 @@ defineOgImageComponent('Docs')
 
     <div class="py-12">
       <div class="w-full flex justify-center">
-        <UPricingToggle v-model="isYearly" class="max-w-xs mb-12" right="Yearly (-20%)" />
+        <UPricingToggle v-model="isYearly" class="max-w-xs mb-12" right="Yearly (2 months off)" />
       </div>
 
       <UPricingGrid :compact="false">
