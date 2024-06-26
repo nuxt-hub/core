@@ -18,7 +18,7 @@ export default eventHandler(async (event) => {
     const { vectors } = await readValidatedBody(event, z.object({
       vectors: z.array(z.object({
         id: z.string().min(1).max(256),
-        namespace: z.string().optional(),
+        namespace: z.string().min(1).max(63).optional(),
         values: z.array(z.number()),
         metadata: z.record(z.string(), z.any()).optional()
       }))
@@ -31,7 +31,7 @@ export default eventHandler(async (event) => {
       query: z.array(z.number()),
       params: z.object({
         topK: z.number().optional(),
-        namespace: z.string().optional(),
+        namespace: z.string().min(1).max(63).optional(),
         returnValues: z.boolean().optional(),
         returnMetadata: z.boolean().optional(),
         filter: z.record(z.string(), z.any()).optional()
