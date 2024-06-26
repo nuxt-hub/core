@@ -20,11 +20,13 @@ export interface HubConfig {
   env?: string
   version?: string
 
+  ai: boolean
   analytics?: boolean
   blob?: boolean
   cache?: boolean
   database?: boolean
   kv?: boolean
+  vectorize?: boolean
 
   remoteManifest?: {
     version: string
@@ -43,6 +45,12 @@ export function setupBase(nuxt: Nuxt, hub: HubConfig) {
   if (nuxt.options.dev) {
     addDevtoolsCustomTabs(nuxt, hub)
   }
+}
+
+export function setupAi(_nuxt: Nuxt) {
+  // Add Server scanning
+  addServerScanDir(resolve('./runtime/ai/server'))
+  addServerImportsDir(resolve('./runtime/ai/server/utils'))
 }
 
 export function setupAnalytics(_nuxt: Nuxt) {
@@ -92,6 +100,12 @@ export function setupKV(_nuxt: Nuxt) {
   // Add Server scanning
   addServerScanDir(resolve('./runtime/kv/server'))
   addServerImportsDir(resolve('./runtime/kv/server/utils'))
+}
+
+export function setupVectorize(_nuxt: Nuxt) {
+  // Add Server scanning
+  addServerScanDir(resolve('./runtime/vectorize/server'))
+  addServerImportsDir(resolve('./runtime/vectorize/server/utils'))
 }
 
 export function setupOpenAPI(nuxt: Nuxt) {

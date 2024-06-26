@@ -7,7 +7,7 @@ import { findWorkspaceDir } from 'pkg-types'
 import { parseArgs } from 'citty'
 import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
-import { setupCache, setupAnalytics, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './features'
+import { setupAi, setupCache, setupAnalytics, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupVectorize, setupBase, setupRemote } from './features'
 import type { ModuleOptions } from './types/module'
 import { addBuildHooks } from './utils/build'
 
@@ -30,6 +30,7 @@ export default defineNuxtModule<ModuleOptions>({
     remoteArg = (remoteArg === '' ? 'true' : remoteArg)
     const runtimeConfig = nuxt.options.runtimeConfig
     const hub = defu(runtimeConfig.hub || {}, options, {
+      accountId: process.env.CLOUDFLARE_ACCOUNT_ID || '',
       // Self-hosted project
       projectUrl: process.env.NUXT_HUB_PROJECT_URL || '',
       projectSecretKey: process.env.NUXT_HUB_PROJECT_SECRET_KEY || '',
@@ -43,11 +44,13 @@ export default defineNuxtModule<ModuleOptions>({
       // Local storage
       dir: '.data/hub',
       // NuxtHub features
+      ai: false,
       analytics: false,
       blob: false,
       cache: false,
       database: false,
       kv: false,
+      vectorize: false,
       // Other options
       version,
       env: process.env.NUXT_HUB_ENV || 'production',
@@ -75,11 +78,13 @@ export default defineNuxtModule<ModuleOptions>({
 
     setupBase(nuxt, hub)
     setupOpenAPI(nuxt)
+    hub.ai && setupAi(nuxt)
     hub.analytics && setupAnalytics(nuxt)
     hub.blob && setupBlob(nuxt)
     hub.cache && setupCache(nuxt)
     hub.database && setupDatabase(nuxt)
     hub.kv && setupKV(nuxt)
+    hub.vectorize && setupVectorize(nuxt)
 
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {
@@ -131,7 +136,7 @@ export default defineNuxtModule<ModuleOptions>({
         await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}.data`, 'utf-8')
       }
 
-      const needWrangler = Boolean(hub.analytics || hub.blob || hub.database || hub.kv)
+      const needWrangler = Boolean(hub.ai || hub.analytics || hub.blob || hub.database || hub.kv || hub.vectorize)
       if (needWrangler) {
         // Generate the wrangler.toml file
         const wranglerPath = join(hubDir, './wrangler.toml')

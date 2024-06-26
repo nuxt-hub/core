@@ -2,6 +2,9 @@ import { createError } from 'h3'
 import { useRuntimeConfig } from '#imports'
 
 const featureMessages = {
+  ai: [
+    'NuxtHub AI is not enabled, set `hub.ai = true` in your `nuxt.config.ts`'
+  ].join('\n'),
   analytics: [
     'NuxtHub Analytics is not enabled, set `hub.analytics = true` in your `nuxt.config.ts`'
   ].join('\n'),
@@ -19,6 +22,9 @@ const featureMessages = {
   kv: [
     'NuxtHub KV is not enabled, set `hub.kv = true` in your `nuxt.config.ts`',
     'Read more at `https://hub.nuxt.com/docs/storage/kv`'
+  ].join('\n'),
+  vectorize: [
+    'NuxtHub Vectorize is not enabled, set `hub.vectorize = true` in your `nuxt.config.ts`'
   ].join('\n')
 }
 
