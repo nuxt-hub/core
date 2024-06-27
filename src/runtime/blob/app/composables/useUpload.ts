@@ -14,11 +14,6 @@ interface UploadOptions extends FetchOptions {
    * @default true
    */
   multiple?: boolean
-
-  /**
-   * The prefix to use for the blobs pathname.
-   */
-  prefix?: string
 }
 
 export function useUpload(apiBase: string, options?: UploadOptions & { multiple: false }): (data: FileList | HTMLInputElement | File[] | File) => Promise<BlobObject>
@@ -51,10 +46,6 @@ export function useUpload(apiBase: string, options: UploadOptions = {}) {
     return $fetch(apiBase, {
       ...fetchOptions,
       method: (method || 'POST') as any,
-      params: {
-        ...fetchOptions.params,
-        prefix: options.prefix
-      },
       body: formData
     }).then(result => (multiple === false || data instanceof File) ? result[0] : result)
   }

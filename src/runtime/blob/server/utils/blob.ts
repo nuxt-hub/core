@@ -149,7 +149,7 @@ export function hubBlob(): HubBlob {
     },
     async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = {}) {
       pathname = decodeURI(pathname)
-      const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, ...customMetadata } = options
+      const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, customMetadata } = options
       const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
 
       const { dir, ext, name: filename } = parse(pathname)
@@ -190,7 +190,7 @@ export function hubBlob(): HubBlob {
     },
     async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}): Promise<BlobMultipartUpload> {
       pathname = decodeURI(pathname)
-      const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, ...customMetadata } = options
+      const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, customMetadata } = options
       const contentType = optionsContentType || getContentType(pathname)
 
       const { dir, ext, name: filename } = parse(pathname)
@@ -224,15 +224,12 @@ export function hubBlob(): HubBlob {
         formKey: 'files',
         multiple: true
       })
-      const { formKey, multiple, ...opts } = options
-      const { maxSize, types, ...putOptions } = opts
-
       const form = await readFormData(event)
-      const files = form.getAll(formKey || 'files') as File[]
+      const files = form.getAll(options.formKey) as File[]
       if (!files) {
         throw createError({ statusCode: 400, message: 'Missing files' })
       }
-      if (!multiple && files.length > 1) {
+      if (!options.multiple && files.length > 1) {
         throw createError({ statusCode: 400, message: 'Multiple files are not allowed' })
       }
 
@@ -241,11 +238,11 @@ export function hubBlob(): HubBlob {
         // Ensure the files meet the requirements
         if (options.maxSize || options.types?.length) {
           for (const file of files) {
-            ensureBlob(file, { maxSize, types })
+            ensureBlob(file, options.ensure)
           }
         }
         for (const file of files) {
-          const object = await blob.put(file.name!, file, putOptions)
+          const object = await blob.put(file.name!, file, options.put)
           objects.push(object)
         }
       } catch (e: any) {
@@ -597,7 +594,7 @@ function fileSizeToBytes(input: string) {
  *
  * @throws If the blob does not meet the requirements
  */
-export function ensureBlob(blob: Blob, options: BlobEnsureOptions) {
+export function ensureBlob(blob: Blob, options: BlobEnsureOptions = {}) {
   requireNuxtHubFeature('blob')
 
   if (!options.maxSize && !options.types?.length) {

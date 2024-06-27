@@ -88,14 +88,18 @@ describe('Blob', async () => {
       expect(result).toMatchObject([image])
     })
 
-    it('Upload single file with prefix', async () => {
+    it('Upload single file with prefix (handleUpload)', async () => {
       const image = images[0]
       const file = await fs.readFile(fileURLToPath(new URL('./fixtures/blob/public/' + image.pathname, import.meta.url)))
       const form = new FormData()
       form.append('files', new File([file], image.pathname, { type: image.contentType }))
       const result = await $fetch('/api/_hub/blob', {
         method: 'POST',
-        params: { prefix: 'foo/' },
+        query: {
+          put: {
+            prefix: 'foo/'
+          }
+        },
         body: form
       })
       expect(result).toMatchObject([{ ...images[0], pathname: 'foo/' + images[0].pathname }])
@@ -105,7 +109,9 @@ describe('Blob', async () => {
       form2.append('files', new File([file2], images[1].pathname, { type: images[1].contentType }))
       await $fetch('/api/_hub/blob', {
         method: 'POST',
-        params: { prefix: 'foo/' },
+        query: {
+          put: { prefix: 'foo/' }
+        },
         body: form2
       })
     })
@@ -117,20 +123,25 @@ describe('Blob', async () => {
       }
       const result = await $fetch('/api/_hub/blob', {
         method: 'POST',
-        params: { prefix: 'multiple/' },
+        query: {
+          put: { prefix: 'multiple/' }
+        },
         body: form
       })
       expect(result).toMatchObject(images.map(image => ({ ...image, pathname: 'multiple/' + image.pathname })))
     })
 
-    it('Upload multiple files while disabling multiple', async () => {
+    it('Upload multiple files with multiple: false', async () => {
       const form = new FormData()
       for (const image of images) {
         form.append('files', new File([await fs.readFile(fileURLToPath(new URL('./fixtures/blob/public/' + image.pathname, import.meta.url)))], image.pathname, { type: image.contentType }))
       }
       const result = await $fetch('/api/_hub/blob', {
         method: 'POST',
-        params: { prefix: 'multiple/', multiple: false },
+        query: {
+          put: { prefix: 'multiple/' },
+          multiple: false
+        },
         body: form
       }).catch((error) => {
         expect(error.response.status).toBe(400)
@@ -153,7 +164,11 @@ describe('Blob', async () => {
 
       it('multiple files', async () => {
         const upload = useUpload('/api/_hub/blob', {
-          prefix: 'multiple2/'
+          query: {
+            put: {
+              prefix: 'multiple2/'
+            }
+          }
         })
         const files = []
         for (const image of images) {
@@ -208,7 +223,7 @@ describe('Blob', async () => {
     })
 
     it('Fetch Blobs Folded List', async () => {
-      const result = await $fetch<BlobListResult>('/api/_hub/blob', { params: { folded: true } })
+      const result = await $fetch<BlobListResult>('/api/_hub/blob', { query: { folded: true } })
 
       expect(result.hasMore).toBe(false)
       expect(result.cursor).toBeUndefined()
@@ -224,7 +239,7 @@ describe('Blob', async () => {
     })
 
     it('Fetch Blobs List with pagination (limit 2)', async () => {
-      const page1 = await $fetch<BlobListResult>('/api/_hub/blob', { params: { limit: 2 } })
+      const page1 = await $fetch<BlobListResult>('/api/_hub/blob', { query: { limit: 2 } })
 
       expect(page1.hasMore).toBe(true)
       expect(page1.cursor).not.toBeUndefined()
@@ -235,7 +250,7 @@ describe('Blob', async () => {
         expect(blob.size).toBeGreaterThan(0)
       }
 
-      const page2 = await $fetch<BlobListResult>('/api/_hub/blob', { params: { limit: 2, cursor: page1.cursor } })
+      const page2 = await $fetch<BlobListResult>('/api/_hub/blob', { query: { limit: 2, cursor: page1.cursor } })
 
       expect(page2.folders).toBeUndefined()
       expect(page2.blobs.length).toBe(2)

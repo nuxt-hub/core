@@ -16,7 +16,7 @@ hero:
     icon: i-ph-arrow-right
   links:
     - label: Get started
-      trailing-icon: i-heroicons-arrow-right-20-solid
+      trailing-icon: i-ph-arrow-right
       to: '/docs/getting-started'
       size: lg
     - label: Star on GitHub
@@ -69,16 +69,15 @@ deploy:
         width: 460
         height: 259
   buttons:
-    - label: NuxtHub Admin
-      icon: i-simple-icons-nuxtdotjs
+    - label: Deploy now
+      trailing-icon: i-ph-arrow-right
       color: black
       size: lg
       to: https://admin.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=home
       target: _blank
-    - label: Get started
+    - label: Start locally
       color: gray
       variant: ghost
-      trailing-icon: i-heroicons-arrow-right-20-solid
       to: '/docs/getting-started'
       size: lg
 database:
@@ -232,7 +231,7 @@ tool:
     - label: Get started
       color: gray
       variant: ghost
-      trailing-icon: i-heroicons-arrow-right-20-solid
+      trailing-icon: i-ph-arrow-right
       to: '/docs/getting-started'
       size: lg
   title: Tailored features for <span class="text-primary">Nuxt developers</span>
