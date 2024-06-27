@@ -63,7 +63,7 @@
     "@nuxt/module-builder": "^0.7.1",
     "@nuxt/schema": "^3.12.2",
     "@nuxt/test-utils": "^3.13.1",
-    "@nuxthub/core": "https://pkg.pr.new/nuxt-hub/core/@nuxthub/core@75f5759",
+    "@nuxthub/core": "https://pkg.pr.new/nuxt-hub/core/@nuxthub/core@3a70271",
     "@types/node": "^20.14.2",
     "changelogen": "^0.5.5",
     "eslint": "^9.5.0",
