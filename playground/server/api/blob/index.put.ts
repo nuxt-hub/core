@@ -3,6 +3,11 @@ export default eventHandler(async (event) => {
   return hubBlob().handleUpload(event, {
     formKey: 'files', // default
     multiple: true, // default
-    prefix: String(prefix || '')
+    put: {
+      prefix: String(prefix || ''),
+      customMetadata: {
+        hello: 'world'
+      }
+    }
   })
 })

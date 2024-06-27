@@ -103,7 +103,13 @@ export interface BlobPutOptions {
    * The prefix to use for the blob pathname.
    */
   prefix?: string
-
+  /**
+   * The custom metadata of the blob.
+   */
+  customMetadata?: Record<string, string>
+  /**
+   * @deprecated Use customMetadata instead.
+   */
   [key: string]: any
 }
 
@@ -125,6 +131,13 @@ export interface BlobMultipartOptions {
    * The prefix to use for the blob pathname.
    */
   prefix?: string
+  /**
+   * The custom metadata of the blob.
+   */
+  customMetadata?: Record<string, string>
+  /**
+   * @deprecated Use customMetadata instead.
+   */
   [key: string]: any
 }
 
@@ -145,7 +158,7 @@ export type HandleMPUResponse =
     action: 'abort'
   }
 
-export interface BlobUploadOptions extends BlobPutOptions, BlobEnsureOptions {
+export interface BlobUploadOptions {
   /**
    * The key to get the file/files from the request form.
    * @default 'files'
@@ -156,6 +169,14 @@ export interface BlobUploadOptions extends BlobPutOptions, BlobEnsureOptions {
    * @default true
    */
   multiple?: boolean
+  /**
+   * Options used for the ensute() method.
+   */
+  ensure?: BlobEnsureOptions
+  /**
+   * Options used for the put() method.
+   */
+  put?: BlobPutOptions
 }
 
 export interface BlobEnsureOptions {

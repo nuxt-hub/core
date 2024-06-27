@@ -10,7 +10,7 @@ const limit = ref(5)
 const prefix = computed(() => prefixes.value?.[prefixes.value.length - 1])
 const toast = useToast()
 const { data: blobData } = await useFetch('/api/blob', {
-  params: {
+  query: {
     folded,
     prefix,
     limit
@@ -23,7 +23,7 @@ const folders = computed(() => blobData.value?.folders || [])
 async function loadMore() {
   if (!blobData.value?.hasMore) return
   const nextPage = await $fetch('/api/blob', {
-    params: {
+    query: {
       folded: folded.value,
       prefix: prefix.value,
       limit: limit.value,
@@ -66,7 +66,6 @@ async function uploadFiles(files: File[]) {
 
   let uploadedFiles: any[] = []
   // upload small files
-  console.log('upload small files', smallFiles.length)
   if (smallFiles.length) {
     uploadedFiles = await useUpload('/api/blob', {
       method: 'PUT',
