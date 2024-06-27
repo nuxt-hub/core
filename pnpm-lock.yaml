@@ -82,8 +82,8 @@ importers:
         specifier: ^3.13.1
         version: 3.13.1(h3@1.11.1)(happy-dom@14.12.0)(magicast@0.3.4)(nitropack@2.9.6(encoding@0.1.13)(magicast@0.3.4))(playwright-core@1.44.1)(rollup@4.14.0)(vite@5.3.1(@types/node@20.14.2)(sass@1.77.2)(terser@5.29.1))(vitest@1.6.0(@types/node@20.14.2)(happy-dom@14.12.0)(sass@1.77.2)(terser@5.29.1))(vue-router@4.3.3(vue@3.4.29(typescript@5.4.5)))(vue@3.4.29(typescript@5.4.5))
       '@nuxthub/core':
-        specifier: link:.
-        version: 'link:'
+        specifier: https://pkg.pr.new/nuxt-hub/core/@nuxthub/core@c10d764
+        version: https://pkg.pr.new/nuxt-hub/core/@nuxthub/core@c10d764(ioredis@5.3.2)(magicast@0.3.4)(nuxt@3.12.2(@parcel/watcher@2.4.1)(@types/node@20.14.2)(@unocss/reset@0.58.5)(encoding@0.1.13)(eslint@9.5.0)(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.14.0))(vue@3.4.29(typescript@5.4.5)))(fuse.js@6.6.2)(ioredis@5.3.2)(magicast@0.3.4)(optionator@0.9.3)(rollup@4.14.0)(sass@1.77.2)(terser@5.29.1)(typescript@5.4.5)(unocss@0.58.5(@unocss/webpack@0.58.5(rollup@4.14.0))(postcss@8.4.38)(rollup@4.14.0)(vite@5.3.1(@types/node@20.14.2)(sass@1.77.2)(terser@5.29.1)))(vite@5.3.1(@types/node@20.14.2)(sass@1.77.2)(terser@5.29.1)))(rollup@4.14.0)(vite@5.3.1(@types/node@20.14.2)(sass@1.77.2)(terser@5.29.1))
       '@types/node':
         specifier: ^20.14.2
         version: 20.14.2
@@ -1675,6 +1675,10 @@ packages:
 
   '@nuxthub/core@0.5.17':
     resolution: {integrity: sha512-vMizOqQUqEZNjn5Z5/9If34j8ssNqA2qekK4U55BnrweJAUgG//BOLJvRx5nzizqt8Yp7yIsz3O7yEwUb0IVCA==}
+
+  '@nuxthub/core@https://pkg.pr.new/nuxt-hub/core/@nuxthub/core@c10d764':
+    resolution: {tarball: https://pkg.pr.new/nuxt-hub/core/@nuxthub/core@c10d764}
+    version: 0.6.17
 
   '@nuxtjs/color-mode@3.4.1':
     resolution: {integrity: sha512-vZgJqDstxInGw3RGSWbLoCLXtU1mvh1LLeuEA/X3a++DYA4ifwSbNoiSiOyb9qZHFEwz1Xr99H71sXV4IhOaEg==}
@@ -10054,6 +10058,47 @@ snapshots:
       citty: 0.1.6
       confbox: 0.1.7
       defu: 6.1.4
+      h3: 1.11.1
+      mime: 4.0.3
+      nitro-cloudflare-dev: 0.1.4
+      ofetch: 1.3.4
+      pathe: 1.1.2
+      pkg-types: 1.1.1
+      ufo: 1.5.3
+      uncrypto: 0.1.3
+      unstorage: 1.10.2(ioredis@5.3.2)
+      zod: 3.23.8
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@upstash/redis'
+      - '@vercel/kv'
+      - idb-keyval
+      - ioredis
+      - magicast
+      - nuxt
+      - rollup
+      - supports-color
+      - uWebSockets.js
+      - vite
+
+  '@nuxthub/core@https://pkg.pr.new/nuxt-hub/core/@nuxthub/core@c10d764(ioredis@5.3.2)(magicast@0.3.4)(nuxt@3.12.2(@parcel/watcher@2.4.1)(@types/node@20.14.2)(@unocss/reset@0.58.5)(encoding@0.1.13)(eslint@9.5.0)(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.14.0))(vue@3.4.29(typescript@5.4.5)))(fuse.js@6.6.2)(ioredis@5.3.2)(magicast@0.3.4)(optionator@0.9.3)(rollup@4.14.0)(sass@1.77.2)(terser@5.29.1)(typescript@5.4.5)(unocss@0.58.5(@unocss/webpack@0.58.5(rollup@4.14.0))(postcss@8.4.38)(rollup@4.14.0)(vite@5.3.1(@types/node@20.14.2)(sass@1.77.2)(terser@5.29.1)))(vite@5.3.1(@types/node@20.14.2)(sass@1.77.2)(terser@5.29.1)))(rollup@4.14.0)(vite@5.3.1(@types/node@20.14.2)(sass@1.77.2)(terser@5.29.1))':
+    dependencies:
+      '@cloudflare/workers-types': 4.20240614.0
+      '@nuxt/devtools-kit': 1.3.3(magicast@0.3.4)(nuxt@3.12.2(@parcel/watcher@2.4.1)(@types/node@20.14.2)(@unocss/reset@0.58.5)(encoding@0.1.13)(eslint@9.5.0)(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.14.0))(vue@3.4.29(typescript@5.4.5)))(fuse.js@6.6.2)(ioredis@5.3.2)(magicast@0.3.4)(optionator@0.9.3)(rollup@4.14.0)(sass@1.77.2)(terser@5.29.1)(typescript@5.4.5)(unocss@0.58.5(@unocss/webpack@0.58.5(rollup@4.14.0))(postcss@8.4.38)(rollup@4.14.0)(vite@5.3.1(@types/node@20.14.2)(sass@1.77.2)(terser@5.29.1)))(vite@5.3.1(@types/node@20.14.2)(sass@1.77.2)(terser@5.29.1)))(rollup@4.14.0)(vite@5.3.1(@types/node@20.14.2)(sass@1.77.2)(terser@5.29.1))
+      '@nuxt/kit': 3.12.2(magicast@0.3.4)(rollup@4.14.0)
+      '@uploadthing/mime-types': 0.2.10
+      citty: 0.1.6
+      confbox: 0.1.7
+      defu: 6.1.4
+      destr: 2.0.3
       h3: 1.11.1
       mime: 4.0.3
       nitro-cloudflare-dev: 0.1.4
