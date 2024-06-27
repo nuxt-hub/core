@@ -38,15 +38,15 @@
     "test:watch": "vitest watch"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "^4.20240614.0",
-    "@nuxt/devtools-kit": "^1.3.3",
+    "@cloudflare/workers-types": "^4.20240620.0",
+    "@nuxt/devtools-kit": "^1.3.7",
     "@nuxt/kit": "^3.12.2",
     "@uploadthing/mime-types": "^0.2.10",
     "citty": "^0.1.6",
     "confbox": "^0.1.7",
     "defu": "^6.1.4",
     "destr": "^2.0.3",
-    "h3": "^1.11.1",
+    "h3": "^1.12.0",
     "mime": "^4.0.3",
     "nitro-cloudflare-dev": "^0.1.4",
     "ofetch": "^1.3.4",
@@ -58,20 +58,20 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^1.3.3",
+    "@nuxt/devtools": "^1.3.7",
     "@nuxt/eslint-config": "^0.3.13",
-    "@nuxt/module-builder": "^0.7.1",
+    "@nuxt/module-builder": "^0.8.0",
     "@nuxt/schema": "^3.12.2",
     "@nuxt/test-utils": "^3.13.1",
     "@nuxthub/core": "link:.",
-    "@types/node": "^20.14.2",
+    "@types/node": "^20.14.9",
     "changelogen": "^0.5.5",
     "eslint": "^9.5.0",
-    "happy-dom": "^14.12.0",
+    "happy-dom": "^14.12.3",
     "nuxt": "^3.12.2",
-    "typescript": "^5.4.5",
+    "typescript": "^5.5.2",
     "vitest": "^1.6.0",
-    "wrangler": "^3.60.3"
+    "wrangler": "^3.62.0"
   },
   "resolutions": {
     "@nuxt/ui": "2.15.2"

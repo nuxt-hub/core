@@ -8,7 +8,7 @@
     "preview": "nuxi preview"
   },
   "dependencies": {
-    "@iconify-json/simple-icons": "^1.1.106",
+    "@iconify-json/simple-icons": "^1.1.107",
     "@kgierke/nuxt-basic-auth": "^1.6.0",
     "@nuxt/ui": "^2.17.0",
     "@nuxthub/core": "latest",
