@@ -1,6 +1,38 @@
 # Changelog
 
 
+## v0.7.0
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.17...v0.7.0)
+
+### 🚀 Enhancements
+
+- **blob:** ⚠️  Change API for consistency ([#187](https://github.com/nuxt-hub/core/pull/187))
+
+### 📖 Documentation
+
+- Add Hello Edge template ([7c9e805](https://github.com/nuxt-hub/core/commit/7c9e805))
+- Update og image ([7ba4dba](https://github.com/nuxt-hub/core/commit/7ba4dba))
+- Improve ctas ([099fcbd](https://github.com/nuxt-hub/core/commit/099fcbd))
+- Try public sans font ([05fcfea](https://github.com/nuxt-hub/core/commit/05fcfea))
+- Add parent routes for header active links ([47a7331](https://github.com/nuxt-hub/core/commit/47a7331))
+- Improve drizzle seed example ([#176](https://github.com/nuxt-hub/core/pull/176))
+- **recipes:** Remove extra field for drizzle seed ([a8a8b01](https://github.com/nuxt-hub/core/commit/a8a8b01))
+
+### 🏡 Chore
+
+- Update pricing ([b127a38](https://github.com/nuxt-hub/core/commit/b127a38))
+- Update deps ([5b30feb](https://github.com/nuxt-hub/core/commit/5b30feb))
+
+#### ⚠️ Breaking Changes
+
+- **blob:** ⚠️  Change API for consistency ([#187](https://github.com/nuxt-hub/core/pull/187))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Mohammed ([@redcodemohammed](http://github.com/redcodemohammed))
+
 ## v0.6.17
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.16...v0.6.17)
