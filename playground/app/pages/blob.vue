@@ -14,7 +14,8 @@ const { data: blobData } = await useFetch('/api/blob', {
     folded,
     prefix,
     limit
-  }
+  },
+  deep: true
 })
 
 const files = computed(() => blobData.value?.blobs || [])
