@@ -18,8 +18,8 @@ pricing:
       price: '$0'
       cycle: ''
       features:
-        - 'One user'
-        - 'Up to 20 projects'
+        - 'One member'
+        - 'Up to 5 projects'
         - 'Unlimited deployments'
         - 'NuxtHub CLI'
         - 'Remote Storage'
@@ -34,8 +34,8 @@ pricing:
         monthly: '$12'
         yearly: '$10'
       cycle:
-        monthly: '/user/month'
-        yearly: '/user/month'
+        monthly: '/member/month'
+        yearly: '/member/month'
       highlight: true
       features:
         - 'Unlimited projects'
@@ -58,7 +58,7 @@ pricing:
       features:
         - 'Unlimited projects'
         - 'Unlimited teams'
-        - 'Unlimited users'
+        - 'Unlimited members'
         - 'Self-host NuxtHub Admin'
         - 'Priority Support'
       button:
