@@ -1,5 +1,15 @@
 export interface ModuleOptions {
   /**
+   * Set `true` to enable AI for the project.
+   *
+   * Requires running `npx wrangler login` for local development one time system wide.
+   * Set `accountId` if logged-in user has access to several accounts.
+   *
+   * @default false
+   * @see https://developers.cloudflare.com/workers-ai/configuration/bindings/#methods
+   */
+  ai?: boolean
+  /**
    * Set `true` to enable the analytics for the project.
    *
    * @default false
@@ -70,4 +80,10 @@ export interface ModuleOptions {
    * @default '.data/hub'
    */
   dir?: string
+  /**
+   * The account ID of the Cloudflare account to use for local development.
+   * Only necessary if using AI and logged-in user has access to multiple accounts.
+   * @default process.env.CLOUDFLARE_ACCOUNT_ID
+   */
+  accountId?: string
 }

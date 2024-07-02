@@ -1,7 +1,17 @@
 import { stringifyTOML } from 'confbox'
 
-export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, analytics: boolean }) {
+export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, analytics: boolean, ai: boolean, accountId?: string }) {
   const wrangler: { [key: string]: any } = {}
+
+  if (hub.accountId) {
+    wrangler['account_id'] = hub.accountId
+  }
+
+  if (hub.ai) {
+    wrangler['ai'] = {
+      binding: 'AI'
+    }
+  }
 
   if (hub.analytics) {
     wrangler['analytics_engine_datasets'] = [{
