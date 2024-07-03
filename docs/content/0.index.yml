@@ -53,13 +53,13 @@ deploy:
     - title: Create a Nuxt app
       description: Start from our templates or import your GitHub repository.
       img:
-        src: '/images/landing/steps/create-nuxthub-project.webp'
+        src: '/images/landing/steps/create-nuxthub-project.png'
         width: 460
         height: 259
     - title: Deploy it
       description: Run the nuxthub deploy command or use the Cloudflare Pages CI/CD.
       img:
-        src: '/images/landing/steps/deploy-nuxt-project.webp'
+        src: '/images/landing/steps/deploy-nuxt-project.png'
         width: 460
         height: 259
     - title: Share it to the world
