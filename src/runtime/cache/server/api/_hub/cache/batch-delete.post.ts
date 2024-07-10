@@ -17,7 +17,7 @@ export default eventHandler(async (event) => {
   // delete with batch of 25 keys
   do {
     const keysToDelete = keys.splice(0, 25)
-    await Promise.all(keysToDelete.map(storage.removeItem))
+    await Promise.all(keysToDelete.map(key => storage.removeItem(key)))
   } while (keys.length)
 
   return sendNoContent(event)
