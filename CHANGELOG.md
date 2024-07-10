@@ -1,6 +1,41 @@
 # Changelog
 
 
+## v0.7.1
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.0...v0.7.1)
+
+### 🩹 Fixes
+
+- **cache:** Handle cache keys with `.` ([#196](https://github.com/nuxt-hub/core/pull/196))
+- **openapi:** Use direct import instead of nitro alias ([#192](https://github.com/nuxt-hub/core/pull/192))
+
+### 📖 Documentation
+
+- Improvements ([c092ede](https://github.com/nuxt-hub/core/commit/c092ede))
+- Add jsdoc for useUpload ([3f66ac0](https://github.com/nuxt-hub/core/commit/3f66ac0))
+- Add GitHub Action example ([f1e91f8](https://github.com/nuxt-hub/core/commit/f1e91f8))
+- Use nuxthub discord invite ([#188](https://github.com/nuxt-hub/core/pull/188))
+- Update pricing ([8028dae](https://github.com/nuxt-hub/core/commit/8028dae))
+- Add blob upload prefix ([2feff31](https://github.com/nuxt-hub/core/commit/2feff31))
+- Update images for steps ([aed88b1](https://github.com/nuxt-hub/core/commit/aed88b1))
+- Use event.path instead of event.node.req.url ([#195](https://github.com/nuxt-hub/core/pull/195))
+- Missing pnpm version on github actions template ([#194](https://github.com/nuxt-hub/core/pull/194))
+
+### 🏡 Chore
+
+- **release:** V0.7.0 ([314fd54](https://github.com/nuxt-hub/core/commit/314fd54))
+- Fix playground with new nuxt shallow ref ([b2adb87](https://github.com/nuxt-hub/core/commit/b2adb87))
+- Update deploy command to npx nuxthub deploy ([ef43572](https://github.com/nuxt-hub/core/commit/ef43572))
+
+### ❤️ Contributors
+
+- Farnabaz <farnabaz@gmail.com>
+- Michel EDIGHOFFER <edimitchel@gmail.com>
+- Alexander Lichter ([@manniL](http://github.com/manniL))
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+
 ## v0.7.0
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.17...v0.7.0)
