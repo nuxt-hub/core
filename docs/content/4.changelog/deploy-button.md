@@ -17,9 +17,7 @@ authors:
     username: a_birang
 ---
 
-We are glad to introduce the "Deploy to NuxtHub" to deploy any Nuxt template made by the community with a single click.
-
-It is designed to be used in the README of a GitHub repository, documentations or any other place where you want to allow users to deploy your project with one click.
+The button is designed to be used in the README of a GitHub repository, documentations or any other place where you want to allow users to deploy your project with one click.
 
 :nuxt-img{src="/images/changelog/deploy-button.png" alt="NuxtHub Deploy Button" width="915" height="515"}
 
