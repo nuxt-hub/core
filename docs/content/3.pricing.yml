@@ -122,10 +122,10 @@ cloudflare:
         1,000 delete / day<br>
         1 GB storage
       paid: >
-        10 million read / day + $0.50/million<br>
-        1 million list / day + $5.00/million<br>
-        1 million write / day + $5.00/million<br>
-        1 million delete / day + $5.00/million<br>
+        10 million read / month + $0.50/million<br>
+        1 million list / month + $5.00/million<br>
+        1 million write / month + $5.00/million<br>
+        1 million delete / month + $5.00/million<br>
         1 GB storage + $0.50/GB-month
       to: 'https://developers.cloudflare.com/kv/platform/pricing/'
   button:
