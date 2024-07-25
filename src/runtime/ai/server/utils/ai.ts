@@ -12,7 +12,7 @@ let _ai: Ai
  * Access Workers AI
  *
  * @example ```ts
- * const ai = hubAi()
+ * const ai = hubAI()
  * await ai.run('@cf/meta/llama-3-8b-instruct', {
  *   prompt: "What is the origin of the phrase 'Hello, World'"
  * })
@@ -20,7 +20,7 @@ let _ai: Ai
  *
  * @see https://developers.cloudflare.com/workers-ai/configuration/bindings/#methods
  */
-export function hubAi(): Ai {
+export function hubAI(): Ai {
   requireNuxtHubFeature('ai')
 
   if (_ai) {

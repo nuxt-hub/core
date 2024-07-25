@@ -1,6 +1,6 @@
 import { eventHandler, getValidatedRouterParams, readValidatedBody } from 'h3'
 import { z } from 'zod'
-import { hubAi } from '../../../utils/ai'
+import { hubAI } from '../../../utils/ai'
 import { requireNuxtHubAuthorization } from '../../../../../utils/auth'
 import { requireNuxtHubFeature } from '../../../../../utils/features'
 
@@ -17,7 +17,7 @@ export default eventHandler(async (event) => {
   const { command } = await getValidatedRouterParams(event, z.object({
     command: z.enum(['run'])
   }).parse)
-  const ai = hubAi()
+  const ai = hubAI()
 
   if (command === 'run') {
     const { model, params } = await readValidatedBody(event, statementValidation.pick({ model: true, params: true }).parse)
