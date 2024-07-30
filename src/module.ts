@@ -7,7 +7,7 @@ import { findWorkspaceDir } from 'pkg-types'
 import { parseArgs } from 'citty'
 import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
-import { setupAi, setupCache, setupAnalytics, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './features'
+import { setupAI, setupCache, setupAnalytics, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './features'
 import type { ModuleOptions } from './types/module'
 import { addBuildHooks } from './utils/build'
 
@@ -30,7 +30,6 @@ export default defineNuxtModule<ModuleOptions>({
     remoteArg = (remoteArg === '' ? 'true' : remoteArg)
     const runtimeConfig = nuxt.options.runtimeConfig
     const hub = defu(runtimeConfig.hub || {}, options, {
-      accountId: process.env.CLOUDFLARE_ACCOUNT_ID || '',
       // Self-hosted project
       projectUrl: process.env.NUXT_HUB_PROJECT_URL || '',
       projectSecretKey: process.env.NUXT_HUB_PROJECT_SECRET_KEY || '',
@@ -77,7 +76,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     setupBase(nuxt, hub)
     setupOpenAPI(nuxt)
-    hub.ai && setupAi(nuxt)
+    hub.ai && setupAI(nuxt)
     hub.analytics && setupAnalytics(nuxt)
     hub.blob && setupBlob(nuxt)
     hub.cache && setupCache(nuxt)

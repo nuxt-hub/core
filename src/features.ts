@@ -20,7 +20,7 @@ export interface HubConfig {
   env?: string
   version?: string
 
-  ai: boolean
+  ai?: boolean
   analytics?: boolean
   blob?: boolean
   cache?: boolean
@@ -46,7 +46,7 @@ export function setupBase(nuxt: Nuxt, hub: HubConfig) {
   }
 }
 
-export function setupAi(_nuxt: Nuxt) {
+export function setupAI(_nuxt: Nuxt) {
   // Add Server scanning
   addServerScanDir(resolve('./runtime/ai/server'))
   addServerImportsDir(resolve('./runtime/ai/server/utils'))
