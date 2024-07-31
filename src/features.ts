@@ -147,7 +147,12 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
     })
 
     // Adapt env based on project defined production branch
-    env = (branch === project.productionBranch ? 'production' : 'preview')
+    if (String(hub.remote) === 'true') {
+      env = (branch === project.productionBranch ? 'production' : 'preview')
+    } else {
+      env = String(hub.remote)
+    }
+
     if (typeof hub.projectUrl === 'function') {
       hub.projectUrl = hub.projectUrl({ env, branch })
     }
