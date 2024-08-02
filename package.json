@@ -70,7 +70,7 @@
     "happy-dom": "^14.12.3",
     "nuxt": "^3.12.4",
     "typescript": "^5.5.2",
-    "vitest": "^1.6.0",
+    "vitest": "^2.0.5",
     "wrangler": "^3.62.0"
   },
   "resolutions": {
