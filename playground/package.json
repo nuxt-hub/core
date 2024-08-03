@@ -8,11 +8,11 @@
     "preview": "nuxi preview"
   },
   "dependencies": {
-    "@iconify-json/simple-icons": "^1.1.107",
+    "@iconify-json/simple-icons": "^1.1.111",
     "@kgierke/nuxt-basic-auth": "^1.6.0",
-    "@nuxt/ui": "^2.17.0",
+    "@nuxt/ui": "^2.18.3",
     "@nuxthub/core": "latest",
-    "drizzle-orm": "^0.31.2",
+    "drizzle-orm": "^0.32.1",
     "nuxt": "^3.12.4"
   },
   "devDependencies": {
