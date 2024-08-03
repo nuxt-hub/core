@@ -67,8 +67,8 @@ pricing:
         to: 'mailto:hub@nuxt.com?subject=On-Premise%20Deployment&body=Hi%20NuxtHub%20Team%2C%0A%0AI%20am%20interested%20in%20deploying%20NuxtHub%20on%20my%20own%20infrastructure.%0A%0AKind%20regards%2C'
   info: 'Prices does not include your <a href="https://www.cloudflare.com/plans/developer-platform/" target="_blank" class="underline underline-offset-4 dark:hover:text-white hover:text-gray-900">Cloudflare costs</a>.'
   contact:
-    title: 'Are you an Open Source Organization?'
-    description: "If you want to use NuxtHub to manage open source projects, we have a special offer for you!"
+    title: 'Are you an open source or non-profit organization?'
+    description: "If you want to use NuxtHub to manage open source projects or if you are a non-profit organization, we have a special offer for you!"
     button:
       label: 'Contact us'
       color: gray
