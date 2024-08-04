@@ -21,9 +21,9 @@ pricing:
         - 'One member'
         - 'Up to 5 projects'
         - 'Unlimited deployments'
-        - 'NuxtHub CLI'
+        - 'Custom domains'
         - 'Remote Storage'
-        - 'Deploy on your Cloudflare account'
+        - 'Deploy to your Cloudflare account'
       button:
         label: 'Get started for free'
         color: 'gray'
