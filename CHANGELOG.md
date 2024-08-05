@@ -1,6 +1,73 @@
 # Changelog
 
 
+## v0.7.1
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.0...v0.7.1)
+
+### 🩹 Fixes
+
+- **cache:** Handle cache keys with `.` ([#196](https://github.com/nuxt-hub/core/pull/196))
+- **openapi:** Use direct import instead of nitro alias ([#192](https://github.com/nuxt-hub/core/pull/192))
+
+### 📖 Documentation
+
+- Improvements ([c092ede](https://github.com/nuxt-hub/core/commit/c092ede))
+- Add jsdoc for useUpload ([3f66ac0](https://github.com/nuxt-hub/core/commit/3f66ac0))
+- Add GitHub Action example ([f1e91f8](https://github.com/nuxt-hub/core/commit/f1e91f8))
+- Use nuxthub discord invite ([#188](https://github.com/nuxt-hub/core/pull/188))
+- Update pricing ([8028dae](https://github.com/nuxt-hub/core/commit/8028dae))
+- Add blob upload prefix ([2feff31](https://github.com/nuxt-hub/core/commit/2feff31))
+- Update images for steps ([aed88b1](https://github.com/nuxt-hub/core/commit/aed88b1))
+- Use event.path instead of event.node.req.url ([#195](https://github.com/nuxt-hub/core/pull/195))
+- Missing pnpm version on github actions template ([#194](https://github.com/nuxt-hub/core/pull/194))
+
+### 🏡 Chore
+
+- **release:** V0.7.0 ([314fd54](https://github.com/nuxt-hub/core/commit/314fd54))
+- Fix playground with new nuxt shallow ref ([b2adb87](https://github.com/nuxt-hub/core/commit/b2adb87))
+- Update deploy command to npx nuxthub deploy ([ef43572](https://github.com/nuxt-hub/core/commit/ef43572))
+
+### ❤️ Contributors
+
+- Farnabaz <farnabaz@gmail.com>
+- Michel EDIGHOFFER <edimitchel@gmail.com>
+- Alexander Lichter ([@manniL](http://github.com/manniL))
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+
+## v0.7.0
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.6.17...v0.7.0)
+
+### 🚀 Enhancements
+
+- **blob:** ⚠️  Change API for consistency ([#187](https://github.com/nuxt-hub/core/pull/187))
+
+### 📖 Documentation
+
+- Add Hello Edge template ([7c9e805](https://github.com/nuxt-hub/core/commit/7c9e805))
+- Update og image ([7ba4dba](https://github.com/nuxt-hub/core/commit/7ba4dba))
+- Improve ctas ([099fcbd](https://github.com/nuxt-hub/core/commit/099fcbd))
+- Try public sans font ([05fcfea](https://github.com/nuxt-hub/core/commit/05fcfea))
+- Add parent routes for header active links ([47a7331](https://github.com/nuxt-hub/core/commit/47a7331))
+- Improve drizzle seed example ([#176](https://github.com/nuxt-hub/core/pull/176))
+- **recipes:** Remove extra field for drizzle seed ([a8a8b01](https://github.com/nuxt-hub/core/commit/a8a8b01))
+
+### 🏡 Chore
+
+- Update pricing ([b127a38](https://github.com/nuxt-hub/core/commit/b127a38))
+- Update deps ([5b30feb](https://github.com/nuxt-hub/core/commit/5b30feb))
+
+#### ⚠️ Breaking Changes
+
+- **blob:** ⚠️  Change API for consistency ([#187](https://github.com/nuxt-hub/core/pull/187))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+- Mohammed ([@redcodemohammed](http://github.com/redcodemohammed))
+
 ## v0.6.17
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.6.16...v0.6.17)

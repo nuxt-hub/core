@@ -29,7 +29,7 @@ function _useDataset(name: string = 'ANALYTICS'): AnalyticsEngineDataset {
  * Access the Workers Analytics Engine
  *
  * @example ```ts
- * const analytics = useAnalytics()
+ * const analytics = hubAnalytics()
  * await analytics.put({
  *   blobs: ['Seattle', 'USA', 'pro_sensor_9000'],
  *   doubles: [1.1, 2.2, 3.3],

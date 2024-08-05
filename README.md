@@ -9,6 +9,7 @@ Build full-stack applications with Nuxt on Cloudflare, with zero configuration.
 
 ## Features
 
+- **Deploy your Nuxt app** to your Cloudflare account with [`npx nuxthub deploy`](https://github.com/nuxt-hub/cli) or with the [NuxtHub Admin](https://admin.hub.nuxt.com)
 - **SQL database** to store your application's data with [`hubDatabase()`](https://hub.nuxt.com/docs/storage/database)
 - **Key-Value** to store JSON data accessible globally with low-latency with [`hubKV()`](https://hub.nuxt.com/docs/storage/kv)
 - **Blob storage** to store static assets, such as images, videos and more with [`hubBlob()`](https://hub.nuxt.com/docs/storage/blob)

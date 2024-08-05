@@ -108,6 +108,10 @@ export default defineNuxtModule<ModuleOptions>({
         log.error('NuxtHub is only compatible with the `cloudflare-pages` and `cloudflare-module` presets.')
         process.exit(1)
       }
+
+      // Update the deploy command displayed in the console
+      nuxt.options.nitro.commands = nuxt.options.nitro.commands || {}
+      nuxt.options.nitro.commands.deploy = 'npx nuxthub deploy'
     }
 
     // Local development without remote connection

@@ -18,12 +18,12 @@ pricing:
       price: '$0'
       cycle: ''
       features:
-        - 'One user'
-        - 'Up to 20 projects'
+        - 'One member'
+        - 'Up to 5 projects'
         - 'Unlimited deployments'
-        - 'NuxtHub CLI'
+        - 'Custom domains'
         - 'Remote Storage'
-        - 'Deploy on your Cloudflare account'
+        - 'Deploy to your Cloudflare account'
       button:
         label: 'Get started for free'
         color: 'gray'
@@ -34,8 +34,8 @@ pricing:
         monthly: '$12'
         yearly: '$10'
       cycle:
-        monthly: '/user/month'
-        yearly: '/user/month'
+        monthly: '/member/month'
+        yearly: '/member/month'
       highlight: true
       features:
         - 'Unlimited projects'
@@ -58,7 +58,7 @@ pricing:
       features:
         - 'Unlimited projects'
         - 'Unlimited teams'
-        - 'Unlimited users'
+        - 'Unlimited members'
         - 'Self-host NuxtHub Admin'
         - 'Priority Support'
       button:
@@ -67,8 +67,8 @@ pricing:
         to: 'mailto:hub@nuxt.com?subject=On-Premise%20Deployment&body=Hi%20NuxtHub%20Team%2C%0A%0AI%20am%20interested%20in%20deploying%20NuxtHub%20on%20my%20own%20infrastructure.%0A%0AKind%20regards%2C'
   info: 'Prices does not include your <a href="https://www.cloudflare.com/plans/developer-platform/" target="_blank" class="underline underline-offset-4 dark:hover:text-white hover:text-gray-900">Cloudflare costs</a>.'
   contact:
-    title: 'Are you an Open Source Organization?'
-    description: "If you want to use NuxtHub to manage open source projects, we have a special offer for you!"
+    title: 'Are you an open source or non-profit organization?'
+    description: "If you want to use NuxtHub to manage open source projects or if you are a non-profit organization, we have a special offer for you!"
     button:
       label: 'Contact us'
       color: gray
@@ -122,10 +122,10 @@ cloudflare:
         1,000 delete / day<br>
         1 GB storage
       paid: >
-        10 million read / day + $0.50/million<br>
-        1 million list / day + $5.00/million<br>
-        1 million write / day + $5.00/million<br>
-        1 million delete / day + $5.00/million<br>
+        10 million read / month + $0.50/million<br>
+        1 million list / month + $5.00/million<br>
+        1 million write / month + $5.00/million<br>
+        1 million delete / month + $5.00/million<br>
         1 GB storage + $0.50/GB-month
       to: 'https://developers.cloudflare.com/kv/platform/pricing/'
   button:

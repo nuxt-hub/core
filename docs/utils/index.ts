@@ -20,7 +20,7 @@ export const asideLinks = [
   }, {
     icon: 'i-ph-chat-centered-text-duotone',
     label: 'Chat on Discord',
-    to: 'https://discord.com/invite/nuxt',
+    to: 'https://discord.gg/e25qqXb2mF',
     target: '_blank'
   }, {
     icon: 'i-simple-icons-nuxtdotjs',

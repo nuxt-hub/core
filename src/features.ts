@@ -104,7 +104,7 @@ export function setupKV(_nuxt: Nuxt) {
 export function setupOpenAPI(nuxt: Nuxt) {
   // Fallback to custom placeholder when openAPI is disabled
   nuxt.options.alias['#hub/openapi'] = nuxt.options.nitro?.experimental?.openAPI === true
-    ? '#internal/nitro/routes/openapi'
+    ? 'nitropack/runtime/routes/openapi'
     : resolve('./runtime/openapi/server/templates/openapi')
 
   addServerScanDir(resolve('./runtime/openapi/server'))
@@ -154,7 +154,12 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
     })
 
     // Adapt env based on project defined production branch
-    env = (branch === project.productionBranch ? 'production' : 'preview')
+    if (String(hub.remote) === 'true') {
+      env = (branch === project.productionBranch ? 'production' : 'preview')
+    } else {
+      env = String(hub.remote)
+    }
+
     if (typeof hub.projectUrl === 'function') {
       hub.projectUrl = hub.projectUrl({ env, branch })
     }
