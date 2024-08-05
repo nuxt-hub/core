@@ -104,7 +104,11 @@ export function proxyHubAI(projectUrl: string, secretKey?: string): Ai {
   } as Ai
 }
 
-function handleProxyError(err: H3Error) {
+async function handleProxyError(err: H3Error) {
+  // If the error is a 403, it means the user token does not have the permission to run the model
+  if (import.meta.dev && err.statusCode === 403) {
+    console.warn('It seems that your Cloudflare API token does not have the `Worker AI` permission.\nOpen `https://dash.cloudflare.com/profile/api-tokens` and edit your NuxtHub token.\nAdd the `Account > Worker AI > Read` permission to your token and save it.')
+  }
   throw createError({
     statusCode: err.statusCode,
     // @ts-expect-error not aware of data property
