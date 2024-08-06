@@ -1,5 +1,5 @@
 ---
-title: KV
+title: Key Value
 description: Add a key-value data storage to your Nuxt application.
 ---
 

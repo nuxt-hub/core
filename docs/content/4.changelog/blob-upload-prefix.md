@@ -25,7 +25,7 @@ It is now possible to set the prefix before uploading a blob in the NuxtHub admi
   :source{src="https://res.cloudinary.com/nuxt/video/upload/v1719931201/nuxthub/admin-blob-prefix_akfj3k.ogg" type="video/ogg"}
 ::
 
-::callout{icon="i-ph-book-open-duotone" to="/docs/storage/blob"}
+::callout{icon="i-ph-book-open-duotone" to="/docs/features/blob"}
 Learn more about Blob Storage.
 ::
 

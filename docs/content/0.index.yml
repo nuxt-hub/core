@@ -96,7 +96,7 @@ database:
   buttons:
     - label: Database docs
       size: lg
-      to: /docs/storage/database
+      to: /docs/features/database
       trailing-icon: i-ph-arrow-right
     - label: nuxt-todos-edge
       icon: i-simple-icons-github
@@ -133,7 +133,7 @@ Let users upload data like images, videos and audio files with our server compos
   buttons:
     - label: Blob documentation
       size: lg
-      to: /docs/storage/blob
+      to: /docs/features/blob
       trailing-icon: i-ph-arrow-right
     - label: nuxt-image-gallery
       icon: i-simple-icons-github
@@ -170,7 +170,7 @@ Access it in your Nuxt codebase, with zero-configuration.'
   buttons:
     - label: KV documentation
       size: lg
-      to: /docs/storage/kv
+      to: /docs/features/kv
       trailing-icon: i-ph-arrow-right
     - label: atinotes
       icon: i-simple-icons-github

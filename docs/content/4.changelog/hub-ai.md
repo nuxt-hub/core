@@ -21,7 +21,7 @@ authors:
 This feature is available on both [free and pro plans](/pricing).
 ::
 
-We are excited to introduce [`hubAI()`](/docs/server/ai). This new method allows you to run machine learning models, such as LLMs, directly within your Nuxt application with minimal setup.
+We are excited to introduce [`hubAI()`](/docs/features/ai). This new method allows you to run machine learning models, such as LLMs, directly within your Nuxt application with minimal setup.
 
 At NuxtHub, we care about DX and we want to make it easy for you to leverage AI in your application using Cloudflare AI without having to manage API keys, account ID or using the `wrangler` CLI.
 
@@ -52,7 +52,7 @@ export default defineNuxtConfig({
 
 3. Run `npx nuxthub link` to link a NuxtHub project or create a new one
 
-4. That's it! You can now use [`hubAI()`](/docs/server/ai) in your Nuxt application.
+4. That's it! You can now use [`hubAI()`](/docs/features/ai) in your Nuxt application.
 
 ## Example
 
@@ -66,7 +66,7 @@ export default defineEventHandler(async (event) => {
 })
 ```
 
-Read the [full documentation](/docs/server/ai) to learn more about `hubAI()`.
+Read the [full documentation](/docs/features/ai) to learn more about `hubAI()`.
 
 ::callout
 This feature has been implemented in [nuxt-hub/core#173](https://github.com/nuxt-hub/core/pull/173).

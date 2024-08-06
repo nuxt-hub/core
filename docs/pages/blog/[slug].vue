@@ -22,7 +22,6 @@ const { data: surround } = await useAsyncData(`${route.path}-surround`, () => qu
   .sort({ date: -1 })
   .findSurround(withoutTrailingSlash(route.path))
 )
-console.log('surround', route.path, surround.value)
 
 const title = post.value.head?.title || post.value.title
 const description = post.value.head?.description || post.value.description

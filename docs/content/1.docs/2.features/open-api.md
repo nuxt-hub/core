@@ -1,7 +1,7 @@
 ---
-title: Server API
-navigation.title: API
-description: Discover how to generate API documentation for your Nuxt project.
+title: Open API
+navigation.title: Open API
+description: Generate an Open API documentation for your Nuxt project with Scalar.
 ---
 
 ::warning

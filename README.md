@@ -10,9 +10,9 @@ Build full-stack applications with Nuxt on Cloudflare, with zero configuration.
 ## Features
 
 - **Deploy your Nuxt app** to your Cloudflare account with [`npx nuxthub deploy`](https://github.com/nuxt-hub/cli) or with the [NuxtHub Admin](https://admin.hub.nuxt.com)
-- **SQL database** to store your application's data with [`hubDatabase()`](https://hub.nuxt.com/docs/storage/database)
-- **Key-Value** to store JSON data accessible globally with low-latency with [`hubKV()`](https://hub.nuxt.com/docs/storage/kv)
-- **Blob storage** to store static assets, such as images, videos and more with [`hubBlob()`](https://hub.nuxt.com/docs/storage/blob)
+- **SQL database** to store your application's data with [`hubDatabase()`](https://hub.nuxt.com/docs/features/database)
+- **Key-Value** to store JSON data accessible globally with low-latency with [`hubKV()`](https://hub.nuxt.com/docs/features/kv)
+- **Blob storage** to store static assets, such as images, videos and more with [`hubBlob()`](https://hub.nuxt.com/docs/features/blob)
 - **Cache storage** to cache your server route responses or functions using Nitro's [`cachedEventHandler`](https://nitro.unjs.io/guide/cache#cached-event-handlers) and [`cachedFunction`](https://nitro.unjs.io/guide/cache#cached-functions)
 
 Read more on https://hub.nuxt.com
