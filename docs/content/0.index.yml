@@ -11,8 +11,8 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: NuxtHub public beta
-    to: /blog/beta
+    label: Introducing hubAI()
+    to: /changelog/hub-ai
     icon: i-ph-arrow-right
   links:
     - label: Get started

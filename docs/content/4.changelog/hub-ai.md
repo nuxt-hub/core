@@ -2,7 +2,7 @@
 title: Introducing hubAI()
 description: "Run machine learning models, such as LLMs in your Nuxt application, with minimal setup."
 date: 2024-08-06
-image: '/images/changelog/blob-folders.png'
+image: '/images/changelog/hub-ai.png'
 category: Admin
 authors:
   - name: Sebastien Chopin
