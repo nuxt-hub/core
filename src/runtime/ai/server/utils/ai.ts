@@ -2,7 +2,6 @@ import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import type { H3Error } from 'h3'
-import type { Ai } from '../../../../types/ai'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { useRuntimeConfig } from '#imports'
 

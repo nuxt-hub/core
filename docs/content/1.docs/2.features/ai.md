@@ -1,17 +1,10 @@
 ---
-title: AI
-description: Run machine learning models, such as LLMs in Nuxt.
+title: Run AI Models
+navigation.title: AI
+description: Run machine learning models, such as LLMs in Nuxt. Making the usage of AI models in your Nuxt application easy.
 ---
 
-::note
-NuxtHub AI provides [Workers AI](https://developers.cloudflare.com/workers-ai), which is powered by serverless GPUs on Cloudflare’s global network.
-::
-
 ## Getting Started
-
-::note{to="https://developers.cloudflare.com/workers-ai/platform/pricing/"}
-NuxtHub AI will run AI models on your Cloudflare account, including during local development. [See pricing and included free quotas on Cloudflare's documentation](https://developers.cloudflare.com/workers-ai/platform/pricing/).
-::
 
 Enable AI in your NuxtHub project by adding the `ai` property to the `hub` object in your `nuxt.config.ts` file.
 
@@ -23,8 +16,16 @@ export default defineNuxtConfig({
 })
 ```
 
+::note
+This option will enable [Workers AI](https://developers.cloudflare.com/workers-ai) (LLM powered by serverless GPUs on Cloudflare’s global network) and automatically add the binding to your project when you [deploy it](/docs/getting-started/deploy).
+::
+
 ::important
 During development, `hubAI()` needs to call the Cloudflare API as it is not running inside a worker. Make sure to run `npx nuxthub link` to create/link a NuxtHub project (even if the project is empty).
+::
+
+::warning{to="https://developers.cloudflare.com/workers-ai/platform/pricing/"}
+NuxtHub AI will run AI models on your Cloudflare account, including during local development. :br [See pricing and included free quotas on Cloudflare's documentation](https://developers.cloudflare.com/workers-ai/platform/pricing/).
 ::
 
 ## hubAI()

@@ -1,11 +1,8 @@
 ---
-title: Database
+title: SQL Database
+navigation.title: Database
 description: Access a SQL database in your Nuxt application to store and retrieve relational data.
 ---
-
-::note
-NuxtHub Database is a layer on top of [Cloudflare D1](https://developers.cloudflare.com/d1), a serverless SQL database.
-::
 
 ## Getting Started
 
@@ -19,8 +16,21 @@ export default defineNuxtConfig({
 })
 ```
 
+::note
+This option will use Cloudflare platform proxy in development and automatically create a [Cloudflare D1](https://developers.cloudflare.com/d1) database for your project when you [deploy it](/docs/getting-started/deploy).
+::
+
 ::tip
 Checkout our [Drizzle ORM recipe](/docs/recipes/drizzle) to get started with the database by providing a schema and migrations.
+::
+
+::tabs
+::div{label="Nuxt DevTools"}
+:nuxt-img{src="/images/landing/nuxt-devtools-database.png" alt="Nuxt Devtools Database" width="915" height="515" class="!m-0"}
+::
+::div{label="NuxtHub Admin"}
+:nuxt-img{src="/images/landing/nuxthub-admin-database.png" alt="NuxtHub Admin Database" width="915" height="515" class="!m-0"}
+::
 ::
 
 ## `hubDatabase()`
@@ -232,11 +242,3 @@ The methods [`.all()`](#all) and [`.batch()`](#batch) return an object that cont
 ::callout
 Read more on [Cloudflare D1 documentation](https://developers.cloudflare.com/d1/build-databases/query-databases/).
 ::
-
-## Nuxt Devtools
-
-You can use the Nuxt Devtools to inspect the database and run queries, powered by [Drizzle Studio](https://orm.drizzle.team/drizzle-studio/overview).
-
-Open the Nuxt Devtools and navigate to the Hub Database.
-
-![Nuxt Devtools - Hub Database](/images/landing/nuxthub-devtools-database.png){.rounded}

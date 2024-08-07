@@ -1,11 +1,8 @@
 ---
-title: Blob
-description: Store and upload images, videos and other unstructured data in your Nuxt application.
+title: Blob Storage
+navigation.title: Blob
+description: Upload, store and serve images, videos, music, documents and other unstructured data in your Nuxt application.
 ---
-
-::note
-NuxtHub Blob is a layer on top of [Cloudflare R2](https://developers.cloudflare.com/r2), allowing to store large amounts of unstructured data (images, videos, etc.).
-::
 
 ## Getting Started
 
@@ -18,6 +15,19 @@ export default defineNuxtConfig({
   }
 })
 ```
+
+::note
+This option will use Cloudflare platform proxy in development and automatically create a [Cloudflare R2](https://developers.cloudflare.com/r2) bucket for your project when you [deploy it](/docs/getting-started/deploy).
+::
+
+::tabs
+::div{label="Nuxt DevTools"}
+:nuxt-img{src="/images/landing/nuxt-devtools-blob.png" alt="Nuxt Devtools Blob" width="915" height="515" class="!m-0"}
+::
+::div{label="NuxtHub Admin"}
+:nuxt-img{src="/images/landing/nuxthub-admin-blob.png" alt="NuxtHub Admin Blob" width="915" height="515" class="!m-0"}
+::
+::
 
 ## `hubBlob()`
 
@@ -546,7 +556,7 @@ Returns nothing.
 
 Throws an error if `file` doesn't meet the requirements.
 
-## Composables
+## Vue Composables
 
 ::note
 The following composables are meant to be used in the Vue side of your application (not the `server/` directory).

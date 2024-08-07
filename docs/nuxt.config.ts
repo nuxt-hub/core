@@ -29,7 +29,7 @@ export default defineNuxtConfig({
     '/docs/storage/blob': { redirect: { statusCode: 301, to: '/docs/features/blob' } },
     '/docs/storage/database': { redirect: { statusCode: 301, to: '/docs/features/database' } },
     '/docs/storage/kv': { redirect: { statusCode: 301, to: '/docs/features/kv' } },
-    '/docs/server/api': { redirect: { statusCode: 301, to: '/docs/features/api' } },
+    '/docs/server/api': { redirect: { statusCode: 301, to: '/docs/features/open-api' } },
     '/docs/server/cache': { redirect: { statusCode: 301, to: '/docs/features/cache' } },
     '/docs/server/logs': { redirect: { statusCode: 301, to: '/docs/getting-started/server-logs' } }
   },

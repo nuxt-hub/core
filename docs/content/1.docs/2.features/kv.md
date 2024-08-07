@@ -1,11 +1,8 @@
 ---
-title: Key Value
+title: Key Value Storage
+navigation.title: Key Value
 description: Add a key-value data storage to your Nuxt application.
 ---
-
-::note
-NuxtHub KV is a layer on top of [Cloudflare Workers KV](https://developers.cloudflare.com/kv), a global, low-latency, key-value data storage.
-::
 
 ## Getting Started
 
@@ -18,6 +15,19 @@ export default defineNuxtConfig({
   }
 })
 ```
+
+::note
+This option will use Cloudflare platform proxy in development and automatically create a [Cloudflare Workers KV](https://developers.cloudflare.com/kv) namespace for your project when you [deploy it](/docs/getting-started/deploy).
+::
+
+::tabs
+::div{label="Nuxt DevTools"}
+:nuxt-img{src="/images/landing/nuxt-devtools-kv.png" alt="Nuxt Devtools KV" width="915" height="515" class="!m-0"}
+::
+::div{label="NuxtHub Admin"}
+:nuxt-img{src="/images/landing/nuxthub-admin-kv.png" alt="NuxtHub Admin KV" width="915" height="515" class="!m-0"}
+::
+::
 
 ## `hubKV()`
 

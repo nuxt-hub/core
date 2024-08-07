@@ -1,9 +1,8 @@
 ---
-title: Cache
-description: How to use cache storage with NuxtHub.
+title: Cache Pages, API & Functions
+navigation.title: Cache
+description: Learn how to cache Nuxt pages, API routes and functions in with NuxtHub cache storage.
 ---
-
-NuxtHub cache uses [Cloudflare Workers KV](https://developers.cloudflare.com/kv) to cache your server route responses or functions using Nitro's [`cachedEventHandler`](https://nitro.unjs.io/guide/cache#cached-event-handlers) and [`cachedFunction`](https://nitro.unjs.io/guide/cache#cached-functions).
 
 ## Getting Started
 
@@ -17,12 +16,17 @@ export default defineNuxtConfig({
 })
 ```
 
-Once you deploy your project, you can access to the cache storage in the [NuxtHub admin](https://admin.hub.nuxt.com/). You can manage your cache entries in the `Cache` section of your project page.
+::note
+This option will configure [Nitro's cache storage](https://nitro.unjs.io/guide/cache#customize-cache-storage) to use [Cloudflare Workers KV](https://developers.cloudflare.com/kv) as well as creating a new storage namespace for your project when you deploy it.
+::
 
+Once your Nuxt project is deployed, you can manage your cache entries in the `Cache` section of your project in the [NuxtHub admin](https://admin.hub.nuxt.com/).
 
-## Event Handlers Caching
+:nuxt-img{src="/images/landing/nuxthub-admin-cache.png" alt="NuxtHub Admin Cache" width="915" height="515" class="!m-0"}
 
-Using the `cachedEventHandler` function, you can cache the response of a server route. This function will cache the response of the server route into the NuxtHub cache storage.
+## API Routes Caching
+
+To cache Nuxt API and server routes, use the `cachedEventHandler` function. This function will cache the response of the server route into the cache storage.
 
 ```ts [server/api/cached-route.ts]
 import type { H3Event } from 'h3'
@@ -44,9 +48,14 @@ The above example will cache the response of the `/api/cached-route` route for 1
 Read more about [Nitro Cache options](https://nitro.unjs.io/guide/cache#options).
 ::
 
-## Functions Caching
+## Server Functions Caching
 
-Using the `cachedFunction` function, You can cache a function. This is useful to cache the result of a function that is not an event handler but a part of it and reuse it in multiple handlers.
+Using the `cachedFunction` function, You can cache the response of a server function based on the arguments passed to the function.
+
+::tip
+This is useful to cache the result of a function used in multiple API routes or within authenticated routes.
+::
+
 
 ```ts [server/utils/cached-function.ts]
 import type { H3Event } from 'h3'
@@ -68,4 +77,40 @@ The above example will cache the result of the `getRepoStarCached` function for 
 It is important to note that the `event` argument should always be the first argument of the cached function. Nitro leverages `event.waitUntil` to keep the instance alive while the cache is being updated while the response is sent to the client.  
 :br
 [Read more about this in the Nitro docs](https://nitro.unjs.io/guide/cache#edge-workers).
+::
+
+## Cache Keys and Invalidation
+
+When using the `defineCachedFunction` or `defineCachedEventHandler` functions, the cache key is generated using the following pattern:
+
+```ts
+`${options.group}:${options.name}:${options.getKey(...args)}.json`
+```
+
+For example, the following function:
+
+```ts
+const getAccessToken = defineCachedFunction(() => {
+  return String(Date.now())
+}, {
+  maxAge: 10,
+  name: 'getAccessToken',
+  getKey: () => 'default'
+})
+```
+
+Will generate the following cache key:
+
+```ts
+nitro:functions:getAccessToken:default.json
+```
+
+You can invalidate the cached function entry with:
+
+```ts
+await useStorage('cache').removeItem('nitro:functions:getAccessToken:default.json')
+```
+
+::note{to="https://nitro.unjs.io/guide/cache"}
+Read more about Nitro Cache.
 ::
