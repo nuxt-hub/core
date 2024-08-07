@@ -18,7 +18,7 @@ let _ai: Ai
  * })
  * ```
  *
- * @see https://developers.cloudflare.com/workers-ai/configuration/bindings/#methods
+ * @see https://hub.nuxt.com/docs/features/ai
  */
 export function hubAI(): Ai {
   requireNuxtHubFeature('ai')
