@@ -16,7 +16,7 @@ let _db: D1Database
  * const result = await db.exec('SELECT * FROM table')
  * ```
  *
- * @see https://hub.nuxt.com/docs/storage/database
+ * @see https://hub.nuxt.com/docs/features/database
  */
 export function hubDatabase(): D1Database {
   requireNuxtHubFeature('database')
@@ -49,7 +49,7 @@ export function hubDatabase(): D1Database {
  * await db.exec('SELECT * FROM table')
  * ```
  *
- * @see https://hub.nuxt.com/docs/storage/database
+ * @see https://hub.nuxt.com/docs/features/database
  */
 export function proxyHubDatabase(projectUrl: string, secretKey?: string): D1Database {
   requireNuxtHubFeature('database')

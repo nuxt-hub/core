@@ -35,7 +35,7 @@ await put('my-blob.txt', myFile, {
 })
 ```
 
-::callout{icon="i-ph-book-open-duotone" to="/docs/storage/blob"}
+::callout{icon="i-ph-book-open-duotone" to="/docs/features/blob"}
 Learn more about Blob Storage.
 ::
 

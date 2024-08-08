@@ -7,7 +7,7 @@ import { findWorkspaceDir } from 'pkg-types'
 import { parseArgs } from 'citty'
 import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
-import { setupCache, setupAnalytics, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './features'
+import { setupAI, setupCache, setupAnalytics, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './features'
 import type { ModuleOptions } from './types/module'
 import { addBuildHooks } from './utils/build'
 
@@ -43,6 +43,7 @@ export default defineNuxtModule<ModuleOptions>({
       // Local storage
       dir: '.data/hub',
       // NuxtHub features
+      ai: false,
       analytics: false,
       blob: false,
       cache: false,
@@ -75,6 +76,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     setupBase(nuxt, hub)
     setupOpenAPI(nuxt)
+    hub.ai && await setupAI(nuxt, hub)
     hub.analytics && setupAnalytics(nuxt)
     hub.blob && setupBlob(nuxt)
     hub.cache && setupCache(nuxt)
@@ -135,7 +137,7 @@ export default defineNuxtModule<ModuleOptions>({
         await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}.data`, 'utf-8')
       }
 
-      const needWrangler = Boolean(hub.analytics || hub.blob || hub.database || hub.kv)
+      const needWrangler = Boolean(hub.ai || hub.analytics || hub.blob || hub.database || hub.kv)
       if (needWrangler) {
         // Generate the wrangler.toml file
         const wranglerPath = join(hubDir, './wrangler.toml')

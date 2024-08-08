@@ -20,7 +20,7 @@ interface UploadOptions extends FetchOptions {
  * Upload a file or files to the server using FormData.
  * @param apiBase the base URL of the API to handle the upload.
  * @param options the options to use for the upload.
- * @see https://hub.nuxt.com/docs/storage/blob#useupload
+ * @see https://hub.nuxt.com/docs/features/blob#useupload
  */
 export function useUpload(apiBase: string, options?: UploadOptions & { multiple: false }): (data: FileList | HTMLInputElement | File[] | File) => Promise<BlobObject>
 export function useUpload(apiBase: string, options?: UploadOptions): ((data: File) => Promise<BlobObject>) & ((data: FileList | HTMLInputElement | File[]) => Promise<BlobObject[]>)

@@ -102,7 +102,7 @@ interface HubBlob {
  * const { blobs } = await blob.list()
  * ```
  *
- * @see https://hub.nuxt.com/docs/storage/blob
+ * @see https://hub.nuxt.com/docs/features/blob
  */
 export function hubBlob(): HubBlob {
   requireNuxtHubFeature('blob')
@@ -273,7 +273,7 @@ export function hubBlob(): HubBlob {
  * const { blobs } = await blob.list()
  * ```
  *
- * @see https://hub.nuxt.com/docs/storage/blob
+ * @see https://hub.nuxt.com/docs/features/blob
  */
 export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
   requireNuxtHubFeature('blob')

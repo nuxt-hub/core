@@ -26,6 +26,6 @@ It works with:
 - [`cachedFunction`](https://nitro.unjs.io/guide/cache#cached-functions)
 - [`routeRules`](https://nitro.unjs.io/guide/cache#caching-route-rules)
 
-::callout{to="/docs/server/cache" icon="i-ph-book-open-duotone"}
+::callout{to="/docs/features/cache" icon="i-ph-book-open-duotone"}
 Learn more about server cache.
 ::

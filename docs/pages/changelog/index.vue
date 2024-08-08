@@ -68,7 +68,6 @@ watch(() => arrivedState.top, () => {
   }
 })
 watch(() => arrivedState.bottom, () => {
-  console.log('arrivedState', arrivedState.bottom)
   if (arrivedState.bottom === true) {
     dots.value[dots.value.length - 1].classList.add('neon')
   }
@@ -105,7 +104,7 @@ watch(() => arrivedState.bottom, () => {
           </div>
           <div class="w-full mb-32 relative">
             <div class="space-y-4 -mt-1">
-              <NuxtLink :to="changelog._path" :aria-label="changelog.titke" class="inline-block overflow-hidden rounded-md">
+              <NuxtLink :to="changelog._path" :aria-label="changelog.titke" class="inline-block overflow-hidden rounded-md border dark:border-gray-800 border-gray-200">
                 <NuxtImg
                   :alt="changelog.title || ''"
                   loading="lazy"

@@ -24,7 +24,7 @@ This template is a minimal Nuxt project **with no storage**, just a simple "Hell
 NUXT_PUBLIC_HELLO_TEXT="My custom message!"
 ```
 
-We enabled the Nuxt 4 upcoming directory structure, ESLint and the Nuxt Devtools for a great developer experience.
+We enabled the Nuxt 4 upcoming directory structure, ESLint and the Nuxt DevTools for a great developer experience.
 
 ::callout{icon="i-simple-icons-github" color="gray"}
 The source code is open source and available on GitHub at [nuxt-hub/hello-edge](https://github.com/nuxt-hub/hello-edge).

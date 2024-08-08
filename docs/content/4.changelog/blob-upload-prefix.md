@@ -17,7 +17,7 @@ authors:
     username: a_birang
 ---
 
-It is now possible to set the prefix before uploading a blob in the NuxtHub admin and in the Nuxt Devtools (NuxtHub Blob tab).
+It is now possible to set the prefix before uploading a blob in the NuxtHub admin and in the Nuxt DevTools (NuxtHub Blob tab).
 
 ::video{poster="https://res.cloudinary.com/nuxt/video/upload/so_0/v1719931201/nuxthub/admin-blob-prefix_akfj3k.jpg" controls class="w-full h-auto"}
   :source{src="https://res.cloudinary.com/nuxt/video/upload/v1719931201/nuxthub/admin-blob-prefix_akfj3k.webm" type="video/webm"}
@@ -25,7 +25,7 @@ It is now possible to set the prefix before uploading a blob in the NuxtHub admi
   :source{src="https://res.cloudinary.com/nuxt/video/upload/v1719931201/nuxthub/admin-blob-prefix_akfj3k.ogg" type="video/ogg"}
 ::
 
-::callout{icon="i-ph-book-open-duotone" to="/docs/storage/blob"}
+::callout{icon="i-ph-book-open-duotone" to="/docs/features/blob"}
 Learn more about Blob Storage.
 ::
 
@@ -33,4 +33,4 @@ Learn more about Blob Storage.
 This feature is available on all [NuxtHub plans](/pricing).
 ::
 
-Head over the [NuxtHub admin](https://admin.hub.nuxt.com) to try this feature or locally in the Nuxt Devtools.
+Head over the [NuxtHub admin](https://admin.hub.nuxt.com) to try this feature or locally in the Nuxt DevTools.

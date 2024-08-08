@@ -1,5 +1,14 @@
 export interface ModuleOptions {
   /**
+   * Set `true` to enable AI for the project.
+   *
+   * Requires running `npx nuxthub link` for local development.
+   *
+   * @default false
+   * @see https://hub.nuxt.com/docs/features/ai
+   */
+  ai?: boolean
+  /**
    * Set `true` to enable the analytics for the project.
    *
    * @default false
@@ -9,27 +18,28 @@ export interface ModuleOptions {
    * Set `true` to enable the Blob storage for the project.
    *
    * @default false
+   * @see https://hub.nuxt.com/docs/features/blob
    */
   blob?: boolean
   /**
    * Set `true` to enable caching for the project.
    *
    * @default false
-   * @see https://hub.nuxt.com/docs/storage/blob
+   * @see https://hub.nuxt.com/docs/features/cache
    */
   cache?: boolean
   /**
    * Set `true` to enable the database for the project.
    *
    * @default false
-   * @see https://hub.nuxt.com/docs/storage/database
+   * @see https://hub.nuxt.com/docs/features/database
    */
   database?: boolean
   /**
    * Set `true` to enable the Key-Value storage for the project.
    *
    * @default false
-   * @see https://hub.nuxt.com/docs/storage/kv
+   * @see https://hub.nuxt.com/docs/features/kv
    */
   kv?: boolean
   /**

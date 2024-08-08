@@ -171,12 +171,12 @@ export interface BlobUploadOptions {
   multiple?: boolean
   /**
    * Options used for the ensure() method.
-   * @see https://hub.nuxt.com/docs/storage/blob#ensureblob
+   * @see https://hub.nuxt.com/docs/features/blob#ensureblob
    */
   ensure?: BlobEnsureOptions
   /**
    * Options used for the put() method.
-   * @see https://hub.nuxt.com/docs/storage/blob#put
+   * @see https://hub.nuxt.com/docs/features/blob#put
    */
   put?: BlobPutOptions
 }

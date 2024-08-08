@@ -2,23 +2,26 @@ import { createError } from 'h3'
 import { useRuntimeConfig } from '#imports'
 
 const featureMessages = {
+  ai: [
+    'NuxtHub AI is not enabled, set `hub.ai = true` in your `nuxt.config.ts`'
+  ].join('\n'),
   analytics: [
     'NuxtHub Analytics is not enabled, set `hub.analytics = true` in your `nuxt.config.ts`'
   ].join('\n'),
   blob: [
     'NuxtHub Blob is not enabled, set `hub.blob = true` in your `nuxt.config.ts`',
-    'Read more at `https://hub.nuxt.com/docs/storage/blob`'
+    'Read more at `https://hub.nuxt.com/docs/features/blob`'
   ].join('\n'),
   cache: [
     'NuxtHub Cache is not enabled, set `hub.cache = true` in your `nuxt.config.ts`'
   ].join('\n'),
   database: [
     'NuxtHub Database is not enabled, set `hub.database = true` in your `nuxt.config.ts`',
-    'Read more at `https://hub.nuxt.com/docs/storage/database`'
+    'Read more at `https://hub.nuxt.com/docs/features/database`'
   ].join('\n'),
   kv: [
     'NuxtHub KV is not enabled, set `hub.kv = true` in your `nuxt.config.ts`',
-    'Read more at `https://hub.nuxt.com/docs/storage/kv`'
+    'Read more at `https://hub.nuxt.com/docs/features/kv`'
   ].join('\n')
 }
 
