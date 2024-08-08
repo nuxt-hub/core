@@ -1,7 +1,7 @@
 ---
 title: Key Value Storage
 navigation.title: Key Value
-description: Add a key-value data storage to your Nuxt application.
+description: Add a global, low-latency key-value data storage to your Nuxt application.
 ---
 
 ## Getting Started
@@ -22,10 +22,10 @@ This option will use Cloudflare platform proxy in development and automatically 
 
 ::tabs
 ::div{label="Nuxt DevTools"}
-:nuxt-img{src="/images/landing/nuxt-devtools-kv.png" alt="Nuxt Devtools KV" width="915" height="515" class="!m-0"}
+:nuxt-img{src="/images/landing/nuxt-devtools-kv.png" alt="Nuxt DevTools KV" width="915" height="515" data-zoom-src="/images/landing/nuxt-devtools-kv.png"}
 ::
 ::div{label="NuxtHub Admin"}
-:nuxt-img{src="/images/landing/nuxthub-admin-kv.png" alt="NuxtHub Admin KV" width="915" height="515" class="!m-0"}
+:nuxt-img{src="/images/landing/nuxthub-admin-kv.png" alt="NuxtHub Admin KV" width="915" height="515" data-zoom-src="/images/landing/nuxthub-admin-kv.png"}
 ::
 ::
 

@@ -26,14 +26,14 @@ export default defineNuxtConfig({
 
 After you deploy your project, NuxtHub Admin will showcase your API documentation using [Scalar](https://scalar.com).
 
-:nuxt-img{src="/images/landing/nuxthub-admin-open-api.png" alt="Nuxt Open API Scalar integration" width="915" height="515" class="!m-0"}
+:nuxt-img{src="/images/landing/nuxthub-admin-open-api.png" alt="Nuxt Open API Scalar integration" width="915" height="515" data-zoom-src="/images/landing/nuxthub-admin-open-api.png"}
 
-## Nuxt Devtools
+## Nuxt DevTools
 
-In development, you can use Nuxt Devtools to access your API routes. using the `Server Routes` tab.
+In development, you can use Nuxt DevTools to access your API routes. using the `Server Routes` tab.
 
 It list all the API routes in your project as well as providing a playground to send and test your endpoints.
 
-Check out the [Nuxt Devtools](https://devtools.nuxt.com/) documentation for more information.
+Check out the [Nuxt DevTools](https://devtools.nuxt.com/) documentation for more information.
 
-:nuxt-img{src="/images/landing/nuxt-devtools-api-routes.png" alt="NuxtHub Admin Cache" width="915" height="515" class="!m-0"}
+:nuxt-img{src="/images/landing/nuxt-devtools-api-routes.png" alt="NuxtHub Admin Cache" width="915" height="515" data-zoom-src="/images/landing/nuxt-devtools-api-routes.png"}

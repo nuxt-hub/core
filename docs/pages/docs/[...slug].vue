@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import mediumZoom from 'medium-zoom'
 import { withoutTrailingSlash } from 'ufo'
 
 definePageMeta({
@@ -41,6 +42,12 @@ const links = computed(() => [toc?.bottom?.edit && {
   to: `${toc.bottom.edit}/${page?.value?._file}`,
   target: '_blank'
 }, ...asideLinks].filter(Boolean))
+
+onMounted(() => {
+  mediumZoom('[data-zoom-src]', {
+    margin: 5
+  })
+})
 </script>
 
 <template>

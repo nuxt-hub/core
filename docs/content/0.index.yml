@@ -92,7 +92,7 @@ database:
   features:
     - name: 'hubDatabase() server composable'
     - name: 'Database browser powered by Drizzle Studio'
-    - name: 'Nuxt Devtools integration'
+    - name: 'Nuxt DevTools integration'
   buttons:
     - label: Database docs
       size: lg
@@ -129,7 +129,7 @@ Let users upload data like images, videos and audio files with our server compos
   features:
     - name: 'hubBlob() server composable'
     - name: 'Dashboard to upload and manage files'
-    - name: 'Manage blobs in the Nuxt Devtools'
+    - name: 'Manage blobs in the Nuxt DevTools'
   buttons:
     - label: Blob documentation
       size: lg
@@ -166,7 +166,7 @@ Access it in your Nuxt codebase, with zero-configuration.'
   features:
     - name: 'hubKV() server composable'
     - name: 'Key-Value storage visual browser'
-    - name: 'Manage KV storage in the Nuxt Devtools'
+    - name: 'Manage KV storage in the Nuxt DevTools'
   buttons:
     - label: KV documentation
       size: lg
@@ -259,7 +259,7 @@ tool:
       description: 'Select a repository from your GitHub account and deploy it globally.'
       img: '/images/landing/tool-github.svg'
     - title: 'Nuxt DevTools'
-      description: 'Manage your NuxtHub database, kv & blob in the Nuxt Devtools.'
+      description: 'Manage your NuxtHub database, kv & blob in the Nuxt DevTools.'
       img: '/images/landing/tool-devtools.svg'
 testimonials:
   headline: 'Wall of love'

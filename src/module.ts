@@ -76,7 +76,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     setupBase(nuxt, hub)
     setupOpenAPI(nuxt)
-    hub.ai && setupAI(nuxt)
+    hub.ai && await setupAI(nuxt, hub)
     hub.analytics && setupAnalytics(nuxt)
     hub.blob && setupBlob(nuxt)
     hub.cache && setupCache(nuxt)

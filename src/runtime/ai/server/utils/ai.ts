@@ -57,7 +57,7 @@ export function hubAI(): Ai {
               authorization: `Bearer ${hub.userToken}`
             },
             body: { model, params },
-            responseType: params?.stream ? 'stream' : 'json'
+            responseType: params?.stream ? 'stream' : undefined
           }).catch(handleProxyError)
         }
       } as Ai
@@ -98,7 +98,7 @@ export function proxyHubAI(projectUrl: string, secretKey?: string): Ai {
     async run(model: string, params?: Record<string, unknown>) {
       return aiAPI('/run', {
         body: { model, params },
-        responseType: params?.stream ? 'stream' : 'json'
+        responseType: params?.stream ? 'stream' : undefined
       }).catch(handleProxyError)
     }
   } as Ai

@@ -26,10 +26,10 @@ Checkout our [Drizzle ORM recipe](/docs/recipes/drizzle) to get started with the
 
 ::tabs
 ::div{label="Nuxt DevTools"}
-:nuxt-img{src="/images/landing/nuxt-devtools-database.png" alt="Nuxt Devtools Database" width="915" height="515" class="!m-0"}
+:nuxt-img{src="/images/landing/nuxt-devtools-database.png" alt="Nuxt DevTools Database" width="915" height="515" data-zoom-src="/images/landing/nuxt-devtools-database.png"}
 ::
 ::div{label="NuxtHub Admin"}
-:nuxt-img{src="/images/landing/nuxthub-admin-database.png" alt="NuxtHub Admin Database" width="915" height="515" class="!m-0"}
+:nuxt-img{src="/images/landing/nuxthub-admin-database.png" alt="NuxtHub Admin Database" width="915" height="515" data-zoom-src="/images/landing/nuxthub-admin-database.png"}
 ::
 ::
 
