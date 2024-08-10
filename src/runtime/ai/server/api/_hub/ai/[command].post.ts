@@ -1,4 +1,4 @@
-import { eventHandler, getValidatedRouterParams, readValidatedBody } from 'h3'
+import { eventHandler, getValidatedRouterParams, readValidatedBody, setHeader } from 'h3'
 import { z } from 'zod'
 import { hubAI } from '../../../utils/ai'
 import { requireNuxtHubAuthorization } from '../../../../../utils/auth'
@@ -22,6 +22,13 @@ export default eventHandler(async (event) => {
   if (command === 'run') {
     const { model, params } = await readValidatedBody(event, statementValidation.pick({ model: true, params: true }).parse)
     // @ts-expect-error Ai type defines all the compatible models, however Zod is only validating for string
-    return ai.run(model, params)
+    const res = await ai.run(model, params)
+
+    console.log('res', res)
+    if (res instanceof Blob) {
+      setHeader(event, 'Content-Type', res.type || 'image/png')
+      return res
+    }
+    return res
   }
 })
