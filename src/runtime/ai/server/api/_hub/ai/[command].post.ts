@@ -24,10 +24,13 @@ export default eventHandler(async (event) => {
     // @ts-expect-error Ai type defines all the compatible models, however Zod is only validating for string
     const res = await ai.run(model, params)
 
-    console.log('res', res)
-    if (res instanceof Blob) {
-      setHeader(event, 'Content-Type', res.type || 'image/png')
-      return res
+    // Image generation returns a ReadableStream
+    if (res instanceof ReadableStream) {
+      return new Response(res, {
+        headers: {
+          'Content-Type': 'image/png'
+        }
+      })
     }
     return res
   }
