@@ -11,8 +11,8 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: NuxtHub public beta
-    to: /blog/beta
+    label: Code, Draw, Deploy
+    to: /blog/drawing-app-with-nuxt-and-cloudflare-r2
     icon: i-ph-arrow-right
   links:
     - label: Get started

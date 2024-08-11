@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import mediumZoom from 'medium-zoom'
 import { withoutTrailingSlash, joinURL } from 'ufo'
 import type { BlogPost } from '~/types'
 
@@ -50,6 +51,11 @@ const socialLinks = computed(() => [{
 function copyLink() {
   copy(`https://hub.nuxt.com${post.value._path}`, { title: 'Post URL to clipboard' })
 }
+onMounted(() => {
+  mediumZoom('[data-zoom-src]', {
+    margin: 5
+  })
+})
 </script>
 
 <template>
