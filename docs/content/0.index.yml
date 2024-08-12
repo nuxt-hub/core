@@ -47,25 +47,25 @@ deploy:
     - title: Link your Cloudflare account
       description: Create an API token on Cloudflare with our pre-filled template.
       img:
-        src: '/images/landing/steps/link-cloudflare-account.webp'
+        src: '/images/landing/steps/link-cloudflare-account.svg'
         width: 460
         height: 259
     - title: Create a Nuxt app
       description: Start from our templates or import your GitHub repository.
       img:
-        src: '/images/landing/steps/create-nuxthub-project.png'
+        src: '/images/landing/steps/create-nuxt-app.svg'
         width: 460
         height: 259
     - title: Deploy it
       description: Run the nuxthub deploy command or use the Cloudflare Pages CI/CD.
       img:
-        src: '/images/landing/steps/deploy-nuxt-project.png'
+        src: '/images/landing/steps/deploy-nuxt-app.svg'
         width: 460
         height: 259
     - title: Share it to the world
       description: Get insights and manage your storage in NuxtHub.
       img:
-        src: '/images/landing/steps/share-nuxt-project.webp'
+        src: '/images/landing/steps/share-nuxt-app.svg'
         width: 460
         height: 259
   buttons:
