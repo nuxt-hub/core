@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import mediumZoom from 'medium-zoom'
 import { withoutTrailingSlash, joinURL } from 'ufo'
 import type { BlogPost } from '~/types'
 
@@ -49,6 +50,11 @@ const socialLinks = computed(() => [{
 function copyLink() {
   copy(`https://hub.nuxt.com${post.value._path}`, { title: 'Post URL to clipboard' })
 }
+onMounted(() => {
+  mediumZoom('[data-zoom-src]', {
+    margin: 5
+  })
+})
 </script>
 
 <template>
@@ -56,7 +62,7 @@ function copyLink() {
     <UPage>
       <UPageHeader :title="post.title" :description="post.description" :ui="{ headline: 'flex flex-col gap-y-8 items-start', description: 'text-gray-700 dark:text-gray-300' }">
         <template #headline>
-          <UBreadcrumb :links="[{ label: 'Blog', icon: 'i-ph-newspaper-duotone', to: '/blog' }, { label: post.title }]" />
+          <UBreadcrumb :links="[{ label: 'Blog', icon: 'i-ph-newspaper-duotone', to: '/blog' }, { label: post.title }]" :ui="{ wrapper: 'max-w-full' }" />
           <div class="flex items-center space-x-2">
             <span>
               {{ post.badge?.label || 'Article' }}
