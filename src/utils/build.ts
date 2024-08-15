@@ -22,6 +22,7 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
         },
         body: {
           pagesUrl: process.env.CF_PAGES_URL,
+          ai: hub.ai,
           analytics: hub.analytics,
           blob: hub.blob,
           cache: hub.cache,
@@ -95,6 +96,7 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
     // Write `dist/hub.config.json` after public assets are built
     nuxt.hook('nitro:build:public-assets', async (nitro) => {
       const hubConfig = {
+        ai: hub.ai,
         analytics: hub.analytics,
         blob: hub.blob,
         cache: hub.cache,

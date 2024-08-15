@@ -12,9 +12,9 @@ hero:
       size: lg
       to: https://x.com/nuxt_hub
       target: _blank
-    - label: nuxt-hub/core
-      icon: i-simple-icons-github
+    - label: 'Changelog RSS'
+      icon: 'i-simple-icons-rss'
+      to: '/changelog/rss.xml'
       color: white
       size: lg
-      to: https://github.com/nuxt-hub/core
       target: _blank

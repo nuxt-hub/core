@@ -22,11 +22,15 @@
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@vueuse/core": "^10.11.0",
     "@vueuse/nuxt": "^10.11.0",
+    "feed": "^4.2.2",
     "medium-zoom": "^1.1.0",
     "nuxt": "^3.12.4",
     "nuxt-cloudflare-analytics": "^1.0.8",
     "nuxt-og-image": "^3.0.0-rc.64",
     "three": "^0.167.1",
     "three-globe": "^2.31.1"
+  },
+  "devDependencies": {
+    "@iconify-json/vscode-icons": "^1.1.37"
   }
 }

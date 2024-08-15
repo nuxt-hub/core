@@ -18,6 +18,12 @@ export default createConfigForNuxt({
   }
 }).overrideRules({
   '@typescript-eslint/no-explicit-any': 'off',
+  '@typescript-eslint/no-unused-vars': ['error', {
+    caughtErrors: 'none',
+    argsIgnorePattern: '^_',
+    varsIgnorePattern: '^_'
+  }],
+  '@typescript-eslint/no-unused-expressions': 'off',
   'vue/max-attributes-per-line': 'off',
   'vue/no-v-html': 'off',
   'vue/multi-word-component-names': 'off'

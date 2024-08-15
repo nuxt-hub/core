@@ -22,7 +22,7 @@ const links = [
     </template>
 
     <template #right>
-      <UColorModeButton />
+      <ColorScheme><UColorModeSelect /></ColorScheme>
       <UButton
         icon="i-simple-icons-x"
         color="gray"

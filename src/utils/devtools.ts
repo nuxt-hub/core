@@ -2,7 +2,7 @@ import { addCustomTab } from '@nuxt/devtools-kit'
 import type { Nuxt } from 'nuxt/schema'
 import type { HubConfig } from '../features'
 
-export function addDevtoolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
+export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
   nuxt.hook('listen', (_, { url }) => {
     hub.database && addCustomTab({
       category: 'server',

@@ -5,3 +5,16 @@ hero:
   title: 'Blog'
   description: 'Read the latest news about NuxtHub.'
   align: center
+  links:
+    - label: '@nuxt_hub'
+      icon: i-simple-icons-x
+      color: white
+      size: lg
+      to: https://x.com/nuxt_hub
+      target: _blank
+    - label: 'Blog RSS'
+      icon: 'i-simple-icons-rss'
+      to: '/blog/rss.xml'
+      color: white
+      size: lg
+      target: _blank

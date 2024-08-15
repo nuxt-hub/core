@@ -28,7 +28,7 @@ const navLinks = links.map((link) => {
       children: mapContentNavigation(navigation.value)
         .find(link => link.label === 'Docs')
         .children
-        .map(({ icon, ...link }) => link)
+        .map(({ icon, ...link }) => link) // eslint-disable-line @typescript-eslint/no-unused-vars
     }
   }
   return {

@@ -1,11 +1,11 @@
 import { execSync } from 'node:child_process'
-import { type Nuxt } from '@nuxt/schema'
+import type { Nuxt } from '@nuxt/schema'
 import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createResolver } from '@nuxt/kit'
 import { joinURL } from 'ufo'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { $fetch } from 'ofetch'
-import { addDevtoolsCustomTabs } from './utils/devtools'
+import { addDevToolsCustomTabs } from './utils/devtools'
 
 const log = logger.withTag('nuxt:hub')
 const { resolve } = createResolver(import.meta.url)
@@ -20,6 +20,7 @@ export interface HubConfig {
   env?: string
   version?: string
 
+  ai?: boolean
   analytics?: boolean
   blob?: boolean
   cache?: boolean
@@ -39,10 +40,40 @@ export function setupBase(nuxt: Nuxt, hub: HubConfig) {
   addServerScanDir(resolve('./runtime/base/server'))
   addServerImportsDir(resolve('./runtime/base/server/utils'))
 
-  // Add custom tabs to Nuxt Devtools
+  // Add custom tabs to Nuxt DevTools
   if (nuxt.options.dev) {
-    addDevtoolsCustomTabs(nuxt, hub)
+    addDevToolsCustomTabs(nuxt, hub)
   }
+}
+
+export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
+  // If we are in dev mode and the project is not linked, disable it
+  if (nuxt.options.dev && !hub.remote && !hub.projectKey) {
+    return log.warn('`hubAI()` is disabled: link a project with `nuxthub link` to run AI models in development mode.')
+  }
+  // If we are in dev mode and the project is linked, verify it
+  if (nuxt.options.dev && !hub.remote && hub.projectKey) {
+    try {
+      await $fetch<any>(`/api/projects/${hub.projectKey}`, {
+        baseURL: hub.url,
+        headers: {
+          authorization: `Bearer ${hub.userToken}`
+        }
+      })
+    } catch (err: any) {
+      if (!err.status) {
+        log.warn ('`hubAI()` is disabled: it seems that you are offline.')
+      } else if (err.status === 401) {
+        log.warn ('`hubAI()` is disabled: you are not logged in, make sure to run `nuxthub login`.')
+      } else {
+        log.error('`hubAI()` is disabled: failed to fetch linked project `' + hub.projectKey + '` on NuxtHub, make sure to run `nuxthub link` again.')
+      }
+      return
+    }
+  }
+  // Add Server scanning
+  addServerScanDir(resolve('./runtime/ai/server'))
+  addServerImportsDir(resolve('./runtime/ai/server/utils'))
 }
 
 export function setupAnalytics(_nuxt: Nuxt) {
@@ -138,7 +169,9 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
         authorization: `Bearer ${hub.userToken}`
       }
     }).catch((err) => {
-      if (err.status === 401) {
+      if (!err.status) {
+        log.error('It seems that you are offline.')
+      } else if (err.status === 401) {
         log.error('It seems that you are not logged in, make sure to run `nuxthub login`.')
       } else {
         log.error('Failed to fetch linked project on NuxtHub, make sure to run `nuxthub link` again.')

@@ -17,7 +17,7 @@ let _kv: HubKV
  * await kv.set('key', 'value')
  * ```
  *
- * @see https://hub.nuxt.com/docs/storage/kv
+ * @see https://hub.nuxt.com/docs/features/kv
  */
 export function hubKV(): HubKV {
   requireNuxtHubFeature('kv')
@@ -61,7 +61,7 @@ export function hubKV(): HubKV {
  * await kv.set('key', 'value')
  * ```
  *
- * @see https://hub.nuxt.com/docs/storage/kv
+ * @see https://hub.nuxt.com/docs/features/kv
  */
 export function proxyHubKV(projectUrl: string, secretKey?: string): HubKV {
   requireNuxtHubFeature('kv')
