@@ -1,6 +1,52 @@
 # Changelog
 
 
+## v0.7.2
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.1...v0.7.2)
+
+### 🚀 Enhancements
+
+- Add hubAI() ([#173](https://github.com/nuxt-hub/core/pull/173))
+
+### 🩹 Fixes
+
+- Support remote overwrites ([9b434eb](https://github.com/nuxt-hub/core/commit/9b434eb))
+
+### 📖 Documentation
+
+- Deploy button ([ca132e7](https://github.com/nuxt-hub/core/commit/ca132e7))
+- Add deploy button changelog ([e9ecf1f](https://github.com/nuxt-hub/core/commit/e9ecf1f))
+- **changelog:** Small update ([9fcc96b](https://github.com/nuxt-hub/core/commit/9fcc96b))
+- Update Cloudflare KV included usage information ([#206](https://github.com/nuxt-hub/core/pull/206))
+- Fix typo ([#212](https://github.com/nuxt-hub/core/pull/212))
+- Add deploy section ([91a1d97](https://github.com/nuxt-hub/core/commit/91a1d97))
+- Add debug recipe ([784fd58](https://github.com/nuxt-hub/core/commit/784fd58))
+- **recipe:** Update debug header ([dad8793](https://github.com/nuxt-hub/core/commit/dad8793))
+- Add postinstall script ([f1ce27e](https://github.com/nuxt-hub/core/commit/f1ce27e))
+- Article about atidraw ([#225](https://github.com/nuxt-hub/core/pull/225))
+- Fix blog breadcrumb responsive ([b9d2faa](https://github.com/nuxt-hub/core/commit/b9d2faa))
+- Update steps illustrations ([cba1af7](https://github.com/nuxt-hub/core/commit/cba1af7))
+
+### 🏡 Chore
+
+- **release:** V0.7.1 ([a4377db](https://github.com/nuxt-hub/core/commit/a4377db))
+- Fix typo in analytics.ts ([#198](https://github.com/nuxt-hub/core/pull/198))
+- Uncomment pkg.pr.new ([#197](https://github.com/nuxt-hub/core/pull/197))
+- Disable prettier ([#226](https://github.com/nuxt-hub/core/pull/226))
+- **test:** More limit to timeout ([9cffde4](https://github.com/nuxt-hub/core/commit/9cffde4))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+- Estéban <e.soubiran25@gmail.com>
+- Linzhe ([@linzhe141](http://github.com/linzhe141))
+- Tom Taylor <tom@twisted.digital>
+- Mohammad Bagher Abiyat ([@Aslemammad](http://github.com/Aslemammad))
+- 面条 ([@ccbikai](http://github.com/ccbikai))
+- Farnabaz <farnabaz@gmail.com>
+
 ## v0.7.1
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.0...v0.7.1)
