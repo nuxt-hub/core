@@ -4,7 +4,9 @@ const newTodo = ref('')
 const newTodoInput = ref(null)
 
 const toast = useToast()
-const { data: todos } = await useFetch('/api/todos')
+const { data: todos } = await useFetch('/api/todos', {
+  deep: true
+})
 
 async function addTodo() {
   if (!newTodo.value.trim()) return

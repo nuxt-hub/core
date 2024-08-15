@@ -25,6 +25,7 @@ export default defineNuxtConfig({
     '/': { prerender: true },
     '/api/search.json': { prerender: true },
     '/api/templates.json': { prerender: true },
+    '/api/changelog.json': { prerender: true },
     '/blog/rss.xml': { prerender: true },
     '/changelog/rss.xml': { prerender: true },
     // Redirects
