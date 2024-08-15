@@ -73,8 +73,7 @@ deploy:
       trailing-icon: i-ph-arrow-right
       color: black
       size: lg
-      to: https://admin.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=home
-      target: _blank
+      to: /docs/getting-started/deploy
     - label: Start locally
       color: gray
       variant: ghost

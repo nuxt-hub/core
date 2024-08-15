@@ -45,6 +45,8 @@ npx nuxthub deploy
 
 https://github.com/user-attachments/assets/c591efaa-96e7-4357-8d60-cdc1e20e93ed
 
+Learn more on [how to deploy a Nuxt app with NuxtHub](https://hub.nuxt.com/docs/getting-started/deploy).
+
 ## 📚 Resources
 
 - [NuxtHub Website](https://hub.nuxt.com)
