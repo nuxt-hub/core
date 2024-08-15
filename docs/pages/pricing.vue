@@ -20,7 +20,7 @@ defineOgImageComponent('Docs')
 
 <template>
   <UContainer>
-    <UPageHero align="center" :ui="{ base: 'z-10' }">
+    <UPageHero align="center" :ui="{ base: 'z-10', wrapper: 'py-8 pb-0 sm:py-16 sm:pb-0' }">
       <!-- <template #icon>
           <UBadge :label="page?.hero.headline" icon="" variant="outline" :ui="{ rounded: 'rounded-full' }" class="badge dark:border border-primary" />
         </template> -->
@@ -63,7 +63,7 @@ defineOgImageComponent('Docs')
     </div>
 
     <div class="py-24">
-      <UPageHeader :title="page?.cloudflare.title" :description="page?.cloudflare.description" align="center" :ui="{ title: 'text-center w-full', wrapper: 'border-0' }" />
+      <ULandingSection :title="page?.cloudflare.title" :description="page?.cloudflare.description" :ui="{ wrapper: 'py-8 sm:py-12' }" />
       <div class="w-full flex justify-center">
         <UPricingToggle v-model="isWorkersPaid" class="max-w-[400px] mb-12" left="Workers Free" right="Workers Paid: $5/month" />
       </div>

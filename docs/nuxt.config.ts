@@ -25,6 +25,8 @@ export default defineNuxtConfig({
     '/': { prerender: true },
     '/api/search.json': { prerender: true },
     '/api/templates.json': { prerender: true },
+    '/blog/rss.xml': { prerender: true },
+    '/changelog/rss.xml': { prerender: true },
     // Redirects
     '/docs/storage/blob': { redirect: { statusCode: 301, to: '/docs/features/blob' } },
     '/docs/storage/database': { redirect: { statusCode: 301, to: '/docs/features/database' } },
@@ -35,6 +37,8 @@ export default defineNuxtConfig({
   },
   nitro: {
     prerender: {
+      crawlLinks: true,
+      routes: ['/'],
       // For CF trailing slash issue
       autoSubfolderIndex: false
     }

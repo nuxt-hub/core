@@ -10,6 +10,7 @@ definePageMeta({
 
 const route = useRoute()
 const { copy } = useCopyToClipboard()
+const { toc } = useAppConfig()
 const { url } = useSiteConfig()
 
 const { data: post } = await useAsyncData(route.path, () => queryContent<BlogPost>(route.path).findOne())
@@ -46,6 +47,13 @@ const socialLinks = computed(() => [{
   icon: 'i-simple-icons-twitter',
   to: `https://twitter.com/intent/tweet?text=${encodeURIComponent(`${post.value.title}\n\n`)}https://hub.nuxt.com${post.value._path}`
 }])
+
+const links = computed(() => [{
+  icon: 'i-heroicons-pencil-square',
+  label: 'Edit this post',
+  to: `${toc.bottom.edit}/${post?.value?._file}`,
+  target: '_blank'
+}, ...asideLinks].filter(Boolean))
 
 function copyLink() {
   copy(`https://hub.nuxt.com${post.value._path}`, { title: 'Post URL to clipboard' })
@@ -123,7 +131,7 @@ onMounted(() => {
           <UContentToc v-if="post.body && post.body.toc" :links="post.body.toc.links">
             <template #bottom>
               <div class="hidden lg:block space-y-6">
-                <UPageLinks title="Links" :links="asideLinks" />
+                <UPageLinks title="Links" :links="links" />
               </div>
             </template>
           </UContentToc>
