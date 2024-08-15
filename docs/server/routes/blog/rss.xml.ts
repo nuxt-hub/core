@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
 
   const articles = await serverQueryContent(event, '/blog')
     .sort({ date: -1 })
-    .where({ _partial: false, _draft: false, _type: 'markdown' })
+    .where({ _partial: false, draft: { $ne: true }, _type: 'markdown' })
     .find()
 
   for (const article of articles) {

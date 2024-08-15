@@ -4,7 +4,7 @@ import type { BlogPost } from '~/types'
 const { data: page } = await useAsyncData('blog', () => queryContent('/blog').findOne())
 const { data: posts } = await useAsyncData('posts', async () => {
   const posts = await queryContent<BlogPost>('/blog')
-    .where({ _extension: 'md' })
+    .where({ _extension: 'md', draft: { $ne: true } })
     .without(['body', 'excerpt'])
     .sort({ date: -1 })
     .find()

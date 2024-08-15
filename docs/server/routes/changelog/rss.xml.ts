@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
 
   const changelogItems = await serverQueryContent(event, '/changelog')
     .sort({ date: -1 })
-    .where({ _partial: false, _draft: false, _type: 'markdown' })
+    .where({ _partial: false, _type: 'markdown' })
     .find()
 
   for (const item of changelogItems) {
