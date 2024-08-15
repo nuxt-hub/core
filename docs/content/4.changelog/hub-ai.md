@@ -18,7 +18,7 @@ authors:
 ---
 
 ::tip
-This feature is available on both [free and pro plans](/pricing).
+This feature is available on both [free and pro plans](/pricing) and in [`@nuxthub/core >= v0.7.2`](https://github.com/nuxt-hub/core/releases/tag/v0.7.2).
 ::
 
 We are excited to introduce [`hubAI()`](/docs/features/ai). This new method allows you to run machine learning models, such as LLMs, directly within your Nuxt application with minimal setup.
