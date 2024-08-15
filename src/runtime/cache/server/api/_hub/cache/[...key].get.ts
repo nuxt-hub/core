@@ -34,6 +34,7 @@ export default eventHandler(async (event) => {
     }
     const item = await storage.getItem(key)
     if (!item) return
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { value, ...meta } = item
 
     const entry = {
