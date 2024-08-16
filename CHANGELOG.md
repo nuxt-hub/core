@@ -1,6 +1,31 @@
 # Changelog
 
 
+## v0.7.3
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.2...v0.7.3)
+
+### 🩹 Fixes
+
+- **blob:** Support customMetadata in proxy on `put()` ([#231](https://github.com/nuxt-hub/core/pull/231))
+
+### 📖 Documentation
+
+- HubAI() minimum version and image opti ([1cebec3](https://github.com/nuxt-hub/core/commit/1cebec3))
+- Use the right date ([521662a](https://github.com/nuxt-hub/core/commit/521662a))
+- More improvements ([efe912f](https://github.com/nuxt-hub/core/commit/efe912f))
+- Update image sizes ([287d678](https://github.com/nuxt-hub/core/commit/287d678))
+- Update changelog ([bc895d6](https://github.com/nuxt-hub/core/commit/bc895d6))
+- Prerender /api/changelog.json ([7a3627c](https://github.com/nuxt-hub/core/commit/7a3627c))
+
+### 🏡 Chore
+
+- **playground:** Fix database reactivity ([5b3b2a8](https://github.com/nuxt-hub/core/commit/5b3b2a8))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.2
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.1...v0.7.2)
