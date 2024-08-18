@@ -5,6 +5,11 @@ description: Generate an Open API documentation for your Nuxt project with Scala
 ---
 
 ::warning
+Hi Chopin Fam & Friends,  when I read 'openAPI', I first thought of OpenAI... as it is so close and if documentation and referrals abound on the web in time, I think there may be confusion or it would get lost.  I understand the convention and think I know the meaning as a beginner.  I wonder if other names might also work?  Ones that comes to mind are 'templateAPIs' or 'templateAPI'.  Other options might be 'standardAPI', 'quickAPIs' (double meaning... all Nuxt is quick) or 'carbonAPI' (double meaning... carbon-copy and hard/bullet proof).  I notice you haven't 'sub-branded' any of the other products, so... tempalteAPIs, might be better?).  Passing on as food for thought... ... ... now that I have re-read it many times, I understand it isn't OpenAI and so that is also good.  Thanks. NH.
+::
+
+
+::warning
 This is currently experimental and subject to change in the future.
 ::
 
