@@ -23,8 +23,15 @@ hero:
       icon: i-simple-icons-github
       size: lg
       color: gray
-      variant: ghost
       to: https://github.com/nuxt-hub/core
+      target: _blank
+    - label: 3 min intro
+      icon: i-ph-video-duotone
+      color: gray
+      size: lg
+      variant: ghost
+      id: intro-video
+      to: https://www.youtube.com/watch?v=hlmPqDkc3_s
       target: _blank
 features:
   - name: Automatic scaling

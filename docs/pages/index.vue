@@ -5,6 +5,7 @@ import { joinURL } from 'ufo'
 const { data: page } = await useAsyncData('index', () => queryContent('/').findOne())
 
 const { url } = useSiteConfig()
+const videoModalOpen = ref(false)
 
 useSeoMeta({
   title: page.value.title,
@@ -13,6 +14,15 @@ useSeoMeta({
   ogDescription: page.value.description,
   ogImage: joinURL(url, '/social-card.png')
 })
+
+const videoLink = page.value.hero.links.find(link => link.id === 'intro-video')
+videoLink.click = (e) => {
+  if (e.ctrlKey || e.metaKey) {
+    return
+  }
+  e?.preventDefault()
+  videoModalOpen.value = true
+}
 
 onMounted(() => {
   mediumZoom('[data-zoom-src]', {
@@ -49,6 +59,20 @@ onMounted(() => {
       <template #description>
         <span v-html="page?.hero.description" />
       </template>
+
+      <UModal v-model="videoModalOpen">
+        <div class="p-3">
+          <iframe
+            width="100%"
+            height="315"
+            :src="`https://www.youtube-nocookie.com/embed/${videoLink.to.split('=')[1]}`"
+            title="NuxtHub introduction by LearnVue"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          />
+        </div>
+      </UModal>
     </ULandingHero>
 
     <ULandingSection :ui="{ wrapper: 'py-6 sm:py-12' }">
