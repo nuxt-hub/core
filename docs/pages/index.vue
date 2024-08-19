@@ -14,20 +14,19 @@ useSeoMeta({
   ogDescription: page.value.description,
   ogImage: joinURL(url, '/social-card.png')
 })
-
-const videoLink = page.value.hero.links.find(link => link.id === 'intro-video')
-videoLink.click = (e) => {
-  if (e.ctrlKey || e.metaKey) {
-    return
-  }
-  e?.preventDefault()
-  videoModalOpen.value = true
-}
+const videoLink = page.value?.hero?.links?.find(link => link.id === 'intro-video') || {}
 
 onMounted(() => {
   mediumZoom('[data-zoom-src]', {
     margin: 5
   })
+  videoLink.click = (e) => {
+    if (e.ctrlKey || e.metaKey) {
+      return
+    }
+    e?.preventDefault()
+    videoModalOpen.value = true
+  }
 })
 </script>
 
