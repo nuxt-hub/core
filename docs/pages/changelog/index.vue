@@ -25,6 +25,11 @@ const scrollTop = ref(0)
 const { y } = useWindowScroll()
 const { isScrolling, arrivedState } = useScroll(document)
 
+useHead({
+  link: [
+    { rel: 'alternate', type: 'application/rss+xml', title: 'NuxtHub Changelog', href: '/changelog/feed.xml' }
+  ]
+})
 useSeoMeta({
   title: page.value.title,
   ogTitle: `${page.value.title} · NuxtHub`,
