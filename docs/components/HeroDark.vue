@@ -1,41 +1,3 @@
-<script setup lang="ts">
-const timeoutIds = ref([])
-const outline = ref<SVGPathElement>()
-const lines = ref<SVGPathElement>()
-const topLight = ref<SVGElement>()
-const bottomLight = ref<SVGElement>()
-const logo = ref<SVGElement>()
-
-onMounted(() => {
-  const timeoutIdA = setTimeout(() => {
-    outline.value.classList.add('animate-border')
-    lines.value.classList.add('opacity-0')
-    topLight.value.classList.add('opacity-0')
-    bottomLight.value.classList.add('opacity-0')
-    logo.value.classList.remove('opacity-0')
-    logo.value.classList.add('opacity-1')
-
-    const timeoutIdB = setTimeout(() => {
-      lines.value.classList.add('animate-lines')
-      lines.value.classList.remove('opacity-0')
-      lines.value.classList.add('opacity-1')
-
-      const timeoutIdC = setTimeout(() => {
-        topLight.value.classList.add('animate-light')
-        bottomLight.value.classList.add('animate-light')
-      }, 500)
-      timeoutIds.value.push(timeoutIdC)
-    }, 1000)
-    timeoutIds.value.push(timeoutIdB)
-  }, 300)
-  timeoutIds.value.push(timeoutIdA)
-})
-
-onBeforeUnmount(() => {
-  timeoutIds.value.map(id => clearTimeout(id))
-})
-</script>
-
 <template>
   <svg viewBox="0 0 1439 872" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_414_4477)">
@@ -181,60 +143,6 @@ onBeforeUnmount(() => {
         <circle cx="800" cy="376" r="2" fill="url(#paint218_radial_414_4477)" />
         <circle cx="691" cy="418" r="2" fill="url(#paint219_radial_414_4477)" />
         <circle cx="726" cy="393" r="2" fill="url(#paint220_radial_414_4477)" />
-      </g>
-      <g ref="logo" class="opacity-0 hidden lg:block">
-
-        <rect x="1031" y="185" width="370" height="370" fill="url(#paint221_radial_414_4477)" fill-opacity="0.7" />
-        <mask
-          id="mask0_414_4477" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="1089" y="286" width="254"
-          height="169"
-        >
-          <path
-            ref="outline"
-            d="M1231.33 448.196H1320.66C1323.5 448.196 1326.3 447.476 1328.77 446.107C1331.24 444.739 1333.28 442.771 1334.71 440.401C1336.13 438.03 1336.88 435.342 1336.88 432.605C1336.88 429.869 1336.13 427.181 1334.7 424.812L1274.48 324.594C1273.05 322.224 1271 320.257 1268.54 318.888C1266.07 317.52 1263.27 316.8 1260.43 316.8C1257.58 316.8 1254.78 317.52 1252.31 318.888C1249.85 320.257 1247.8 322.224 1246.38 324.594L1230.98 350.236L1200.87 300.094C1199.44 297.724 1197.4 295.757 1194.93 294.389C1192.46 293.021 1189.66 292.301 1186.82 292.301C1183.97 292.301 1181.17 293.021 1178.7 294.389C1176.24 295.757 1174.19 297.724 1172.76 300.094L1097.82 424.812C1096.39 427.181 1095.64 429.869 1095.64 432.605C1095.64 435.342 1096.39 438.03 1097.81 440.401C1099.23 442.771 1101.28 444.739 1103.75 446.107C1106.22 447.476 1109.01 448.196 1111.86 448.196H1168.16C1190.46 448.196 1206.91 438.783 1218.23 420.421L1245.7 374.703L1260.42 350.236L1304.59 423.729H1245.7L1231.33 448.196ZM1167.24 423.704L1127.95 423.695L1186.84 325.711L1216.22 374.703L1196.55 407.449C1189.04 419.363 1180.5 423.704 1167.24 423.704Z"
-            stroke="url(#paint222_linear_414_4477)" stroke-width="12"
-          />
-        </mask>
-        <g mask="url(#mask0_414_4477)">
-          <path
-            d="M1231.33 448.196H1320.66C1323.5 448.196 1326.3 447.476 1328.77 446.107C1331.24 444.739 1333.28 442.771 1334.71 440.401C1336.13 438.03 1336.88 435.342 1336.88 432.605C1336.88 429.869 1336.13 427.181 1334.7 424.812L1274.48 324.594C1273.05 322.224 1271 320.257 1268.54 318.888C1266.07 317.52 1263.27 316.8 1260.43 316.8C1257.58 316.8 1254.78 317.52 1252.31 318.888C1249.85 320.257 1247.8 322.224 1246.38 324.594L1230.98 350.236L1200.87 300.094C1199.44 297.724 1197.4 295.757 1194.93 294.389C1192.46 293.021 1189.66 292.301 1186.82 292.301C1183.97 292.301 1181.17 293.021 1178.7 294.389C1176.24 295.757 1174.19 297.724 1172.76 300.094L1097.82 424.812C1096.39 427.181 1095.64 429.869 1095.64 432.605C1095.64 435.342 1096.39 438.03 1097.81 440.401C1099.23 442.771 1101.28 444.739 1103.75 446.107C1106.22 447.476 1109.01 448.196 1111.86 448.196H1168.16C1190.46 448.196 1206.91 438.783 1218.23 420.421L1245.7 374.703L1260.42 350.236L1304.59 423.729H1245.7L1231.33 448.196ZM1167.24 423.704L1127.95 423.695L1186.84 325.711L1216.22 374.703L1196.55 407.449C1189.04 419.363 1180.5 423.704 1167.24 423.704Z"
-            fill="url(#paint223_linear_414_4477)"
-          />
-        </g>
-        <path
-          ref="lines"
-          d="M1260.5 346.5L1286.77 351.512L1299.84 372.963L1312.55 395.198L1309 427M1260.5 346.5L1243.05 337.633L1231.55 356.005M1260.5 346.5L1263.25 317.83M1309 427H1332.5M1309 427L1276 444.279L1246.08 428.167M1100.07 440.306L1122.96 425.886M1122.96 425.886V389.284L1138.87 361.57L1157.59 332.479L1186.39 317.868M1122.96 425.886L1145.18 445.019H1165.67C1165.67 445.019 1169.82 445.118 1176 444.5C1186 443.5 1198.5 436.5 1198.5 436.5V412.005L1221.56 407.083L1220.12 374.31L1231.55 356.005M1186.39 317.868L1174.03 300.836M1186.39 317.868L1202.07 309.277L1213.28 326.879L1231.55 356.005"
-          stroke="url(#paint224_linear_414_4477)" stroke-width="6"
-        />
-
-        <g ref="topLight">
-          <g filter="url(#filter2_f_414_4477)">
-            <path
-              d="M1216.8 416C1201.41 446.111 1177.72 445.166 1166.9 444.942L1194.05 436.743L1216.8 416Z"
-              fill="#75EDAE"
-            />
-          </g>
-          <g filter="url(#filter3_f_414_4477)">
-            <path
-              d="M1216.8 416C1201.41 446.111 1176.82 445.166 1166 444.942L1194.05 436.743L1216.8 416Z"
-              fill="#75EDAE"
-            />
-          </g>
-        </g>
-        <g ref="bottomLight">
-          <g filter="url(#filter4_f_414_4477)">
-            <path
-              d="M1239.1 339.851C1247.47 313.465 1273.21 316.039 1276.75 331.484L1258.41 320.866L1239.1 339.851Z"
-              fill="#75EDAE"
-            />
-          </g>
-          <g filter="url(#filter5_f_414_4477)">
-            <path
-              d="M1239.1 337.275C1247.47 310.89 1274.82 314.43 1278.36 333.415L1258.73 320.221L1239.1 337.275Z"
-              fill="#75EDAE"
-            />
-          </g>
-        </g>
       </g>
     </g>
     <defs>
@@ -1921,45 +1829,3 @@ onBeforeUnmount(() => {
     </defs>
   </svg>
 </template>
-
-<style lang="postcss">
-@keyframes animateBorderHeight {
-  0% {
-    stroke-width: 0;
-  }
-
-  100% {
-    stroke-width: 12.4079;
-  }
-}
-
-@keyframes dash {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes opacity {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-.animate-lines {
-  stroke-dasharray: 2000;
-  stroke-dashoffset: 2000;
-  animation: dash 5s linear forwards;
-}
-
-.animate-border {
-  animation: animateBorderHeight 1s ease forwards;
-}
-
-.animate-light {
-  animation: opacity 2s ease forwards;
-}
-</style>

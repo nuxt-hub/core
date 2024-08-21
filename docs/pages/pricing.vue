@@ -77,7 +77,7 @@ defineOgImageComponent('Docs')
       </UPageGrid>
 
       <div class="flex justify-center w-full pt-[64px]">
-        <UButton v-bind="page?.cloudflare.button" size="lg" class="w-fit" />
+        <UButton v-bind="page?.cloudflare.button" size="md" class="w-fit" />
       </div>
     </div>
 

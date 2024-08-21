@@ -15,6 +15,11 @@ const { data: posts } = await useAsyncData('posts', async () => {
 const title = page.value.head?.title || page.value.title
 const description = page.value.head?.description || page.value.description
 
+useHead({
+  link: [
+    { rel: 'alternate', type: 'application/rss+xml', title: 'NuxtHub Blog', href: '/blog/feed.xml' }
+  ]
+})
 useSeoMeta({
   titleTemplate: '%s',
   title,

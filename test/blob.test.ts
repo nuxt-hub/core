@@ -75,6 +75,32 @@ describe('Blob', async () => {
     })
   })
 
+  describe('Put', () => {
+    it('single file with custom metadata', async () => {
+      const image = images[0]
+      const file = await fs.readFile(fileURLToPath(new URL('./fixtures/blob/public/' + image.pathname, import.meta.url)))
+      const result = await $fetch(`/api/_hub/blob/${image.pathname}`, {
+        method: 'PUT',
+        body: file,
+        headers: {
+          'content-type': image.contentType,
+          'content-length': image.size
+        },
+        query: {
+          customMetadata: {
+            hello: 'world'
+          }
+        }
+      })
+      expect(result).toMatchObject({
+        ...image,
+        customMetadata: {
+          hello: 'world'
+        }
+      })
+    })
+  })
+
   describe('Upload', () => {
     it('Upload single file', async () => {
       const image = images[0]

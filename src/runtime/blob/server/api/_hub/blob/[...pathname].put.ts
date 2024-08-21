@@ -15,7 +15,7 @@ export default eventHandler(async (event) => {
   const query = getQuery(event)
 
   const contentType = getHeader(event, 'content-type')
-  const contentLength = Number(getHeader(event, 'content-length') || '0')
+  const contentLength = getHeader(event, 'content-length') || '0'
 
   const options = { ...query }
   if (!options.contentType) {
@@ -24,9 +24,16 @@ export default eventHandler(async (event) => {
   if (!options.contentLength) {
     options.contentLength = contentLength
   }
+  if (typeof options.customMetadata === 'string') {
+    try {
+      options.customMetadata = JSON.parse(options.customMetadata)
+    } catch (e) {
+      options.customMetadata = {}
+    }
+  }
 
   const stream = getRequestWebStream(event)!
-  const body = await streamToArrayBuffer(stream, contentLength)
+  const body = await streamToArrayBuffer(stream, Number(contentLength))
 
   return hubBlob().put(pathname, body, options)
 })
