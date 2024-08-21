@@ -11,6 +11,10 @@ const links = [
     label: 'Privacy',
     to: 'https://admin.hub.nuxt.com/privacy',
     target: '_blank'
+  }, {
+    label: 'Status',
+    to: 'https://status.hub.nuxt.com',
+    target: '_blank'
   }
 ]
 </script>

@@ -8,8 +8,8 @@ hero:
     - label: Deploy a template
       icon: i-ph-rocket-launch-duotone
       color: black
-      to: https://admin.hub.nuxt.com
-      target: _blank
+      to: https://hub.nuxt.com/new
+      external: true
     - label: Read the documentation
       icon: i-ph-book-open
       color: white

@@ -18,7 +18,7 @@ defineOgImageComponent('Docs')
 <template>
   <UContainer>
     <UPageHero v-bind="page?.hero" :ui="{ base: 'z-10' }" />
-    <UPageGrid class="lg:grid-cols-3 xl:grid-cols-4">
+    <UPageGrid class="lg:grid-cols-3 xl:grid-cols-4 pb-10">
       <UPageCard
         v-for="(template, index) in templates"
         :key="index"
@@ -28,9 +28,24 @@ defineOgImageComponent('Docs')
           description: 'line-clamp-2 sm:min-h-[45px]'
         }"
         class="overflow-hidden"
-        :title="template.title"
         :description="template.description"
       >
+        <template #title>
+          <div class="flex flex-1 items-center justify-between">
+            <span class="text-gray-900 dark:text-white text-base font-semibold truncate">
+              {{ template.title }}
+            </span>
+            <UButton
+              icon="i-simple-icons-github"
+              :to="`https://github.com/${template.owner}/${template.repo}`"
+              target="_blank"
+              size="xs"
+              color="gray"
+              variant="ghost"
+              class="opacity-75 hover:opacity-100"
+            />
+          </div>
+        </template>
         <template #header>
           <img
             :src="template.imageUrl"
@@ -57,14 +72,14 @@ defineOgImageComponent('Docs')
             size="sm"
             class="rounded-full"
           />
-          <UBadge
-            v-for="feature of template.features"
-            :key="feature"
-            :label="feature"
-            size="sm"
-            color="gray"
-            class="rounded-full"
-          />
+          <NuxtLink v-for="feature of template.features" :key="feature" :to="`/docs/features/${feature}`">
+            <UBadge
+              :label="feature"
+              size="sm"
+              color="gray"
+              class="rounded-full hover:text-black dark:hover:text-white"
+            />
+          </NuxtLink>
         </div>
         <UButtonGroup class="mt-3 w-full">
           <UButton
@@ -79,10 +94,9 @@ defineOgImageComponent('Docs')
             :ui="{ icon: { size: { sm: 'w-4 h-4' } } }"
           />
           <UButton
-            label="GitHub"
-            icon="i-simple-icons-github"
-            :to="`https://github.com/${template.owner}/${template.repo}`"
-            target="_blank"
+            label="Deploy"
+            icon="i-ph-rocket-launch-duotone"
+            :to="`https://hub.nuxt.com/new?template=${template.slug}`"
             size="sm"
             color="gray"
             class="justify-center"

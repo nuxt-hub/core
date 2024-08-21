@@ -136,7 +136,11 @@ onMounted(() => {
 
     <!-- Full Stack section -->
     <ULandingSection
-      :title="page?.fullStack.title" :links="page?.fullStack.buttons"
+      :title="page?.fullStack.title"
+      :links="page?.fullStack.buttons"
+      :ui="{
+        title: 'text-4xl'
+      }"
     >
       <template v-if="page?.fullStack.headline" #headline>
         <UBadge color="white" size="lg" class="rounded-full mb-6">
@@ -156,7 +160,7 @@ onMounted(() => {
       align="left"
       :ui="{
         wrapper: 'pt-0 sm:pt-0 pb-24',
-        container: 'gap-8',
+        container: 'gap-y-8 sm:gap-y-12',
         title: 'text-xl sm:text-2xl lg:text-3xl font-semibold',
         description: 'text-base mt-3 dark:text-gray-400'
       }"
@@ -192,7 +196,7 @@ onMounted(() => {
       align="right"
       :ui="{
         wrapper: 'pt-0 sm:pt-0 pb-24',
-        container: 'gap-8',
+        container: 'gap-y-8 sm:gap-y-12',
         title: 'text-xl sm:text-2xl lg:text-3xl font-semibold',
         description: 'text-base mt-3 dark:text-gray-400'
       }"
@@ -228,7 +232,7 @@ onMounted(() => {
       align="left"
       :ui="{
         wrapper: 'pt-0 sm:pt-0 pb-24',
-        container: 'gap-8',
+        container: 'gap-y-8 sm:gap-y-12',
         title: 'text-xl sm:text-2xl lg:text-3xl font-semibold',
         description: 'text-base mt-3 dark:text-gray-400'
       }"
@@ -264,7 +268,7 @@ onMounted(() => {
       align="right"
       :ui="{
         wrapper: 'pt-0 sm:pt-0 pb-24 mb-10',
-        container: 'gap-8',
+        container: 'gap-y-8 sm:gap-y-12',
         title: 'text-xl sm:text-2xl lg:text-3xl font-semibold',
         description: 'text-base mt-3 dark:text-gray-400'
       }"
