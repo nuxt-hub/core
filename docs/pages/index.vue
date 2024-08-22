@@ -71,11 +71,11 @@ onMounted(() => {
         <span v-html="page?.hero.description" />
       </template>
 
-      <UModal v-model="videoModalOpen">
-        <div class="p-3">
+      <UModal v-model="videoModalOpen" :ui="{ width: 'sm:max-w-4xl lg:max-w-5xl aspect-[16/9]' }">
+        <div class="p-3 h-full">
           <iframe
             width="100%"
-            height="315"
+            height="100%"
             :src="`https://www.youtube-nocookie.com/embed/${videoLink.split('=')[1]}`"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -378,7 +378,7 @@ onMounted(() => {
         />
       </div>
 
-      <ULandingSection class="relative mt-32" :ui="{ title: 'z-10' }">
+      <ULandingSection class="relative mt-32" :ui="{ title: 'z-10 2xl:pt-10' }">
         <template #title>
           <span v-html="page?.journey.title" />
         </template>
