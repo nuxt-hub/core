@@ -1,6 +1,6 @@
 title: 'Pricing'
 description: 'Get started with NuxtHub for free and upgrade as you grow.'
-navigation: false
+icon: i-ph-credit-card
 hero:
   headline: '2 months off with yearly plan'
   title: 'Start for free, upgrade <span class="text-primary">as you grow</span>'

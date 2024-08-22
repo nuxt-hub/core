@@ -1,5 +1,6 @@
 title: Templates
 description: 'Explore full-stack Nuxt templates to get up and running in a few seconds.'
+icon: i-ph-layout
 hero:
   title: 'NuxtHub Templates'
   description: 'Explore full-stack Nuxt templates to get up and running in a few seconds.'

@@ -1,6 +1,6 @@
 title: 'Changelog'
 description: 'Follow the latest updates and improvements of NuxtHub.'
-navigation: false
+icon: i-ph-pulse
 hero:
   title: 'Changelog'
   description: 'Follow the latest updates and improvements of NuxtHub.'

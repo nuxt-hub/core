@@ -5,20 +5,24 @@ const navigation = inject('navigation')
 const links = [
   {
     label: 'Docs',
-    to: '/docs/getting-started'
+    to: '/docs/getting-started',
+    icon: 'i-ph-books'
   }, {
     label: 'Templates',
     to: '/templates',
-    color: 'cyan'
+    icon: 'i-ph-layout'
   }, {
     label: 'Pricing',
-    to: '/pricing'
+    to: '/pricing',
+    icon: 'i-ph-credit-card'
   }, {
     label: 'Changelog',
-    to: '/changelog'
+    to: '/changelog',
+    icon: 'i-ph-pulse'
   }, {
     label: 'Blog',
-    to: '/blog'
+    to: '/blog',
+    icon: 'i-ph-newspaper'
   }
 ]
 const navLinks = links.map((link) => {
