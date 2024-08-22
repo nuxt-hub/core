@@ -280,6 +280,13 @@ testimonials:
         avatar:
           src: 'https://avatars.githubusercontent.com/u/90707158?v=4'
           loading: 'lazy'
+    - quote: "At YG, our team recently grew and that meant more seats on all the tools we use. Migrating our hosting workflow to NuxtHub not only took just a few minutes but saved us money from our previous provider. NuxtHub provides an excellent management layer on top of our infrastructure and we’re super happy about the move!"
+      author:
+        name: 'Eckhardt Dreyer'
+        description: 'Lead Developer at YG'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/37825447?v=4'
+          loading: 'lazy'
 journey:
     title: 'Begin your NuxtHub journey <span class="text-primary">today</span>'
     images:
