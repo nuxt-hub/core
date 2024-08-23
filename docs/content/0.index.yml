@@ -302,7 +302,7 @@ journey:
       - name: 'Start from NuxtHub template'
         description: 'Choose one of our open source templates and start from it.'
         img: '/images/landing/journey-console.svg'
-        to: https://github.com/topics/nuxthub
+        to: /templates
       - name: 'Create an empty project'
         description: 'Create a NuxtHub project from scratch and deploy it with NuxtHub CLI.'
         img: '/images/landing/journey-brackets.svg'
