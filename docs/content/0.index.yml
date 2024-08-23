@@ -1,10 +1,9 @@
-title: 'Build, deploy & manage Nuxt apps, globally.'
+title: 'Build, Deploy & Manage Nuxt apps that scale'
 navigation: false
-description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare. Deploy your Nuxt applications with a database, key-value and blob storage with zero configuration, on your Cloudflare account.
-NuxtHub lets you affordably run your high performance Nuxt apps everywhere.'
+description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare. Deploy your Nuxt apps at low cost and with ease, ensuring lightning-fast performance for your users anywhere on the planet. Ship faster with our built-in full-stack features: AI, Database, Files Storage, KV, Caching and more.'
 hero:
-  title: 'Build, deploy & manage <br /> <span class="text-primary">Nuxt apps</span>, globally.'
-  description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare.<br />Deploy your app with a database, key-value and blob storage with zero configuration, on your Cloudflare account.<br />NuxtHub lets you affordably run your high performance Nuxt apps everywhere.'
+  title: 'Build, deploy & manage <br /> <span class="text-primary">Nuxt apps</span> that scale.'
+  description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare.<br /><span class="hidden sm:block">Deploy your Nuxt apps at low cost and with ease, ensuring lightning-fast performance for your users anywhere on the planet.<br></span>Ship faster with our built-in full-stack features: AI, Database, Files Storage, KV, Caching and more.'
   img:
     width: '1439'
     height: '681'
