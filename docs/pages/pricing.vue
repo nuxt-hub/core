@@ -86,6 +86,7 @@ const evanTestimonial = computed(() => {
     </UContainer>
 
     <ULandingSection
+      id="cloudflare-pricing"
       :title="page?.cloudflare.title"
       align="left"
       :ui="{
