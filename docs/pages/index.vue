@@ -39,13 +39,19 @@ onMounted(() => {
     videoModalOpen.value = true
   }
 })
+
+const accelerate = ref(false)
+onMounted(() => {
+  const { isOutside } = useMouseInElement(document.getElementById('get-started'))
+  watch(isOutside, (value) => {
+    accelerate.value = !value
+  })
+})
 </script>
 
 <template>
-  <div>
-    <HeroDark class="absolute hidden right-0 left-0 top-0 xl:top-16 w-full max-w-[1216px] mx-auto dark:block pointer-events-none" />
-    <HeroLight class="absolute right-0 left-0 top-0 xl:top-16 w-full max-w-[1216px] mx-auto dark:hidden pointer-events-none" />
-
+  <div class="relative">
+    <HeroParticules :accelerate />
     <ULandingHero
       :title="page?.hero.title"
       :description="page?.hero.description"

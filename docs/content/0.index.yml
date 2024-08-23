@@ -19,6 +19,7 @@ hero:
       trailing-icon: i-ph-arrow-right
       to: '/docs/getting-started'
       size: md
+      id: get-started
     - label: Watch 3 min intro
       trailing-icon: i-ph-play-circle
       color: gray
