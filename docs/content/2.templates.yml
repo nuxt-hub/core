@@ -1,9 +1,9 @@
 title: Templates
-description: 'Explore full-stack Nuxt templates to get up and running in a few seconds.'
+description: 'Discover open source full-stack Nuxt templates to get up and running in a few seconds.'
 icon: i-ph-layout
 hero:
-  title: 'NuxtHub Templates'
-  description: 'Explore full-stack Nuxt templates to get up and running in a few seconds.'
+  title: 'Full-Stack <span class="text-primary">Nuxt</span> Templates'
+  description: 'Explore open source full-stack Nuxt templates to get up and running in a few seconds.'
   align: center
   links:
     - label: Deploy a template
