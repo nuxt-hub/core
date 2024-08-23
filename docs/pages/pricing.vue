@@ -24,7 +24,7 @@ const evanTestimonial = computed(() => {
 <template>
   <div>
     <UContainer>
-      <UPageHero align="center" :ui="{ base: 'z-10', wrapper: 'py-8 pb-0 sm:py-24 sm:pb-0' }">
+      <UPageHero align="center" :ui="{ base: 'z-10', wrapper: 'py-12 pb-0 sm:py-24 sm:pb-0' }">
         <!-- <template #icon>
           <UBadge :label="page?.hero.headline" icon="" variant="outline" :ui="{ rounded: 'rounded-full' }" class="badge dark:border border-primary" />
         </template> -->
@@ -42,7 +42,7 @@ const evanTestimonial = computed(() => {
         <div class="w-full flex justify-center">
           <UPricingToggle
             v-model="isYearly"
-            class="max-w-xs mb-16"
+            class="max-w-xs mb-8 sm:mb-16"
             right="Yearly (2 months off)"
             :ui="{
               marker: 'bg-primary-500 dark:bg-green-400'
@@ -74,10 +74,10 @@ const evanTestimonial = computed(() => {
         <UCard class="mt-8" :ui="{ body: { padding: 'md:p-[40px]' } }">
           <div class="flex flex-col gap-y-4 text-center sm:text-left sm:flex-row sm:gap-y-0 justify-between items-center gap-x-8">
             <div class="flex flex-col gap-y-2">
-              <h2 class="text-2xl font-semibold text-gray-950 dark:text-white">
+              <h2 class="text-base sm:text-2xl font-semibold text-gray-950 dark:text-white">
                 {{ page?.pricing.contact.title }}
               </h2>
-              <p class="text-gray-500 dark:text-gray-400" v-html="page?.pricing.contact.description" />
+              <p class="text-sm sm:text-base text-gray-500 dark:text-gray-400" v-html="page?.pricing.contact.description" />
             </div>
             <UButton v-bind="page?.pricing.contact.button" />
           </div>
@@ -89,9 +89,9 @@ const evanTestimonial = computed(() => {
       :title="page?.cloudflare.title"
       align="left"
       :ui="{
-        wrapper: 'py-244',
+        wrapper: 'py-12 sm:py-24',
         container: 'gap-y-8 sm:gap-y-12 lg:items-start',
-        title: 'text-xl sm:text-2xl lg:text-3xl font-semibold',
+        title: 'text-2xl sm:text-3xl lg:text-3xl font-semibold',
         description: 'text-base mt-3 dark:text-gray-400'
       }"
     >
@@ -106,7 +106,7 @@ const evanTestimonial = computed(() => {
         </div>
       </template>
       <UTabs
-        class="pb-20 sm:pb-0 sm:w-full w-[calc(100vw-32px)]"
+        class="pt-8 sm:pt-0 pb-20 sm:pb-0 sm:w-full w-[calc(100vw-32px)]"
         :items="page?.cloudflare.plans"
         :ui="{
           list: {
