@@ -12,13 +12,13 @@ export default eventHandler(async (event) => {
   const key = getRouterParam(event, 'key') || ''
   // If ends with an extension
   if (/\.[a-z0-9]{2,5}$/i.test(key)) {
-    const item = await useStorage('cache:nitro').getItem(key)
+    const item = await useStorage('cache').getItem(key)
     if (item) {
       return item
     }
     // Ignore if item is not found, treat the key as a prefix and look for children
   }
-  const storage = useStorage(`cache:nitro:${key}`)
+  const storage = useStorage(`cache:${key}`)
   const keys = await storage.getKeys()
 
   const stats = {
