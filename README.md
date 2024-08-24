@@ -1,4 +1,4 @@
-# NuxtHub: Full-Stack Nuxt on Cloudflare, with Zero Config
+# Full-Stack Nuxt on Cloudflare, with Zero Config ✨
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
@@ -12,7 +12,6 @@ NuxtHub supercharges your Nuxt development workflow so you can focus on shipping
 ## ✨ Key Features
 
 NuxtHub provides optional features to help you build full-stack applications:
-- [**Deploy your Nuxt app**](https://hub.nuxt.com/docs/getting-started/deploy) to your Cloudflare account with [`npx nuxthub deploy`](https://github.com/nuxt-hub/cli) or with the [NuxtHub Admin](https://admin.hub.nuxt.com)
 - [**AI Models**](https://hub.nuxt.com/docs/features/ai) to run machine learning models, such as LLMs in Nuxt.
 - [**Files storage**](https://hub.nuxt.com/docs/features/blob) to store static assets, such as images, videos and more
 - [**Caching system**](https://hub.nuxt.com/docs/features/cache) for your Nuxt pages, API routes or server functions
@@ -20,6 +19,8 @@ NuxtHub provides optional features to help you build full-stack applications:
 - [**Key-Value**](https://hub.nuxt.com/docs/features/kv) to store JSON data accessible globally with low-latency
 - [**Open API**](https://hub.nuxt.com/docs/features/open-api) to generate your API documentation with [Scalar](https://scalar.com)
 - [**Remote Storage**](https://hub.nuxt.com/docs/getting-started/remote-storage) to connect to your project's resources from your local environment, allowing you to work with your remote storage as if it was local with `npx nuxi dev --remote`.
+
+On top of the full-stack features, you can [**deploy your Nuxt application**](https://hub.nuxt.com/docs/getting-started/deploy) to your Cloudflare account with [`npx nuxthub deploy`](https://github.com/nuxt-hub/cli) or with the [NuxtHub Admin](https://admin.hub.nuxt.com).
 
 Read more on https://hub.nuxt.com
 
