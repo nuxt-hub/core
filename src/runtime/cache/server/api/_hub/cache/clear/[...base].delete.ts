@@ -16,7 +16,7 @@ export default eventHandler(async (event) => {
     })
   }
 
-  const storage = useStorage(`cache:nitro:${base}`)
+  const storage = useStorage(`cache:${base}`)
   const keys = await storage.getKeys()
   // delete with batch of 25 keys
   do {
