@@ -27,6 +27,12 @@ export interface HubConfig {
   database?: boolean
   kv?: boolean
 
+  bindings?: {
+    hyperdrive?: {
+      [key: string]: string
+    }
+  }
+
   remoteManifest?: {
     version: string
     storage: {

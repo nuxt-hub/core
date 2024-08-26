@@ -13,7 +13,8 @@
     "@nuxt/ui": "^2.18.3",
     "@nuxthub/core": "latest",
     "drizzle-orm": "^0.32.1",
-    "nuxt": "^3.12.4"
+    "nuxt": "^3.12.4",
+    "postgres": "^3.4.4"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest"
