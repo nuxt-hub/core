@@ -112,6 +112,19 @@ export default defineNuxtModule<ModuleOptions>({
       // Update the deploy command displayed in the console
       nuxt.options.nitro.commands = nuxt.options.nitro.commands || {}
       nuxt.options.nitro.commands.deploy = 'npx nuxthub deploy'
+
+      // Fix cloudflare:* externals in rollup
+      nuxt.options.nitro.rollupConfig = nuxt.options.nitro.rollupConfig || {}
+      nuxt.options.nitro.rollupConfig.plugins = ([] as any[]).concat(nuxt.options.nitro.rollupConfig.plugins || [])
+      nuxt.options.nitro.rollupConfig.plugins.push({
+        name: 'nuxthub-rollup-plugin',
+        resolveId(id: string) {
+          if (id.startsWith('cloudflare:')) {
+            return { id, external: true }
+          }
+          return null
+        }
+      })
     }
 
     // Local development without remote connection
