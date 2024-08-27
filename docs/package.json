@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@iconify-json/heroicons": "^1.1.24",
+    "@iconify-json/logos": "^1.1.44",
     "@iconify-json/ph": "^1.1.14",
     "@iconify-json/simple-icons": "^1.1.114",
     "@nuxt/content": "^2.13.2",

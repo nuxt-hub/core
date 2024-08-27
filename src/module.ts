@@ -5,6 +5,7 @@ import { join } from 'pathe'
 import { defu } from 'defu'
 import { findWorkspaceDir } from 'pkg-types'
 import { parseArgs } from 'citty'
+import type { Nuxt } from '@nuxt/schema'
 import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
 import { setupAI, setupCache, setupAnalytics, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './features'
@@ -22,7 +23,7 @@ export default defineNuxtModule<ModuleOptions>({
     version
   },
   defaults: {},
-  async setup(options, nuxt) {
+  async setup(options: ModuleOptions, nuxt: Nuxt) {
     // Cannot be used with `nuxt generate`
     if (nuxt.options._generate) {
       log.error('NuxtHub is not compatible with `nuxt generate` as it needs a server to run.')
@@ -59,7 +60,11 @@ export default defineNuxtModule<ModuleOptions>({
       // Other options
       version,
       env: process.env.NUXT_HUB_ENV || 'production',
-      openapi: nuxt.options.nitro.experimental?.openAPI === true
+      openapi: nuxt.options.nitro.experimental?.openAPI === true,
+      // Extra bindings for the project
+      bindings: {
+        hyperdrive: {}
+      }
     })
     runtimeConfig.hub = hub
     // validate remote option
@@ -97,6 +102,19 @@ export default defineNuxtModule<ModuleOptions>({
 
     addBuildHooks(nuxt, hub)
 
+    // Fix cloudflare:* externals in rollup
+    nuxt.options.nitro.rollupConfig = nuxt.options.nitro.rollupConfig || {}
+    nuxt.options.nitro.rollupConfig.plugins = ([] as any[]).concat(nuxt.options.nitro.rollupConfig.plugins || [])
+    nuxt.options.nitro.rollupConfig.plugins.push({
+      name: 'nuxthub-rollup-plugin',
+      resolveId(id: string) {
+        if (id.startsWith('cloudflare:')) {
+          return { id, external: true }
+        }
+        return null
+      }
+    })
+
     if (hub.remote) {
       await setupRemote(nuxt, hub)
       return
@@ -119,19 +137,6 @@ export default defineNuxtModule<ModuleOptions>({
       // Update the deploy command displayed in the console
       nuxt.options.nitro.commands = nuxt.options.nitro.commands || {}
       nuxt.options.nitro.commands.deploy = 'npx nuxthub deploy'
-
-      // Fix cloudflare:* externals in rollup
-      nuxt.options.nitro.rollupConfig = nuxt.options.nitro.rollupConfig || {}
-      nuxt.options.nitro.rollupConfig.plugins = ([] as any[]).concat(nuxt.options.nitro.rollupConfig.plugins || [])
-      nuxt.options.nitro.rollupConfig.plugins.push({
-        name: 'nuxthub-rollup-plugin',
-        resolveId(id: string) {
-          if (id.startsWith('cloudflare:')) {
-            return { id, external: true }
-          }
-          return null
-        }
-      })
     }
 
     // Local development without remote connection
@@ -158,10 +163,11 @@ export default defineNuxtModule<ModuleOptions>({
       }
 
       const needWrangler = Boolean(hub.ai || hub.analytics || hub.blob || hub.database || hub.kv)
+      // const needWrangler = Boolean(hub.ai || hub.analytics || hub.blob || hub.database || hub.kv || Object.keys(hub.bindings.hyperdrive).length > 0)
       if (needWrangler) {
         // Generate the wrangler.toml file
         const wranglerPath = join(hubDir, './wrangler.toml')
-        await writeFile(wranglerPath, generateWrangler(hub), 'utf-8')
+        await writeFile(wranglerPath, generateWrangler(nuxt, hub), 'utf-8')
         // @ts-expect-error cloudflareDev is not typed here
         nuxt.options.nitro.cloudflareDev = {
           persistDir: hubDir,

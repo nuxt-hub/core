@@ -80,4 +80,30 @@ export interface ModuleOptions {
    * @default '.data/hub'
    */
   dir?: string
+  /**
+   * The extra bindings for the project.
+   * @default {}
+   */
+  bindings?: {
+    /**
+     * The hyperdrive bindings for the project, used only when deployed on Cloudflare.
+     * @see https://hub.nuxt.com/docs/features/hyperdrive
+     * @default {}
+     * @example
+     * ```ts
+     * bindings: {
+     *   hyperdrive: {
+     *     POSTGRES: '<your-hyperdrive-id>'
+     *   }
+     * }
+     * ```
+     */
+    hyperdrive?: {
+      /**
+       * The key of the binding, accessible in the project as `process.env.<key>`.
+       * The value is the ID of the hyperdrive instance.
+       */
+      [key: string]: string
+    }
+  }
 }

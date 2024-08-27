@@ -27,7 +27,8 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
           blob: hub.blob,
           cache: hub.cache,
           database: hub.database,
-          kv: hub.kv
+          kv: hub.kv,
+          bindings: hub.bindings
         }
       }).catch((e) => {
         if (e.response?._data?.message) {
@@ -101,7 +102,8 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
         blob: hub.blob,
         cache: hub.cache,
         database: hub.database,
-        kv: hub.kv
+        kv: hub.kv,
+        bindings: hub.bindings
       }
       await writeFile(join(nitro.options.output.publicDir, 'hub.config.json'), JSON.stringify(hubConfig, null, 2), 'utf-8')
     })

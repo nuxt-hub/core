@@ -1,6 +1,8 @@
+import type { Nuxt } from '@nuxt/schema'
 import { stringifyTOML } from 'confbox'
+import type { HubConfig } from '../features'
 
-export function generateWrangler(hub: { kv: boolean, database: boolean, blob: boolean, analytics: boolean, ai: boolean }) {
+export function generateWrangler(nuxt: Nuxt, hub: HubConfig) {
   const wrangler: { [key: string]: any } = {}
 
   if (hub.ai) {
@@ -37,6 +39,23 @@ export function generateWrangler(hub: { kv: boolean, database: boolean, blob: bo
       database_id: 'default'
     }]
   }
+
+  // Disabled until getPlatformProxy() returns the hyperdrive binding
+  // if (hub.bindings?.hyperdrive) {
+  //   wrangler['hyperdrive'] = Object.entries(hub.bindings.hyperdrive).map(([key, value]) => {
+  //     const envKey = `NUXT_HUB_HYPERDRIVE_${key.toUpperCase()}_URL`
+  //     const localConnectionString = process.env[envKey]
+  //     if (nuxt.options.dev && !localConnectionString) {
+  //       console.error(`Missing \`${envKey}\` environment variable for Hyperdrive binding \`${key}\` (ID: ${value}).`)
+  //       process.exit(1)
+  //     }
+  //     return {
+  //       binding: key,
+  //       id: value,
+  //       localConnectionString
+  //     }
+  //   })
+  // }
 
   return stringifyTOML(wrangler)
 }
