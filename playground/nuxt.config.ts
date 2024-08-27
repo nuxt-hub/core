@@ -20,7 +20,7 @@ export default defineNuxtConfig({
     bindings: {
       // Used for /api/hyperdrive
       hyperdrive: {
-        HYPERDRIVE: '08f7bc805d1d409aac17e72af502abd0'
+        POSTGRES: '08f7bc805d1d409aac17e72af502abd0'
       }
     }
     // projectUrl: ({ branch }) => branch === 'main' ? 'https://playground.nuxt.dev' : `https://${encodeHost(branch).replace(/\//g, '-')}.playground-to39.pages.dev`

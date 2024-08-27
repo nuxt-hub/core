@@ -2,7 +2,7 @@ import type { Hyperdrive } from '@cloudflare/workers-types'
 import postgres from 'postgres'
 
 export default eventHandler(async (event) => {
-  const hyperdrive = process.env.HYPERDRIVE as Hyperdrive | undefined
+  const hyperdrive = process.env.POSTGRES as Hyperdrive | undefined
   const dbURL = hyperdrive?.connectionString || process.env.NUXT_POSTGRES_URL
 
   if (!dbURL) {
