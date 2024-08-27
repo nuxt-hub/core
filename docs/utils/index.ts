@@ -22,10 +22,5 @@ export const asideLinks = [
     label: 'Chat on Discord',
     to: 'https://discord.gg/e25qqXb2mF',
     target: '_blank'
-  }, {
-    icon: 'i-simple-icons-nuxtdotjs',
-    label: 'Nuxt Docs',
-    to: 'https://nuxt.com',
-    target: '_blank'
   }
 ]
