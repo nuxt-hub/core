@@ -10,8 +10,8 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: NuxtHub AI is out
-    to: /changelog/hub-ai
+    label: Using AI for User Experience
+    to: /blog/cloudflare-ai-for-user-experience
     icon: i-ph-arrow-right
   links:
     - label: Get started

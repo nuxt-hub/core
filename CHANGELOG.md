@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v0.7.5
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.4...v0.7.5)
+
+### 🩹 Fixes
+
+- Add support for `cloudflare:*` externals ([#243](https://github.com/nuxt-hub/core/pull/243))
+- Disable the usage of `nuxt generate` ([#244](https://github.com/nuxt-hub/core/pull/244))
+
+### 📖 Documentation
+
+- Article about AI ([e3f7865](https://github.com/nuxt-hub/core/commit/e3f7865))
+- Article ready ([956cc01](https://github.com/nuxt-hub/core/commit/956cc01))
+
+### 🏡 Chore
+
+- Update deps ([07cf4d4](https://github.com/nuxt-hub/core/commit/07cf4d4))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.4
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.3...v0.7.4)

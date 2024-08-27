@@ -23,6 +23,13 @@ export default defineNuxtModule<ModuleOptions>({
   },
   defaults: {},
   async setup(options, nuxt) {
+    // Cannot be used with `nuxt generate`
+    if (nuxt.options._generate) {
+      log.error('NuxtHub is not compatible with `nuxt generate` as it needs a server to run.')
+      log.info('To pre-render all pages: `https://hub.nuxt.com/docs/recipes/pre-rendering#pre-render-all-pages`')
+      return process.exit(1)
+    }
+
     const rootDir = nuxt.options.rootDir
     const { resolve } = createResolver(import.meta.url)
 
