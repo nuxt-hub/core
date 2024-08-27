@@ -168,6 +168,7 @@ export default defineNuxtModule<ModuleOptions>({
         // Generate the wrangler.toml file
         const wranglerPath = join(hubDir, './wrangler.toml')
         await writeFile(wranglerPath, generateWrangler(nuxt, hub), 'utf-8')
+        // @ts-expect-error cloudflareDev is not typed here
         nuxt.options.nitro.cloudflareDev = {
           persistDir: hubDir,
           configPath: wranglerPath,
