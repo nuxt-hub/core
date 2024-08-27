@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.7.6
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.5...v0.7.6)
+
+### 🚀 Enhancements
+
+- Add support for extra bindings (Hyperdrive) ([#245](https://github.com/nuxt-hub/core/pull/245))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.5
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.4...v0.7.5)
