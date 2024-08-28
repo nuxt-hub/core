@@ -297,7 +297,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
         method: 'GET'
       })
     },
-    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = {}) {
+    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob | Uint8Array, options: BlobPutOptions = {}) {
       const { contentType, contentLength, ...query } = options
       const headers: Record<string, string> = {}
       if (contentType) {
@@ -305,6 +305,9 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
       }
       if (contentLength) {
         headers['content-length'] = contentLength
+      }
+      if (body instanceof Uint8Array) {
+        body = new Blob([body])
       }
       return await blobAPI<BlobObject>(decodeURI(pathname), {
         method: 'PUT',
