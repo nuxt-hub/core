@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.7.7
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.6...v0.7.7)
+
+### 🩹 Fixes
+
+- **blob:** Handle Uint8Array format ([#247](https://github.com/nuxt-hub/core/pull/247))
+
+### 🏡 Chore
+
+- Update deps ([19d3dfa](https://github.com/nuxt-hub/core/commit/19d3dfa))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.6
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.5...v0.7.6)
