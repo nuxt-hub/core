@@ -45,7 +45,12 @@ onMounted(() => {
 
 <template>
   <UPage>
-    <UPageHeader :title="page.title" :description="page.description" :links="page.links" :headline="headline" />
+    <UPageHeader
+      :ui="{ wrapper: 'lg:mr-10' }"
+      :title="page.title"
+      :description="page.description"
+      :links="page.links"
+    />
 
     <UPageBody prose class="dark:text-gray-300 dark:prose-pre:!bg-gray-800/60 lg:pr-10 pb-0">
       <ContentRenderer v-if="page.body" :value="page" />
