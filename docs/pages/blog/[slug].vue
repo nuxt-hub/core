@@ -44,16 +44,9 @@ const socialLinks = computed(() => [{
   icon: 'i-simple-icons-linkedin',
   to: `https://www.linkedin.com/sharing/share-offsite/?url=https://hub.nuxt.com${post.value._path}`
 }, {
-  icon: 'i-simple-icons-twitter',
-  to: `https://twitter.com/intent/tweet?text=${encodeURIComponent(`${post.value.title}\n\n`)}https://hub.nuxt.com${post.value._path}`
+  icon: 'i-simple-icons-x',
+  to: `https://x.com/intent/tweet?text=${encodeURIComponent(`${post.value.title}\n\n`)}https://hub.nuxt.com${post.value._path}`
 }])
-
-const links = computed(() => [{
-  icon: 'i-heroicons-pencil-square',
-  label: 'Edit this post',
-  to: `${toc.bottom.edit}/${post?.value?._file}`,
-  target: '_blank'
-}, ...asideLinks].filter(Boolean))
 
 function copyLink() {
   copy(`https://hub.nuxt.com${post.value._path}`, { title: 'Post URL to clipboard' })
@@ -72,9 +65,7 @@ onMounted(() => {
         <template #headline>
           <UBreadcrumb :links="[{ label: 'Blog', icon: 'i-ph-newspaper-duotone', to: '/blog' }, { label: post.title }]" :ui="{ wrapper: 'max-w-full' }" />
           <div class="flex items-center space-x-2">
-            <span>
-              {{ post.badge?.label || 'Article' }}
-            </span>
+            <UBadge :label="post?.category || 'Article'" color="gray" />
             <span class="text-gray-500 dark:text-gray-400">&middot;&nbsp;&nbsp;<time>{{ formatDateByLocale('en', post.date) }}</time></span>
           </div>
         </template>
@@ -100,17 +91,16 @@ onMounted(() => {
       </UPageHeader>
 
       <UPage>
-        <UPageBody prose class="dark:text-gray-300 dark:prose-pre:!bg-gray-800/60">
+        <UPageBody prose class="dark:text-gray-300 dark:prose-pre:!bg-gray-800/60 lg:pr-10">
           <ContentRenderer v-if="post && post.body" :value="post" />
-
+          <PageSectionCTA />
           <div class="flex items-center justify-between mt-12 not-prose">
-            <UButton to="/blog" variant="link" :padded="false">
-              ← Back to blog
+            <UButton to="/blog" variant="link" :padded="false" color="gray" icon="i-ph-arrow-left">
+              Back to blog
             </UButton>
             <div class="flex justify-end items-center gap-1.5">
-              <UButton icon="i-ph-link-simple" v-bind="($ui.button.secondary as any)" @click="copyLink">
-                Copy URL
-              </UButton>
+              Share:
+              <UButton icon="i-ph-link-simple" color="gray" variant="ghost" @click="copyLink" />
               <UButton
                 v-for="(link, index) in socialLinks"
                 :key="index"
@@ -128,13 +118,7 @@ onMounted(() => {
         </UPageBody>
 
         <template #right>
-          <UContentToc v-if="post.body && post.body.toc" :links="post.body.toc.links">
-            <template #bottom>
-              <div class="hidden lg:block space-y-6">
-                <UPageLinks title="Links" :links="links" />
-              </div>
-            </template>
-          </UContentToc>
+          <UContentToc v-if="post.body && post.body.toc" :links="post.body.toc.links" title="On this page" />
         </template>
       </UPage>
     </UPage>

@@ -3,7 +3,6 @@ title: Hello World Template
 description: "Hello Edge is our minimal Nuxt template to get started with server-side rendering on the Edge."
 date: 2024-06-18
 image: '/images/changelog/hello-edge.png'
-category: Template
 authors:
   - name: Sebastien Chopin
     avatar: 

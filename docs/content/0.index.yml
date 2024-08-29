@@ -14,7 +14,7 @@ hero:
     to: /blog/cloudflare-ai-for-user-experience
     icon: i-ph-arrow-right
   links:
-    - label: Get started
+    - label: Start reading docs
       trailing-icon: i-ph-arrow-right
       to: '/docs/getting-started'
       size: md

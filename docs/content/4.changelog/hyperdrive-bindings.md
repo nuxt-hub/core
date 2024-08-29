@@ -3,7 +3,6 @@ title: Hyperdrive bindings
 description: "It is now possible to use PostgreSQL & Cloudflare Hyperdrive in your Nuxt application."
 date: 2024-08-28
 image: '/images/changelog/hyperdrive-bindings.png'
-category: Admin
 authors:
   - name: Sebastien Chopin
     avatar: 

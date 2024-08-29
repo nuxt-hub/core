@@ -3,7 +3,6 @@ title: Team Webhooks
 description: "It is now possible to trigger webhooks for your team's projects when a new deployment is created."
 date: 2024-05-22
 image: '/images/changelog/team-webhooks.png'
-category: Admin
 authors:
   - name: Sebastien Chopin
     avatar: 
