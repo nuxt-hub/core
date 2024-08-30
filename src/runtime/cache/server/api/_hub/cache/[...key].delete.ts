@@ -15,7 +15,7 @@ export default eventHandler(async (event) => {
       message: 'Invalid key'
     })
   }
-  const storage = useStorage('cache:nitro')
+  const storage = useStorage('cache')
   await storage.removeItem(key)
 
   return sendNoContent(event)

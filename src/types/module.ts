@@ -43,18 +43,18 @@ export interface ModuleOptions {
    */
   kv?: boolean
   /**
+   * Set `true` to enable the database for the project.
+   *
+   * @default false
+   */
+  vectorize?: boolean
+  /**
    * Set to `true`, 'preview' or 'production' to use the remote storage.
    * Only set the value on a project you are deploying outside of NuxtHub or Cloudflare.
    * Or wrap it with $development to only use it in development mode.
    * @default process.env.NUXT_HUB_REMOTE or --remote option when running `nuxt dev`
    * @see https://hub.nuxt.com/docs/getting-started/remote-storage
    */
-  /**
-   * Set `true` to enable the database for the project.
-   *
-   * @default false
-   */
-  vectorize?: boolean
   remote?: boolean | 'production' | 'preview'
   /**
    * The URL of the NuxtHub Admin
@@ -86,6 +86,32 @@ export interface ModuleOptions {
    * @default '.data/hub'
    */
   dir?: string
+  /**
+   * The extra bindings for the project.
+   * @default {}
+   */
+  bindings?: {
+    /**
+     * The hyperdrive bindings for the project, used only when deployed on Cloudflare.
+     * @see https://hub.nuxt.com/docs/features/hyperdrive
+     * @default {}
+     * @example
+     * ```ts
+     * bindings: {
+     *   hyperdrive: {
+     *     POSTGRES: '<your-hyperdrive-id>'
+     *   }
+     * }
+     * ```
+     */
+    hyperdrive?: {
+      /**
+       * The key of the binding, accessible in the project as `process.env.<key>`.
+       * The value is the ID of the hyperdrive instance.
+       */
+      [key: string]: string
+    }
+  }
   /**
    * The account ID of the Cloudflare account to use for local development.
    * Only necessary if using AI and logged-in user has access to multiple accounts.

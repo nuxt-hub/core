@@ -3,7 +3,6 @@ title: Deploy to NuxtHub button
 description: "The Deploy to NuxtHub button allows you to deploy a GitHub template directly from the NuxtHub Admin."
 date: 2024-07-22
 image: '/images/changelog/deploy-button.png'
-category: Template
 authors:
   - name: Sebastien Chopin
     avatar: 

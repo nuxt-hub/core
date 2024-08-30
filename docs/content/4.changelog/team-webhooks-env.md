@@ -3,7 +3,6 @@ title: Webhooks Environment Selection
 description: "It is now possible to select the environment to be notified about."
 date: 2024-06-15
 image: '/images/changelog/team-webhooks-env.png'
-category: Admin
 authors:
   - name: Sebastien Chopin
     avatar: 

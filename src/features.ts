@@ -28,6 +28,12 @@ export interface HubConfig {
   kv?: boolean
   vectorize?: boolean
 
+  bindings?: {
+    hyperdrive?: {
+      [key: string]: string
+    }
+  }
+
   remoteManifest?: {
     version: string
     storage: {

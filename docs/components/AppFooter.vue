@@ -1,15 +1,16 @@
 <script setup lang="ts">
 const links = [
   {
-    label: 'Nuxt Docs',
-    to: 'https://nuxt.com'
-  }, {
     label: 'Terms',
     to: 'https://admin.hub.nuxt.com/terms',
     target: '_blank'
   }, {
     label: 'Privacy',
     to: 'https://admin.hub.nuxt.com/privacy',
+    target: '_blank'
+  }, {
+    label: 'Status',
+    to: 'https://status.hub.nuxt.com',
     target: '_blank'
   }
 ]
@@ -23,6 +24,14 @@ const links = [
 
     <template #right>
       <ColorScheme><UColorModeSelect /></ColorScheme>
+      <UButton
+        icon="i-simple-icons-discord"
+        color="gray"
+        variant="ghost"
+        to="https://discord.gg/vW89dsVqBF"
+        target="_blank"
+        aria-label="Go to NuxtHub Discord server"
+      />
       <UButton
         icon="i-simple-icons-x"
         color="gray"

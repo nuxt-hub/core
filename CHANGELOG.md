@@ -1,6 +1,92 @@
 # Changelog
 
 
+## v0.7.7
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.6...v0.7.7)
+
+### 🩹 Fixes
+
+- **blob:** Handle Uint8Array format ([#247](https://github.com/nuxt-hub/core/pull/247))
+
+### 🏡 Chore
+
+- Update deps ([19d3dfa](https://github.com/nuxt-hub/core/commit/19d3dfa))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.6
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.5...v0.7.6)
+
+### 🚀 Enhancements
+
+- Add support for extra bindings (Hyperdrive) ([#245](https://github.com/nuxt-hub/core/pull/245))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.5
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.4...v0.7.5)
+
+### 🩹 Fixes
+
+- Add support for `cloudflare:*` externals ([#243](https://github.com/nuxt-hub/core/pull/243))
+- Disable the usage of `nuxt generate` ([#244](https://github.com/nuxt-hub/core/pull/244))
+
+### 📖 Documentation
+
+- Article about AI ([e3f7865](https://github.com/nuxt-hub/core/commit/e3f7865))
+- Article ready ([956cc01](https://github.com/nuxt-hub/core/commit/956cc01))
+
+### 🏡 Chore
+
+- Update deps ([07cf4d4](https://github.com/nuxt-hub/core/commit/07cf4d4))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.4
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.3...v0.7.4)
+
+### 🩹 Fixes
+
+- **cache:** Don't force nitro prefix ([#239](https://github.com/nuxt-hub/core/pull/239))
+
+### 📖 Documentation
+
+- Add video on landing page ([7f450f1](https://github.com/nuxt-hub/core/commit/7f450f1))
+- Fix usage ([d5d0864](https://github.com/nuxt-hub/core/commit/d5d0864))
+- Update the logo ([dafa87a](https://github.com/nuxt-hub/core/commit/dafa87a))
+- Add YouTube link ([8799f77](https://github.com/nuxt-hub/core/commit/8799f77))
+- Add rss feeds ([ab4a627](https://github.com/nuxt-hub/core/commit/ab4a627))
+- Improve landing page ([a777038](https://github.com/nuxt-hub/core/commit/a777038))
+- Improve templates and add status page ([8af0745](https://github.com/nuxt-hub/core/commit/8af0745))
+- Fix typos in article ([803591d](https://github.com/nuxt-hub/core/commit/803591d))
+- Fix modal size ([e2d55c1](https://github.com/nuxt-hub/core/commit/e2d55c1))
+- Add new testimonial ([ba7b541](https://github.com/nuxt-hub/core/commit/ba7b541))
+- Update command palette links ([983ac18](https://github.com/nuxt-hub/core/commit/983ac18))
+- Improve pricing page ([b4d8b80](https://github.com/nuxt-hub/core/commit/b4d8b80))
+- Responsive improvements ([5fab28a](https://github.com/nuxt-hub/core/commit/5fab28a))
+- No container needed for landing section ([b771fe5](https://github.com/nuxt-hub/core/commit/b771fe5))
+- Add id for CF section ([92130ab](https://github.com/nuxt-hub/core/commit/92130ab))
+- Ai is in CF workers ([644c3a8](https://github.com/nuxt-hub/core/commit/644c3a8))
+- Update templates page ([2bb9786](https://github.com/nuxt-hub/core/commit/2bb9786))
+- Particules particules ([be4f345](https://github.com/nuxt-hub/core/commit/be4f345))
+- Improve hero ([f1593a9](https://github.com/nuxt-hub/core/commit/f1593a9))
+- Improve last section ([dc54523](https://github.com/nuxt-hub/core/commit/dc54523))
+- Update readme ([9445cd1](https://github.com/nuxt-hub/core/commit/9445cd1))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.3
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.2...v0.7.3)

@@ -146,3 +146,10 @@ export default defineEventHandler(async () => {
     Controls the [Cache TTL](https://developers.cloudflare.com/ai-gateway/configuration/caching/#cache-ttl-cf-cache-ttl).
   ::
 ::
+
+## Templates
+
+Explore open source templates made by the community:
+
+- [Atidraw](https://github.com/atinux/atidraw): leverage AI to generate the alt text of the user drawing and generate an alternative image with AI ([blog post](/blog/cloudflare-ai-for-user-experience)).
+- [Hub Chat](https://github.com/ra-jeev/hub-chat): a chat interface to interact with various text generation AI models ([blog post](https://rajeev.dev/create-cloudflare-workers-ai-llm-playground-using-nuxthub-and-nuxtui)).

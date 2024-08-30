@@ -36,13 +36,6 @@ defineOgImageComponent('Docs', {
 
 const headline = computed(() => findPageHeadline(page.value))
 
-const links = computed(() => [toc?.bottom?.edit && {
-  icon: 'i-heroicons-pencil-square',
-  label: 'Edit this page',
-  to: `${toc.bottom.edit}/${page?.value?._file}`,
-  target: '_blank'
-}, ...asideLinks].filter(Boolean))
-
 onMounted(() => {
   mediumZoom('[data-zoom-src]', {
     margin: 5
@@ -52,26 +45,33 @@ onMounted(() => {
 
 <template>
   <UPage>
-    <UPageHeader :title="page.title" :description="page.description" :links="page.links" :headline="headline" />
+    <UPageHeader
+      :ui="{ wrapper: 'lg:mr-10' }"
+      :title="page.title"
+      :description="page.description"
+      :links="page.links"
+    />
 
-    <UPageBody prose class="dark:text-gray-300 dark:prose-pre:!bg-gray-800/60">
+    <UPageBody prose class="dark:text-gray-300 dark:prose-pre:!bg-gray-800/60 lg:pr-10 pb-0">
       <ContentRenderer v-if="page.body" :value="page" />
-
-      <hr v-if="surround?.length">
-
-      <UContentSurround :surround="surround" />
     </UPageBody>
+    <div class="pb-24">
+      <UDivider class="my-10">
+        <div class="flex items-center gap-2 text-sm dark:text-gray-400">
+          <UButton size="sm" variant="link" color="gray" to="https://github.com/nuxt-hub/core/issues/new/choose" target="_blank">
+            Report an issue
+          </UButton>
+          or
+          <UButton size="sm" variant="link" color="gray" :to="`${toc.bottom.edit}/${page?._file}`" target="_blank">
+            Edit this page on GitHub
+          </UButton>
+        </div>
+      </UDivider>
+      <UContentSurround :surround="surround" />
+    </div>
 
     <template v-if="page.toc !== false" #right>
-      <UContentToc :title="toc?.title" :links="page.body?.toc?.links" class="bg-transparent dark:bg-transparent backdrop-blur-none">
-        <template v-if="toc?.bottom" #bottom>
-          <div class="hidden lg:block space-y-6" :class="{ '!mt-6': page.body?.toc?.links?.length }">
-            <UDivider v-if="page.body?.toc?.links?.length" type="dashed" />
-
-            <UPageLinks title="Links" :links="links" />
-          </div>
-        </template>
-      </UContentToc>
+      <UContentToc :title="toc?.title" :links="page.body?.toc?.links" class="bg-transparent dark:bg-transparent backdrop-blur-none" />
     </template>
   </UPage>
 </template>

@@ -123,9 +123,6 @@ watch(() => arrivedState.bottom, () => {
               </NuxtLink>
 
               <div class="flex flex-col">
-                <div v-if="changelog.category" class="block mb-2">
-                  <UBadge :label="changelog.category" color="gray" variant="solid" />
-                </div>
                 <h2 class="text-3xl font-semibold">
                   <NuxtLink :to="changelog._path" class="hover:underline underline-offset-4 decoration-1">
                     {{ changelog.title }}

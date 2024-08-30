@@ -39,13 +39,19 @@ onMounted(() => {
     videoModalOpen.value = true
   }
 })
+
+const accelerate = ref(false)
+onMounted(() => {
+  const { isOutside } = useMouseInElement(document.getElementById('get-started'))
+  watch(isOutside, (value) => {
+    accelerate.value = !value
+  })
+})
 </script>
 
 <template>
-  <div>
-    <HeroDark class="absolute hidden right-0 left-0 top-0 xl:top-16 w-full max-w-[1216px] mx-auto dark:block pointer-events-none" />
-    <HeroLight class="absolute right-0 left-0 top-0 xl:top-16 w-full max-w-[1216px] mx-auto dark:hidden pointer-events-none" />
-
+  <div class="relative">
+    <HeroParticules :accelerate />
     <ULandingHero
       :title="page?.hero.title"
       :description="page?.hero.description"
@@ -71,11 +77,11 @@ onMounted(() => {
         <span v-html="page?.hero.description" />
       </template>
 
-      <UModal v-model="videoModalOpen">
-        <div class="p-3">
+      <UModal v-model="videoModalOpen" :ui="{ width: 'sm:max-w-4xl lg:max-w-5xl aspect-[16/9]' }">
+        <div class="p-3 h-full">
           <iframe
             width="100%"
-            height="315"
+            height="100%"
             :src="`https://www.youtube-nocookie.com/embed/${videoLink.split('=')[1]}`"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -134,9 +140,38 @@ onMounted(() => {
       </ul>
     </ULandingSection>
 
+    <!-- tool section -->
+    <div class="relative">
+      <img src="/images/landing/bg-tailored.webp" width="1441" height="181" class="absolute top-0 w-full right-0" alt="Tailored section background">
+
+      <ULandingSection :links="page?.tool.buttons" class="relative">
+        <template v-if="page?.tool.headline" #headline>
+          <UBadge color="white" size="lg" class="rounded-full mb-6">
+            {{ page?.tool.headline }}
+          </UBadge>
+        </template>
+        <template #title>
+          <span v-html="page?.tool.title" />
+        </template>
+        <template #description>
+          <span v-html="page?.tool.description" />
+        </template>
+
+        <ULandingGrid :ui="{ wrapper: 'flex flex-col md:grid gap-8 md:grid-cols-2 lg:grid-cols-4 relative' }">
+          <ULandingCard
+            v-for="tool in page?.tool.features" :key="tool.title" :title="tool.title" :description="tool.description"
+          />
+        </ULandingGrid>
+      </ULandingSection>
+    </div>
+
     <!-- Full Stack section -->
     <ULandingSection
-      :title="page?.fullStack.title" :links="page?.fullStack.buttons"
+      :title="page?.fullStack.title"
+      :links="page?.fullStack.buttons"
+      :ui="{
+        title: 'text-4xl'
+      }"
     >
       <template v-if="page?.fullStack.headline" #headline>
         <UBadge color="white" size="lg" class="rounded-full mb-6">
@@ -156,7 +191,7 @@ onMounted(() => {
       align="left"
       :ui="{
         wrapper: 'pt-0 sm:pt-0 pb-24',
-        container: 'gap-8',
+        container: 'gap-y-8 sm:gap-y-12',
         title: 'text-xl sm:text-2xl lg:text-3xl font-semibold',
         description: 'text-base mt-3 dark:text-gray-400'
       }"
@@ -192,7 +227,7 @@ onMounted(() => {
       align="right"
       :ui="{
         wrapper: 'pt-0 sm:pt-0 pb-24',
-        container: 'gap-8',
+        container: 'gap-y-8 sm:gap-y-12',
         title: 'text-xl sm:text-2xl lg:text-3xl font-semibold',
         description: 'text-base mt-3 dark:text-gray-400'
       }"
@@ -228,7 +263,7 @@ onMounted(() => {
       align="left"
       :ui="{
         wrapper: 'pt-0 sm:pt-0 pb-24',
-        container: 'gap-8',
+        container: 'gap-y-8 sm:gap-y-12',
         title: 'text-xl sm:text-2xl lg:text-3xl font-semibold',
         description: 'text-base mt-3 dark:text-gray-400'
       }"
@@ -264,7 +299,7 @@ onMounted(() => {
       align="right"
       :ui="{
         wrapper: 'pt-0 sm:pt-0 pb-24 mb-10',
-        container: 'gap-8',
+        container: 'gap-y-8 sm:gap-y-12',
         title: 'text-xl sm:text-2xl lg:text-3xl font-semibold',
         description: 'text-base mt-3 dark:text-gray-400'
       }"
@@ -295,42 +330,7 @@ onMounted(() => {
       />
     </ULandingSection>
 
-    <!-- tool section -->
-    <div class="relative">
-      <img src="/images/landing/bg-tailored.webp" width="1441" height="181" class="absolute top-0 w-full right-0" alt="Tailored section background">
-
-      <ULandingSection :links="page?.tool.buttons" class="relative">
-        <template v-if="page?.tool.headline" #headline>
-          <UBadge color="white" size="lg" class="rounded-full mb-6">
-            {{ page?.tool.headline }}
-          </UBadge>
-        </template>
-        <template #title>
-          <span v-html="page?.tool.title" />
-        </template>
-        <template #description>
-          <span v-html="page?.tool.description" />
-        </template>
-
-        <ULandingGrid :ui="{ wrapper: 'flex flex-col md:grid gap-8 md:grid-cols-2 lg:grid-cols-4 relative' }">
-          <ULandingCard
-            v-for="tool in page?.tool.features" :key="tool.title" :description="tool.description"
-            :ui="{ title: '', description: 'pl-8' }"
-          >
-            <template #title>
-              <span class="flex flex-row gap-x-3 items-center">
-                <img :src="tool.img" width="24" height="24" :alt="tool.title">
-                <span class="text-gray-900 dark:text-white text-base font-bold truncate">
-                  {{ tool.title }}
-                </span>
-              </span>
-            </template>
-          </ULandingCard>
-        </ULandingGrid>
-      </ULandingSection>
-    </div>
-
-    <!-- testomonials section -->
+    <!-- testimonials section -->
     <ULandingSection>
       <template v-if="page?.testimonials.headline" #headline>
         <UBadge color="white" size="lg" class="rounded-full mb-6">
@@ -374,7 +374,7 @@ onMounted(() => {
         />
       </div>
 
-      <ULandingSection class="relative mt-32" :ui="{ title: 'z-10' }">
+      <ULandingSection class="relative mt-32" :ui="{ title: 'z-10 2xl:pt-10' }">
         <template #title>
           <span v-html="page?.journey.title" />
         </template>

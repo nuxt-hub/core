@@ -1,24 +1,24 @@
-title: 'Build, deploy & manage Nuxt apps, globally.'
-description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare. Deploy your Nuxt applications with a database, key-value and blob storage with zero configuration, on your Cloudflare account.
-NuxtHub lets you affordably run your high performance Nuxt apps everywhere.'
+title: 'Build, Deploy & Manage Nuxt apps that scale'
 navigation: false
+description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare. Deploy your Nuxt apps at low cost and with ease, ensuring lightning-fast performance for your users anywhere on the planet. Ship faster with our built-in full-stack features: AI, Database, Files Storage, KV, Caching and more.'
 hero:
-  title: 'Build, deploy & manage <br /> <span class="text-primary">Nuxt apps</span>, globally.'
-  description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare.<br />Deploy your app with a database, key-value and blob storage with zero configuration, on your Cloudflare account.<br />NuxtHub lets you affordably run your high performance Nuxt apps everywhere.'
+  title: 'Build, deploy & manage <br /> <span class="text-primary">Nuxt apps</span> that scale.'
+  description: 'NuxtHub is a deployment and administration platform for Nuxt, powered by Cloudflare.<br /><span class="hidden sm:block">Deploy your Nuxt apps at low cost and with ease, ensuring lightning-fast performance for your users anywhere on the planet.<br></span>Ship faster with our built-in full-stack features: AI, Database, Files Storage, KV, Caching and more.'
   img:
     width: '1439'
     height: '681'
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: NuxtHub AI is out
-    to: /changelog/hub-ai
+    label: Using AI for User Experience
+    to: /blog/cloudflare-ai-for-user-experience
     icon: i-ph-arrow-right
   links:
-    - label: Get started
+    - label: Start reading docs
       trailing-icon: i-ph-arrow-right
       to: '/docs/getting-started'
       size: md
+      id: get-started
     - label: Watch 3 min intro
       trailing-icon: i-ph-play-circle
       color: gray
@@ -161,45 +161,44 @@ storage:
 tool:
   headline: All-in-one tool
   buttons:
-    - label: NuxtHub Admin
-      icon: i-simple-icons-nuxtdotjs
+    - label: Start deploying
+      icon: i-ph-rocket-launch
       color: black
       size: md
       to: https://admin.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=home
       target: _blank
-    - label: Get started
+    - label: Read the docs
       color: gray
       variant: ghost
-      trailing-icon: i-ph-arrow-right
       to: '/docs/getting-started'
       size: md
   title: Tailored features for <span class="text-primary">Nuxt developers</span>
   description: NuxtHub provides you with all the tools you need to build and deploy your Nuxt apps, globally.
   features:
-    - title: 'Storage region'
-      description: 'Choose one of the five Cloudflare regions to place your D1 and R2.'
-      img: '/images/landing/tool-storage.svg'
+    - title: 'Hybrid Rendering'
+      description: 'Render your Nuxt app with SSR, SPA or pre-rendering at the page level.'
+    - title: 'API Routes'
+      description: 'Create API and server routes to create full-stack Nuxt applications.'
+    - title: 'Global CDN'
+      description: "Leverage Cloudflare's worldwide network for faster static assets delivery."
+    - title: 'Edge Rendering'
+      description: 'Your Nuxt apps renders in milliseconds from 300+ locations around the world.'
+    - title: 'Auto Scaling'
+      description: 'Your app handles traffic spikes without manual intervention.'
+    - title: 'Instant Rollbacks'
+      description: 'Quickly revert to previous deployments with one click if issues arise.'
+    - title: 'Preview Deployments'
+      description: 'Test pull requests and branches in isolated environments before going live.'
+    - title: 'Custom Domains'
+      description: 'Easy setup for your own domains or use our free .nuxt.dev subdomains.'
     - title: 'Environment variables'
       description: 'Securely store secrets, API keys, tokens, and other environment variables.'
-      img: '/images/landing/tool-env.svg'
-    - title: 'Production / Staging'
-      description: 'Switch between your production or staging deployments & resources.'
-      img: '/images/landing/tool-prod-staging.svg'
-    - title: 'Custom domains'
-      description: 'Set your custom domain or use our .nuxt.dev domain for free.'
-      img: '/images/landing/tool-domains.svg'
-    - title: 'NuxtHub templates'
-      description: 'Quick start your next project using one of our ready-to use templates.'
-      img: '/images/landing/tool-templates.svg'
+    - title: 'Automatic HTTPS'
+      description: 'SSL certificates are provisioned and renewed automatically.'
     - title: 'Real-time logs'
       description: 'Access to your Nuxt server logs in real-time for debugging purpose.'
-      img: '/images/landing/tool-logs.svg'
-    - title: 'Import from GitHub'
-      description: 'Select a repository from your GitHub account and deploy it globally.'
-      img: '/images/landing/tool-github.svg'
-    - title: 'Nuxt DevTools'
-      description: 'Manage your NuxtHub database, kv & blob in the Nuxt DevTools.'
-      img: '/images/landing/tool-devtools.svg'
+    - title: 'Import from git'
+      description: 'Select a repository from your favourite git provider and deploy it globally.'
 testimonials:
   headline: 'Wall of love'
   title: 'Testimonials from <span class="text-primary">early adopters</span>'
@@ -280,6 +279,13 @@ testimonials:
         avatar:
           src: 'https://avatars.githubusercontent.com/u/90707158?v=4'
           loading: 'lazy'
+    - quote: "At YG, our team recently grew and that meant more seats on all the tools we use. Migrating our hosting workflow to NuxtHub not only took just a few minutes but saved us money from our previous provider. NuxtHub provides an excellent management layer on top of our infrastructure and we’re super happy about the move!"
+      author:
+        name: 'Eckhardt Dreyer'
+        description: 'Lead Developer at YG'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/37825447?v=4'
+          loading: 'lazy'
 journey:
     title: 'Begin your NuxtHub journey <span class="text-primary">today</span>'
     images:
@@ -295,7 +301,7 @@ journey:
       - name: 'Start from NuxtHub template'
         description: 'Choose one of our open source templates and start from it.'
         img: '/images/landing/journey-console.svg'
-        to: https://github.com/topics/nuxthub
+        to: /templates
       - name: 'Create an empty project'
         description: 'Create a NuxtHub project from scratch and deploy it with NuxtHub CLI.'
         img: '/images/landing/journey-brackets.svg'

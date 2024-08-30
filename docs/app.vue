@@ -56,22 +56,29 @@ onMounted(() => {
   }, 0)
 })
 
-const links = [{
-  label: 'NuxtHub Admin',
-  to: 'https://admin.hub.nuxt.com',
-  target: '_blank',
-  icon: 'i-simple-icons-nuxtdotjs'
-}, {
-  label: 'NuxtHub repository',
-  to: 'https://github.com/nuxt-hub/core',
-  target: '_blank',
-  icon: 'i-simple-icons-github'
-}, {
-  label: 'NuxtHub on X',
-  to: 'https://x.com/nuxt_hub',
-  target: '_blank',
-  icon: 'i-simple-icons-x'
-}]
+const links = computed(() => [
+  ...navigation.value.map(item => ({
+    label: item.title,
+    icon: item.icon,
+    to: item._path === '/docs' ? '/docs/getting-started' : item._path
+  })),
+  {
+    label: 'NuxtHub Admin',
+    to: 'https://admin.hub.nuxt.com',
+    target: '_blank',
+    icon: 'i-simple-icons-nuxtdotjs'
+  }, {
+    label: 'nuxt-hub/core',
+    to: 'https://github.com/nuxt-hub/core',
+    target: '_blank',
+    icon: 'i-simple-icons-github'
+  }, {
+    label: '@nuxt_hub',
+    to: 'https://x.com/nuxt_hub',
+    target: '_blank',
+    icon: 'i-simple-icons-x'
+  }]
+)
 </script>
 
 <template>

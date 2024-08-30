@@ -15,7 +15,7 @@ export default defineAppConfig({
     siteName: 'NuxtHub'
   },
   toc: {
-    title: 'Table of Contents',
+    title: 'On this page',
     bottom: {
       edit: 'https://github.com/nuxt-hub/core/edit/main/docs/content'
     }

@@ -3,7 +3,6 @@ title: Blob Upload Prefix
 description: "It is now possible to upload a blob and setting the prefix beforehand."
 date: 2024-07-02
 image: '/images/changelog/blob-upload-prefix.png'
-category: Admin
 authors:
   - name: Sebastien Chopin
     avatar: 

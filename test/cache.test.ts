@@ -30,7 +30,7 @@ describe('KV', async () => {
 
   it('Fetch Keys List (empty)', async () => {
     const result = await $fetch('/api/_hub/cache')
-    expect(result).toMatchObject({ functions: 0, handlers: 0 })
+    expect(result).toMatchObject({})
   })
 
   describe('Trigger Cached functions & handlers', () => {
@@ -38,13 +38,16 @@ describe('KV', async () => {
       const result = await $fetch('/api/cached')
       expect(result).toMatchObject({ hello: 'world' })
 
-      const result2 = await $fetch('/api/_hub/cache')
-      expect(result2).toMatchObject({ functions: 0, handlers: 1 })
+      const entries = await $fetch('/api/_hub/cache')
+      expect(entries).toMatchObject({ nitro: 1 })
 
-      const handlers = await $fetch('/api/_hub/cache/handlers')
+      const nitro = await $fetch('/api/_hub/cache/nitro')
+      expect(nitro).toMatchObject({ cache: [], groups: { handlers: 1 } })
+
+      const handlers = await $fetch('/api/_hub/cache/nitro/handlers')
       expect(handlers).toMatchObject({ cache: [], groups: { _: 1 } })
 
-      const handlers_ = await $fetch<Record<string, any>>('/api/_hub/cache/handlers/_')
+      const handlers_ = await $fetch<Record<string, any>>('/api/_hub/cache/nitro/handlers/_')
       expect(handlers_.cache.length).greaterThan(0)
 
       cacheListFields.forEach(key => expect(handlers_.cache[0]).toHaveProperty(key))

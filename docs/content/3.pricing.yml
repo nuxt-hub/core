@@ -1,6 +1,6 @@
 title: 'Pricing'
 description: 'Get started with NuxtHub for free and upgrade as you grow.'
-navigation: false
+icon: i-ph-credit-card
 hero:
   headline: '2 months off with yearly plan'
   title: 'Start for free, upgrade <span class="text-primary">as you grow</span>'
@@ -18,12 +18,18 @@ pricing:
       price: '$0'
       cycle: ''
       features:
-        - 'One member'
-        - 'Up to 5 projects'
-        - 'Unlimited deployments'
-        - 'Custom domains'
-        - 'Remote Storage'
-        - 'Deploy to your Cloudflare account'
+        - title: 'One member'
+          icon: i-ph-user-fill
+        - title: 'Up to 5 projects'
+          icon: i-ph-app-window-fill
+        - title: 'Unlimited deployments'
+          icon: i-ph-rocket-launch-fill
+        - title: 'Custom domains'
+          icon: i-ph-globe-stand-fill
+        - title: 'Remote Storage'
+          icon: i-ph-cloud-fill
+        - title: 'Deploy to your Cloudflare account'
+          icon: i-simple-icons-cloudflare
       button:
         label: 'Get started for free'
         color: 'gray'
@@ -37,33 +43,45 @@ pricing:
         monthly: '/member/month'
         yearly: '/member/month'
       highlight: true
+      scale: true
       features:
-        - 'Unlimited projects'
-        - 'Unlimited deployments'
-        - 'Collaborate with your team'
-        - 'Access control on remote storage'
-        - 'Early access to new features'
-        - 'Priority support'
+        - title: 'Collaborate with your team'
+          icon: i-ph-users-fill
+        - title: 'Unlimited projects'
+          icon: i-ph-app-window-fill
+        - title: 'Unlimited deployments'
+          icon: i-ph-rocket-launch-fill
+        - title: 'Access control on remote storage'
+          icon: i-ph-cloud-check-fill
+        - title: 'Early access to new features'
+          icon: i-ph-confetti-fill
+        - title: 'Priority support'
+          icon: i-ph-question-fill
       button:
         label: 'Get started as a team'
         to: https://admin.hub.nuxt.com
       ui:
         inner: 'justify-between'
         body:
-          background: 'bg-gradient-to-t from-primary/10 via-white to-white dark:from-primary/10 dark:via-gray-900 dark:to-gray-900 rounded-xl'
+          background: 'bg-gradient-to-t from-primary/10 via-white to-white dark:from-primary/20 dark:via-gray-900 dark:to-gray-900 rounded-xl'
     - title: 'On-Premise'
       description: 'Deploy NuxtHub on your own infrastructure.'
       cycle: ''
       price: 'Custom'
       features:
-        - 'Unlimited projects'
-        - 'Unlimited teams'
-        - 'Unlimited members'
-        - 'Self-host NuxtHub Admin'
-        - 'Priority Support'
+        - title: 'Unlimited projects'
+          icon: i-ph-app-window-fill
+        - title: 'Unlimited teams'
+          icon: i-ph-users-four-fill
+        - title: 'Unlimited members'
+          icon: i-ph-users-fill
+        - title: 'Self-host NuxtHub Admin'
+          icon: i-ph-computer-tower-fill
+        - title: 'Priority Support'
+          icon: i-ph-question-fill
       button:
         label: 'Contact us'
-        color: black
+        color: gray
         to: 'mailto:hub@nuxt.com?subject=On-Premise%20Deployment&body=Hi%20NuxtHub%20Team%2C%0A%0AI%20am%20interested%20in%20deploying%20NuxtHub%20on%20my%20own%20infrastructure.%0A%0AKind%20regards%2C'
   info: 'Prices does not include your <a href="https://www.cloudflare.com/plans/developer-platform/" target="_blank" class="underline underline-offset-4 dark:hover:text-white hover:text-gray-900">Cloudflare costs</a>.'
   contact:
@@ -74,65 +92,143 @@ pricing:
       color: gray
       to: 'mailto:hub@nuxt.com?subject=Open%20Source%20Organization%20Offer&body=Hi%20NuxtHub%20Team%2C%0A%0AI%20am%20interested%20in%20the%20special%20offer%20for%20Open%20Source%20Organizations.%0A%0AKind%20regards%2C'
 cloudflare:
-  title: 'What about Cloudflare pricing?'
-  description: 'You can start for free with Cloudflare and seamlessly upgrade to Workers Paid plan when needed.'
+  title: 'Cloudflare pricing'
+  description: 'You can start for free with Cloudflare and seamlessly upgrade to Workers Paid plan when needed for $5/month.'
   plans:
-    - title: 'Cloudflare Workers (Nuxt application)'
-      free: >
-        100,000 requests / day<br>
-        1 MB worker size (small Nuxt app)<br>
-        10ms CPU time per invocation<br>
-        100 applications<br>
-      paid: >
-        10 million requests / month + $0.30/million<br>
-        10 MB worker size<br>
-        30s CPU time per invocation<br>
-        30 million CPU milliseconds + $0.02/million<br>
-        500 applications
-      to: 'https://developers.cloudflare.com/workers/platform/pricing/'
-    - title: 'Cloudflare D1 (Database)'
-      free: >
-        10 databases<br>
-        5 million rows read / day<br>
-        100,000 rows written / day<br>
-        5 GB storage
-      paid: >
-        50,000 databases<br>
-        25 billion rows read / month + $0.001/million<br>
-        50 million rows written / month + $1.00/million<br>
-        5 GB storage included + $0.75/GB-month
-      to: 'https://developers.cloudflare.com/d1/platform/pricing/'
-    - title: 'Cloudflare R2 (Blob)'
-      free: >
-        1 million class A requests / month (list + write)<br>
-        10 million class B requests / month (read)<br>
-        10 GB storage / month<br>
-        Unlimited egress (data transfer to Internet)
-      paid: >
-        1 million class A requests / month + $4.50/million<br>
-        10 million class B requests / month + $0.36/million<br>
-        10 GB storage / month + $0.015/GB-month<br>
-        Unlimited egress (data transfer to Internet)
-      to: 'https://developers.cloudflare.com/r2/pricing/'
-    - title: 'Cloudflare KV (KV & Cache)'
-      free: >
-        100,000 read / day<br>
-        1,000 list / day<br>
-        1,000 write / day<br>
-        1,000 delete / day<br>
-        1 GB storage
-      paid: >
-        10 million read / month + $0.50/million<br>
-        1 million list / month + $5.00/million<br>
-        1 million write / month + $5.00/million<br>
-        1 million delete / month + $5.00/million<br>
-        1 GB storage + $0.50/GB-month
-      to: 'https://developers.cloudflare.com/kv/platform/pricing/'
+    - label: 'App'
+      icon: i-ph-app-window-fill
+      buttons:
+        - label: 'Cloudflare Workers pricing'
+          to: 'https://developers.cloudflare.com/workers/platform/pricing/'
+      columns:
+        - key: 'title'
+          label: ''
+        - key: 'free'
+          label: 'Free'
+        - key: 'paid'
+          label: 'Workers Paid ($5/month)'
+      rows:
+        - title: 'Requests'
+          free: '100,000 / day'
+          paid: '10 million / month + $0.30/million'
+        - title: 'Worker size'
+          free: '1 MB'
+          paid: '10 MB'
+        - title: 'CPU time'
+          free: '10ms per invocation'
+          paid: '30s per invocation<br>30 million CPU ms + $0.02/million'
+        - title: 'CPU milliseconds'
+          free: '100'
+          paid: '30 million'
+        - title: 'Applications'
+          free: '100'
+          paid: '500'
+    - label: 'DB'
+      icon: i-ph-database-fill
+      buttons:
+        - label: 'Cloudflare D1 pricing'
+          to: 'https://developers.cloudflare.com/d1/platform/pricing/'
+      columns:
+        - key: 'title'
+          label: ''
+        - key: 'free'
+          label: 'Free'
+        - key: 'paid'
+          label: 'Workers Paid ($5/month)'
+      rows:
+        - title: 'Databases'
+          free: '10'
+          paid: '50,000'
+        - title: 'Rows read'
+          free: '5 million / day'
+          paid: '25 billion / month + $0.001/million'
+        - title: 'Rows written'
+          free: '100,000 / day'
+          paid: '50 million / month + $1.00/million'
+        - title: 'Storage'
+          free: '5 GB'
+          paid: '5 GB + $0.75/GB-month'
+        - title: 'Max database size'
+          free: '500 MB'
+          paid: '10 GB (<a href="https://developers.cloudflare.com/d1/platform/limits/" target="_blank" class="underline underline-offset-2 dark:hover:text-gray-200 hover:text-gray-900">learn more</a>)'
+    - label: 'KV'
+      icon: i-ph-coin-fill
+      buttons:
+        - label: 'Cloudflare KV pricing'
+          to: 'https://developers.cloudflare.com/kv/platform/pricing/'
+      columns:
+        - key: 'title'
+          label: ''
+        - key: 'free'
+          label: 'Free'
+        - key: 'paid'
+          label: 'Workers Paid ($5/month)'
+      rows:
+        - title: 'Read'
+          free: '100,000 / day'
+          paid: '10 million / month + $0.50/million'
+        - title: 'List'
+          free: '1,000 / day'
+          paid: '1 million / month + $5.00/million'
+        - title: 'Write'
+          free: '1,000 / day'
+          paid: '1 million / month + $5.00/million'
+        - title: 'Delete'
+          free: '1,000 / day'
+          paid: '1 million / month + $5.00/million'
+        - title: 'Storage'
+          free: '1 GB'
+          paid: '1 GB + $0.50/GB-month'
+    - label: 'Blob'
+      icon: i-ph-shapes-fill
+      buttons:
+        - label: 'Cloudflare R2 pricing'
+          to: 'https://developers.cloudflare.com/r2/pricing/'
+      columns:
+        - key: 'title'
+          label: ''
+        - key: 'free'
+          label: 'Free Tier'
+        - key: 'paid'
+          label: 'Pricing'
+      rows:
+        - title: 'List + Write'
+          free: '1 million / month'
+          paid: '1 million / month + $4.50/million'
+        - title: 'Read'
+          free: '10 million / month'
+          paid: '10 million / month + $0.36/million'
+        - title: 'Storage'
+          free: '10 GB / month'
+          paid: '10 GB / month + $0.015/GB-month'
+        - title: 'Egress'
+          free: 'Unlimited'
+          paid: 'Unlimited'
+    - label: 'AI'
+      icon: i-ph-sparkle-fill
+      buttons:
+        - label: 'Cloudflare AI pricing'
+          to: 'https://developers.cloudflare.com/workers-ai/platform/pricing/'
+        - label: 'Pricing calculator'
+          to: 'https://ai.cloudflare.com/#pricing-calculator'
+      columns:
+        - key: 'title'
+          label: ''
+        - key: 'free'
+          label: 'Free'
+        - key: 'paid'
+          label: 'Workers Paid ($5/month)'
+      rows:
+        - title: 'Neurons'
+          free: '10,000 / day'
+          paid: '10,000 / day + $0.011/1,000 neurons'
   button:
-    label: 'Learn more about Cloudflare pricing'
+    label: 'Discover Cloudflare pricing'
     external: true
-    trailingIcon: 'i-ph-arrow-square-out'
-    color: gray
+    variant: 'link'
+    padded: false
+    trailingIcon: 'i-ph-arrow-up-right'
+    color: black
     to: 'https://www.cloudflare.com/plans/developer-platform/'
 faq:
   title: 'Frequently Asked Questions'

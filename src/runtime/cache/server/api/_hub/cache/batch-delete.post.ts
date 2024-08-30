@@ -13,7 +13,7 @@ export default eventHandler(async (event) => {
     keys: z.array(z.string().min(1)).min(1)
   }).parse)
 
-  const storage = useStorage('cache:nitro')
+  const storage = useStorage('cache')
   // delete with batch of 25 keys
   do {
     const keysToDelete = keys.splice(0, 25)

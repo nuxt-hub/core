@@ -41,8 +41,8 @@ const socialLinks = computed(() => [{
   icon: 'i-simple-icons-linkedin',
   to: `https://www.linkedin.com/sharing/share-offsite/?url=https://hub.nuxt.com${changelog.value._path}`
 }, {
-  icon: 'i-simple-icons-twitter',
-  to: `https://twitter.com/intent/tweet?text=${encodeURIComponent(`NuxtHub: ${changelog.value.title}\n\n`)}https://hub.nuxt.com${changelog.value._path}`
+  icon: 'i-simple-icons-x',
+  to: `https://x.com/intent/tweet?text=${encodeURIComponent(`NuxtHub: ${changelog.value.title}\n\n`)}https://hub.nuxt.com${changelog.value._path}`
 }])
 
 function copyLink() {
@@ -85,17 +85,16 @@ function copyLink() {
       </UPageHeader>
 
       <UPage>
-        <UPageBody prose class="dark:text-gray-300 dark:prose-pre:!bg-gray-800/60">
+        <UPageBody prose class="dark:text-gray-300 dark:prose-pre:!bg-gray-800/60 lg:pr-10">
           <ContentRenderer v-if="changelog && changelog.body" :value="changelog" />
-
+          <PageSectionCTA />
           <div class="flex items-center justify-between mt-12 not-prose">
-            <UButton to="/changelog" variant="link" :padded="false">
-              ← Back to changelog
+            <UButton to="/changelog" variant="link" :padded="false" color="gray" icon="i-ph-arrow-left">
+              Back to changelog
             </UButton>
             <div class="flex justify-end items-center gap-1.5">
-              <UButton icon="i-ph-link-simple" v-bind="($ui.button.secondary as any)" @click="copyLink">
-                Copy URL
-              </UButton>
+              Share:
+              <UButton icon="i-ph-link-simple" color="gray" variant="ghost" @click="copyLink" />
               <UButton
                 v-for="(link, index) in socialLinks"
                 :key="index"
@@ -113,13 +112,7 @@ function copyLink() {
         </UPageBody>
 
         <template #right>
-          <UContentToc v-if="changelog.body && changelog.body.toc" :links="changelog.body.toc.links">
-            <template #bottom>
-              <div class="hidden lg:block space-y-6">
-                <UPageLinks title="Links" :links="asideLinks" />
-              </div>
-            </template>
-          </UContentToc>
+          <UContentToc v-if="changelog.body && changelog.body.toc" :links="changelog.body.toc.links" title="On this page" />
         </template>
       </UPage>
     </UPage>

@@ -1,6 +1,6 @@
 title: 'Changelog'
 description: 'Follow the latest updates and improvements of NuxtHub.'
-navigation: false
+icon: i-ph-pulse
 hero:
   title: 'Changelog'
   description: 'Follow the latest updates and improvements of NuxtHub.'
@@ -9,12 +9,18 @@ hero:
     - label: '@nuxt_hub'
       icon: i-simple-icons-x
       color: white
-      size: lg
+      size: xs
       to: https://x.com/nuxt_hub
+      target: _blank
+    - label: 'NuxtHub'
+      icon: i-simple-icons-linkedin
+      color: white
+      size: xs
+      to: https://www.linkedin.com/showcase/nuxthub/
       target: _blank
     - label: 'Changelog RSS'
       icon: 'i-simple-icons-rss'
       to: '/changelog/rss.xml'
       color: white
-      size: lg
+      size: xs
       target: _blank
