@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import destr from 'destr'
+// import destr from 'destr'
+// import { useAIChat } from '../../../dist/runtime/ai/app/composables/useAIChat';
 
 interface Message {
   role: 'ai' | 'user'
@@ -12,38 +13,32 @@ const multiTurnChat = ref(true)
 const loading = ref(false)
 const messages = ref<Message[]>([])
 const currentAIResponse = ref('')
+const model = '@cf/meta/llama-3.1-8b-instruct'
 
 async function sendPrompt() {
   if (loading.value) return
+
   loading.value = true
   currentAIResponse.value = ''
+
   messages.value.push({
     role: 'user',
     message: prompt.value
   })
+
   const promptToSend = prompt.value
   prompt.value = ''
-  const body = await $fetch('/api/ai', {
-    method: 'POST',
-    responseType: 'stream',
-    body: {
-      prompt: promptToSend
-    }
-  })
-  const reader = body.getReader()
-  const decoder = new TextDecoder()
-  let result = await reader.read()
-  while (!result.done) {
-    const text = decoder.decode(result.value)
-    for (const line of text.split('\n')) {
-      if (!line) continue
-      const data: any = destr(line.replace('data: ', '')) || {}
-      if (data?.response) {
-        currentAIResponse.value += data.response
-      }
-    }
-    result = await reader.read()
+
+  const response = useAIChat('/api/ai', model, {
+    prompt: multiTurnChat.value ? undefined : promptToSend,
+    messages: multiTurnChat.value ? messages.value.map(m => ({ role: m.role, content: m.message })) : undefined,
+    stream: stream.value
+  })()
+
+  for await (const chunk of response) {
+    currentAIResponse.value += chunk
   }
+
   messages.value.push({
     role: 'ai',
     message: currentAIResponse.value
