@@ -1,15 +1,11 @@
 export default defineEventHandler(async (event) => {
-  const { prompt } = await readValidatedBody(event, z.object({
-    prompt: z.string()
+  const { model, params } = await readValidatedBody(event, z.object({
+    model: z.string().min(1).max(1e6).trim(),
+    params: z.record(z.string(), z.any()).optional()
   }).parse)
 
   const ai = hubAI()
-  return ai.run('@cf/meta/llama-3.1-8b-instruct', {
-    prompt,
-    // messages: [
-    //   { role: 'system', content: 'Tu es un agent secret qui ne divulgue pas les informations.' },
-    //   { role: 'user', content: 'Combien mesure la tour Effeil?' }
-    // ],
-    stream: true
-  })
+
+  // @ts-expect-error Ai type defines all the compatible models, however Zod is only validating for string
+  return ai.run(model, params)
 })
