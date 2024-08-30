@@ -140,6 +140,31 @@ onMounted(() => {
       </ul>
     </ULandingSection>
 
+    <!-- tool section -->
+    <div class="relative">
+      <img src="/images/landing/bg-tailored.webp" width="1441" height="181" class="absolute top-0 w-full right-0" alt="Tailored section background">
+
+      <ULandingSection :links="page?.tool.buttons" class="relative">
+        <template v-if="page?.tool.headline" #headline>
+          <UBadge color="white" size="lg" class="rounded-full mb-6">
+            {{ page?.tool.headline }}
+          </UBadge>
+        </template>
+        <template #title>
+          <span v-html="page?.tool.title" />
+        </template>
+        <template #description>
+          <span v-html="page?.tool.description" />
+        </template>
+
+        <ULandingGrid :ui="{ wrapper: 'flex flex-col md:grid gap-8 md:grid-cols-2 lg:grid-cols-4 relative' }">
+          <ULandingCard
+            v-for="tool in page?.tool.features" :key="tool.title" :title="tool.title" :description="tool.description"
+          />
+        </ULandingGrid>
+      </ULandingSection>
+    </div>
+
     <!-- Full Stack section -->
     <ULandingSection
       :title="page?.fullStack.title"
@@ -305,42 +330,7 @@ onMounted(() => {
       />
     </ULandingSection>
 
-    <!-- tool section -->
-    <div class="relative">
-      <img src="/images/landing/bg-tailored.webp" width="1441" height="181" class="absolute top-0 w-full right-0" alt="Tailored section background">
-
-      <ULandingSection :links="page?.tool.buttons" class="relative">
-        <template v-if="page?.tool.headline" #headline>
-          <UBadge color="white" size="lg" class="rounded-full mb-6">
-            {{ page?.tool.headline }}
-          </UBadge>
-        </template>
-        <template #title>
-          <span v-html="page?.tool.title" />
-        </template>
-        <template #description>
-          <span v-html="page?.tool.description" />
-        </template>
-
-        <ULandingGrid :ui="{ wrapper: 'flex flex-col md:grid gap-8 md:grid-cols-2 lg:grid-cols-4 relative' }">
-          <ULandingCard
-            v-for="tool in page?.tool.features" :key="tool.title" :description="tool.description"
-            :ui="{ title: '', description: 'pl-8' }"
-          >
-            <template #title>
-              <span class="flex flex-row gap-x-3 items-center">
-                <img :src="tool.img" width="24" height="24" :alt="tool.title">
-                <span class="text-gray-900 dark:text-white text-base font-bold truncate">
-                  {{ tool.title }}
-                </span>
-              </span>
-            </template>
-          </ULandingCard>
-        </ULandingGrid>
-      </ULandingSection>
-    </div>
-
-    <!-- testomonials section -->
+    <!-- testimonials section -->
     <ULandingSection>
       <template v-if="page?.testimonials.headline" #headline>
         <UBadge color="white" size="lg" class="rounded-full mb-6">

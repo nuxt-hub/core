@@ -161,45 +161,44 @@ storage:
 tool:
   headline: All-in-one tool
   buttons:
-    - label: NuxtHub Admin
-      icon: i-simple-icons-nuxtdotjs
+    - label: Start deploying
+      icon: i-ph-rocket-launch
       color: black
       size: md
       to: https://admin.hub.nuxt.com/?utm_source=nuxthub-docs&utm_medium=home
       target: _blank
-    - label: Get started
+    - label: Read the docs
       color: gray
       variant: ghost
-      trailing-icon: i-ph-arrow-right
       to: '/docs/getting-started'
       size: md
   title: Tailored features for <span class="text-primary">Nuxt developers</span>
   description: NuxtHub provides you with all the tools you need to build and deploy your Nuxt apps, globally.
   features:
-    - title: 'Storage region'
-      description: 'Choose one of the five Cloudflare regions to place your D1 and R2.'
-      img: '/images/landing/tool-storage.svg'
+    - title: 'Hybrid Rendering'
+      description: 'Render your Nuxt app with SSR, SPA or pre-rendering at the page level.'
+    - title: 'API Routes'
+      description: 'Create API and server routes to create full-stack Nuxt applications.'
+    - title: 'Global CDN'
+      description: "Leverage Cloudflare's worldwide network for faster static assets delivery."
+    - title: 'Edge Rendering'
+      description: 'Your Nuxt apps renders in milliseconds from 300+ locations around the world.'
+    - title: 'Auto Scaling'
+      description: 'Your app handles traffic spikes without manual intervention.'
+    - title: 'Instant Rollbacks'
+      description: 'Quickly revert to previous deployments with one click if issues arise.'
+    - title: 'Preview Deployments'
+      description: 'Test pull requests and branches in isolated environments before going live.'
+    - title: 'Custom Domains'
+      description: 'Easy setup for your own domains or use our free .nuxt.dev subdomains.'
     - title: 'Environment variables'
       description: 'Securely store secrets, API keys, tokens, and other environment variables.'
-      img: '/images/landing/tool-env.svg'
-    - title: 'Production / Staging'
-      description: 'Switch between your production or staging deployments & resources.'
-      img: '/images/landing/tool-prod-staging.svg'
-    - title: 'Custom domains'
-      description: 'Set your custom domain or use our .nuxt.dev domain for free.'
-      img: '/images/landing/tool-domains.svg'
-    - title: 'NuxtHub templates'
-      description: 'Quick start your next project using one of our ready-to use templates.'
-      img: '/images/landing/tool-templates.svg'
+    - title: 'Automatic HTTPS'
+      description: 'SSL certificates are provisioned and renewed automatically.'
     - title: 'Real-time logs'
       description: 'Access to your Nuxt server logs in real-time for debugging purpose.'
-      img: '/images/landing/tool-logs.svg'
-    - title: 'Import from GitHub'
-      description: 'Select a repository from your GitHub account and deploy it globally.'
-      img: '/images/landing/tool-github.svg'
-    - title: 'Nuxt DevTools'
-      description: 'Manage your NuxtHub database, kv & blob in the Nuxt DevTools.'
-      img: '/images/landing/tool-devtools.svg'
+    - title: 'Import from git'
+      description: 'Select a repository from your favourite git provider and deploy it globally.'
 testimonials:
   headline: 'Wall of love'
   title: 'Testimonials from <span class="text-primary">early adopters</span>'
