@@ -80,6 +80,9 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
   // Add Server scanning
   addServerScanDir(resolve('./runtime/ai/server'))
   addServerImportsDir(resolve('./runtime/ai/server/utils'))
+
+  // Add Composables
+  addImportsDir(resolve('./runtime/ai/app/composables'))
 }
 
 export function setupAnalytics(_nuxt: Nuxt) {
