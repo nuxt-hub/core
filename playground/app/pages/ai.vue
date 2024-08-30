@@ -7,6 +7,8 @@ interface Message {
 }
 
 const prompt = ref('')
+const stream = ref(true)
+const multiTurnChat = ref(true)
 const loading = ref(false)
 const messages = ref<Message[]>([])
 const currentAIResponse = ref('')
@@ -54,6 +56,16 @@ async function sendPrompt() {
 <template>
   <UCard>
     <div class="h-full overflow-auto chat-messages">
+      <div class="flex gap-x-8 mb-4 px-2">
+        <div class="flex items-center gap-x-2">
+          <span>Enable Streaming</span>
+          <UToggle v-model="stream" />
+        </div>
+        <div class="flex items-center gap-x-2">
+          <span>Multi-turn Chat</span>
+          <UToggle v-model="multiTurnChat" />
+        </div>
+      </div>
       <div v-for="(message, i) in messages" :key="i" class="flex flex-col p-4">
         <div v-if="message.role === 'ai'" class="pr-8 mr-auto">
           <div class="p-2 mt-1 text-sm text-gray-700 bg-gray-200 rounded-lg text-smp-2 whitespace-pre-line">
