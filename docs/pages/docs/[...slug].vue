@@ -34,7 +34,7 @@ defineOgImageComponent('Docs', {
   category: 'Docs'
 })
 
-const headline = computed(() => findPageHeadline(page.value))
+// const headline = computed(() => findPageHeadline(page.value))
 
 onMounted(() => {
   mediumZoom('[data-zoom-src]', {
