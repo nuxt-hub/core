@@ -2,11 +2,11 @@ import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import type { H3Error } from 'h3'
-import type { VectorizeIndex } from '../../../../types/vectorize'
+import type { Vectorize } from '../../../../types/vectorize'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { useRuntimeConfig } from '#imports'
 
-let _vectorize: VectorizeIndex
+let _vectorize: Vectorize
 
 /**
  * Access the Vectorize database.
@@ -24,7 +24,7 @@ let _vectorize: VectorizeIndex
  *
  * @see https://developers.cloudflare.com/vectorize/reference/client-api/
  */
-export function hubVectorize(): VectorizeIndex {
+export function hubVectorize(): Vectorize {
   requireNuxtHubFeature('vectorize')
 
   if (_vectorize) {
@@ -38,7 +38,7 @@ export function hubVectorize(): VectorizeIndex {
     return _vectorize
   }
   if (binding) {
-    _vectorize = binding as VectorizeIndex
+    _vectorize = binding as Vectorize
     return _vectorize
   }
   throw createError('Missing Cloudflare Vectorize binding (Vectorize)')
@@ -61,7 +61,7 @@ export function hubVectorize(): VectorizeIndex {
  *
  * @see https://developers.cloudflare.com/vectorize/reference/client-api/
  */
-export function proxyHubVectorize(projectUrl: string, secretKey?: string): VectorizeIndex {
+export function proxyHubVectorize(projectUrl: string, secretKey?: string): Vectorize {
   requireNuxtHubFeature('vectorize')
 
   const vectorizeAPI = ofetch.create({
@@ -95,7 +95,7 @@ export function proxyHubVectorize(projectUrl: string, secretKey?: string): Vecto
     async describe() {
       return vectorizeAPI('/describe').catch(handleProxyError)
     }
-  } as VectorizeIndex
+  } as Vectorize
 }
 
 function handleProxyError(err: H3Error) {

@@ -1,1 +1,1 @@
-export type { VectorizeIndex } from '@cloudflare/workers-types/experimental'
+export type { Vectorize } from '@cloudflare/workers-types/experimental'
