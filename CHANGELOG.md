@@ -1,6 +1,34 @@
 # Changelog
 
 
+## v0.7.8
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.7...v0.7.8)
+
+### 🩹 Fixes
+
+- Correct typo in error message ([#251](https://github.com/nuxt-hub/core/pull/251))
+
+### 📖 Documentation
+
+- Update postgres ([3eda06a](https://github.com/nuxt-hub/core/commit/3eda06a))
+- Add AI templates ([62661ad](https://github.com/nuxt-hub/core/commit/62661ad))
+- Various improvements ([3274bf0](https://github.com/nuxt-hub/core/commit/3274bf0))
+- Improve styling ([2756223](https://github.com/nuxt-hub/core/commit/2756223))
+- Move features above ([4b32c7d](https://github.com/nuxt-hub/core/commit/4b32c7d))
+- Document `useChat()` from Vercel AI SDK ([#250](https://github.com/nuxt-hub/core/pull/250))
+
+### 🏡 Chore
+
+- Lint fix ([6926f8c](https://github.com/nuxt-hub/core/commit/6926f8c))
+- Update deps ([c0bfa9c](https://github.com/nuxt-hub/core/commit/c0bfa9c))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Rajeev R Sharma <i.rarsh@gmail.com>
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+
 ## v0.7.7
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.6...v0.7.7)
