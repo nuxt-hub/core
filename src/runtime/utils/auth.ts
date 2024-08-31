@@ -49,6 +49,6 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
 
   throw createError({
     statusCode: 401,
-    message: 'Missing NUXT_HUB_PROJECT_SECRET_KEY envrionment variable or NUXT_HUB_PROJECT_KEY envrionment variable'
+    message: 'Missing NUXT_HUB_PROJECT_SECRET_KEY environment variable or NUXT_HUB_PROJECT_KEY environment variable'
   })
 }
