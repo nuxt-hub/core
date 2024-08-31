@@ -67,7 +67,7 @@ importers:
         specifier: ^1.4.1
         version: 1.4.1(rollup@3.29.4)
       '@nuxt/eslint-config':
-        specifier: ^0.5.3
+        specifier: ^0.5.4
         version: 0.5.4(eslint@9.9.1(jiti@1.21.6))(typescript@5.5.4)
       '@nuxt/module-builder':
         specifier: ^0.8.3
@@ -100,7 +100,7 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.5.1)(terser@5.31.6)
       wrangler:
-        specifier: ^3.72.3
+        specifier: ^3.73.0
         version: 3.73.0(@cloudflare/workers-types@4.20240821.1)
 
   docs:
@@ -176,7 +176,7 @@ importers:
         specifier: ^0.0.45
         version: 0.0.45(vue@3.4.38(typescript@5.5.4))(zod@3.23.8)
       '@iconify-json/simple-icons':
-        specifier: ^1.1.114
+        specifier: ^1.1.115
         version: 1.1.115
       '@kgierke/nuxt-basic-auth':
         specifier: ^1.6.0

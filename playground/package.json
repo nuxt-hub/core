@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@ai-sdk/vue": "^0.0.45",
-    "@iconify-json/simple-icons": "^1.1.114",
+    "@iconify-json/simple-icons": "^1.1.115",
     "@kgierke/nuxt-basic-auth": "^1.6.0",
     "@nuxt/ui": "^2.18.4",
     "@nuxthub/core": "latest",
