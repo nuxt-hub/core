@@ -5,10 +5,6 @@ import type { HubConfig } from '../features'
 export function generateWrangler(nuxt: Nuxt, hub: HubConfig) {
   const wrangler: { [key: string]: any } = {}
 
-  if (hub.accountId) {
-    wrangler['account_id'] = hub.accountId
-  }
-
   if (hub.ai) {
     wrangler['ai'] = {
       binding: 'AI'
@@ -47,7 +43,7 @@ export function generateWrangler(nuxt: Nuxt, hub: HubConfig) {
   if (hub.vectorize) {
     wrangler['vectorize'] = [{
       binding: 'VECTORIZE',
-      index_name: 'default',
+      index_name: 'default'
     }]
   }
 

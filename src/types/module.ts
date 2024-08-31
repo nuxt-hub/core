@@ -112,10 +112,4 @@ export interface ModuleOptions {
       [key: string]: string
     }
   }
-  /**
-   * The account ID of the Cloudflare account to use for local development.
-   * Only necessary if using AI and logged-in user has access to multiple accounts.
-   * @default process.env.CLOUDFLARE_ACCOUNT_ID
-   */
-  accountId?: string
 }
