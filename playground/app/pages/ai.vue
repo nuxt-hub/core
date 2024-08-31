@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { useChat } from '@ai-sdk/vue'
 
-const { messages, input, handleSubmit, isLoading, stop, error, reload } = useChat({
-  keepLastMessageOnError: true
-})
+const { messages, input, handleSubmit, isLoading, stop, error, reload } = useChat()
 </script>
 
 <template>
