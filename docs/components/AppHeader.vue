@@ -72,7 +72,7 @@ onMounted(async () => {
         </UTooltip>
         <UButton v-if="ready && !authenticated" size="sm" variant="ghost" label="Log in" to="https://admin.hub.nuxt.com/" color="black" class="hidden sm:inline-flex" external />
         <UButton v-if="ready && !authenticated" size="sm" variant="solid" label="Sign up" to="https://admin.hub.nuxt.com/" class="hidden sm:inline-flex" external />
-        <UButton v-if="ready && authenticated" size="sm" icon="i-ph-app-window-duotone" label="Dashboard" to="https://admin.hub.nuxt.com/" color="black" class="hidden sm:inline-flex" external />
+        <UButton v-if="ready && authenticated" size="sm" icon="i-ph-app-window-duotone" label="Dashboard" to="https://admin.hub.nuxt.com/" color="green" class="hidden sm:inline-flex" external />
       </div>
     </template>
 
@@ -83,7 +83,7 @@ onMounted(async () => {
         <UDivider class="mb-4" />
         <UButton v-if="ready && !authenticated" variant="solid" label="Log in" to="https://admin.hub.nuxt.com/" color="white" class="flex justify-center sm:hidden" external />
         <UButton v-if="ready && !authenticated" variant="solid" label="Sign up" to="https://admin.hub.nuxt.com/" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
-        <UButton v-if="ready && authenticated" variant="solid" color="black" icon="i-ph-app-window-duotone" label="Dashboard" to="https://admin.hub.nuxt.com/" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
+        <UButton v-if="ready && authenticated" variant="solid" color="green" icon="i-ph-app-window-duotone" label="Dashboard" to="https://admin.hub.nuxt.com/" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
       </div>
     </template>
   </UHeader>
