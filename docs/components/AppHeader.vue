@@ -39,6 +39,21 @@ const navLinks = links.map((link) => {
     ...link
   }
 })
+const ready = ref(false)
+const authenticated = ref(false)
+onMounted(async () => {
+  const endpoint = import.meta.dev ? 'http://localhost:3000/api/authenticated' : 'https://admin.hub.nuxt.com/api/authenticated'
+  await $fetch(endpoint, {
+    credentials: 'include'
+  }).then((state: { authenticated: boolean }) => {
+    authenticated.value = state.authenticated
+  }).catch(() => {
+    authenticated.value = false
+  })
+  nextTick(() => {
+    ready.value = true
+  })
+})
 </script>
 
 <template>
@@ -51,19 +66,24 @@ const navLinks = links.map((link) => {
     </template>
 
     <template #right>
-      <UTooltip text="Search" :shortcuts="[metaSymbol, 'K']" :popper="{ strategy: 'absolute' }">
-        <UContentSearchButton :label="null" />
-      </UTooltip>
-      <UButton variant="ghost" label="Log in" to="https://admin.hub.nuxt.com/" color="black" class="hidden sm:block" external />
-      <UButton variant="solid" label="Sign up" to="https://admin.hub.nuxt.com/" class="hidden sm:block" external />
+      <div class="flex items-center gap-1.5 transition-opacity duration-300" :class="[ready ? 'opacity-100' : 'opacity-0']">
+        <UTooltip text="Search" :shortcuts="[metaSymbol, 'K']" :popper="{ strategy: 'absolute' }">
+          <UContentSearchButton :label="null" />
+        </UTooltip>
+        <UButton v-if="ready && !authenticated" size="sm" variant="ghost" label="Log in" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" color="black" class="hidden sm:inline-flex" external />
+        <UButton v-if="ready && !authenticated" size="sm" variant="solid" label="Sign up" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="hidden sm:inline-flex" external />
+        <UButton v-if="ready && authenticated" size="sm" icon="i-ph-app-window-duotone" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" color="green" class="hidden sm:inline-flex" external />
+      </div>
     </template>
 
     <template #panel>
-      <UNavigationTree :links="navLinks" :default-open="1" :multiple="false" :ui="{ accordion: { button: { label: 'font-normal' } } }" />
+      <UNavigationTree :links="navLinks" default-open :multiple="false" :ui="{ accordion: { button: { label: 'font-normal' } } }" />
 
       <div class="flex flex-col gap-y-2 mt-4">
-        <UButton variant="solid" label="Log in" to="https://admin.hub.nuxt.com/" color="white" class="flex justify-center sm:hidden" external />
-        <UButton variant="solid" label="Sign up" to="https://admin.hub.nuxt.com/" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
+        <UDivider class="mb-4" />
+        <UButton v-if="ready && !authenticated" variant="solid" label="Log in" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" color="white" class="flex justify-center sm:hidden" external />
+        <UButton v-if="ready && !authenticated" variant="solid" label="Sign up" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
+        <UButton v-if="ready && authenticated" variant="solid" color="green" icon="i-ph-app-window-duotone" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
       </div>
     </template>
   </UHeader>

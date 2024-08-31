@@ -1,7 +1,7 @@
 {
   "name": "@nuxthub/core",
   "private": false,
-  "version": "0.7.7",
+  "version": "0.7.8",
   "description": "Build full-stack Nuxt applications on Cloudflare, with zero configuration.",
   "repository": {
     "type": "git",
@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "^1.4.1",
-    "@nuxt/eslint-config": "^0.5.3",
+    "@nuxt/eslint-config": "^0.5.4",
     "@nuxt/module-builder": "^0.8.3",
     "@nuxt/schema": "^3.13.0",
     "@nuxt/test-utils": "^3.14.1",
@@ -70,7 +70,7 @@
     "nuxt": "^3.13.0",
     "typescript": "^5.5.4",
     "vitest": "^2.0.5",
-    "wrangler": "^3.72.3"
+    "wrangler": "^3.73.0"
   },
   "packageManager": "pnpm@9.9.0"
 }

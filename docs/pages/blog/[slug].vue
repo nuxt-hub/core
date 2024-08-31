@@ -118,7 +118,7 @@ onMounted(() => {
         </UPageBody>
 
         <template #right>
-          <UContentToc v-if="post.body && post.body.toc" :links="post.body.toc.links" title="On this page" />
+          <UContentToc v-if="post.body && post.body.toc" :links="post.body.toc.links" :title="toc.title" />
         </template>
       </UPage>
     </UPage>

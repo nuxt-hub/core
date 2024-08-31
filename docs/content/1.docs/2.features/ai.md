@@ -151,5 +151,81 @@ export default defineEventHandler(async () => {
 
 Explore open source templates made by the community:
 
-- [Atidraw](https://github.com/atinux/atidraw): leverage AI to generate the alt text of the user drawing and generate an alternative image with AI ([blog post](/blog/cloudflare-ai-for-user-experience)).
-- [Hub Chat](https://github.com/ra-jeev/hub-chat): a chat interface to interact with various text generation AI models ([blog post](https://rajeev.dev/create-cloudflare-workers-ai-llm-playground-using-nuxthub-and-nuxtui)).
+::card-group
+  ::card{title="Atidraw" to="https://github.com/atinux/atidraw"}
+  Generate the alt text of the user drawing and generate an alternative image with AI.
+  ::
+  ::card{title="Hub Chat" to="https://github.com/ra-jeev/hub-chat"}
+  A chat interface to interact with various text generation AI models.
+  ::
+::
+
+## Vercel AI SDK
+
+It is possible to use the Vercel AI SDK with Cloudflare Workers AI.
+
+NuxtHub AI is compatible with some functions of the  [Vercel AI SDK](https://sdk.vercel.ai), which enables streaming responses.
+
+Make sure to install the Vercel AI SDK in your project.
+
+```[Terminal]
+npx nypm add ai @ai-sdk/vue
+```
+
+::note
+[`nypm`](https://github.com/unjs/nypm) will detect your package manager and install the dependencies with it.
+::
+
+### `useChat()`
+
+To leverage the `useChat()` Vue composable, you need to create a `POST /api/chat` endpoint that uses the `hubAI()` server composable and returns a compatible stream for the Vercel AI SDK.
+
+```ts [server/api/chat.post.ts]
+import { AIStream, formatStreamPart } from 'ai'
+
+export default defineEventHandler(async (event) => {
+  const { messages } = await readBody(event)
+
+  const stream = await hubAI().run('@cf/meta/llama-3.1-8b-instruct', {
+    messages,
+    stream: true
+  }) as ReadableStream
+
+  // Return a compatible stream for the Vercel AI SDK
+  return AIStream(
+    new Response(stream),
+    data => formatStreamPart('text', JSON.parse(data).response)
+  )
+})
+```
+
+Then, we can create a chat component that uses the `useChat()` composable.
+
+```vue [app/pages/chat.vue]
+<script setup lang="ts">
+import { useChat } from '@ai-sdk/vue'
+
+const { messages, input, handleSubmit, isLoading, stop, error, reload } = useChat()
+</script>
+
+<template>
+  <div v-for="m in messages" :key="m.id">
+    {{ m.role }}: {{ m.content }}
+  </div>
+  <div v-if="error">
+    <div>{{ error.message || 'An error occurred' }}</div>
+    <button @click="reload">retry</button>
+  </div>
+  <form @submit="handleSubmit">
+    <input v-model="input" placeholder="Type here..." />
+    <button v-if="isLoading" @click="stop">stop</button>
+    <button v-else type="submit">send</button>
+  </form>
+</template>
+```
+
+Learn more about the [`useChat()` Vue composable](https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat).
+
+::callout
+Check out our [`pages/ai.vue` full example](https://github.com/nuxt-hub/core/blob/main/playground/app/pages/ai.vue) with Nuxt UI & Nuxt MDC.
+::
