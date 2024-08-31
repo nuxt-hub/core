@@ -8,10 +8,13 @@
     "preview": "nuxi preview"
   },
   "dependencies": {
+    "@ai-sdk/vue": "^0.0.45",
     "@iconify-json/simple-icons": "^1.1.114",
     "@kgierke/nuxt-basic-auth": "^1.6.0",
     "@nuxt/ui": "^2.18.4",
     "@nuxthub/core": "latest",
+    "@nuxtjs/mdc": "^0.8.3",
+    "ai": "^3.3.21",
     "drizzle-orm": "^0.33.0",
     "nuxt": "^3.13.0",
     "postgres": "^3.4.4"
