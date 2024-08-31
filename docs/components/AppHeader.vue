@@ -70,9 +70,9 @@ onMounted(async () => {
         <UTooltip text="Search" :shortcuts="[metaSymbol, 'K']" :popper="{ strategy: 'absolute' }">
           <UContentSearchButton :label="null" />
         </UTooltip>
-        <UButton v-if="ready && !authenticated" size="sm" variant="ghost" label="Log in" to="https://admin.hub.nuxt.com/" color="black" class="hidden sm:inline-flex" external />
-        <UButton v-if="ready && !authenticated" size="sm" variant="solid" label="Sign up" to="https://admin.hub.nuxt.com/" class="hidden sm:inline-flex" external />
-        <UButton v-if="ready && authenticated" size="sm" icon="i-ph-app-window-duotone" label="Dashboard" to="https://admin.hub.nuxt.com/" color="green" class="hidden sm:inline-flex" external />
+        <UButton v-if="ready && !authenticated" size="sm" variant="ghost" label="Log in" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" color="black" class="hidden sm:inline-flex" external />
+        <UButton v-if="ready && !authenticated" size="sm" variant="solid" label="Sign up" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="hidden sm:inline-flex" external />
+        <UButton v-if="ready && authenticated" size="sm" icon="i-ph-app-window-duotone" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" color="green" class="hidden sm:inline-flex" external />
       </div>
     </template>
 
@@ -81,9 +81,9 @@ onMounted(async () => {
 
       <div class="flex flex-col gap-y-2 mt-4">
         <UDivider class="mb-4" />
-        <UButton v-if="ready && !authenticated" variant="solid" label="Log in" to="https://admin.hub.nuxt.com/" color="white" class="flex justify-center sm:hidden" external />
-        <UButton v-if="ready && !authenticated" variant="solid" label="Sign up" to="https://admin.hub.nuxt.com/" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
-        <UButton v-if="ready && authenticated" variant="solid" color="green" icon="i-ph-app-window-duotone" label="Dashboard" to="https://admin.hub.nuxt.com/" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
+        <UButton v-if="ready && !authenticated" variant="solid" label="Log in" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" color="white" class="flex justify-center sm:hidden" external />
+        <UButton v-if="ready && !authenticated" variant="solid" label="Sign up" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
+        <UButton v-if="ready && authenticated" variant="solid" color="green" icon="i-ph-app-window-duotone" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
       </div>
     </template>
   </UHeader>
