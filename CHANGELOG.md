@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v0.7.9
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.8...v0.7.9)
+
+### 🚀 Enhancements
+
+- Support `nuxt-csurf` with zero-config ([#256](https://github.com/nuxt-hub/core/pull/256))
+
+### 📖 Documentation
+
+- Handle login state in header ([759f065](https://github.com/nuxt-hub/core/commit/759f065))
+- Dashboard button green ([e98b0a1](https://github.com/nuxt-hub/core/commit/e98b0a1))
+- Add utm_source ([18b0ab0](https://github.com/nuxt-hub/core/commit/18b0ab0))
+
+### 🏡 Chore
+
+- Update deps ([e0d7a02](https://github.com/nuxt-hub/core/commit/e0d7a02))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.8
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.7...v0.7.8)
