@@ -50,6 +50,12 @@ export function setupBase(nuxt: Nuxt, hub: HubConfig) {
   if (nuxt.options.dev) {
     addDevToolsCustomTabs(nuxt, hub)
   }
+
+  // Add routeRules to work with some security modules
+  nuxt.options.routeRules = nuxt.options.routeRules || {}
+  nuxt.options.routeRules['/api/_hub/**'] = nuxt.options.routeRules['/api/_hub/**'] || {}
+  // @ts-expect-error csurf is not typed here
+  nuxt.options.routeRules['/api/_hub/**'].csurf = false
 }
 
 export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
