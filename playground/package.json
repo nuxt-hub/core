@@ -8,13 +8,16 @@
     "preview": "nuxi preview"
   },
   "dependencies": {
-    "@iconify-json/simple-icons": "^1.1.97",
-    "@kgierke/nuxt-basic-auth": "^1.5.0",
-    "@nuxt/ui": "^2.15.0",
+    "@ai-sdk/vue": "^0.0.45",
+    "@iconify-json/simple-icons": "^1.1.115",
+    "@kgierke/nuxt-basic-auth": "^1.6.0",
+    "@nuxt/ui": "^2.18.4",
     "@nuxthub/core": "latest",
-    "drizzle-orm": "^0.30.4",
-    "nuxt": "latest",
-    "nuxt-auth-utils": "^0.0.21"
+    "@nuxtjs/mdc": "^0.8.3",
+    "ai": "^3.3.21",
+    "drizzle-orm": "^0.33.0",
+    "nuxt": "^3.13.0",
+    "postgres": "^3.4.4"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest"

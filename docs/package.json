@@ -3,26 +3,35 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "postinstall": "nuxi prepare",
     "dev": "nuxi dev",
     "generate": "nuxi generate",
     "build": "nuxi build",
     "preview": "nuxi preview"
   },
   "dependencies": {
-    "@iconify-json/heroicons": "^1.1.20",
-    "@iconify-json/ph": "^1.1.11",
-    "@iconify-json/simple-icons": "^1.1.97",
-    "@nuxt/content": "^2.12.1",
-    "@nuxt/fonts": "^0.5.1",
-    "@nuxt/image": "^1.5.0",
-    "@nuxt/ui-pro": "^1.1.0",
-    "@nuxthq/studio": "^1.0.13",
-    "@nuxtjs/plausible": "^0.2.4",
-    "@vueuse/core": "^10.9.0",
-    "@vueuse/nuxt": "^10.9.0",
+    "@iconify-json/heroicons": "^1.1.24",
+    "@iconify-json/logos": "^1.1.44",
+    "@iconify-json/ph": "^1.1.14",
+    "@iconify-json/simple-icons": "^1.1.114",
+    "@nuxt/content": "^2.13.2",
+    "@nuxt/fonts": "^0.7.2",
+    "@nuxt/image": "^1.7.0",
+    "@nuxt/ui-pro": "^1.4.1",
+    "@nuxthq/studio": "^2.0.3",
+    "@nuxtjs/plausible": "^1.0.2",
+    "@nuxtjs/tailwindcss": "^6.12.1",
+    "@vueuse/core": "^11.0.3",
+    "@vueuse/nuxt": "^11.0.3",
+    "feed": "^4.2.2",
     "medium-zoom": "^1.1.0",
-    "nuxt": "^3.11.1",
+    "nuxt": "^3.13.0",
     "nuxt-cloudflare-analytics": "^1.0.8",
-    "nuxt-og-image": "^2.2.4"
+    "nuxt-og-image": "^3.0.0-rc.65",
+    "three": "^0.167.1",
+    "three-globe": "^2.31.1"
+  },
+  "devDependencies": {
+    "@iconify-json/vscode-icons": "^1.1.37"
   }
 }

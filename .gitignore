@@ -1,8 +1,6 @@
 # Dependencies
 node_modules
 
-# Logs
-*.log*
 
 # Temp directories
 .temp
@@ -54,3 +52,5 @@ coverage
 Network Trash Folder
 Temporary Items
 .apdisk
+
+*.tgz

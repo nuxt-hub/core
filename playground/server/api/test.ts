@@ -8,7 +8,6 @@ export default eventHandler(async () => {
   await kv.set('react:next', { version: 2016 })
   await kv.set('react:gatsby', { version: 2015 })
 
-
   return kv.keys()
   // const db = hubDatabase()
   // return useProjectKV(projectUrl).getKeys()
@@ -34,7 +33,7 @@ export default eventHandler(async () => {
   //   db.prepare('select * from todos where id = ?1').bind(1),
   // ])
 
-  return await db.exec('CREATE TABLE IF NOT EXISTS frameworks (id INTEGER PRIMARY KEY, name TEXT NOT NULL, year INTEGER NOT NULL DEFAULT 0)')
+  // return await db.exec('CREATE TABLE IF NOT EXISTS frameworks (id INTEGER PRIMARY KEY, name TEXT NOT NULL, year INTEGER NOT NULL DEFAULT 0)')
 
   // return useProjectDatabase(projectUrl).all(sql`SELECT * from todos``)
   // return {}
