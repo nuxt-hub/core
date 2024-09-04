@@ -36,7 +36,7 @@ export function useUpload(apiBase: string, options: UploadOptions = {}) {
     if (data instanceof File) {
       files = [data]
     }
-    if (data instanceof FileList)  {
+    if (data instanceof FileList) {
       files = Array.from(data)
     }
     if (!files || !(files as Array<File>).length) {
