@@ -82,10 +82,10 @@ describe('Blob', async () => {
       const result = await $fetch(`/api/_hub/blob/${image.pathname}`, {
         method: 'PUT',
         body: file,
-        headers: {
+        headers: new Headers({
           'content-type': image.contentType,
-          'content-length': image.size
-        },
+          'content-length': image.size.toString()
+        }),
         query: {
           customMetadata: {
             hello: 'world'
