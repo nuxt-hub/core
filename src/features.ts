@@ -28,6 +28,8 @@ export interface HubConfig {
   kv?: boolean
 
   bindings?: {
+    compatibilityDate?: string
+    compatibilityFlags?: string[]
     hyperdrive?: {
       [key: string]: string
     }

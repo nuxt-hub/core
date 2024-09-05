@@ -86,6 +86,17 @@ export interface ModuleOptions {
    */
   bindings?: {
     /**
+     * The compatibility date for the project.
+     * @see https://developers.cloudflare.com/workers/configuration/compatibility-dates/
+     */
+    compatibilityDate?: string
+    /**
+     * Extra compatibility flags for the project.
+     * Note that NuxtHub will always add the 'nodejs_compat' flag if not specified.
+     * @see https://developers.cloudflare.com/workers/configuration/compatibility-dates/#compatibility-flags
+     */
+    compatibilityFlags?: string[]
+    /**
      * The hyperdrive bindings for the project, used only when deployed on Cloudflare.
      * @see https://hub.nuxt.com/docs/features/hyperdrive
      * @default {}
