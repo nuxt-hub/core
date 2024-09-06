@@ -1,4 +1,4 @@
-export default eventHandler(async (event) => {
+export default eventHandler(async () => {
   // Available in nodejs_compat_v2
   const crypto = globalThis['process']?.getBuiltinModule?.('crypto')
   const hash = await new Promise((resolve, reject) => {
