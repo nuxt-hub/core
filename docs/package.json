@@ -14,6 +14,7 @@
     "@iconify-json/logos": "^1.2.0",
     "@iconify-json/ph": "^1.2.0",
     "@iconify-json/simple-icons": "^1.2.1",
+    "@iconify-json/vscode-icons": "^1.2.0",
     "@nuxt/content": "^2.13.2",
     "@nuxt/fonts": "^0.7.2",
     "@nuxt/image": "^1.8.0",
@@ -27,11 +28,6 @@
     "medium-zoom": "^1.1.0",
     "nuxt": "^3.13.1",
     "nuxt-cloudflare-analytics": "^1.0.8",
-    "nuxt-og-image": "^3.0.0-rc.66",
-    "three": "^0.168.0",
-    "three-globe": "^2.31.1"
-  },
-  "devDependencies": {
-    "@iconify-json/vscode-icons": "^1.2.0"
+    "nuxt-og-image": "^3.0.0-rc.66"
   }
 }
