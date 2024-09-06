@@ -20,7 +20,8 @@ export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: '@nuxthub/core',
     configKey: 'hub',
-    version
+    version,
+    docs: 'https://hub.nuxt.com'
   },
   defaults: {},
   async setup(options: ModuleOptions, nuxt: Nuxt) {
