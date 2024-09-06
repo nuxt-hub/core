@@ -5,6 +5,7 @@ const newEntryValue = ref('')
 const newEntryKeyInput = ref(null)
 const editedEntryKey = ref(null)
 const editedEntryValue = ref(null)
+const ttl = ref()
 
 const toast = useToast()
 const { data: entries } = await useFetch('/api/kv')
@@ -21,7 +22,8 @@ async function addEntry() {
       method: 'PUT',
       body: {
         key,
-        value
+        value,
+        ttl: ttl.value
       }
     })
     const entryIndex = entries.value.findIndex(e => e.key === entry.key)
@@ -87,7 +89,6 @@ async function deleteEntry(entry) {
         autofocus
         :ui="{ wrapper: 'flex-1' }"
       />
-
       <UInput
         v-model="newEntryValue"
         name="entryValue"
@@ -97,6 +98,7 @@ async function deleteEntry(entry) {
         autocomplete="off"
         :ui="{ wrapper: 'flex-1' }"
       />
+      <UInput v-model="ttl" type="number" class="w-14" placeholder="ttl" />
 
       <UButton type="submit" icon="i-heroicons-plus-20-solid" :loading="loading" :disabled="newEntryKey.trim().length === 0" />
     </div>

@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-08-06',
+  // experimental: { buildCache: true },
   extends: ['@nuxt/ui-pro'],
   modules: [
     '@nuxt/fonts',
