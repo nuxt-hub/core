@@ -1,6 +1,24 @@
 # Changelog
 
 
+## v0.7.10
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.9...v0.7.10)
+
+### 🚀 Enhancements
+
+- **kv:** Add support for ttl ([#265](https://github.com/nuxt-hub/core/pull/265))
+- Add support for defining compatibility date & flags ([#264](https://github.com/nuxt-hub/core/pull/264))
+
+### 🩹 Fixes
+
+- **blob:** Handle FileList in useUpload ([#260](https://github.com/nuxt-hub/core/pull/260))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Mohan G <mohangopavaram@gmail.com>
+
 ## v0.7.9
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.8...v0.7.9)
