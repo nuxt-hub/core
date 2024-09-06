@@ -144,8 +144,8 @@ await hubKV().del('react')
 
 - The maximum size of a value is 25 MiB.
 - The maximum length of a key is 512 bytes.
-- The maximum size of the metadata is 1024 bytes.
 - The TTL must be at least 60 seconds.
+<!-- - The maximum size of the metadata is 1024 bytes. -->
 
 Learn more about [Cloudflare KV limits](https://developers.cloudflare.com/kv/platform/limits/).
 
