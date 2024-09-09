@@ -6,7 +6,6 @@ import { join } from 'pathe'
 import { defu } from 'defu'
 import { $fetch } from 'ofetch'
 import { addDevToolsCustomTabs } from './utils/devtools'
-import nuxtConfig from '~/docs/nuxt.config'
 
 const log = logger.withTag('nuxt:hub')
 const { resolve } = createResolver(import.meta.url)
