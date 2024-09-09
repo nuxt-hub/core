@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@ai-sdk/vue": "^0.0.45",
+    "@cloudflare/puppeteer": "^0.0.14",
     "@iconify-json/simple-icons": "^1.2.1",
     "@kgierke/nuxt-basic-auth": "^1.6.0",
     "@nuxt/ui": "^2.18.4",
@@ -20,6 +21,7 @@
     "postgres": "^3.4.4"
   },
   "devDependencies": {
-    "@nuxt/devtools": "latest"
+    "@nuxt/devtools": "latest",
+    "puppeteer": "^23.3.0"
   }
 }

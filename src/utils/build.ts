@@ -100,6 +100,7 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
         ai: hub.ai,
         analytics: hub.analytics,
         blob: hub.blob,
+        browser: hub.browser,
         cache: hub.cache,
         database: hub.database,
         kv: hub.kv,

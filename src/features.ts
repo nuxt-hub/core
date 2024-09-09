@@ -6,6 +6,7 @@ import { join } from 'pathe'
 import { defu } from 'defu'
 import { $fetch } from 'ofetch'
 import { addDevToolsCustomTabs } from './utils/devtools'
+import nuxtConfig from '~/docs/nuxt.config'
 
 const log = logger.withTag('nuxt:hub')
 const { resolve } = createResolver(import.meta.url)
@@ -23,6 +24,7 @@ export interface HubConfig {
   ai?: boolean
   analytics?: boolean
   blob?: boolean
+  browser?: boolean
   cache?: boolean
   database?: boolean
   kv?: boolean
@@ -103,6 +105,27 @@ export function setupBlob(_nuxt: Nuxt) {
 
   // Add Composables
   addImportsDir(resolve('./runtime/blob/app/composables'))
+}
+
+export async function setupBrowser(nuxt: Nuxt) {
+  // Check if dependencies are installed
+  try {
+    const pkg = '@cloudflare/puppeteer'
+    await import(pkg)
+  } catch (err) {
+    throw new Error('Package `@cloudflare/puppeteer` not found, please install it with: `npx ni @cloudflare/puppeteer`')
+  }
+  if (nuxt.options.dev) {
+    try {
+      const pkg = 'puppeteer'
+      await import(pkg)
+    } catch (err) {
+      throw new Error('Package `puppeteer` not found, please install it with: `npx ni puppeteer`')
+    }
+  }
+  // Add Server scanning
+  // addServerScanDir(resolve('./runtime/browser/server'))
+  addServerImportsDir(resolve('./runtime/browser/server/utils'))
 }
 
 export function setupCache(nuxt: Nuxt) {

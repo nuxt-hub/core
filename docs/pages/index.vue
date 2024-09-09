@@ -70,7 +70,7 @@ onMounted(() => {
       </template>
 
       <template #title>
-        <MDC :value="page?.hero.title" />
+        <span v-html="page?.hero.title" />
       </template>
 
       <template #description>

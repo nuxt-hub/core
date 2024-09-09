@@ -10,8 +10,8 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: Using AI for User Experience
-    to: /blog/cloudflare-ai-for-user-experience
+    label: Browser rendering is available
+    to: /changelog/hub-browser
     icon: i-ph-arrow-right
   links:
     - label: Start reading docs
