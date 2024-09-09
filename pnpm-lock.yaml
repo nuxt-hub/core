@@ -202,13 +202,13 @@ importers:
       postgres:
         specifier: ^3.4.4
         version: 3.4.4
+      puppeteer:
+        specifier: ^23.3.0
+        version: 23.3.0(typescript@5.5.4)
     devDependencies:
       '@nuxt/devtools':
         specifier: latest
         version: 1.4.1(rollup@4.21.2)(vite@5.4.3(@types/node@22.5.4)(terser@5.32.0))
-      puppeteer:
-        specifier: ^23.3.0
-        version: 23.3.0(typescript@5.5.4)
 
 packages:
 

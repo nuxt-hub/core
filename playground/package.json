@@ -18,10 +18,10 @@
     "ai": "^3.3.26",
     "drizzle-orm": "^0.33.0",
     "nuxt": "^3.13.1",
-    "postgres": "^3.4.4"
+    "postgres": "^3.4.4",
+    "puppeteer": "^23.3.0"
   },
   "devDependencies": {
-    "@nuxt/devtools": "latest",
-    "puppeteer": "^23.3.0"
+    "@nuxt/devtools": "latest"
   }
 }

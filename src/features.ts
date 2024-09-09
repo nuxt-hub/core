@@ -109,19 +109,24 @@ export function setupBlob(_nuxt: Nuxt) {
 
 export async function setupBrowser(nuxt: Nuxt) {
   // Check if dependencies are installed
+  const missingDeps = []
   try {
     const pkg = '@cloudflare/puppeteer'
     await import(pkg)
   } catch (err) {
-    throw new Error('Package `@cloudflare/puppeteer` not found, please install it with: `npx ni @cloudflare/puppeteer`')
+    missingDeps.push('@cloudflare/puppeteer')
   }
   if (nuxt.options.dev) {
     try {
       const pkg = 'puppeteer'
       await import(pkg)
     } catch (err) {
-      throw new Error('Package `puppeteer` not found, please install it with: `npx ni puppeteer`')
+      missingDeps.push('puppeteer')
     }
+  }
+  if (missingDeps.length > 0) {
+    console.error(`Missing dependencies for \`hubBrowser()\`, please install with:\n\n\`npx ni ${missingDeps.join(' ')}\``)
+    process.exit(1)
   }
   // Add Server scanning
   // addServerScanDir(resolve('./runtime/browser/server'))
