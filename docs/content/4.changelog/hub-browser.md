@@ -1,6 +1,6 @@
 ---
-title: Browser Rendering is available
-description: "Taking screenshots, crawling websites, extracting information has never been easier with `hubBrowser()`."
+title: Introducing hubBrowser()
+description: "Taking screenshots, crawling websites, generating PDFs and more has never been easier with `hubBrowser()`."
 date: 2024-08-28
 image: '/images/changelog/nuxthub-browser.jpg'
 authors:

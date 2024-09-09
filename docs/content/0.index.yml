@@ -10,7 +10,7 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: Browser rendering is available
+    label: Introducing hubBrowser()
     to: /changelog/hub-browser
     icon: i-ph-arrow-right
   links:
