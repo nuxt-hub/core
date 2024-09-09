@@ -22,6 +22,13 @@ export interface ModuleOptions {
    */
   blob?: boolean
   /**
+   * Set `true` to enable the Browser rendering for the project.
+   *
+   * @default false
+   * @see https://hub.nuxt.com/docs/features/browser
+   */
+  browser?: boolean
+  /**
    * Set `true` to enable caching for the project.
    *
    * @default false

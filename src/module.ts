@@ -8,7 +8,7 @@ import { parseArgs } from 'citty'
 import type { Nuxt } from '@nuxt/schema'
 import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
-import { setupAI, setupCache, setupAnalytics, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './features'
+import { setupAI, setupCache, setupAnalytics, setupBlob, setupBrowser, setupOpenAPI, setupDatabase, setupKV, setupBase, setupRemote } from './features'
 import type { ModuleOptions } from './types/module'
 import { addBuildHooks } from './utils/build'
 
@@ -55,6 +55,7 @@ export default defineNuxtModule<ModuleOptions>({
       ai: false,
       analytics: false,
       blob: false,
+      browser: false,
       cache: false,
       database: false,
       kv: false,
@@ -92,6 +93,7 @@ export default defineNuxtModule<ModuleOptions>({
     hub.ai && await setupAI(nuxt, hub)
     hub.analytics && setupAnalytics(nuxt)
     hub.blob && setupBlob(nuxt)
+    hub.browser && await setupBrowser(nuxt)
     hub.cache && setupCache(nuxt)
     hub.database && setupDatabase(nuxt)
     hub.kv && setupKV(nuxt)
