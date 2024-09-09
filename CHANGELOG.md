@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.7.11
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.10...v0.7.11)
+
+### 🚀 Enhancements
+
+- Add support for browser rendering ([#271](https://github.com/nuxt-hub/core/pull/271))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.10
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.9...v0.7.10)
