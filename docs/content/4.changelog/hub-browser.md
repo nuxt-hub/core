@@ -1,7 +1,7 @@
 ---
 title: Introducing hubBrowser()
 description: "Taking screenshots, crawling websites, generating PDFs and more has never been easier with `hubBrowser()`."
-date: 2024-08-28
+date: 2024-09-09
 image: '/images/changelog/nuxthub-browser.jpg'
 authors:
   - name: Sebastien Chopin
