@@ -117,13 +117,21 @@ export default defineNuxtModule<ModuleOptions>({
         return null
       }
     })
+    // Enable Async Local Storage
+    nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}
+    nuxt.options.nitro.experimental.asyncContext = true
+    nuxt.options.nitro.unenv = nuxt.options.nitro.unenv || {}
+    nuxt.options.nitro.unenv.external = nuxt.options.nitro.unenv.external || []
+    if (!nuxt.options.nitro.unenv.external.includes('node:async_hooks')) {
+      nuxt.options.nitro.unenv.external.push('node:async_hooks')
+    }
 
     if (hub.remote) {
       await setupRemote(nuxt, hub)
       return
     }
 
-    // Folowing lines are only executed when remove storage is disabled
+    // Folowing lines are only executed when remote storage is disabled
 
     // Production mode without remote storage
     if (!nuxt.options.dev) {
