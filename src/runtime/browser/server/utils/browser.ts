@@ -69,7 +69,7 @@ export async function hubBrowser(options: HubBrowserOptions = {}): Promise<HubBr
     // Disconnect browser after response
     event.waitUntil({
       async then() {
-        console.log('closing browser & page')
+        console.log('closing browser & page', event.path)
         await page?.close().catch(() => {})
         browser?.disconnect()
       }
