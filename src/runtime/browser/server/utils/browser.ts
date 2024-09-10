@@ -1,6 +1,7 @@
 import cfPuppeteer, { PuppeteerWorkers } from '@cloudflare/puppeteer'
 import type { Puppeteer, Browser, Page, BrowserWorker, ActiveSession } from '@cloudflare/puppeteer'
 import { createError } from 'h3'
+import type { H3Event } from 'h3'
 // @ts-expect-error useNitroApp not yet typed
 import { useNitroApp, useEvent } from '#imports'
 
@@ -67,12 +68,11 @@ export async function hubBrowser(options: HubBrowserOptions = {}): Promise<HubBr
     }
     const page = await browser.newPage()
     // Disconnect browser after response
-    event.waitUntil({
-      async then() {
-        console.log('closing browser & page', event.path)
-        await page?.close().catch(() => {})
-        browser?.disconnect()
-      }
+    const unregister = nitroApp.hooks.hook('afterResponse', async (closingEvent: H3Event) => {
+      if (event !== closingEvent) return
+      unregister()
+      await page?.close().catch(() => {})
+      browser?.disconnect()
     })
     return {
       browser,
@@ -96,7 +96,7 @@ export async function hubBrowser(options: HubBrowserOptions = {}): Promise<HubBr
     _browser.disconnect = () => {}
   }
   const page = await _browser.newPage()
-  const unregister = nitroApp.hooks.hook('afterResponse', async (closingEvent) => {
+  const unregister = nitroApp.hooks.hook('afterResponse', async (closingEvent: H3Event) => {
     if (event !== closingEvent) return
     unregister()
     await page?.close().catch(() => {})
