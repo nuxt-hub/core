@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.7.12
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.11...v0.7.12)
+
+### 🚀 Enhancements
+
+- Add support for ALS ([#272](https://github.com/nuxt-hub/core/pull/272))
+
+### 📖 Documentation
+
+- Small update ([8f1d562](https://github.com/nuxt-hub/core/commit/8f1d562))
+- Fix release date of hub browser ([116283e](https://github.com/nuxt-hub/core/commit/116283e))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.11
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.10...v0.7.11)
