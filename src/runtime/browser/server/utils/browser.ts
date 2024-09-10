@@ -2,7 +2,6 @@ import cfPuppeteer, { PuppeteerWorkers } from '@cloudflare/puppeteer'
 import type { Puppeteer, Browser, Page, BrowserWorker, ActiveSession } from '@cloudflare/puppeteer'
 import { createError } from 'h3'
 // @ts-expect-error useNitroApp not yet typed
-import { randomUUID } from 'uncrypto'
 import { useNitroApp, useEvent } from '#imports'
 
 function getBrowserBinding(name: string = 'BROWSER'): BrowserWorker | undefined {
