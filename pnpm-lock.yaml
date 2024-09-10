@@ -186,7 +186,7 @@ importers:
         version: 2.18.4(magicast@0.3.5)(rollup@4.21.2)(vite@5.4.3(@types/node@22.5.4)(terser@5.32.0))(vue@3.4.38(typescript@5.5.4))
       '@nuxthub/core':
         specifier: latest
-        version: 0.7.10(ioredis@5.4.1)(magicast@0.3.5)(rollup@4.21.2)(vite@5.4.3(@types/node@22.5.4)(terser@5.32.0))
+        version: 0.7.11(ioredis@5.4.1)(magicast@0.3.5)(rollup@4.21.2)(vite@5.4.3(@types/node@22.5.4)(terser@5.32.0))
       '@nuxtjs/mdc':
         specifier: ^0.8.3
         version: 0.8.3(magicast@0.3.5)(rollup@4.21.2)
@@ -1528,8 +1528,8 @@ packages:
   '@nuxthq/studio@2.0.3':
     resolution: {integrity: sha512-EeqtfSc7pPUuQJcLiSgHYXkNVVvejjFDIhbyFRTKJDblVvUEb9ecq1FjYEgbi1QYvuBlLUMjvwmcQuXs8wI/bQ==}
 
-  '@nuxthub/core@0.7.10':
-    resolution: {integrity: sha512-0QH6ghXiJHdSa1jqzQxqKgyqis9GPcX9HqygaOuKpVkS3FtGbrA5vWF0rQb8FUfLYiLZxnQXkYMwnOFU8Ada0g==}
+  '@nuxthub/core@0.7.11':
+    resolution: {integrity: sha512-hLV/jgGQn2zD9oD9kw3mRQFI5N2dfseEji2Q1we2eyxtXoy53S8IIOkqGVVHT1IkbX4CaS38qmCQuxEUcD0LsA==}
 
   '@nuxtjs/color-mode@3.4.4':
     resolution: {integrity: sha512-VSNJVGnRIjiGmfbMa0cN+rwNRowDRTL/wku/z5MpKSanVo3khIRitBNqNviso1l3T+LW0pLHeXBNp6L8g/l1EA==}
@@ -8406,7 +8406,7 @@ snapshots:
       - utf-8-validate
       - webpack-sources
 
-  '@nuxthub/core@0.7.10(ioredis@5.4.1)(magicast@0.3.5)(rollup@4.21.2)(vite@5.4.3(@types/node@22.5.4)(terser@5.32.0))':
+  '@nuxthub/core@0.7.11(ioredis@5.4.1)(magicast@0.3.5)(rollup@4.21.2)(vite@5.4.3(@types/node@22.5.4)(terser@5.32.0))':
     dependencies:
       '@cloudflare/workers-types': 4.20240903.0
       '@nuxt/devtools-kit': 1.4.1(magicast@0.3.5)(rollup@4.21.2)(vite@5.4.3(@types/node@22.5.4)(terser@5.32.0))

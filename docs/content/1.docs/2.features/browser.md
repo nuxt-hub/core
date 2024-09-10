@@ -228,3 +228,115 @@ export default cachedEventHandler(async (event) => {
   getKey: (event) => btoa(getQuery(event).url),
 })
 ```
+
+## PDF Generation
+
+You can also generate PDF using `hubBrowser()`, this is useful if you want to generate an invoice or a receipt for example.
+
+Let's create a `/_invoice` page with Vue that we will use as template to generate a PDF:
+
+```vue [pages/_invoice.vue]
+<script setup>
+definePageMeta({
+  layout: 'blank'
+})
+
+// TODO: Fetch data from API instead of hardcoding
+const currentDate = ref(new Date().toLocaleDateString())
+const items = ref([
+  { name: 'Item 1', quantity: 2, price: 10.00 },
+  { name: 'Item 2', quantity: 1, price: 15.00 },
+  { name: 'Item 3', quantity: 3, price: 7.50 }
+])
+const total = computed(() => {
+  return items.value.reduce((sum, item) => sum + item.quantity * item.price, 0)
+})
+</script>
+
+<template>
+  <div style="font-family: Arial, sans-serif; padding: 20px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+      <div>
+        <p><strong>Invoice To:</strong></p>
+        <p>John Doe</p>
+        <p>123 Main St</p>
+        <p>Anytown, USA 12345</p>
+      </div>
+      <div>
+        <p><strong>Invoice Number:</strong> INV-001</p>
+        <p><strong>Date:</strong> {{ currentDate }}</p>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) in items" :key="index">
+          <td>{{ item.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>${{ item.price.toFixed(2) }}</td>
+          <td>${{ (item.quantity * item.price).toFixed(2) }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="text-align: right; margin-top: 20px;">
+      <p><strong>Total: ${{ total.toFixed(2) }}</strong></p>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+table { width: 100%; border-collapse: collapse; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background-color: #f2f2f2; }
+</style>
+```
+
+To avoid having any styling issues, we recommend to keep your `app.vue` as minimal as possible:
+
+```vue [app.vue]
+<template>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
+</template>
+```
+
+And move most of your head management, style & HTML structure in [`layouts/default.vue`](https://nuxt.com/docs/guide/directory-structure/layouts#default-layout).
+
+Lastly, we need to create a `layouts/blank.vue` to avoid having any layout on our `_invoice` page:
+
+```vue [layouts/blank.vue]
+<template>
+  <slot />
+</template>
+```
+
+This will ensure that no header, footer or any other layout elements are rendered.
+
+Now, let's create our server route to generate the PDF:
+
+```ts [server/routes/invoice.pdf.ts]
+export default eventHandler(async (event) => {
+  const { page } = await hubBrowser()
+  await page.goto(`${getRequestURL(event).origin}/_invoice`)
+
+  setHeader(event, 'Content-Type', 'application/pdf')
+  return page.pdf({ format: 'A4' })
+})
+```
+
+You can now display links to download or open the PDF in your pages:
+
+```vue [pages/index.vue]
+<template>
+  <a href="/invoice.pdf" download>Download PDF</a>
+  <a href="/invoice.pdf">Open PDF</a>
+</template>
+```

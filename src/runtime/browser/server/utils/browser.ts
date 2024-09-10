@@ -1,8 +1,9 @@
 import cfPuppeteer, { PuppeteerWorkers } from '@cloudflare/puppeteer'
 import type { Puppeteer, Browser, Page, BrowserWorker, ActiveSession } from '@cloudflare/puppeteer'
 import { createError } from 'h3'
+import type { H3Event } from 'h3'
 // @ts-expect-error useNitroApp not yet typed
-import { useNitroApp } from '#imports'
+import { useNitroApp, useEvent } from '#imports'
 
 function getBrowserBinding(name: string = 'BROWSER'): BrowserWorker | undefined {
   // @ts-expect-error globalThis.__env__ is not typed
@@ -40,6 +41,7 @@ let _browser: Browser | null = null
 export async function hubBrowser(options: HubBrowserOptions = {}): Promise<HubBrowser> {
   const puppeteer = await getPuppeteer()
   const nitroApp = useNitroApp()
+  const event = useEvent()
   // If in production, use Cloudflare Puppeteer
   if (puppeteer instanceof PuppeteerWorkers) {
     const binding = getBrowserBinding()
@@ -66,7 +68,9 @@ export async function hubBrowser(options: HubBrowserOptions = {}): Promise<HubBr
     }
     const page = await browser.newPage()
     // Disconnect browser after response
-    nitroApp.hooks.hookOnce('afterResponse', async () => {
+    const unregister = nitroApp.hooks.hook('afterResponse', async (closingEvent: H3Event) => {
+      if (event !== closingEvent) return
+      unregister()
       await page?.close().catch(() => {})
       browser?.disconnect()
     })
@@ -86,11 +90,15 @@ export async function hubBrowser(options: HubBrowserOptions = {}): Promise<HubBr
       _browser = null
     })
   }
-  _browser = (await _browserPromise) as Browser
-  // Make disconnect a no-op
-  _browser.disconnect = () => {}
+  if (!_browser) {
+    _browser = (await _browserPromise) as Browser
+    // Make disconnect a no-op
+    _browser.disconnect = () => {}
+  }
   const page = await _browser.newPage()
-  nitroApp.hooks.hookOnce('afterResponse', async () => {
+  const unregister = nitroApp.hooks.hook('afterResponse', async (closingEvent: H3Event) => {
+    if (event !== closingEvent) return
+    unregister()
     await page?.close().catch(() => {})
   })
   return {
