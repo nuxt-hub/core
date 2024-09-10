@@ -125,13 +125,15 @@ export default defineNuxtModule<ModuleOptions>({
     if (!nuxt.options.nitro.unenv.external.includes('node:async_hooks')) {
       nuxt.options.nitro.unenv.external.push('node:async_hooks')
     }
-    if (!nuxt.options.nitro.unenv.external.includes('node:stream')) {
-      nuxt.options.nitro.unenv.external.push('node:stream')
-    }
 
     if (hub.remote) {
       await setupRemote(nuxt, hub)
       return
+    }
+
+    // Add node:stream to unenv external (only for Cloudflare Pages/Workers)
+    if (!nuxt.options.nitro.unenv.external.includes('node:stream')) {
+      nuxt.options.nitro.unenv.external.push('node:stream')
     }
 
     // Folowing lines are only executed when remote storage is disabled
