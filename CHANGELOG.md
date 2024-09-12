@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v0.7.13
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.12...v0.7.13)
+
+### 🩹 Fixes
+
+- Use #imports for nitropack imports ([#276](https://github.com/nuxt-hub/core/pull/276))
+- Move from `ni` to `nypm` ([#277](https://github.com/nuxt-hub/core/pull/277))
+
+### 📖 Documentation
+
+- Update image for remote storage ([517fc67](https://github.com/nuxt-hub/core/commit/517fc67))
+- Simplify use cases ([01b9274](https://github.com/nuxt-hub/core/commit/01b9274))
+
+### 🏡 Chore
+
+- Update deps ([9e2d097](https://github.com/nuxt-hub/core/commit/9e2d097))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.12
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.11...v0.7.12)
