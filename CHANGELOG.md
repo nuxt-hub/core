@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.7.14
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.13...v0.7.14)
+
+### 🩹 Fixes
+
+- Don't use global on client-side ([#278](https://github.com/nuxt-hub/core/pull/278))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.13
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.12...v0.7.13)
