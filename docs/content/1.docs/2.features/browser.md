@@ -40,13 +40,12 @@ In production, the instance will be from [`@cloudflare/puppeteer`](https://devel
 NuxtHub will automatically close the `page` instance when the response is sent as well as closing or disconnecting the `browser` instance when needed.
 ::
 
-## Use Cases
-
 Here are some use cases for using a headless browser like Puppeteer in your Nuxt application:
-- **Web scraping:** Extract data from websites, especially those with dynamic content that requires JavaScript execution.
-- **Generating PDFs or screenshots:** Create snapshots or PDF versions of web pages.
-- **Performance monitoring:** Measure load times, resource usage, and other performance metrics of web applications.
-- **Automating interactions or testing:** Simulating user actions on websites for tasks like form filling, clicking buttons, or navigating through multi-step processes.
+- Take screenshots of pages
+- Convert a page to a PDF
+- Test web applications
+- Gather page load performance metrics
+- Crawl web pages for information retrieval (extract metadata)
 
 ## Limits
 
