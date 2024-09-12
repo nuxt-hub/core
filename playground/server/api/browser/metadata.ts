@@ -18,7 +18,7 @@ export default cachedEventHandler(async (event) => {
       title: document.title,
       description: getMetaContent('description') || getMetaContent('og:description'),
       favicon: document.querySelector('link[rel="shortcut icon"]')?.href
-      || document.querySelector('link[rel="icon"]')?.href,
+        || document.querySelector('link[rel="icon"]')?.href,
       ogImage: getMetaContent('og:image'),
       origin: document.location.origin
     }

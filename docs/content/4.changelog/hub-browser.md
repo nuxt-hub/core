@@ -40,7 +40,7 @@ export default defineNuxtConfig({
 3. Install the required dependencies
 
 ```bash [Terminal]
-npx ni @cloudflare/puppeteer puppeteer
+npx nypm i @cloudflare/puppeteer puppeteer
 ```
 
 4. Start using [`hubBrowser()`](/docs/features/browser) in your server routes

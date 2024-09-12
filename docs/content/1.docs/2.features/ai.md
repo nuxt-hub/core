@@ -169,11 +169,11 @@ NuxtHub AI is compatible with some functions of the  [Vercel AI SDK](https://sdk
 Make sure to install the Vercel AI SDK in your project.
 
 ```[Terminal]
-npx ni ai @ai-sdk/vue
+npx nypm i ai @ai-sdk/vue
 ```
 
 ::note
-[`ni`](https://github.com/antfu/ni) will detect your package manager and install the dependencies with it.
+[`nypm`](https://github.com/unjs/nypm) will detect your package manager and install the dependencies with it.
 ::
 
 ### `useChat()`

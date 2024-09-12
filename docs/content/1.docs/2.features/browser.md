@@ -19,11 +19,11 @@ export default defineNuxtConfig({
 Lastly, install the required dependencies by running the following command:
 
 ```bash [Terminal]
-npx ni @cloudflare/puppeteer puppeteer
+npx nypm i @cloudflare/puppeteer puppeteer
 ```
 
 ::note
-[ni](https://github.com/antfu/ni) will automatically detect the package manager you are using and install the dependencies.
+[nypm](https://github.com/unjs/nypm) will automatically detect the package manager you are using and install the dependencies.
 ::
 
 ## Usage
