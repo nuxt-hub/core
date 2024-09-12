@@ -1,5 +1,5 @@
-import { defineNitroPlugin } from 'nitropack/runtime'
 import { hubHooks } from './base/server/utils/hooks'
+import { defineNitroPlugin } from '#imports'
 
 export default defineNitroPlugin(async () => {
   // Wait for nitro-cloudflare-dev to be ready
