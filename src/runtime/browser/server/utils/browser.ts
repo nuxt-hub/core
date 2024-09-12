@@ -130,7 +130,7 @@ async function getPuppeteer() {
     const _pkg = 'puppeteer' // Bypass bundling!
     _puppeteer = (await import(_pkg).catch(() => {
       throw new Error(
-        'Package `puppeteer` not found, please install it with: `npx ni puppeteer`'
+        'Package `puppeteer` not found, please install it with: `npx nypm i puppeteer`'
       )
     }))
   } else {

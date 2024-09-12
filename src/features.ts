@@ -124,7 +124,7 @@ export async function setupBrowser(nuxt: Nuxt) {
     }
   }
   if (missingDeps.length > 0) {
-    console.error(`Missing dependencies for \`hubBrowser()\`, please install with:\n\n\`npx ni ${missingDeps.join(' ')}\``)
+    console.error(`Missing dependencies for \`hubBrowser()\`, please install with:\n\n\`npx nypm i ${missingDeps.join(' ')}\``)
     process.exit(1)
   }
   // Add Server scanning
