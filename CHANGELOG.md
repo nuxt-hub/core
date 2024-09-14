@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.7.15
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.14...v0.7.15)
+
+### 🩹 Fixes
+
+- Add browser binding on CF CI ([#281](https://github.com/nuxt-hub/core/pull/281))
+
+### 📖 Documentation
+
+- **recipes:** Fix typo ([#280](https://github.com/nuxt-hub/core/pull/280))
+
+### 🏡 Chore
+
+- **playground:** Disable v2 flag ([0950478](https://github.com/nuxt-hub/core/commit/0950478))
+
+### ❤️ Contributors
+
+- Cerino Ligutom III ([@cerinoligutom](http://github.com/cerinoligutom))
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.14
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.13...v0.7.14)
