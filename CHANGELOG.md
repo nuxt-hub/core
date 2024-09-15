@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.7.16
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.15...v0.7.16)
+
+### 🚀 Enhancements
+
+- **blob:** Add `.get()` ([#283](https://github.com/nuxt-hub/core/pull/283))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.15
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.14...v0.7.15)
