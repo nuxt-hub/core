@@ -35,7 +35,7 @@ Server composable that returns a set of methods to manipulate the blob storage.
 
 ### `list()`
 
-Returns a paginated list of blobs.
+Returns a paginated list of blobs (metadata only).
 
 ```ts [server/api/files.get.ts]
 export default eventHandler(async () => {
@@ -111,7 +111,7 @@ Returns the blob's raw data and sets `Content-Type` and `Content-Length` headers
 Returns a blob's metadata.
 
 ```ts
-const blob = await hubBlob().head(pathname)
+const metadata = await hubBlob().head(pathname)
 ```
 
 #### Params
@@ -125,6 +125,27 @@ const blob = await hubBlob().head(pathname)
 #### Return
 
 Returns a [`BlobObject`](#blobobject).
+
+
+### `get()`
+
+Returns a blob body.
+
+```ts
+const blob = await hubBlob().get(pathname)
+```
+
+#### Params
+
+::field-group
+  ::field{name="pathname" type="String"}
+    The name of the blob to serve.
+  ::
+::
+
+#### Return
+
+Returns a [`Blob`](https://developer.mozilla.org/en-US/docs/Web/API/Blob) or `null` if not found.
 
 ### `put()`
 
