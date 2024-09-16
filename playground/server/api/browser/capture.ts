@@ -31,7 +31,9 @@ export default eventHandler(async (event) => {
 
   // Upload the screenshot to the Blob storage
   const filename = `screenshots/${btoa(url + theme)}.jpg`
-  await hubBlob().put(filename, screenshot)
+  await hubBlob().put(filename, screenshot, {
+    addRandomSuffix: false
+  })
   await page.close()
 
   setHeader(event, 'content-type', 'image/jpeg')
