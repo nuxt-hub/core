@@ -10,8 +10,8 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: Introducing hubBrowser()
-    to: /changelog/hub-browser
+    label: "`nuxthub preview` command"
+    to: /changelog/nuxthub-preview
     icon: i-ph-arrow-right
   links:
     - label: Start reading docs
