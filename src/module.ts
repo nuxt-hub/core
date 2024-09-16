@@ -152,6 +152,7 @@ export default defineNuxtModule<ModuleOptions>({
 
       // Update the deploy command displayed in the console
       nuxt.options.nitro.commands = nuxt.options.nitro.commands || {}
+      nuxt.options.nitro.commands.preview = 'npx nuxthub preview'
       nuxt.options.nitro.commands.deploy = 'npx nuxthub deploy'
     }
 
