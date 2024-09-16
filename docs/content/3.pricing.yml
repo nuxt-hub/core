@@ -239,6 +239,6 @@ faq:
     - label: 'Do you have a free trial?'
       content: "We don't have a free trial for now, the Solo plan should give you everything you need to get started with all NuxtHub features."
     - label: How can I contact your support team?
-      content: 'You can contact us anytime at hub@nuxt.com, we are also on X/Twitter ([@nuxt_hub](https://x.com/nuxt_hub)) and we have a [Discord server](https://discord.gg/e25qqXb2mF).'
+      content: 'You can contact us anytime at <a href="mailto:hub@nuxt.com">hub@nuxt.com</a>, we are also on X/Twitter (<a href="https://x.com/nuxt_hub" target="_blank">@nuxt_hub</a>) and we have a <a href="https://discord.gg/e25qqXb2mF" target="_blank">Discord server</a>.'
     - label: How can I cancel my subscription?
       content: 'In the billing section of your team, you can downgrade or cancel your subscription with one click.'
