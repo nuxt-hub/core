@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.7.17
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.16...v0.7.17)
+
+### 🩹 Fixes
+
+- **blob:** Respect `addRandomSuffix` with remote access ([#287](https://github.com/nuxt-hub/core/pull/287))
+
+### 📖 Documentation
+
+- Various improvements ([fd3c5f0](https://github.com/nuxt-hub/core/commit/fd3c5f0))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.16
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.15...v0.7.16)
