@@ -41,7 +41,7 @@
     "@cloudflare/workers-types": "^4.20240909.0",
     "@nuxt/devtools-kit": "^1.4.2",
     "@nuxt/kit": "^3.13.1",
-    "@uploadthing/mime-types": "^0.2.10",
+    "@uploadthing/mime-types": "^0.3.0",
     "citty": "^0.1.6",
     "confbox": "^0.1.7",
     "defu": "^6.1.4",
@@ -64,17 +64,17 @@
     "@nuxt/schema": "^3.13.1",
     "@nuxt/test-utils": "^3.14.2",
     "@nuxthub/core": "link:",
-    "@types/node": "^22.5.4",
+    "@types/node": "^22.5.5",
     "changelogen": "^0.5.5",
     "eslint": "^9.10.0",
     "nuxt": "^3.13.1",
     "typescript": "^5.6.2",
-    "vitest": "^2.1.0",
-    "wrangler": "^3.77.0"
+    "vitest": "^2.1.1",
+    "wrangler": "^3.78.2"
   },
   "resolutions": {
     "nuxt": "3.13.0",
-    "vue": "3.4.38"
+    "vue": "3.5.6"
   },
   "packageManager": "pnpm@9.10.0"
 }
