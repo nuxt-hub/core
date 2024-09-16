@@ -42,40 +42,44 @@ features:
     img: '/images/landing/features-privacy.svg'
 deploy:
   headline: Get Started
-  title: Deploy a Nuxt application <span class="text-primary">in one minute</span>.
-  description: Once you've linked your Cloudflare account, deploy your Nuxt application all over the world with our CLI or from git. <br/> You also get a free <span class="font-semibold">.nuxt.dev</span> domain.
+  title: Deploy a Nuxt application <span class="text-primary">in 60 seconds</span>.
+  description: Deploy your Nuxt application worldwide using our CLI or directly from Git after linking your Cloudflare account.<br>Manage deployments, monitor performance, and scale your app through the NuxtHub dashboard.<br>Every project receives a free <span class="font-semibold">.nuxt.dev</span> domain.
   steps:
-    - title: Link your Cloudflare account
-      description: Create an API token on Cloudflare with our pre-filled template.
+    - title: Connect your Cloudflare account
+      description: Securely connect with one click using our pre-configured Cloudflare API permissions.
       img:
-        src: '/images/landing/steps/link-cloudflare-account.svg'
+        srcLight: '/images/landing/steps/link-cloudflare-account-light.svg'
+        srcDark: '/images/landing/steps/link-cloudflare-account-dark.svg'
         width: 460
         height: 259
-    - title: Create a Nuxt app
-      description: Start from our templates or import your GitHub repository.
+    - title: Build your Nuxt app
+      description: Choose from our optimized templates or import your existing GitHub/GitLab project.
       img:
-        src: '/images/landing/steps/create-nuxt-app.svg'
+        srcLight: '/images/landing/steps/create-nuxt-app-light.svg'
+        srcDark: '/images/landing/steps/create-nuxt-app-dark.svg'
         width: 460
         height: 259
-    - title: Deploy it
-      description: Run the nuxthub deploy command or use the Cloudflare Pages CI/CD.
+    - title: Launch it worldwide
+      description: Deploy with 'npx nuxthub deploy' or leverage Cloudflare Pages CI/CD for automated deployments.
       img:
-        src: '/images/landing/steps/deploy-nuxt-app.svg'
+        srcLight: '/images/landing/steps/deploy-nuxt-app-light.svg'
+        srcDark: '/images/landing/steps/deploy-nuxt-app-dark.svg'
         width: 460
         height: 259
     - title: Share it to the world
-      description: Get insights and manage your storage in NuxtHub.
+      description: Instantly share your app globally. Monitor & manage resources through the NuxtHub dashboard.
       img:
-        src: '/images/landing/steps/share-nuxt-app.svg'
+        srcLight: '/images/landing/steps/share-nuxt-app-light.svg'
+        srcDark: '/images/landing/steps/share-nuxt-app-dark.svg'
         width: 460
         height: 259
   buttons:
-    - label: Deploy now
+    - label: Deploy my Nuxt app
       trailing-icon: i-ph-arrow-right
       color: black
       size: md
       to: /docs/getting-started/deploy
-    - label: 1 min demo
+    - label: Watch a 1 min demo
       color: gray
       variant: ghost
       icon: i-ph-video-duotone
