@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.7.18
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.17...v0.7.18)
+
+### 🩹 Fixes
+
+- Remove nuxthub cli dependency ([5d58b09](https://github.com/nuxt-hub/core/commit/5d58b09))
+
+### 📖 Documentation
+
+- Update ([101538b](https://github.com/nuxt-hub/core/commit/101538b))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.17
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.16...v0.7.17)
