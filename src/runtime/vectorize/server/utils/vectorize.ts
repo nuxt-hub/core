@@ -2,17 +2,22 @@ import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import type { H3Error } from 'h3'
+import type { RuntimeConfig } from 'nuxt/schema'
 import type { Vectorize } from '../../../../types/vectorize'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { useRuntimeConfig } from '#imports'
 
-let _vectorize: Vectorize
+const _vectorize: Record<string, Vectorize> = {}
+
+type VectorizeIndexes = keyof RuntimeConfig['hub']['vectorize'] & string
 
 /**
  * Access the Vectorize database.
  *
+ * @param index The Vectorize index to access
+ *
  * @example ```ts
- * const vectorize = hubVectorize()
+ * const vectorize = hubVectorize('products')
  * let vectorsToInsert = [
  *   {id: "123", values: [32.4, 6.5, 11.2, 10.3, 87.9]},
  *   {id: "456", values: [2.5, 7.8, 9.1, 76.9, 8.5]},
@@ -22,26 +27,30 @@ let _vectorize: Vectorize
  *
  * Vectorize is currently only supported with `--remote`. See https://developers.cloudflare.com/workers/testing/local-development/#supported-resource-bindings-in-different-environments for details.
  *
- * @see https://developers.cloudflare.com/vectorize/reference/client-api/
+ * @see https://hub.nuxt.com/docs/features/vectorize
  */
-export function hubVectorize(): Vectorize {
+export function hubVectorize(index: VectorizeIndexes): Vectorize {
+  // todo: autosuggest indexes for hubVectorize based on what's set in nuxt.config.ts.hub.vectorize[index]
   requireNuxtHubFeature('vectorize')
 
-  if (_vectorize) {
-    return _vectorize
+  if (_vectorize[index]) {
+    return _vectorize[index]
   }
+
   const hub = useRuntimeConfig().hub
+  const bindingName = `VECTORIZE_${index.toUpperCase}`
+
   // @ts-expect-error globalThis.__env__ is not defined
-  const binding = process.env.VECTORIZE || globalThis.__env__?.VECTORIZE || globalThis.VECTORIZE
+  const binding = process.env[bindingName] || globalThis.__env__?.[bindingName] || globalThis[bindingName]
   if (hub.remote && hub.projectUrl && !binding) {
-    _vectorize = proxyHubVectorize(hub.projectUrl, hub.projectSecretKey || hub.userToken)
-    return _vectorize
+    _vectorize[index] = proxyHubVectorize(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    return _vectorize[index]
   }
   if (binding) {
-    _vectorize = binding as Vectorize
-    return _vectorize
+    _vectorize[index] = binding as Vectorize
+    return _vectorize[index]
   }
-  throw createError('Missing Cloudflare Vectorize binding (Vectorize)')
+  throw createError(`Missing Cloudflare Vectorize binding (${bindingName})`)
 }
 
 /**

@@ -24,7 +24,8 @@ const featureMessages = {
     'Read more at `https://hub.nuxt.com/docs/features/kv`'
   ].join('\n'),
   vectorize: [
-    'NuxtHub Vectorize is not enabled, set `hub.vectorize = true` in your `nuxt.config.ts`'
+    'NuxtHub Vectorize is not enabled, refer to the documentation.',
+    'Read more at `https://hub.nuxt.com/docs/features/vectorize`'
   ].join('\n')
 }
 

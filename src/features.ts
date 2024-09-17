@@ -27,7 +27,15 @@ export interface HubConfig {
   cache?: boolean
   database?: boolean
   kv?: boolean
-  vectorize?: boolean
+  vectorize?: {
+    [key: string]: {
+      metric: 'cosine' | 'euclidean' | 'dot-product'
+      dimensions: number
+      metadata_indexes: {
+        [index: string]: string | number | boolean
+      } & { length: 10 }
+    }
+  }
 
   bindings?: {
     compatibilityDate?: string
