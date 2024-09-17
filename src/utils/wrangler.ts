@@ -42,13 +42,6 @@ export function generateWrangler(nuxt: Nuxt, hub: HubConfig) {
     }]
   }
 
-  if (hub.vectorize) {
-    wrangler['vectorize'] = [{
-      binding: 'VECTORIZE',
-      index_name: 'default'
-    }]
-  }
-
   // Disabled until getPlatformProxy() returns the hyperdrive binding
   // if (hub.bindings?.hyperdrive) {
   //   wrangler['hyperdrive'] = Object.entries(hub.bindings.hyperdrive).map(([key, value]) => {
