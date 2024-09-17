@@ -56,6 +56,10 @@ onMounted(() => {
   }, 0)
 })
 
+useScriptClarity({
+  id: 'o4ovofrg5c'
+})
+
 const links = computed(() => [
   ...navigation.value.map(item => ({
     label: item.title,
