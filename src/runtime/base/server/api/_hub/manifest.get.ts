@@ -15,7 +15,7 @@ export default eventHandler(async (event) => {
     falseIfFail(() => database && hubDatabase().exec('PRAGMA table_list')),
     falseIfFail(() => kv && hubKV().getKeys('__check__')),
     falseIfFail(() => blob && hubBlob().list({ prefix: '__check__' })),
-    falseIfFail(() => vectorize && hubVectorize().describe())
+    falseIfFail(() => Object.keys(vectorize).length && hubVectorize(Object.keys(vectorize)[0]).describe())
   ])
 
   return {
