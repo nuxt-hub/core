@@ -34,7 +34,7 @@ export default eventHandler(async (event) => {
         topK: z.number().optional(),
         namespace: z.string().min(1).max(63).optional(),
         returnValues: z.boolean().optional(),
-        returnMetadata: z.boolean().optional(),
+        returnMetadata: z.union([z.literal('none'), z.literal('indexed'), z.literal('all')]).optional(),
         filter: z.record(z.string(), z.any()).optional()
       })
     }).parse)

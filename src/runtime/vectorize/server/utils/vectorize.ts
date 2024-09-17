@@ -90,7 +90,7 @@ export function proxyHubVectorize(index: VectorizeIndexes, projectUrl: string, s
       return vectorizeAPI('/upsert', { body: { vectors } }).catch(handleProxyError)
     },
 
-    async query(query: number[], params: { topK?: number, namespace?: string, returnValues?: boolean, returnMetadata?: boolean, filter?: Record<string, unknown> }) {
+    async query(query: number[], params: { topK?: number, namespace?: string, returnValues?: boolean, returnMetadata?: 'none' | 'indexed' | 'all', filter?: Record<string, unknown> }) {
       return vectorizeAPI('/query', { body: { query, params } }).catch(handleProxyError)
     },
 
