@@ -31,6 +31,8 @@ export default eventHandler(async (event) => {
       options.customMetadata = {}
     }
   }
+  // sanitize addRandomSuffix which is a boolean
+  options.addRandomSuffix = options.addRandomSuffix === 'true'
 
   const stream = getRequestWebStream(event)!
   const body = await streamToArrayBuffer(stream, Number(contentLength))

@@ -169,7 +169,7 @@ NuxtHub AI is compatible with some functions of the  [Vercel AI SDK](https://sdk
 Make sure to install the Vercel AI SDK in your project.
 
 ```[Terminal]
-npx nypm add ai @ai-sdk/vue
+npx nypm i ai @ai-sdk/vue
 ```
 
 ::note

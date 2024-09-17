@@ -2,6 +2,8 @@ import type { Nuxt } from '@nuxt/schema'
 import { stringifyTOML } from 'confbox'
 import type { HubConfig } from '../features'
 
+// IMPORTANT:
+// Please update nuxt-hub/cli preview command as well
 export function generateWrangler(nuxt: Nuxt, hub: HubConfig) {
   const wrangler: { [key: string]: any } = {}
 

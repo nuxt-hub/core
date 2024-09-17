@@ -154,10 +154,12 @@ const evanTestimonial = computed(() => {
       <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 items-start justify-center">
         <li v-for="step in home?.deploy.steps" :key="step.title" class="flex flex-col gap-y-8 justify-center group">
           <NuxtImg
-            :src="step.img.src"
+            :src="step.img.srcDark"
             :width="step.img.width"
             :height="step.img.height"
             :alt="step.title"
+            class="hidden dark:block"
+            lazy
           />
           <div>
             <h2 class="font-semibold" v-html="step.title" />
@@ -171,7 +173,7 @@ const evanTestimonial = computed(() => {
     <ULandingSection :title="page.faq.title" :description="page.faq.description" :ui="{ container: 'max-w-5xl' }">
       <ULandingFAQ :items="page?.faq.items" multiple>
         <template #item="{ item }">
-          <MDC :value="item.content" class="prose prose-primary dark:prose-invert max-w-none text-gray-500 dark:text-gray-400" />
+          <div class="prose prose-primary dark:prose-invert max-w-none text-gray-500 dark:text-gray-400" v-html="item.content" />
         </template>
       </ULandingFAQ>
     </ULandingSection>

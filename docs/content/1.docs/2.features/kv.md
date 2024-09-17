@@ -29,13 +29,9 @@ This option will use Cloudflare platform proxy in development and automatically 
 ::
 ::
 
-## `hubKV()`
+## List all keys
 
-Server method that returns an [unstorage instance](https://unstorage.unjs.io/guide#interface) with `keys()`, `get()`, `set()` and `del()` aliases.
-
-### `keys()`
-
-Retrieves all keys from the KV storage (alias of `getKeys()`).
+Retrieves all keys from the KV storage.
 
 ```ts
 const keys = await hubKV().keys()
@@ -62,9 +58,13 @@ const vueKeys = await hubKV().keys('vue')
 */
 ```
 
-### `get()`
+::important
+We recommend to use prefixes for better organization and performance as `keys()` will scan the entire namespace.
+::
 
-Retrieves an item from the Key-Value storage (alias of `getItem()`).
+## Get an item
+
+Retrieves an item from the Key-Value storage.
 
 ```ts
 const vue = await hubKV().get('vue')
@@ -75,9 +75,9 @@ const vue = await hubKV().get('vue')
 */
 ```
 
-### `set()`
+## Set an item
 
-Puts an item in the storage (alias of `setItem()`)
+Puts an item in the storage.
 
 ```ts
 await hubKV().set('vue', { year: 2014 })
@@ -89,24 +89,66 @@ You can delimit the key with a `:` to create a namespace:
 await hubKV().set('vue:nuxt', { year: 2016 })
 ```
 
-### `has()`
+::note
+The maximum size of a value is 25 MiB and the maximum length of a key is 512 bytes.
+::
 
-Checks if an item exists in the storage (alias of `hasItem()`)
+### Expiration
+
+You can also set a TTL (time to live) in seconds:
+
+```ts
+await hubKV().set('vue:nuxt', { year: 2016 }, { ttl: 60 })
+```
+
+The item will be deleted after the TTL has expired.
+
+<!--
+If you prefer to specify the expiration date, you can use the `expiration` option:
+
+```ts
+const timestampIn2024 = new Date('2042-01-01').getTime() / 1000
+await hubKV().set('vue:nuxt', { year: 2016 }, { expiration: timestampIn2024 })
+```
+
+### Metadata
+
+You can also set metadata on the item.
+
+```ts
+await hubKV().set('vue', { year: 2024 }, {
+  metadata: {
+    author: 'Evan You'
+  }
+})
+```
+-->
+
+## Has an item
+
+Checks if an item exists in the storage.
 
 ```ts
 const hasAngular = await hubKV().has('angular')
 ```
 
-### `del()`
+## Delete an item
 
-Delete an item from the storage (alias of `removeItem()`)
+Delete an item from the storage.
 
 ```ts
 await hubKV().del('react')
 ```
 
-### `...()`
+## Limits
 
-::callout
-You can use any other method from [unstorage](https://unstorage.unjs.io/guide#interface) as well.
-::
+- The maximum size of a value is 25 MiB.
+- The maximum length of a key is 512 bytes.
+- The TTL must be at least 60 seconds.
+<!-- - The maximum size of the metadata is 1024 bytes. -->
+
+Learn more about [Cloudflare KV limits](https://developers.cloudflare.com/kv/platform/limits/).
+
+## Learn More
+
+`hubKV()` is an instance of [unstorage](https://unstorage.unjs.io/guide#interface) with the [Cloudflare KV binding](https://unstorage.unjs.io/drivers/cloudflare#cloudflare-kv-binding) driver.

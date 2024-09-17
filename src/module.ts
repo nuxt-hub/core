@@ -8,7 +8,7 @@ import { parseArgs } from 'citty'
 import type { Nuxt } from '@nuxt/schema'
 import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
-import { setupAI, setupCache, setupAnalytics, setupBlob, setupOpenAPI, setupDatabase, setupKV, setupVectorize, setupBase, setupRemote } from './features'
+import { setupAI, setupCache, setupAnalytics, setupBlob, setupBrowser, setupOpenAPI, setupDatabase, setupKV, setupVectorize, setupBase, setupRemote } from './features'
 import type { ModuleOptions } from './types/module'
 import { addBuildHooks } from './utils/build'
 
@@ -20,7 +20,8 @@ export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: '@nuxthub/core',
     configKey: 'hub',
-    version
+    version,
+    docs: 'https://hub.nuxt.com'
   },
   defaults: {},
   async setup(options: ModuleOptions, nuxt: Nuxt) {
@@ -54,6 +55,7 @@ export default defineNuxtModule<ModuleOptions>({
       ai: false,
       analytics: false,
       blob: false,
+      browser: false,
       cache: false,
       database: false,
       kv: false,
@@ -92,6 +94,7 @@ export default defineNuxtModule<ModuleOptions>({
     hub.ai && await setupAI(nuxt, hub)
     hub.analytics && setupAnalytics(nuxt)
     hub.blob && setupBlob(nuxt)
+    hub.browser && await setupBrowser(nuxt)
     hub.cache && setupCache(nuxt)
     hub.database && setupDatabase(nuxt)
     hub.kv && setupKV(nuxt)
@@ -116,13 +119,26 @@ export default defineNuxtModule<ModuleOptions>({
         return null
       }
     })
+    // Enable Async Local Storage
+    nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}
+    nuxt.options.nitro.experimental.asyncContext = true
+    nuxt.options.nitro.unenv = nuxt.options.nitro.unenv || {}
+    nuxt.options.nitro.unenv.external = nuxt.options.nitro.unenv.external || []
+    if (!nuxt.options.nitro.unenv.external.includes('node:async_hooks')) {
+      nuxt.options.nitro.unenv.external.push('node:async_hooks')
+    }
 
     if (hub.remote) {
       await setupRemote(nuxt, hub)
       return
     }
 
-    // Folowing lines are only executed when remove storage is disabled
+    // Add node:stream to unenv external (only for Cloudflare Pages/Workers)
+    if (!nuxt.options.nitro.unenv.external.includes('node:stream')) {
+      nuxt.options.nitro.unenv.external.push('node:stream')
+    }
+
+    // Folowing lines are only executed when remote storage is disabled
 
     // Production mode without remote storage
     if (!nuxt.options.dev) {
@@ -138,6 +154,7 @@ export default defineNuxtModule<ModuleOptions>({
 
       // Update the deploy command displayed in the console
       nuxt.options.nitro.commands = nuxt.options.nitro.commands || {}
+      nuxt.options.nitro.commands.preview = 'npx nuxthub preview'
       nuxt.options.nitro.commands.deploy = 'npx nuxthub deploy'
     }
 

@@ -1,6 +1,174 @@
 # Changelog
 
 
+## v0.7.18
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.17...v0.7.18)
+
+### 🩹 Fixes
+
+- Remove nuxthub cli dependency ([5d58b09](https://github.com/nuxt-hub/core/commit/5d58b09))
+
+### 📖 Documentation
+
+- Update ([101538b](https://github.com/nuxt-hub/core/commit/101538b))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.17
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.16...v0.7.17)
+
+### 🩹 Fixes
+
+- **blob:** Respect `addRandomSuffix` with remote access ([#287](https://github.com/nuxt-hub/core/pull/287))
+
+### 📖 Documentation
+
+- Various improvements ([fd3c5f0](https://github.com/nuxt-hub/core/commit/fd3c5f0))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.16
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.15...v0.7.16)
+
+### 🚀 Enhancements
+
+- **blob:** Add `.get()` ([#283](https://github.com/nuxt-hub/core/pull/283))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.15
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.14...v0.7.15)
+
+### 🩹 Fixes
+
+- Add browser binding on CF CI ([#281](https://github.com/nuxt-hub/core/pull/281))
+
+### 📖 Documentation
+
+- **recipes:** Fix typo ([#280](https://github.com/nuxt-hub/core/pull/280))
+
+### 🏡 Chore
+
+- **playground:** Disable v2 flag ([0950478](https://github.com/nuxt-hub/core/commit/0950478))
+
+### ❤️ Contributors
+
+- Cerino Ligutom III ([@cerinoligutom](http://github.com/cerinoligutom))
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.14
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.13...v0.7.14)
+
+### 🩹 Fixes
+
+- Don't use global on client-side ([#278](https://github.com/nuxt-hub/core/pull/278))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.13
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.12...v0.7.13)
+
+### 🩹 Fixes
+
+- Use #imports for nitropack imports ([#276](https://github.com/nuxt-hub/core/pull/276))
+- Move from `ni` to `nypm` ([#277](https://github.com/nuxt-hub/core/pull/277))
+
+### 📖 Documentation
+
+- Update image for remote storage ([517fc67](https://github.com/nuxt-hub/core/commit/517fc67))
+- Simplify use cases ([01b9274](https://github.com/nuxt-hub/core/commit/01b9274))
+
+### 🏡 Chore
+
+- Update deps ([9e2d097](https://github.com/nuxt-hub/core/commit/9e2d097))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.12
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.11...v0.7.12)
+
+### 🚀 Enhancements
+
+- Add support for ALS ([#272](https://github.com/nuxt-hub/core/pull/272))
+
+### 📖 Documentation
+
+- Small update ([8f1d562](https://github.com/nuxt-hub/core/commit/8f1d562))
+- Fix release date of hub browser ([116283e](https://github.com/nuxt-hub/core/commit/116283e))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.11
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.10...v0.7.11)
+
+### 🚀 Enhancements
+
+- Add support for browser rendering ([#271](https://github.com/nuxt-hub/core/pull/271))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.10
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.9...v0.7.10)
+
+### 🚀 Enhancements
+
+- **kv:** Add support for ttl ([#265](https://github.com/nuxt-hub/core/pull/265))
+- Add support for defining compatibility date & flags ([#264](https://github.com/nuxt-hub/core/pull/264))
+
+### 🩹 Fixes
+
+- **blob:** Handle FileList in useUpload ([#260](https://github.com/nuxt-hub/core/pull/260))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Mohan G <mohangopavaram@gmail.com>
+
+## v0.7.9
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.8...v0.7.9)
+
+### 🚀 Enhancements
+
+- Support `nuxt-csurf` with zero-config ([#256](https://github.com/nuxt-hub/core/pull/256))
+
+### 📖 Documentation
+
+- Handle login state in header ([759f065](https://github.com/nuxt-hub/core/commit/759f065))
+- Dashboard button green ([e98b0a1](https://github.com/nuxt-hub/core/commit/e98b0a1))
+- Add utm_source ([18b0ab0](https://github.com/nuxt-hub/core/commit/18b0ab0))
+
+### 🏡 Chore
+
+- Update deps ([e0d7a02](https://github.com/nuxt-hub/core/commit/e0d7a02))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.8
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.7...v0.7.8)

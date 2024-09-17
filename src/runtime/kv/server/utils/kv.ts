@@ -37,15 +37,8 @@ export function hubKV(): HubKV {
         binding
       })
     })
-    _kv = {
-      keys: storage.getKeys,
-      get: storage.getItem,
-      set: storage.setItem,
-      has: storage.hasItem,
-      del: storage.removeItem,
-      ...storage
-    }
-    return _kv
+
+    return storage
   }
   throw createError('Missing Cloudflare KV binding (KV)')
 }
@@ -75,12 +68,5 @@ export function proxyHubKV(projectUrl: string, secretKey?: string): HubKV {
     })
   })
 
-  return {
-    keys: storage.getKeys,
-    get: storage.getItem,
-    set: storage.setItem,
-    has: storage.hasItem,
-    del: storage.removeItem,
-    ...storage
-  }
+  return storage
 }

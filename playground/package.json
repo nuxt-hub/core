@@ -9,15 +9,17 @@
   },
   "dependencies": {
     "@ai-sdk/vue": "^0.0.45",
-    "@iconify-json/simple-icons": "^1.1.115",
+    "@cloudflare/puppeteer": "^0.0.14",
+    "@iconify-json/simple-icons": "^1.2.1",
     "@kgierke/nuxt-basic-auth": "^1.6.0",
     "@nuxt/ui": "^2.18.4",
     "@nuxthub/core": "latest",
     "@nuxtjs/mdc": "^0.8.3",
-    "ai": "^3.3.21",
+    "ai": "^3.3.26",
     "drizzle-orm": "^0.33.0",
-    "nuxt": "^3.13.0",
-    "postgres": "^3.4.4"
+    "nuxt": "^3.13.1",
+    "postgres": "^3.4.4",
+    "puppeteer": "^23.3.0"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest"

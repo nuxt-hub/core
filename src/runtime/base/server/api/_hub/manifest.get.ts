@@ -9,7 +9,7 @@ import { useRuntimeConfig } from '#imports'
 
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
-  const { version, cache, ai, analytics, blob, kv, database, vectorize } = useRuntimeConfig().hub
+  const { version, cache, ai, analytics, browser, blob, kv, database, vectorize } = useRuntimeConfig().hub
   const [aiCheck, dbCheck, kvCheck, blobCheck, vectorizeCheck] = await Promise.all([
     falseIfFail(() => ai && hubAI().run('@cf/baai/bge-small-en-v1.5', { text: 'check' })),
     falseIfFail(() => database && hubDatabase().exec('PRAGMA table_list')),
@@ -29,6 +29,7 @@ export default eventHandler(async (event) => {
     features: {
       ai: Boolean(aiCheck),
       analytics,
+      browser,
       cache
     }
   }

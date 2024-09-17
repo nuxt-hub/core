@@ -23,12 +23,15 @@ export interface HubConfig {
   ai?: boolean
   analytics?: boolean
   blob?: boolean
+  browser?: boolean
   cache?: boolean
   database?: boolean
   kv?: boolean
   vectorize?: boolean
 
   bindings?: {
+    compatibilityDate?: string
+    compatibilityFlags?: string[]
     hyperdrive?: {
       [key: string]: string
     }
@@ -51,6 +54,12 @@ export function setupBase(nuxt: Nuxt, hub: HubConfig) {
   if (nuxt.options.dev) {
     addDevToolsCustomTabs(nuxt, hub)
   }
+
+  // Add routeRules to work with some security modules
+  nuxt.options.routeRules = nuxt.options.routeRules || {}
+  nuxt.options.routeRules['/api/_hub/**'] = nuxt.options.routeRules['/api/_hub/**'] || {}
+  // @ts-expect-error csurf is not typed here
+  nuxt.options.routeRules['/api/_hub/**'].csurf = false
 }
 
 export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
@@ -96,6 +105,32 @@ export function setupBlob(_nuxt: Nuxt) {
 
   // Add Composables
   addImportsDir(resolve('./runtime/blob/app/composables'))
+}
+
+export async function setupBrowser(nuxt: Nuxt) {
+  // Check if dependencies are installed
+  const missingDeps = []
+  try {
+    const pkg = '@cloudflare/puppeteer'
+    await import(pkg)
+  } catch (err) {
+    missingDeps.push('@cloudflare/puppeteer')
+  }
+  if (nuxt.options.dev) {
+    try {
+      const pkg = 'puppeteer'
+      await import(pkg)
+    } catch (err) {
+      missingDeps.push('puppeteer')
+    }
+  }
+  if (missingDeps.length > 0) {
+    console.error(`Missing dependencies for \`hubBrowser()\`, please install with:\n\n\`npx nypm i ${missingDeps.join(' ')}\``)
+    process.exit(1)
+  }
+  // Add Server scanning
+  // addServerScanDir(resolve('./runtime/browser/server'))
+  addServerImportsDir(resolve('./runtime/browser/server/utils'))
 }
 
 export function setupCache(nuxt: Nuxt) {

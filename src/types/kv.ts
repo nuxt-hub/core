@@ -4,7 +4,7 @@ export interface HubKV extends Storage {
   /**
    * Get all keys from the storage.
    *
-   * @see https://hub.nuxt.com/docs/features/kv#keys
+   * @see https://hub.nuxt.com/docs/features/kv#list-all-keys
    */
   keys: Storage['getKeys']
   /**
@@ -12,7 +12,7 @@ export interface HubKV extends Storage {
    *
    * @param key The key to get
    *
-   * @see https://hub.nuxt.com/docs/features/kv#get
+   * @see https://hub.nuxt.com/docs/features/kv#get-an-item
    */
   get: Storage['getItem']
   /**
@@ -20,8 +20,10 @@ export interface HubKV extends Storage {
    *
    * @param key The key to set
    * @param value The value to set
+   * @param options The options to set (optional)
+   * @param options.ttl The time to live in seconds (optional)
    *
-   * @see https://hub.nuxt.com/docs/features/kv#set
+   * @see https://hub.nuxt.com/docs/features/kv#set-an-item
    */
   set: Storage['setItem']
   /**
@@ -29,7 +31,7 @@ export interface HubKV extends Storage {
    *
    * @param key The key to check
    *
-   * @see https://hub.nuxt.com/docs/features/kv#has
+   * @see https://hub.nuxt.com/docs/features/kv#has-an-item
    */
   has: Storage['hasItem']
   /**
@@ -37,7 +39,7 @@ export interface HubKV extends Storage {
    *
    * @param key The key to delete
    *
-   * @see https://hub.nuxt.com/docs/features/kv#del
+   * @see https://hub.nuxt.com/docs/features/kv#delete-an-item
    */
   del: Storage['removeItem']
 }

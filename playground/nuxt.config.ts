@@ -15,15 +15,17 @@ export default defineNuxtConfig({
   hub: {
     ai: true,
     database: true,
-    kv: true,
     blob: true,
+    browser: true,
+    kv: true,
     cache: true,
     vectorize: true,
     bindings: {
+      // compatibilityFlags: ['nodejs_compat_v2']
       // Used for /api/hyperdrive
-      hyperdrive: {
-        POSTGRES: '8bb2913857b84c939cd908740fa5a5d5'
-      }
+      // hyperdrive: {
+      //   POSTGRES: '8bb2913857b84c939cd908740fa5a5d5'
+      // }
     }
     // projectUrl: ({ branch }) => branch === 'main' ? 'https://playground.nuxt.dev' : `https://${encodeHost(branch).replace(/\//g, '-')}.playground-to39.pages.dev`
   },
