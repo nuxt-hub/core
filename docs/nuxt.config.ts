@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@vueuse/nuxt',
     '@nuxt/ui',
-    '@nuxthq/studio',
+    // '@nuxthq/studio',
     'nuxt-og-image',
     'nuxt-cloudflare-analytics',
     '@nuxtjs/plausible',
