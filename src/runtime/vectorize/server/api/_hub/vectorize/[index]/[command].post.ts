@@ -1,18 +1,19 @@
 import { eventHandler, getValidatedRouterParams, readValidatedBody } from 'h3'
 import { z } from 'zod'
-import { hubVectorize } from '../../../../server/utils/vectorize'
-import { requireNuxtHubAuthorization } from '../../../../../utils/auth'
-import { requireNuxtHubFeature } from '../../../../../utils/features'
+import { hubVectorize } from '../../../../utils/vectorize'
+import { requireNuxtHubAuthorization } from '../../../../../../utils/auth'
+import { requireNuxtHubFeature } from '../../../../../../utils/features'
 
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
   requireNuxtHubFeature('vectorize')
 
   // https://developers.cloudflare.com/vectorize/reference/client-api/
-  const { command } = await getValidatedRouterParams(event, z.object({
+  const { index, command } = await getValidatedRouterParams(event, z.object({
+    index: z.string().min(1).max(64).regex(/^[a-z-]$/),
     command: z.enum(['insert', 'upsert', 'query', 'getByIds', 'deleteByIds', 'describe'])
   }).parse)
-  const vectorize = hubVectorize()
+  const vectorize = hubVectorize(index)
 
   if (command === 'insert' || command === 'upsert') {
     const { vectors } = await readValidatedBody(event, z.object({

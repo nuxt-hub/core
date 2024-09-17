@@ -43,7 +43,7 @@ export function hubVectorize(index: VectorizeIndexes): Vectorize {
   // @ts-expect-error globalThis.__env__ is not defined
   const binding = process.env[bindingName] || globalThis.__env__?.[bindingName] || globalThis[bindingName]
   if (hub.remote && hub.projectUrl && !binding) {
-    _vectorize[index] = proxyHubVectorize(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    _vectorize[index] = proxyHubVectorize(index, hub.projectUrl, hub.projectSecretKey || hub.userToken)
     return _vectorize[index]
   }
   if (binding) {
@@ -56,6 +56,7 @@ export function hubVectorize(index: VectorizeIndexes): Vectorize {
 /**
  * Access the remote Vectorize database.
  *
+ * @param index The Vectorize index to access
  * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
  * @param secretKey The secret key to authenticate to the remote endpoint
  *
@@ -70,11 +71,11 @@ export function hubVectorize(index: VectorizeIndexes): Vectorize {
  *
  * @see https://developers.cloudflare.com/vectorize/reference/client-api/
  */
-export function proxyHubVectorize(projectUrl: string, secretKey?: string): Vectorize {
+export function proxyHubVectorize(index: VectorizeIndexes, projectUrl: string, secretKey?: string): Vectorize {
   requireNuxtHubFeature('vectorize')
 
   const vectorizeAPI = ofetch.create({
-    baseURL: joinURL(projectUrl, '/api/_hub/vectorize'),
+    baseURL: joinURL(projectUrl, `/api/_hub/vectorize/${index}`),
     method: 'POST',
     headers: {
       Authorization: `Bearer ${secretKey}`
