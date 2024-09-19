@@ -31,7 +31,7 @@ export interface HubConfig {
     [key: string]: {
       metric: 'cosine' | 'euclidean' | 'dot-product'
       dimensions: number
-      metadata_indexes: {
+      metadataIndexes: {
         [index: string]: string | number | boolean
       } & { length: 10 }
     }

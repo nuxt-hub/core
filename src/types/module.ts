@@ -63,12 +63,12 @@ export interface ModuleOptions {
    *   products: {
    *     metric: 'cosine',
    *     dimensions: '768',
-   *     metadata_indexes: { name: 'string', price: 'number', isActive: 'boolean' }
+   *     metadataIndexes: { name: 'string', price: 'number', isActive: 'boolean' }
    *   },
    *   reviews: {
    *     metric: 'cosine',
    *     dimensions: '768',
-   *     metadata_indexes: { rating: 'number' }
+   *     metadataIndexes: { rating: 'number' }
    *   }
    * }
    * ```
@@ -77,7 +77,7 @@ export interface ModuleOptions {
     [key: string]: {
       metric: 'cosine' | 'euclidean' | 'dot-product'
       dimensions: number
-      metadata_indexes: {
+      metadataIndexes: {
         [index: string]: 'string' | 'number' | 'boolean'
       } & { length: 10 }
     }
