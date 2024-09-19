@@ -77,7 +77,7 @@ export interface ModuleOptions {
     [key: string]: {
       metric: 'cosine' | 'euclidean' | 'dot-product'
       dimensions: number
-      metadataIndexes: Record<string, 'string' | 'number' | 'boolean'>
+      metadataIndexes?: Record<string, 'string' | 'number' | 'boolean'>
     }
   }
   /**
