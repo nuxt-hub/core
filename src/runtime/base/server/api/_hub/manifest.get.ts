@@ -15,8 +15,15 @@ export default eventHandler(async (event) => {
     falseIfFail(() => database && hubDatabase().exec('PRAGMA table_list')),
     falseIfFail(() => kv && hubKV().getKeys('__check__')),
     falseIfFail(() => blob && hubBlob().list({ prefix: '__check__' })),
-    falseIfFail(() => Object.keys(vectorize).length && hubVectorize(Object.keys(vectorize)[0]).describe())
+    // vectorize check should verify all indexes. return the index name
+    Promise.all(Object.keys(vectorize).map(async (index) => {
+      const vectorizeIndex = hubVectorize(index)
+      const describe = await falseIfFail(() => vectorizeIndex.describe())
+      return [index, Boolean(describe)]
+    }))
   ])
+
+  const enabledVectorizeIndexes = Object.fromEntries(Object.entries(vectorize).filter(([index]) => vectorizeCheck.find(([name, enabled]) => name === index && enabled)))
 
   return {
     version,
@@ -24,7 +31,7 @@ export default eventHandler(async (event) => {
       database: Boolean(dbCheck),
       kv: Array.isArray(kvCheck),
       blob: Array.isArray(blobCheck?.blobs),
-      vectorize: Boolean(vectorizeCheck)
+      vectorize: enabledVectorizeIndexes
     },
     features: {
       ai: Boolean(aiCheck),
