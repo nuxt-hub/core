@@ -1,1 +1,3 @@
-export type { Vectorize } from '@cloudflare/workers-types/experimental'
+import type { Vectorize as CFVectorize } from '@cloudflare/workers-types/experimental'
+
+export type Vectorize = CFVectorize
