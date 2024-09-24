@@ -1,6 +1,39 @@
 # Changelog
 
 
+## v0.7.20
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.19...v0.7.20)
+
+### 🩹 Fixes
+
+- **proxy:** Read env from request ([bd4de45](https://github.com/nuxt-hub/core/commit/bd4de45))
+
+### 📖 Documentation
+
+- Fix demo video modal ([785df95](https://github.com/nuxt-hub/core/commit/785df95))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.19
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.18...v0.7.19)
+
+### 🚀 Enhancements
+
+- Add `nuxthub preview` command ([#288](https://github.com/nuxt-hub/core/pull/288))
+
+### 📖 Documentation
+
+- Fix usage of `extends` ([9f4a5f0](https://github.com/nuxt-hub/core/commit/9f4a5f0))
+- Update ([8e40b8d](https://github.com/nuxt-hub/core/commit/8e40b8d))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.18
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.17...v0.7.18)

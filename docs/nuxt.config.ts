@@ -8,11 +8,12 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@vueuse/nuxt',
     '@nuxt/ui',
-    '@nuxthq/studio',
+    // '@nuxthq/studio',
     'nuxt-og-image',
     'nuxt-cloudflare-analytics',
     '@nuxtjs/plausible',
-    '@nuxt/image'
+    '@nuxt/image',
+    '@nuxt/scripts'
   ],
   hooks: {
     // Define `@nuxt/ui` components as global to use them in `.md` (feel free to add those you need)

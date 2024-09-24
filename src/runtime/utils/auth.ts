@@ -10,6 +10,7 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
     return
   }
 
+  // Check if authorization header is set
   const secretKeyOrUserToken = (getHeader(event, 'authorization') || '').split(' ')[1]
   if (!secretKeyOrUserToken) {
     throw createError({
@@ -17,10 +18,13 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
       message: 'Missing Authorization header'
     })
   }
-  const projectKey = process.env.NUXT_HUB_PROJECT_KEY
+
+  // Get project key and secret key
+  const env = event.context.cloudflare?.env || process.env || {}
+  const projectKey = env.NUXT_HUB_PROJECT_KEY
 
   // Self-hosted NuxtHub project, user has to set a secret key to access the proxy
-  const projectSecretKey = process.env.NUXT_HUB_PROJECT_SECRET_KEY
+  const projectSecretKey = env.NUXT_HUB_PROJECT_SECRET_KEY
   if (projectSecretKey && secretKeyOrUserToken === projectSecretKey) {
     return
   } else if (projectSecretKey && !projectKey) {
@@ -37,7 +41,7 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
     }
     // Here the secretKey is a user token
     await $fetch(`/api/projects/${projectKey}`, {
-      baseURL: process.env.NUXT_HUB_URL || 'https://admin.hub.nuxt.com',
+      baseURL: env.NUXT_HUB_URL || 'https://admin.hub.nuxt.com',
       method: 'HEAD',
       headers: {
         authorization: `Bearer ${secretKeyOrUserToken}`

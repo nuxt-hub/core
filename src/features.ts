@@ -66,6 +66,12 @@ export function setupBase(nuxt: Nuxt, hub: HubConfig) {
   nuxt.options.routeRules['/api/_hub/**'] = nuxt.options.routeRules['/api/_hub/**'] || {}
   // @ts-expect-error csurf is not typed here
   nuxt.options.routeRules['/api/_hub/**'].csurf = false
+  // Add X-Robots-Tag: noindex
+  if (!nuxt.options.dev && hub.env === 'preview') {
+    nuxt.options.routeRules['/**'] ||= {}
+    nuxt.options.routeRules['/**'].headers ||= {}
+    nuxt.options.routeRules['/**'].headers['X-Robots-Tag'] = 'noindex'
+  }
 }
 
 export async function setupAI(nuxt: Nuxt, hub: HubConfig) {

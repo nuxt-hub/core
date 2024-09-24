@@ -19,6 +19,21 @@ defineOgImageComponent('Docs')
 const evanTestimonial = computed(() => {
   return home.value?.testimonials.items.find(item => item.author.name === 'Evan You')
 })
+
+const demoVideoLink = home.value?.deploy?.buttons?.find(link => link.id === 'demo-video') || {}
+const videoLink = ref('')
+const videoModalOpen = ref(false)
+
+onMounted(() => {
+  demoVideoLink.click = (e) => {
+    if (e.ctrlKey || e.metaKey) {
+      return
+    }
+    e?.preventDefault()
+    videoLink.value = demoVideoLink.to
+    videoModalOpen.value = true
+  }
+})
 </script>
 
 <template>
@@ -169,6 +184,18 @@ const evanTestimonial = computed(() => {
           </div>
         </li>
       </ul>
+      <UModal v-model="videoModalOpen" :ui="{ width: 'sm:max-w-4xl lg:max-w-5xl aspect-[16/9]' }">
+        <div class="p-3 h-full">
+          <iframe
+            width="100%"
+            height="100%"
+            :src="`https://www.youtube-nocookie.com/embed/${videoLink.split('=')[1]}`"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          />
+        </div>
+      </UModal>
     </ULandingSection>
     <ULandingSection :title="page.faq.title" :description="page.faq.description" :ui="{ container: 'max-w-5xl' }">
       <ULandingFAQ :items="page?.faq.items" multiple>
