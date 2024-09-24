@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.7.20
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.19...v0.7.20)
+
+### 🩹 Fixes
+
+- **proxy:** Read env from request ([bd4de45](https://github.com/nuxt-hub/core/commit/bd4de45))
+
+### 📖 Documentation
+
+- Fix demo video modal ([785df95](https://github.com/nuxt-hub/core/commit/785df95))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.19
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.18...v0.7.19)
