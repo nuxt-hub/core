@@ -98,7 +98,7 @@ export default defineNuxtModule<ModuleOptions>({
     hub.cache && setupCache(nuxt)
     hub.database && setupDatabase(nuxt)
     hub.kv && setupKV(nuxt)
-    hub.vectorize && setupVectorize(nuxt)
+    Object.keys(hub.vectorize || {}).length && setupVectorize(nuxt)
 
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {
