@@ -65,6 +65,9 @@ export function setupBase(nuxt: Nuxt, hub: HubConfig) {
     nuxt.options.routeRules['/**'].headers ||= {}
     nuxt.options.routeRules['/**'].headers['X-Robots-Tag'] = 'noindex'
   }
+  // Remove trailing slash for prerender routes
+  nuxt.options.nitro.prerender ||= {}
+  nuxt.options.nitro.prerender.autoSubfolderIndex ||= false
 }
 
 export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
