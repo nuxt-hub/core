@@ -99,7 +99,7 @@ export interface ModuleOptions {
     compatibilityDate?: string
     /**
      * Extra compatibility flags for the project.
-     * Note that NuxtHub will always add the 'nodejs_compat' flag if not specified.
+     * Note that NuxtHub will default to the Nitro compatibility flags for Cloudflare if not specified.
      * @see https://developers.cloudflare.com/workers/configuration/compatibility-dates/#compatibility-flags
      */
     compatibilityFlags?: string[]
