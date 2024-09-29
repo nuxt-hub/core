@@ -73,10 +73,10 @@ export default defineNuxtModule<ModuleOptions>({
     runtimeConfig.hub = hub
     // Make sure to tell Nitro to not generate the wrangler.toml file
     // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
-    delete nuxt.options.nitro.cloudflare?.wrangler?.compatibility_flags
-    // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
-    if (nuxt.options.nitro.cloudflare?.wrangler && Object.keys(nuxt.options.nitro.cloudflare.wrangler).length) {
-      log.warn('The `nitro.cloudflare.wrangler` option is not supported by NuxtHub, ignoring it...')
+    const wrangler = { ...nuxt.options.nitro.cloudflare?.wrangler }
+    delete wrangler.compatibility_flags
+    if (Object.keys(wrangler).length) {
+      log.warn('The `nitro.cloudflare.wrangler` provided options are not yet supported by NuxtHub, ignoring...')
       // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
       nuxt.options.nitro.cloudflare.wrangler = {}
     }
