@@ -40,5 +40,13 @@ export default defineNuxtConfig({
     ]
   },
 
+  // nitro: {
+  //   cloudflare: {
+  //     wrangler: {
+  //       compatibility_flags: ['nodejs_compat_v2']
+  //     }
+  //   }
+  // },
+
   compatibilityDate: '2024-08-08'
 })
