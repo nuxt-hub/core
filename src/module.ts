@@ -65,7 +65,9 @@ export default defineNuxtModule<ModuleOptions>({
       openapi: nuxt.options.nitro.experimental?.openAPI === true,
       // Extra bindings for the project
       bindings: {
-        hyperdrive: {}
+        hyperdrive: {},
+        // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
+        compatibilityFlags: nuxt.options.nitro.cloudflare?.wrangler?.compatibility_flags
       }
     })
     runtimeConfig.hub = hub
