@@ -30,7 +30,6 @@ type VectorizeIndexes = keyof RuntimeConfig['hub']['vectorize'] & string
  * @see https://hub.nuxt.com/docs/features/vectorize
  */
 export function hubVectorize(index: VectorizeIndexes): Vectorize {
-  // todo: autosuggest indexes for hubVectorize based on what's set in nuxt.config.ts.hub.vectorize[index]
   requireNuxtHubFeature('vectorize')
 
   if (_vectorize[index]) {
