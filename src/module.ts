@@ -66,10 +66,21 @@ export default defineNuxtModule<ModuleOptions>({
       openapi: nuxt.options.nitro.experimental?.openAPI === true,
       // Extra bindings for the project
       bindings: {
-        hyperdrive: {}
+        hyperdrive: {},
+        // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
+        compatibilityFlags: nuxt.options.nitro.cloudflare?.wrangler?.compatibility_flags
       }
     })
     runtimeConfig.hub = hub
+    // Make sure to tell Nitro to not generate the wrangler.toml file
+    // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
+    delete nuxt.options.nitro.cloudflare?.wrangler?.compatibility_flags
+    // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
+    if (nuxt.options.nitro.cloudflare?.wrangler && Object.keys(nuxt.options.nitro.cloudflare.wrangler).length) {
+      log.warn('The `nitro.cloudflare.wrangler` defined options are not supported by NuxtHub, ignoring...')
+      // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
+      nuxt.options.nitro.cloudflare.wrangler = {}
+    }
     // validate remote option
     if (hub.remote && !['true', 'production', 'preview'].includes(String(hub.remote))) {
       log.error('Invalid remote option, should be `false`, `true`, `\'production\'` or `\'preview\'`')
