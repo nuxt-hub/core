@@ -46,8 +46,8 @@ export interface HubConfig {
   remoteManifest?: {
     version: string
     storage: {
-      [key: string]: boolean
-    }
+      vectorize?: HubConfig['vectorize']
+    } & Record<string, boolean>
   }
 }
 
@@ -182,7 +182,33 @@ export function setupKV(_nuxt: Nuxt) {
   addServerImportsDir(resolve('./runtime/kv/server/utils'))
 }
 
-export function setupVectorize(_nuxt: Nuxt) {
+export function setupVectorize(nuxt: Nuxt, hub: HubConfig) {
+  if (nuxt.options.dev && !hub.remote) {
+    log.warn('`hubVectorize()` is disabled: it is currently only supported with `--remote`.')
+    return
+  }
+
+  // warn if index configuration has changed compared to deployed version
+  if (nuxt.options.dev && hub.projectKey) {
+    $fetch<HubConfig['remoteManifest']>('/api/_hub/manifest', {
+      baseURL: hub.projectUrl as string,
+      headers: {
+        authorization: `Bearer ${hub.projectSecretKey || hub.userToken}`
+      }
+    })
+      .then((remoteManifest) => {
+        const localVectorize = hub.vectorize || {}
+        const remoteVectorize = remoteManifest?.storage.vectorize || {}
+        Object.keys(localVectorize).forEach((key) => {
+          const isDimensionsChanged = localVectorize[key].dimensions !== remoteVectorize[key].dimensions
+          const isMetricChanged = localVectorize[key].metric !== remoteVectorize[key].metric
+          if (isDimensionsChanged || isMetricChanged) {
+            log.warn(`Configuration for existing Vectorize index '${key}' has been modified. If deploying, NuxtHub will unlink the old index and create a new index with the new configuration.`)
+          }
+        })
+      })
+      .catch(() => {}) // ignore if fails
+  }
   // Add Server scanning
   addServerScanDir(resolve('./runtime/vectorize/server'))
   addServerImportsDir(resolve('./runtime/vectorize/server/utils'))
