@@ -335,7 +335,14 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
 
   const availableStorages = Object.keys(remoteManifest?.storage || {}).filter(k => hub[k as keyof typeof hub] && remoteManifest?.storage[k])
   if (availableStorages.length > 0) {
-    logger.info(`Remote storage available: ${availableStorages.map(k => `\`${k}\``).join(', ')} `)
+    const storageDescriptions = availableStorages.map((storage) => {
+      if (storage === 'vectorize' && hub.vectorize) {
+        const indexes = Object.keys(remoteManifest!.storage.vectorize!).join(', ')
+        return `\`${storage} (${indexes})\``
+      }
+      return `\`${storage}\``
+    })
+    logger.info(`Remote storage available: ${storageDescriptions.join(', ')}`)
   } else {
     log.fatal('No remote storage available: make sure to enable at least one of the storage options in your `nuxt.config.ts` and deploy new version before using remote storage. Read more at https://hub.nuxt.com/docs/getting-started/remote-storage')
     process.exit(1)
