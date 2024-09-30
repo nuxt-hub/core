@@ -1,4 +1,5 @@
 import { execSync } from 'node:child_process'
+import type { ConsolaInstance } from 'consola'
 import type { Nuxt } from '@nuxt/schema'
 import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createResolver } from '@nuxt/kit'
 import { joinURL } from 'ufo'
@@ -187,31 +188,28 @@ export function setupVectorize(nuxt: Nuxt, hub: HubConfig) {
     log.warn('`hubVectorize()` is disabled: it is currently only supported with `--remote`.')
     return
   }
-
-  // Warn if index configuration has changed compared to deployed version
-  if (nuxt.options.dev && hub.projectKey) {
-    $fetch<HubConfig['remoteManifest']>('/api/_hub/manifest', {
-      baseURL: hub.projectUrl as string,
-      headers: {
-        authorization: `Bearer ${hub.projectSecretKey || hub.userToken}`
-      }
-    })
-      .then((remoteManifest) => {
-        const localVectorize = hub.vectorize || {}
-        const remoteVectorize = remoteManifest?.storage.vectorize || {}
-        Object.keys(localVectorize).forEach((key) => {
-          const isDimensionsChanged = localVectorize[key].dimensions !== remoteVectorize[key].dimensions
-          const isMetricChanged = localVectorize[key].metric !== remoteVectorize[key].metric
-          if (isDimensionsChanged || isMetricChanged) {
-            log.warn(`Configuration for existing Vectorize index '${key}' has been modified. If deploying, NuxtHub will unlink the old index and create a new index with the new configuration.`)
-          }
-        })
-      })
-      .catch(() => {}) // ignore if fails
-  }
   // Add Server scanning
   addServerScanDir(resolve('./runtime/vectorize/server'))
   addServerImportsDir(resolve('./runtime/vectorize/server/utils'))
+}
+
+export function vectorizeRemoteCheck(hub: HubConfig, log: ConsolaInstance) {
+  let isIndexConfigurationChanged = false
+  const localVectorize = hub.vectorize || {}
+  const remoteVectorize = hub.remoteManifest?.storage.vectorize || {}
+
+  Object.keys(localVectorize).forEach((key) => {
+    const isDimensionsChanged = localVectorize[key].dimensions !== remoteVectorize[key].dimensions
+    const isMetricChanged = localVectorize[key].metric !== remoteVectorize[key].metric
+    if (isDimensionsChanged || isMetricChanged) {
+      log.warn(`Vectorize index \`${key}\` configuration changed\nRemote: \`${remoteVectorize[key].dimensions}\` dimensions - \`${remoteVectorize[key].metric}\` metric \nLocal: \`${localVectorize[key].dimensions}\` dimensions - \`${localVectorize[key].metric}\` metric`)
+      isIndexConfigurationChanged = true
+    }
+  })
+
+  if (isIndexConfigurationChanged) {
+    log.warn('Modified Vectorize index(es) will be recreated with new configuration on deployment and existing data will not be migrated!')
+  }
 }
 
 export function setupOpenAPI(nuxt: Nuxt) {

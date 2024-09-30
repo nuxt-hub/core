@@ -8,7 +8,7 @@ import { parseArgs } from 'citty'
 import type { Nuxt } from '@nuxt/schema'
 import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
-import { setupAI, setupCache, setupAnalytics, setupBlob, setupBrowser, setupOpenAPI, setupDatabase, setupKV, setupVectorize, setupBase, setupRemote } from './features'
+import { setupAI, setupCache, setupAnalytics, setupBlob, setupBrowser, setupOpenAPI, setupDatabase, setupKV, setupVectorize, setupBase, setupRemote, vectorizeRemoteCheck } from './features'
 import type { ModuleOptions } from './types/module'
 import { addBuildHooks } from './utils/build'
 
@@ -141,6 +141,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     if (hub.remote) {
       await setupRemote(nuxt, hub)
+      vectorizeRemoteCheck(hub, log)
       return
     }
 
