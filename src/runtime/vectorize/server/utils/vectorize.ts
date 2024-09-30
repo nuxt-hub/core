@@ -38,7 +38,7 @@ export function hubVectorize(index: VectorizeIndexes): Vectorize {
   }
 
   const hub = useRuntimeConfig().hub
-  const bindingName = `VECTORIZE_${index.toUpperCase}`
+  const bindingName = `VECTORIZE_${index.toUpperCase()}`
 
   // @ts-expect-error globalThis.__env__ is not defined
   const binding = process.env[bindingName] || globalThis.__env__?.[bindingName] || globalThis[bindingName]
