@@ -188,7 +188,7 @@ export function setupVectorize(nuxt: Nuxt, hub: HubConfig) {
     return
   }
 
-  // warn if index configuration has changed compared to deployed version
+  // Warn if index configuration has changed compared to deployed version
   if (nuxt.options.dev && hub.projectKey) {
     $fetch<HubConfig['remoteManifest']>('/api/_hub/manifest', {
       baseURL: hub.projectUrl as string,
