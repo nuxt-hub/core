@@ -10,7 +10,7 @@ export default eventHandler(async (event) => {
 
   // https://developers.cloudflare.com/vectorize/reference/client-api/
   const { index, command } = await getValidatedRouterParams(event, z.object({
-    index: z.string().min(1).max(64).regex(/^[a-z-]$/),
+    index: z.string().min(1).max(64).regex(/^[a-z]+(-[a-z]+)*$/),
     command: z.enum(['insert', 'upsert', 'query', 'getByIds', 'deleteByIds', 'describe'])
   }).parse)
   const vectorize = hubVectorize(index)
