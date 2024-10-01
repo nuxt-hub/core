@@ -222,6 +222,25 @@ cloudflare:
         - title: 'Neurons'
           free: '10,000 / day'
           paid: '10,000 / day + $0.011/1,000 neurons'
+    - label: 'Vectorize'
+      icon: i-ph-circles-three-fill
+      buttons:
+        - label: 'Cloudflare Vectorize pricing'
+          to: 'https://developers.cloudflare.com/vectorize/platform/pricing/'
+      columns:
+        - key: 'title'
+          label: ''
+        - key: 'free'
+          label: 'Free Tier'
+        - key: 'paid'
+          label: 'Pricing'
+      rows:
+        - title: 'Queried vector dimensions'
+          free: '30 million / month'
+          paid: '50 million / month + $0.01/million'
+        - title: 'Stored vector dimensions'
+          free: '5 million / month'
+          paid: '10 million / month + $0.05/100 million'
   button:
     label: 'Discover Cloudflare pricing'
     external: true
