@@ -166,8 +166,12 @@ export default defineNuxtModule<ModuleOptions>({
       nuxt.options.nitro.commands.preview = 'npx nuxthub preview'
       nuxt.options.nitro.commands.deploy = 'npx nuxthub deploy'
 
-      // Add the env plugin
-      addServerPlugin(resolve('./runtime/env'))
+      // Add the env middleware
+      nuxt.options.nitro.handlers ||= []
+      nuxt.options.nitro.handlers.unshift({
+        middleware: true,
+        handler: resolve('./runtime/env')
+      })
     }
 
     // Local development without remote connection
