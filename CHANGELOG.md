@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.7.23
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.22...v0.7.23)
+
+### 🩹 Fixes
+
+- Only set env if undefined at first ([fd779ee](https://github.com/nuxt-hub/core/commit/fd779ee))
+
+### 🏡 Chore
+
+- Remove unused import ([5173c1b](https://github.com/nuxt-hub/core/commit/5173c1b))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.22
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.21...v0.7.22)
