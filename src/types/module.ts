@@ -1,3 +1,11 @@
+interface ImageTemplate {
+  width?: number
+  height?: number
+  format?: string
+  rotate?: number
+  jpeg_quality?: number
+}
+
 export interface ModuleOptions {
   /**
    * Set `true` to enable AI for the project.
@@ -49,6 +57,16 @@ export interface ModuleOptions {
    * @see https://hub.nuxt.com/docs/features/kv
    */
   kv?: boolean
+  /**
+   * Set `true` to enable the Image transformation for the project.
+   *
+   * @default false
+   * @see https://hub.nuxt.com/docs/features/image
+   */
+  image?: false | {
+    trustedDomains?: string[]
+    templates: Record<string, ImageTemplate>
+  }
   /**
    * Set to `true`, 'preview' or 'production' to use the remote storage.
    * Only set the value on a project you are deploying outside of NuxtHub or Cloudflare.

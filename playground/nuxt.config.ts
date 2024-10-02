@@ -19,6 +19,13 @@ export default defineNuxtConfig({
     browser: true,
     kv: true,
     cache: true,
+    image: {
+      trustedDomains: ['hub.nuxt.com'],
+      templates: {
+        small: { width: 128, height: 128, format: 'webp' },
+        medium: { width: 512, height: 512, format: 'webp' }
+      }
+    },
     bindings: {
       // compatibilityFlags: ['nodejs_compat_v2']
       // Used for /api/hyperdrive

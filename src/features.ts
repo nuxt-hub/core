@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process'
 import type { Nuxt } from '@nuxt/schema'
-import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createResolver } from '@nuxt/kit'
+import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createResolver, useNitro } from '@nuxt/kit'
 import { joinURL } from 'ufo'
 import { join } from 'pathe'
 import { defu } from 'defu'
@@ -161,6 +161,40 @@ export function setupCache(nuxt: Nuxt) {
 
   // Add Server scanning
   addServerScanDir(resolve('./runtime/cache/server'))
+}
+
+export function setupImage(nuxt: Nuxt) {
+  // Add Server scanning
+  addServerScanDir(resolve('./runtime/image/server'))
+
+  nuxt.options.nitro.externals = nuxt.options.nitro.externals || {}
+  nuxt.options.nitro.externals.inline = nuxt.options.nitro.externals.inline || []
+  nuxt.options.nitro.externals.inline.push('@cf-wasm/photon')
+
+  nuxt.hook('ready', () => {
+    const nitro = useNitro()
+    const _addWasmSupport = (_nitro: typeof nitro) => {
+      if (nitro.options.experimental?.wasm) {
+        return
+      }
+      _nitro.options.externals = _nitro.options.externals || {}
+      _nitro.options.externals.inline = _nitro.options.externals.inline || []
+      _nitro.options.externals.inline.push(id => id.endsWith('.wasm'))
+      _nitro.hooks.hook('rollup:before', async (_, rollupConfig) => {
+        const { rollup: unwasm } = await import('unwasm/plugin')
+        rollupConfig.plugins = rollupConfig.plugins || []
+        ;(rollupConfig.plugins as any[]).push(
+          unwasm({
+            ...(_nitro.options.wasm as any)
+          })
+        )
+      })
+    }
+    _addWasmSupport(nitro)
+    nitro.hooks.hook('prerender:init', (prerenderer) => {
+      _addWasmSupport(prerenderer)
+    })
+  })
 }
 
 export function setupDatabase(_nuxt: Nuxt) {
