@@ -4,6 +4,9 @@ import { eventHandler } from 'h3'
 export default eventHandler((event) => {
   const env = event.context.cloudflare?.env || {}
   for (const key in env) {
-    process.env[key] = process.env[key] || env[key]
+    // Only set env if process.env[key] is undefined and env[key] is not a binding
+    if (typeof process.env[key] === 'undefined' && typeof env[key] === 'string') {
+      process.env[key] = env[key]
+    }
   }
 })
