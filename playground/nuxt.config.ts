@@ -19,6 +19,13 @@ export default defineNuxtConfig({
     browser: true,
     kv: true,
     cache: true,
+    image: {
+      trustedDomains: ['hub.nuxt.com'],
+      templates: {
+        small: { width: 128, height: 128, format: 'webp' },
+        medium: { width: 512, height: 512, format: 'webp' }
+      }
+    },
     bindings: {
       compatibilityDate: '2024-10-02',
       compatibilityFlags: ['nodejs_compat']
