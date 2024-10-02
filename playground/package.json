@@ -10,16 +10,16 @@
   "dependencies": {
     "@ai-sdk/vue": "^0.0.49",
     "@cloudflare/puppeteer": "^0.0.14",
-    "@iconify-json/simple-icons": "^1.2.3",
+    "@iconify-json/simple-icons": "^1.2.5",
     "@kgierke/nuxt-basic-auth": "^1.6.0",
-    "@nuxt/ui": "^2.18.4",
+    "@nuxt/ui": "^2.18.6",
     "@nuxthub/core": "latest",
     "@nuxtjs/mdc": "^0.9.0",
-    "ai": "^3.3.39",
+    "ai": "^3.4.7",
     "drizzle-orm": "^0.33.0",
     "nuxt": "^3.13.2",
     "postgres": "^3.4.4",
-    "puppeteer": "^23.3.1"
+    "puppeteer": "^23.5.0"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest"

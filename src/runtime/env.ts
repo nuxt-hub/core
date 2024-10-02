@@ -4,6 +4,6 @@ import { eventHandler } from 'h3'
 export default eventHandler((event) => {
   const env = event.context.cloudflare?.env || {}
   for (const key in env) {
-    process.env[key] = env[key]
+    process.env[key] = process.env[key] || env[key]
   }
 })
