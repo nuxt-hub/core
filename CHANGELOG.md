@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.7.22
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.21...v0.7.22)
+
+### 🏡 Chore
+
+- Use middleware instead of plugin ([f921892](https://github.com/nuxt-hub/core/commit/f921892))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.21
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.20...v0.7.21)
