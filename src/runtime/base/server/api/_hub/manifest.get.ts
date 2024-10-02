@@ -1,5 +1,4 @@
 import { eventHandler } from 'h3'
-import { hubAI } from '../../../../ai/server/utils/ai'
 import { hubDatabase } from '../../../../database/server/utils/database'
 import { hubKV } from '../../../../kv/server/utils/kv'
 import { hubBlob } from '../../../../blob/server/utils/blob'
