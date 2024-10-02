@@ -1,6 +1,46 @@
 # Changelog
 
 
+## v0.7.22
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.21...v0.7.22)
+
+### 🏡 Chore
+
+- Use middleware instead of plugin ([f921892](https://github.com/nuxt-hub/core/commit/f921892))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.21
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.20...v0.7.21)
+
+### 🚀 Enhancements
+
+- Add noindex for preview env ([#296](https://github.com/nuxt-hub/core/pull/296))
+- Remove trailing slash for prerender routes ([#298](https://github.com/nuxt-hub/core/pull/298))
+
+### 🩹 Fixes
+
+- Workaround for process.env and new node compat ([f28f549](https://github.com/nuxt-hub/core/commit/f28f549))
+
+### 📖 Documentation
+
+- Prerender dynamic pages using modules ([#300](https://github.com/nuxt-hub/core/pull/300))
+
+### 🏡 Chore
+
+- Use nitro compatibility flags by default ([#302](https://github.com/nuxt-hub/core/pull/302))
+- Read and ignore nitro wrangler option ([#303](https://github.com/nuxt-hub/core/pull/303))
+- Update deps ([6c3ca98](https://github.com/nuxt-hub/core/commit/6c3ca98))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Max ([@onmax](http://github.com/onmax))
+
 ## v0.7.20
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.19...v0.7.20)
