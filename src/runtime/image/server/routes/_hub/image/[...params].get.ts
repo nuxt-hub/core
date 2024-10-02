@@ -1,6 +1,6 @@
 import { createError, eventHandler, getValidatedRouterParams, setHeader } from 'h3'
 import { z } from 'zod'
-import { PhotonImage, SamplingFilter, resize, rotate, initAsync, crop } from '@cf-wasm/photon/next'
+import { PhotonImage, SamplingFilter, resize, rotate, initAsync } from '@cf-wasm/photon/next'
 import photonWasmModule from '@cf-wasm/photon/photon.wasm?module'
 import { hubBlob } from '../../../../../blob/server/utils/blob'
 import { useRuntimeConfig } from '#imports'
