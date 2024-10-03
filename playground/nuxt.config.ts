@@ -19,7 +19,13 @@ export default defineNuxtConfig({
     browser: true,
     kv: true,
     cache: true,
-    vectorize: true,
+    vectorize: {
+      example: {
+        metric: 'cosine',
+        dimensions: 768,
+        metadataIndexes: { name: 'string', price: 'number' }
+      }
+    },
     bindings: {
       // compatibilityFlags: ['nodejs_compat_v2']
       // Used for /api/hyperdrive
