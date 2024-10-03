@@ -235,6 +235,9 @@ cloudflare:
         - key: 'paid'
           label: 'Pricing'
       rows:
+        - title: 'Writes'
+          free: 'Free'
+          paid: 'Free'
         - title: 'Queried vector dimensions'
           free: '30 million / month'
           paid: '50 million / month + $0.01/million'
