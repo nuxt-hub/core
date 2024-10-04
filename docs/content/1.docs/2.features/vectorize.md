@@ -387,7 +387,7 @@ Determining the similarity between vectors can be subjective based on how the ma
 When querying vectors, you can specify Vectorize to use either:
 
 - High-precision scoring, which increases the precision of the query matches scores as well as the accuracy of the query results.
-- Approximate scoring for faster response times. Using approximate scoring, returned scores will be an approximation of the real distance/similarity between your query and the returned vectors. Refer to [Control over scoring precision and query accuracy](/vectorize/best-practices/query-vectors/#control-over-scoring-precision-and-query-accuracy).
+- Approximate scoring for faster response times. Using approximate scoring, returned scores will be an approximation of the real distance/similarity between your query and the returned vectors. Refer to [Control over scoring precision and query accuracy](#control-over-scoring-precision-and-query-accuracy).
 
 Distance metrics cannot be changed after index creation, and that each metric has a different scoring function.
 
@@ -412,10 +412,10 @@ Metadata keys cannot be empty, contain the dot character (`.`), contain the doub
 Metadata can be used to:
 
 - Include the object storage key, database UUID or other identifier to look up the content the vector embedding represents.
-- The raw content (up to the [metadata limits](/vectorize/platform/limits/)), which can allow you to skip additional lookups for smaller content.
+- The raw content (up to the [metadata limits](https://developers.cloudflare.com/vectorize/platform/limits/)), which can allow you to skip additional lookups for smaller content.
 - Dates, timestamps, or other metadata that describes when the vector embedding was generated or how it was generated.
 
-For example, a vector embedding representing an image could include the path to the [R2 object](/r2/) it was generated from, the format, and a category lookup:
+For example, a vector embedding representing an image could include the path to the [blob](/docs/features/blob) it was generated from, the format, and a category lookup:
 
 ```ts
 { id: '1', values: [32.4, 74.1, 3.2, ...], metadata: { path: 'r2://bucket-name/path/to/image.png', format: 'png', category: 'profile_image' } }
@@ -676,7 +676,7 @@ Namespaces provide a way to segment the vectors within your index. For example, 
 
 To associate vectors with a namespace, you can optionally provide a `namespace: string` value when performing an insert or upsert operation. When querying, you can pass the namespace to search within as an optional parameter to your query.
 
-A namespace can be up to 64 characters (bytes) in length and you can have up to 1,000 namespaces per index. Refer to the [Limits](/vectorize/platform/limits/) documentation for more details.
+A namespace can be up to 64 characters (bytes) in length and you can have up to 1,000 namespaces per index. Refer to the [Limits](https://developers.cloudflare.com/vectorize/platform/limits/) documentation for more details.
 
 When a namespace is specified in a query operation, only vectors within that namespace are used for the search. Namespace filtering is applied before vector search, not after.
 
@@ -814,5 +814,125 @@ interface VectorizeIndexInfo {
   processedUpToMutation: number;
 }
 ```
+
+## Examples
+
+### Vector search
+
+In this example:
+1. An embeddings vector is generated from the search query.
+2. The Vectorize index is queried with the embeddings vector.
+3. Then the original source data is retrieved by querying the database for the IDs returned by Vectorize.
+
+Learn more at https://developers.cloudflare.com/vectorize/reference/what-is-a-vector-database/#vector-search
+
+::collapsible{name="code"}
+```ts [server/api/search.get.ts]
+import { z } from "zod";
+
+interface EmbeddingResponse {
+  shape: number[];
+  data: number[][];
+}
+
+const Query = z.object({
+  query: z.string().min(1).max(256),
+  limit: z.coerce.number().int().min(1).max(20).default(10),
+});
+
+export default defineEventHandler(async (event) => {
+  const { query, limit } = await getValidatedQuery(event, Query.parse);
+
+  // 1. generate embeddings for search query
+  const embeddings: EmbeddingResponse = await hubAI().run("@cf/baai/bge-base-en-v1.5", { text: [query] });
+  const vectors = embeddings.data[0];
+
+  // 2. query vectorize to find similar results
+  const vectorize: VectorizeIndex = hubVectorize('jobs');
+  const { matches } = await vectorize.query(vectors, { topK: limit });
+
+  // 3. get details for matching items
+  const jobMatches = await useDrizzle().query.jobs.findMany({
+    where: (jobs, { inArray }) => inArray(jobs.id, matches.map((match) => match.id)),
+    with: {
+      department: true,
+      subDepartment: true,
+    },
+  });
+
+  // 4. add score to matches
+  const jobMatchesWithScore = jobMatches.map((job) => {
+    const match = matches.find((match) => match.id === job.id);
+    return { ...job, score: match!.score };
+  });
+
+  // 5. sort by score
+  return jobMatchesWithScore.sort((a, b) => b.score - a.score);
+});
+```
+::
+
+### Bulk generation and import
+
+This example bulk generates vectors using a text embeddings AI model for all data within a database table, using [Nitro tasks](https://nitro.unjs.io/guide/tasks). You can run the task via Nuxt DevTools.
+
+::collapsible{name="code"}
+```ts [server/tasks/generate-embeddings.ts]
+import { jobs } from "../database/schema";
+import { asc, count } from "drizzle-orm";
+
+export default defineTask({
+  meta: {
+    name: "vectorize:seed",
+    description: "Generate text embeddings vectors",
+  },
+  async run() {
+    console.log("Running Vectorize seed task...");
+    const jobCount = (await useDrizzle().select({ count: count() }).from(tables.jobs))[0].count;
+
+    // process in chunks of 100 as that's the maximum supported by workers ai
+    const INCREMENT_AMOUNT = 100;
+
+    const totalBatches = Math.ceil(jobCount / INCREMENT_AMOUNT);
+    console.log(`Total items: ${jobCount} (${totalBatches} batches)`);
+
+    for (let i = 0; i < jobCount; i += INCREMENT_AMOUNT) {
+      console.log(`⏳ Processing items ${i} - ${i + INCREMENT_AMOUNT}...`);
+
+      const jobsChunk = await useDrizzle()
+        .select()
+        .from(tables.jobs)
+        .orderBy(asc(jobs.id))
+        .limit(INCREMENT_AMOUNT)
+        .offset(i);
+
+      // generate embeddings for job titles
+      const ai = hubAi();
+      const embeddings = await ai.run(
+        "@cf/baai/bge-base-en-v1.5",
+        { text: jobsChunk.map((job) => job.jobTitle) },
+        { gateway: { id: "new-role" } },
+      );
+      const vectors = embeddings.data;
+
+      const formattedEmbeddings = jobsChunk.map(({ id, ...metadata }, index) => ({
+        id,
+        metadata: { ...metadata },
+        values: vectors[index],
+      }));
+
+      // save vector embeddings to index
+      const index = hubVectorize('jobs');
+      await index.upsert(formattedEmbeddings);
+
+      console.log(`✅ Processed items ${i} - ${i + INCREMENT_AMOUNT}...`);
+    }
+
+    console.log("Vectorize seed task completed!");
+    return { result: "success" };
+  },
+});
+```
+::
 
 <!-- TODO: Recipe for Retrieval Augmented Generation (RAG) -->
