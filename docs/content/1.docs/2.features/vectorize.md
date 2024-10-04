@@ -829,7 +829,6 @@ In this example:
 
 Learn more at https://developers.cloudflare.com/vectorize/reference/what-is-a-vector-database/#vector-search
 
-::collapsible{name="code"}
 ```ts [server/api/search.get.ts]
 import { z } from "zod";
 
@@ -873,13 +872,11 @@ export default defineEventHandler(async (event) => {
   return jobMatchesWithScore.sort((a, b) => b.score - a.score);
 });
 ```
-::
 
 ### Bulk generation and import
 
 This example bulk generates vectors using a text embeddings AI model for all data within a database table, using [Nitro tasks](https://nitro.unjs.io/guide/tasks). You can run the task via Nuxt DevTools.
 
-::collapsible{name="code"}
 ```ts [server/tasks/generate-embeddings.ts]
 import { jobs } from "../database/schema";
 import { asc, count } from "drizzle-orm";
@@ -936,6 +933,5 @@ export default defineTask({
   },
 });
 ```
-::
 
 <!-- TODO: Recipe for Retrieval Augmented Generation (RAG) -->
