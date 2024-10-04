@@ -25,7 +25,7 @@ type VectorizeIndexes = keyof RuntimeConfig['hub']['vectorize'] & string
  * let inserted = await vectorize.insert(vectorsToInsert)
  * ```
  *
- * Vectorize is currently only supported with `--remote`. See https://developers.cloudflare.com/workers/testing/local-development/#supported-resource-bindings-in-different-environments for details.
+ * Vectorize is currently only supported with `--remote`.
  *
  * @see https://hub.nuxt.com/docs/features/vectorize
  */
