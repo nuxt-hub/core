@@ -27,7 +27,8 @@ export default defineNuxtConfig({
       }
     },
     bindings: {
-      // compatibilityFlags: ['nodejs_compat_v2']
+      compatibilityDate: '2024-10-02',
+      compatibilityFlags: ['nodejs_compat']
       // Used for /api/hyperdrive
       // hyperdrive: {
       //   POSTGRES: '8bb2913857b84c939cd908740fa5a5d5'

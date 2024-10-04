@@ -1,6 +1,6 @@
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
 import { argv } from 'node:process'
-import { defineNuxtModule, createResolver, logger, installModule, addServerHandler } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, logger, installModule, addServerHandler, addServerPlugin } from '@nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { findWorkspaceDir } from 'pkg-types'
@@ -168,6 +168,13 @@ export default defineNuxtModule<ModuleOptions>({
       nuxt.options.nitro.commands = nuxt.options.nitro.commands || {}
       nuxt.options.nitro.commands.preview = 'npx nuxthub preview'
       nuxt.options.nitro.commands.deploy = 'npx nuxthub deploy'
+
+      // Add the env middleware
+      nuxt.options.nitro.handlers ||= []
+      nuxt.options.nitro.handlers.unshift({
+        middleware: true,
+        handler: resolve('./runtime/env')
+      })
     }
 
     // Local development without remote connection
@@ -207,8 +214,7 @@ export default defineNuxtModule<ModuleOptions>({
         }
         await installModule('nitro-cloudflare-dev')
       }
-      nuxt.options.nitro.plugins = nuxt.options.nitro.plugins || []
-      nuxt.options.nitro.plugins.push(resolve('./runtime/ready.dev'))
+      addServerPlugin(resolve('./runtime/ready.dev'))
     }
   }
 })

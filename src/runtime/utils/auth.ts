@@ -46,6 +46,11 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
       headers: {
         authorization: `Bearer ${secretKeyOrUserToken}`
       }
+    }).catch(() => {
+      throw createError({
+        statusCode: 401,
+        message: 'Could not connect to project'
+      })
     })
     localCache.set(secretKeyOrUserToken, true)
     return
