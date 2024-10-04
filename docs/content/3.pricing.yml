@@ -209,8 +209,6 @@ cloudflare:
       buttons:
         - label: 'Cloudflare AI pricing'
           to: 'https://developers.cloudflare.com/workers-ai/platform/pricing/'
-        - label: 'Pricing calculator'
-          to: 'https://ai.cloudflare.com/#pricing-calculator'
       columns:
         - key: 'title'
           label: ''
@@ -219,9 +217,18 @@ cloudflare:
         - key: 'paid'
           label: 'Workers Paid ($5/month)'
       rows:
-        - title: 'Neurons'
-          free: '10,000 / day'
-          paid: '10,000 / day + $0.011/1,000 neurons'
+        - title: 'Text Generation'
+          free: '10,000 tokens / day'
+          paid: '10,000 tokens / day + start at $0.10 / million tokens'
+        - title: 'Embeddings'
+          free: '10,000 tokens / day'
+          paid: '10,000 tokens / day + start at $0.10 / million tokens'
+        - title: 'Images'
+          free: '250 steps (up to 1024x1024) / day'
+          paid: '250 steps / day + start at $0.00125 per 25 steps'
+        - title: 'Speech to Text'
+          free: '10 minutes of audio / day'
+          paid: '10 minutes of audio / day + $0.0039 per minute of audio input'
     - label: 'Vectorize'
       icon: i-ph-circles-three-fill
       buttons:
