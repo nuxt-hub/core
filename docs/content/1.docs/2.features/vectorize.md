@@ -9,7 +9,7 @@ Learn what vector databases are on Cloudflare's documentation
 ::
 
 ::warning
-Vectorize is current unavailable during local development. To develop with Vectorize, create an index inside `nuxt.config.ts`, deploy the application and develop using [`nuxt dev --remot#e`](/docs/getting-started/remote-storage).
+Vectorize is current unavailable during local development. To develop with Vectorize, create an index inside `nuxt.config.ts`, deploy the application and develop using [`nuxt dev --remote`](/docs/getting-started/remote-storage).
 ::
 
 ## Getting Started
@@ -194,7 +194,7 @@ console.log(matches)
 
 Querying an index, or vector search, enables you to search an index by providing an input vector and returning the nearest vectors based on the [configured distance metric](#distance-metrics).
 
-Optionally, you can apply [metadata filters](#metadata--filtering) or a [namespace](#namespaces) to narrow the vector search space.
+Optionally, you can apply [metadata filters](#metadata-filtering) or a [namespace](#namespaces) to narrow the vector search space.
 
 #### Params
 

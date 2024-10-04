@@ -19,6 +19,7 @@ This feature is available on both [free and pro plans](/pricing) and in [`@nuxth
 We are excited to introduce [`hubVectorize()`](/docs/features/vectorize), which gives you access to a globally distributed vector database from Nuxt. Paired with [`hubAI()`](/docs/features/ai), it makes Nuxt a perfect framework for easily building full-stack AI-powered applications.
 
 ## What is a vector database?
+
 Vector databases allows you to querying embeddings, which are representations of values or objects like text, images, audio that are designed to be consumed by machine learning models and semantic search algorithms.
 
 Some key use cases of vector databases include:
