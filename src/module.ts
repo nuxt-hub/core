@@ -141,7 +141,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     if (hub.remote) {
       await setupRemote(nuxt, hub)
-      vectorizeRemoteCheck(hub, log)
+      vectorizeRemoteCheck(hub)
       return
     }
 

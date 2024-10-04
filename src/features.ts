@@ -193,12 +193,16 @@ export function setupVectorize(nuxt: Nuxt, hub: HubConfig) {
   addServerImportsDir(resolve('./runtime/vectorize/server/utils'))
 }
 
-export function vectorizeRemoteCheck(hub: HubConfig, log: ConsolaInstance) {
+export function vectorizeRemoteCheck(hub: HubConfig) {
   let isIndexConfigurationChanged = false
   const localVectorize = hub.vectorize || {}
   const remoteVectorize = hub.remoteManifest?.storage.vectorize || {}
 
   Object.keys(localVectorize).forEach((key) => {
+    // Index does not exist in remote project yet
+    if (!remoteVectorize[key]) {
+      return
+    }
     const isDimensionsChanged = localVectorize[key].dimensions !== remoteVectorize[key].dimensions
     const isMetricChanged = localVectorize[key].metric !== remoteVectorize[key].metric
     if (isDimensionsChanged || isMetricChanged) {
