@@ -9,7 +9,7 @@ Learn what vector databases are on Cloudflare's documentation
 ::
 
 ::warning
-Vectorize is current unavailable during local development. To develop with Vectorize, create an index inside `nuxt.config.ts`, deploy the application and develop using [`nuxt dev --remote`](/docs/getting-started/remote-storage).
+Vectorize is only available in local development when using [remote storage](/docs/getting-started/remote-storage).
 ::
 
 ## Getting Started
@@ -59,10 +59,13 @@ export default defineNuxtConfig({
 ```
 ::
 
-::caution
-Cloudflare Vectorize index configurations cannot be changed after creation. Therefore, changing an index's dimension size or distance metric will result in modified existing indexes being disconnected from your Pages project, and a new index being created. Existing data will not be migrated.
-::
+Then, make sure to [deploy your project](/docs/getting-started/deploy) to create the indexes.
 
+Once deployed, you can use the `hubVectorize()` server composable to interact with the vector databases using [remote storage](/docs/getting-started/remote-storage) with the `npx nuxt dev --remote` command.
+
+::important
+Cloudflare Vectorize index configurations are immutable after creation. Modifying an index's dimension size or distance metric will disconnect the modified existing index from your deployed project and create a new index. Existing data will not be migrated. Consider your index configuration carefully before creation to avoid data loss and reconnection issues.
+::
 
 ### Create an index
 
