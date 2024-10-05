@@ -103,8 +103,9 @@ onMounted(() => {
     <ULandingSection
       id="cloudflare-pricing"
       :title="page?.cloudflare.title"
-      align="left"
+      align="center"
       :ui="{
+        base: 'text-left items-start',
         wrapper: 'py-12 sm:py-24',
         container: 'gap-y-8 sm:gap-y-12 lg:items-start',
         title: 'text-2xl sm:text-3xl lg:text-3xl font-semibold',
@@ -115,10 +116,6 @@ onMounted(() => {
         <span>{{ page?.cloudflare.description }}</span>
         <div class="mt-6">
           <UButton v-bind="page?.cloudflare.button" />
-        </div>
-        <UDivider class="w-1/4 mt-10" type="dashed" />
-        <div class="flex flex-col gap-y-3 mt-6 dark:text-gray-300">
-          <ULandingTestimonial v-if="evanTestimonial" v-bind="evanTestimonial" :card="false" />
         </div>
       </template>
       <UTabs
@@ -154,6 +151,7 @@ onMounted(() => {
           </div>
         </template>
       </UTabs>
+      <ULandingTestimonial v-if="evanTestimonial" v-bind="evanTestimonial" :card="false" />
     </ULandingSection>
     <!-- Deploy -->
     <ULandingSection :title="home?.deploy.title" :links="home?.deploy.buttons" class="relative">
@@ -174,6 +172,14 @@ onMounted(() => {
             :height="step.img.height"
             :alt="step.title"
             class="hidden dark:block"
+            lazy
+          />
+          <NuxtImg
+            :src="step.img.srcLight"
+            :width="step.img.width"
+            :height="step.img.height"
+            :alt="step.title"
+            class="block dark:hidden"
             lazy
           />
           <div>

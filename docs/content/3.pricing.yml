@@ -229,6 +229,28 @@ cloudflare:
         - title: 'Speech to Text'
           free: '10 minutes of audio / day'
           paid: '10 minutes of audio / day + $0.0039 per minute of audio input'
+    - label: 'Vectorize'
+      icon: i-ph-circles-three-fill
+      buttons:
+        - label: 'Cloudflare Vectorize pricing'
+          to: 'https://developers.cloudflare.com/vectorize/platform/pricing/'
+      columns:
+        - key: 'title'
+          label: ''
+        - key: 'free'
+          label: 'Free Tier'
+        - key: 'paid'
+          label: 'Pricing'
+      rows:
+        - title: 'Writes'
+          free: 'Free'
+          paid: 'Free'
+        - title: 'Queried vector dimensions'
+          free: '30 million / month'
+          paid: '50 million / month + $0.01/million'
+        - title: 'Stored vector dimensions'
+          free: '5 million / month'
+          paid: '10 million / month + $0.05/100 million'
   button:
     label: 'Discover Cloudflare pricing'
     external: true

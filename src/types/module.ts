@@ -50,6 +50,37 @@ export interface ModuleOptions {
    */
   kv?: boolean
   /**
+   * Set Vectorize indexes for the project.
+   *
+   * Currently there is a limit of 10 metadata indexes per vectorize index.
+   *
+   * @default {}
+   * @see https://hub.nuxt.com/docs/features/vectorize
+   *
+   * @example
+   * ```ts
+   * vectorize: {
+   *   products: {
+   *     metric: 'cosine',
+   *     dimensions: '768',
+   *     metadataIndexes: { name: 'string', price: 'number', isActive: 'boolean' }
+   *   },
+   *   reviews: {
+   *     metric: 'cosine',
+   *     dimensions: '768',
+   *     metadataIndexes: { rating: 'number' }
+   *   }
+   * }
+   * ```
+   */
+  vectorize: {
+    [key: string]: {
+      metric: 'cosine' | 'euclidean' | 'dot-product'
+      dimensions: number
+      metadataIndexes?: Record<string, 'string' | 'number' | 'boolean'>
+    }
+  }
+  /**
    * Set to `true`, 'preview' or 'production' to use the remote storage.
    * Only set the value on a project you are deploying outside of NuxtHub or Cloudflare.
    * Or wrap it with $development to only use it in development mode.

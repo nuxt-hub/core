@@ -27,6 +27,13 @@ export interface HubConfig {
   cache?: boolean
   database?: boolean
   kv?: boolean
+  vectorize?: {
+    [key: string]: {
+      metric: 'cosine' | 'euclidean' | 'dot-product'
+      dimensions: number
+      metadataIndexes?: Record<string, 'string' | 'number' | 'boolean'>
+    }
+  }
 
   bindings?: {
     compatibilityDate?: string
@@ -39,8 +46,8 @@ export interface HubConfig {
   remoteManifest?: {
     version: string
     storage: {
-      [key: string]: boolean
-    }
+      vectorize?: HubConfig['vectorize']
+    } & Record<string, boolean>
   }
 }
 
@@ -175,6 +182,39 @@ export function setupKV(_nuxt: Nuxt) {
   addServerImportsDir(resolve('./runtime/kv/server/utils'))
 }
 
+export function setupVectorize(nuxt: Nuxt, hub: HubConfig) {
+  if (nuxt.options.dev && !hub.remote) {
+    log.warn('`hubVectorize()` is disabled: it is currently only supported with `--remote`.')
+    return
+  }
+  // Add Server scanning
+  addServerScanDir(resolve('./runtime/vectorize/server'))
+  addServerImportsDir(resolve('./runtime/vectorize/server/utils'))
+}
+
+export function vectorizeRemoteCheck(hub: HubConfig) {
+  let isIndexConfigurationChanged = false
+  const localVectorize = hub.vectorize || {}
+  const remoteVectorize = hub.remoteManifest?.storage.vectorize || {}
+
+  Object.keys(localVectorize).forEach((key) => {
+    // Index does not exist in remote project yet
+    if (!remoteVectorize[key]) {
+      return
+    }
+    const isDimensionsChanged = localVectorize[key].dimensions !== remoteVectorize[key].dimensions
+    const isMetricChanged = localVectorize[key].metric !== remoteVectorize[key].metric
+    if (isDimensionsChanged || isMetricChanged) {
+      log.warn(`Vectorize index \`${key}\` configuration changed\nRemote: \`${remoteVectorize[key].dimensions}\` dimensions - \`${remoteVectorize[key].metric}\` metric \nLocal: \`${localVectorize[key].dimensions}\` dimensions - \`${localVectorize[key].metric}\` metric`)
+      isIndexConfigurationChanged = true
+    }
+  })
+
+  if (isIndexConfigurationChanged) {
+    log.warn('Modified Vectorize index(es) will be recreated with new configuration on deployment and existing data will not be migrated!')
+  }
+}
+
 export function setupOpenAPI(nuxt: Nuxt) {
   // Fallback to custom placeholder when openAPI is disabled
   nuxt.options.alias['#hub/openapi'] = nuxt.options.nitro?.experimental?.openAPI === true
@@ -296,7 +336,14 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
 
   const availableStorages = Object.keys(remoteManifest?.storage || {}).filter(k => hub[k as keyof typeof hub] && remoteManifest?.storage[k])
   if (availableStorages.length > 0) {
-    logger.info(`Remote storage available: ${availableStorages.map(k => `\`${k}\``).join(', ')} `)
+    const storageDescriptions = availableStorages.map((storage) => {
+      if (storage === 'vectorize' && hub.vectorize) {
+        const indexes = Object.keys(remoteManifest!.storage.vectorize!).join(', ')
+        return `\`${storage} (${indexes})\``
+      }
+      return `\`${storage}\``
+    })
+    logger.info(`Remote storage available: ${storageDescriptions.join(', ')}`)
   } else {
     log.fatal('No remote storage available: make sure to enable at least one of the storage options in your `nuxt.config.ts` and deploy new version before using remote storage. Read more at https://hub.nuxt.com/docs/getting-started/remote-storage')
     process.exit(1)

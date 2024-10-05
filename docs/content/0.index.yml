@@ -10,8 +10,8 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: "`nuxthub preview` command"
-    to: /changelog/nuxthub-preview
+    label: "Introducing hubVectorize()"
+    to: /changelog/hub-vectorize
     icon: i-ph-arrow-right
   links:
     - label: Start reading docs

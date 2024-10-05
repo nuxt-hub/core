@@ -19,6 +19,13 @@ export default defineNuxtConfig({
     browser: true,
     kv: true,
     cache: true,
+    vectorize: {
+      example: {
+        metric: 'cosine',
+        dimensions: 768,
+        metadataIndexes: { name: 'string', price: 'number' }
+      }
+    },
     bindings: {
       compatibilityDate: '2024-10-02',
       compatibilityFlags: ['nodejs_compat']
