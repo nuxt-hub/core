@@ -1,6 +1,6 @@
 ---
 title: Introducing hubVectorize()
-description: "Run machine learning models, such as LLMs in your Nuxt application, with minimal setup."
+description: "Vectorize is a globally distributed vector database that enables you to build full-stack, AI-powered applications with Nuxt."
 date: 2024-10-05
 image: '/images/changelog/nuxthub-vectorize.png'
 category: Core
