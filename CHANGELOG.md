@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v0.7.24
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.23...v0.7.24)
+
+### 🚀 Enhancements
+
+- Add `hubVectorize()` ([#177](https://github.com/nuxt-hub/core/pull/177))
+
+### 📖 Documentation
+
+- Update AI pricing ([dd93ab1](https://github.com/nuxt-hub/core/commit/dd93ab1))
+- Update date ([f643d6d](https://github.com/nuxt-hub/core/commit/f643d6d))
+
+### 🏡 Chore
+
+- **playground:** Update deps ([27b830c](https://github.com/nuxt-hub/core/commit/27b830c))
+- Improve auth error message ([780ff7d](https://github.com/nuxt-hub/core/commit/780ff7d))
+- Update deps ([3640368](https://github.com/nuxt-hub/core/commit/3640368))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+
 ## v0.7.23
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.22...v0.7.23)
