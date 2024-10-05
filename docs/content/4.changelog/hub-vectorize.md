@@ -1,7 +1,7 @@
 ---
 title: Introducing hubVectorize()
 description: "Run machine learning models, such as LLMs in your Nuxt application, with minimal setup."
-date: 2024-10-03
+date: 2024-10-05
 image: '/images/changelog/nuxthub-vectorize.png'
 category: Core
 authors:
