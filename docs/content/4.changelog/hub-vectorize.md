@@ -2,7 +2,7 @@
 title: Introducing hubVectorize()
 description: "Run machine learning models, such as LLMs in your Nuxt application, with minimal setup."
 date: 2024-10-03
-image: '/images/changelog/hub-vectorize.png'
+image: '/images/changelog/nuxthub-vectorize.png'
 category: Core
 authors:
   - name: Rihan Arfan
@@ -17,6 +17,8 @@ This feature is available on both [free and pro plans](/pricing) and in [`@nuxth
 ::
 
 We are excited to introduce [`hubVectorize()`](/docs/features/vectorize), which gives you access to a globally distributed vector database from Nuxt. Paired with [`hubAI()`](/docs/features/ai), it makes Nuxt a perfect framework for easily building full-stack AI-powered applications.
+
+:nuxt-img{src="/images/changelog/nuxthub-vectorize.png" alt="NuxtHub Vectorize command" width="915" height="515"}
 
 ## What is a vector database?
 
