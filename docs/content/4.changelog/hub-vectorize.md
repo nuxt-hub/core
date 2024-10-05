@@ -13,7 +13,7 @@ authors:
 ---
 
 ::tip
-This feature is available on both [free and pro plans](/pricing) and in [`@nuxthub/core >= v0.8.0`](https://github.com/nuxt-hub/core/releases/tag/v0.8.0).
+This feature is available on both [free and pro plans](/pricing) and in [`@nuxthub/core >= v0.7.24`](https://github.com/nuxt-hub/core/releases/tag/v0.7.24).
 ::
 
 We are excited to introduce [`hubVectorize()`](/docs/features/vectorize), which gives you access to a globally distributed vector database from Nuxt. Paired with [`hubAI()`](/docs/features/ai), it makes Nuxt a perfect framework for easily building full-stack AI-powered applications.
@@ -35,7 +35,7 @@ Learn more about vector databases on [Cloudflare's documentation](https://develo
 
 ## How to use hubVectorize()
 
-1. Update `@nuxthub/core` to the latest version (`v0.8.0` or later)
+1. Update `@nuxthub/core` to the latest version (`v0.7.24` or later)
 
 2. Configure a Vectorize index in `hub.vectorize` in your `nuxt.config.ts`
 
