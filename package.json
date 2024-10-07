@@ -43,7 +43,7 @@
     "@nuxt/kit": "^3.13.2",
     "@uploadthing/mime-types": "^0.3.0",
     "citty": "^0.1.6",
-    "confbox": "^0.1.7",
+    "confbox": "^0.1.8",
     "defu": "^6.1.4",
     "destr": "^2.0.3",
     "h3": "^1.13.0",
@@ -62,7 +62,7 @@
     "@nuxt/eslint-config": "^0.5.7",
     "@nuxt/module-builder": "^0.8.4",
     "@nuxt/schema": "^3.13.2",
-    "@nuxt/test-utils": "^3.14.2",
+    "@nuxt/test-utils": "^3.14.3",
     "@nuxthub/core": "link:",
     "@types/node": "^22.7.4",
     "changelogen": "^0.5.7",
@@ -72,5 +72,5 @@
     "vitest": "^2.1.2",
     "wrangler": "^3.80.0"
   },
-  "packageManager": "pnpm@9.12.0"
+  "packageManager": "pnpm@9.12.1"
 }
