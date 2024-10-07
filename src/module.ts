@@ -71,7 +71,7 @@ export default defineNuxtModule<ModuleOptions>({
         // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
         compatibilityFlags: nuxt.options.nitro.cloudflare?.wrangler?.compatibility_flags
       }
-    }) as HubConfig
+    })
     runtimeConfig.hub = hub
     // Make sure to tell Nitro to not generate the wrangler.toml file
     // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
