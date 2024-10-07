@@ -73,6 +73,7 @@ export default defineNuxtModule<ModuleOptions>({
       }
     })
     runtimeConfig.hub = hub
+    runtimeConfig.public.hub = {}
     // Make sure to tell Nitro to not generate the wrangler.toml file
     // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
     delete nuxt.options.nitro.cloudflare?.wrangler?.compatibility_flags
