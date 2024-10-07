@@ -12,23 +12,31 @@ NuxtHub supercharges your Nuxt development workflow so you can focus on shipping
 ## ✨ Key Features
 
 NuxtHub provides optional features to help you build full-stack applications:
-- [**AI Models**](https://hub.nuxt.com/docs/features/ai) to run machine learning models, such as LLMs in Nuxt.
+- [**AI Models**](https://hub.nuxt.com/docs/features/ai) & [**Vector database**](https://hub.nuxt.com/docs/features/vectorize) to run machine learning models and build full-stack AI-powered apps.
 - [**Files storage**](https://hub.nuxt.com/docs/features/blob) to store static assets, such as images, videos and more
 - [**Caching system**](https://hub.nuxt.com/docs/features/cache) for your Nuxt pages, API routes or server functions
 - [**SQL database**](https://hub.nuxt.com/docs/features/database) to store your application's data
 - [**Key-Value**](https://hub.nuxt.com/docs/features/kv) to store JSON data accessible globally with low-latency
+- [**Browser Rendering**](https://hub.nuxt.com/docs/features/browser) to take screenshots, generate PDFs, craw web pages using a headless browser on the edge.
 - [**Open API**](https://hub.nuxt.com/docs/features/open-api) to generate your API documentation with [Scalar](https://scalar.com)
 - [**Remote Storage**](https://hub.nuxt.com/docs/getting-started/remote-storage) to connect to your project's resources from your local environment, allowing you to work with your remote storage as if it was local with `npx nuxi dev --remote`.
 
-On top of the full-stack features, you can [**deploy your Nuxt application**](https://hub.nuxt.com/docs/getting-started/deploy) to your Cloudflare account with [`npx nuxthub deploy`](https://github.com/nuxt-hub/cli) or with the [NuxtHub Admin](https://admin.hub.nuxt.com).
+On top of the full-stack features, you can [**deploy your Nuxt application**](https://hub.nuxt.com/docs/getting-started/deploy) to your Cloudflare account with [`npx nuxthub deploy`](https://github.com/nuxt-hub/cli) or with the [NuxtHub Admin](https://admin.hub.nuxt.com), you can also self-host your application and create the resources manually.
 
 Read more on https://hub.nuxt.com
+
+## 📚 Resources
+
+- [NuxtHub Website](https://hub.nuxt.com)
+- [NuxtHub Admin](https://admin.hub.nuxt.com)
+- [NuxtHub CLI](https://github.com/nuxt-hub/cli)
+- [NuxtHub Templates](https://hub.nuxt.com/templates)
 
 ## 🚀 Quickstart
 
 Head over to our [Getting Started](https://hub.nuxt.com/docs/getting-started/installation) guide to learn more.
 
-Duplicate our `nuxt-hub/hello-edge` template or create a new NuxtHub project with:
+Duplicate our [`nuxt-hub/hello-edge`](https://github.com/nuxt-hub/hello-edge) template or create a new NuxtHub project with:
 
 ```bash
 npx nuxthub init my-app
@@ -47,13 +55,6 @@ npx nuxthub deploy
 https://github.com/user-attachments/assets/c591efaa-96e7-4357-8d60-cdc1e20e93ed
 
 Learn more on [how to deploy a Nuxt app with NuxtHub](https://hub.nuxt.com/docs/getting-started/deploy).
-
-## 📚 Resources
-
-- [NuxtHub Website](https://hub.nuxt.com)
-- [NuxtHub Admin](https://admin.hub.nuxt.com)
-- [NuxtHub CLI](https://github.com/nuxt-hub/cli)
-- [NuxtHub Templates](https://hub.nuxt.com/templates)
 
 ## 🤝 Community
 
@@ -94,7 +95,7 @@ pnpm test:watch
 [npm-version-href]: https://npmjs.com/package/@nuxthub/core
 
 [npm-downloads-src]: https://img.shields.io/npm/dm/@nuxthub/core.svg?style=flat&colorA=020420&colorB=00DC82
-[npm-downloads-href]: https://npmjs.com/package/@nuxthub/core
+[npm-downloads-href]: https://npm.chart.dev/@nuxthub/core
 
 [license-src]: https://img.shields.io/npm/l/@nuxthub/core.svg?style=flat&colorA=020420&colorB=00DC82
 [license-href]: https://npmjs.com/package/@nuxthub/core
