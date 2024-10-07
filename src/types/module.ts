@@ -94,12 +94,12 @@ export interface ModuleOptions {
    */
   url?: string
   /**
-   * The project's key on the NuxtHub platform, added with `nuxthub link`.
+   * The project's key on the NuxtHub platform, added with `npx nuxthub link`.
    * @default process.env.NUXT_HUB_PROJECT_KEY
    */
   projectKey?: string
   /**
-   * The user token to access the NuxtHub platform, added with `nuxthub login`
+   * The user token to access the NuxtHub platform, added with `npx nuxthub login`
    * @default process.env.NUXT_HUB_USER_TOKEN
    */
   userToken?: string
