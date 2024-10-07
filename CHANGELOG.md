@@ -1,6 +1,31 @@
 # Changelog
 
 
+## v0.7.25
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.24...v0.7.25)
+
+### 🩹 Fixes
+
+- Move tsconfig to correct folder ([#307](https://github.com/nuxt-hub/core/pull/307))
+
+### 📖 Documentation
+
+- Update version ([a214eb7](https://github.com/nuxt-hub/core/commit/a214eb7))
+- Update changelog description ([78da207](https://github.com/nuxt-hub/core/commit/78da207))
+- Improve readme ([3077181](https://github.com/nuxt-hub/core/commit/3077181))
+
+### 🏡 Chore
+
+- Add npx prefix for nuxthub commands ([aa13911](https://github.com/nuxt-hub/core/commit/aa13911))
+- Leverage userProjectToken if available ([012f498](https://github.com/nuxt-hub/core/commit/012f498))
+- Update deps ([ef4c6f4](https://github.com/nuxt-hub/core/commit/ef4c6f4))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+
 ## v0.7.24
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.23...v0.7.24)
