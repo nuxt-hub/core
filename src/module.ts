@@ -9,7 +9,6 @@ import type { Nuxt } from '@nuxt/schema'
 import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
 import { setupAI, setupCache, setupAnalytics, setupBlob, setupBrowser, setupOpenAPI, setupDatabase, setupKV, setupVectorize, setupBase, setupRemote, vectorizeRemoteCheck } from './features'
-import type { HubConfig } from './features'
 import type { ModuleOptions } from './types/module'
 import { addBuildHooks } from './utils/build'
 
