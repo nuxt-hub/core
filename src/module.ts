@@ -9,6 +9,7 @@ import type { Nuxt } from '@nuxt/schema'
 import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
 import { setupAI, setupCache, setupAnalytics, setupBlob, setupBrowser, setupOpenAPI, setupDatabase, setupKV, setupVectorize, setupBase, setupRemote, vectorizeRemoteCheck } from './features'
+import type { HubConfig } from './features'
 import type { ModuleOptions } from './types/module'
 import { addBuildHooks } from './utils/build'
 
@@ -70,7 +71,7 @@ export default defineNuxtModule<ModuleOptions>({
         // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
         compatibilityFlags: nuxt.options.nitro.cloudflare?.wrangler?.compatibility_flags
       }
-    })
+    }) as HubConfig
     runtimeConfig.hub = hub
     // Make sure to tell Nitro to not generate the wrangler.toml file
     // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
@@ -109,7 +110,7 @@ export default defineNuxtModule<ModuleOptions>({
     hub.cache && setupCache(nuxt)
     hub.database && setupDatabase(nuxt)
     hub.kv && setupKV(nuxt)
-    Object.keys(hub.vectorize).length && setupVectorize(nuxt, hub)
+    Object.keys(hub.vectorize!).length && setupVectorize(nuxt, hub)
 
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {

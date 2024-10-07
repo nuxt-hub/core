@@ -86,6 +86,7 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
   if (nuxt.options.dev && !hub.remote && hub.projectKey) {
     try {
       await $fetch<any>(`/api/projects/${hub.projectKey}`, {
+        method: 'HEAD',
         baseURL: hub.url,
         headers: {
           authorization: `Bearer ${hub.userToken}`
@@ -268,6 +269,11 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
       }
       process.exit(1)
     })
+
+    // Overwrite userToken with userProjectToken
+    if (project.userProjectToken) {
+      hub.userToken = project.userProjectToken
+    }
 
     // Adapt env based on project defined production branch
     if (String(hub.remote) === 'true') {
