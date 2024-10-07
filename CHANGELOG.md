@@ -1,6 +1,20 @@
 # Changelog
 
 
+## v0.7.26
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.25...v0.7.26)
+
+### 🏡 Chore
+
+- Update type ([17726d8](https://github.com/nuxt-hub/core/commit/17726d8))
+- Add hub empty object to public runtime config ([97ec429](https://github.com/nuxt-hub/core/commit/97ec429))
+- Remove unused type ([fb68769](https://github.com/nuxt-hub/core/commit/fb68769))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.25
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.24...v0.7.25)
