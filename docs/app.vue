@@ -81,6 +81,11 @@ const links = computed(() => [
     to: 'https://x.com/nuxt_hub',
     target: '_blank',
     icon: 'i-simple-icons-x'
+  }, {
+    label: 'NuxtHub',
+    to: 'https://www.linkedin.com/showcase/nuxthub/',
+    target: '_blank',
+    icon: 'i-simple-icons-linkedin'
   }]
 )
 </script>
