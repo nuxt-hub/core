@@ -62,6 +62,7 @@ export default defineDriver((opts = {}) => {
           size: value.length,
           integrity: json.integrity
         }
+      // eslint-disable-next-line no-unused-vars
       } catch (_err) {
         // ignore
       }
