@@ -1,9 +1,9 @@
 title: 'Ship Nuxt apps that scale.'
 navigation: false
-description: 'Deploy and manage your Nuxt apps globally with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and with ease.'
+description: 'Deploy and scale your Nuxt applications worldwide with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and full-stack capabilities.'
 hero:
   title: 'Ship Nuxt apps that scale.'
-  description: 'Deploy and manage your Nuxt apps globally with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and with ease.'
+  description: 'Deploy and scale your Nuxt applications worldwide with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and full-stack capabilities.'
   img:
     width: '1439'
     height: '681'
@@ -35,7 +35,7 @@ features:
     icon: i-ph-lightning
     to: /docs/features/cache
   - name: AI & Vectorize
-    description: Run machine learning models and build full-stack AI applications running globally.
+    description: Run generative AI tasks on a global network and build full-stack AI applications.
     icon: i-ph-magic-wand
     to: /docs/features/ai
   - name: Analytics Engine
@@ -51,8 +51,7 @@ features:
     icon: i-ph-timer
     soon: true
 creator:
-  quote: 'NuxtHub, born from a desire to improve the deployment and management of Nuxt applications, is the go-to platform for building full-stack app.
-        We want to provide you with a reliable platform to build and deploy your next idea while keeping the best developer experience.'
+  quote: "I created NuxtHub to give Nuxt developers the hosting solution I always wanted: blazing-fast performance on Cloudflare's edge network, a Nuxt-like developer experience and the freedom to own your infrastructure. With a generous free tier & predictable pricing, NuxtHub allows you to deploy your ideas without upfront costs or lock-in concerns. It's hosting that gets out of your way, so you can focus on building great applications."
   author:
     name: 'Sébastien Chopin'
     description: 'Creator of Nuxt & NuxtHub'
@@ -80,7 +79,7 @@ tool:
       target: _blank
   features:
     - title: 'Edge Rendering'
-      description: 'Your Nuxt apps renders in milliseconds from 300+ locations around the world.'
+      description: 'Your Nuxt apps render in milliseconds from 300+ locations around the world.'
       icon: i-ph-globe
     - title: 'Hybrid Rendering'
       description: 'Render your Nuxt app with SSR, SPA or pre-rendering at the page level.'
@@ -89,7 +88,7 @@ tool:
       description: 'Your app handles traffic spikes without manual intervention.'
       icon: i-ph-arrows-out
     - title: 'Global CDN'
-      description: "Leverage Cloudflare's worldwide network for blazing fast static assets delivery."
+      description: "Leverages Cloudflare's worldwide network to deliver blazing fast static assets."
       icon: i-simple-icons-cloudflare
     - title: 'Instant Rollbacks'
       description: 'Quickly revert to previous deployments with one click if issues arise.'
@@ -101,7 +100,7 @@ tool:
       description: 'Easy setup for your own domains or use our free .nuxt.dev subdomains.'
       icon: i-ph-cloud
     - title: 'Highly affordable'
-      description: 'Pay only for what you use, no hidden fees. Start for free with a generous free tier.'
+      description: 'Pay only for what you use, no hidden fees. Start for free with a generous solo plan.'
       icon: i-ph-money
     - title: 'Environment variables'
       description: 'Securely store secrets, API keys, tokens, and other environment variables.'
@@ -112,12 +111,12 @@ tool:
     - title: 'Real-time logs'
       description: 'Access to your Nuxt server logs in real-time for debugging purpose.'
       icon: i-ph-list-magnifying-glass
-    - title: 'Import from git'
-      description: 'Select a repository from your favourite git provider and deploy it globally.'
+    - title: 'Import from Git'
+      description: 'Select a repository from your favourite Git provider and deploy it globally.'
       icon: i-ph-git-branch
 deploy:
   title: Deploy a Nuxt application <span class="text-primary">in one minute</span>.
-  description: Once you've linked your Cloudflare account, deploy your Nuxt application all over the world with our CLI or from git.<br>You also get a free <span class="font-semibold">.nuxt.dev</span> domain.
+  description: Once you've linked your Cloudflare account, deploy your Nuxt application all over the world with our CLI or from Git.<br>You also get a free <span class="font-semibold">.nuxt.dev</span> domain.
   steps:
     - title: Connect your Cloudflare account
       description: Securely connect with one click using our pre-configured Cloudflare API permissions.
@@ -194,7 +193,7 @@ blob:
     icon: i-ph-shapes
   title: Add & Manage File Uploads
   description: 'NuxtHub Blob lets you to store and access media files on a global network, thanks to <a class="font-semibold text-gray-800 dark:text-gray-200 hover:underline underline-offset-4" href="https://developers.cloudflare.com/r2/" target="_blank">Cloudflare R2</a>
-Let users upload data like images, videos and audio files with our server composable with our blob validator.'
+Let users upload data like images, videos and audio files with our server composable and our blob validator.'
   features:
     - name: 'hubBlob() server composable'
       icon: i-ph-plugs-fill
@@ -267,7 +266,7 @@ browser:
     title: Browser Rendering
     icon: i-ph-google-chrome-logo-fill
   title: Access a headless browser on the edge
-  description: "Simplify your web workflows with headless browser capabilities. From basic image capture to complex data extraction, NuxtHub empowers you to automate tasks. Experience the power of web automation in a single click."
+  description: "Simplify your web workflows with headless browser capabilities. From basic image capture to complex data extraction, NuxtHub lets you automate tasks. Experience the power of web automation in a single click."
   features:
     - name: 'hubBrowser() server composables'
       icon: i-ph-plugs-fill
