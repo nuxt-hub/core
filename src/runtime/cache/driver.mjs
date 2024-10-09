@@ -6,7 +6,7 @@ const getCacheBinding = (name = 'CACHE') => {
   if (!_binding) {
     _binding = process.env[name] || globalThis.__env__?.[name] || globalThis[name]
     if (!_binding) {
-      throw createError('Missing Cloudflare CACHE binding (KV)')
+      throw createError(`Missing Cloudflare KV binding (${name})`)
     }
   }
   return _binding
