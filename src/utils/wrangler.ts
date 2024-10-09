@@ -7,12 +7,6 @@ import type { HubConfig } from '../features'
 export function generateWrangler(nuxt: Nuxt, hub: HubConfig) {
   const wrangler: { [key: string]: any } = {}
 
-  if (hub.ai) {
-    wrangler['ai'] = {
-      binding: 'AI'
-    }
-  }
-
   if (hub.analytics) {
     wrangler['analytics_engine_datasets'] = [{
       binding: 'ANALYTICS',
