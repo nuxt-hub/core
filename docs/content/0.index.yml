@@ -62,7 +62,7 @@ creator:
       loading: 'lazy'
 tool:
   title: A tailored solution for faster Nuxt app management
-  description: NuxtHub offers a comprehensive suite of tools and features to empower you to build and deploy full-stack Nuxt applications worldwide.
+  description: NuxtHub offers a comprehensive suite of tools and features to let you build and deploy full-stack Nuxt applications worldwide.
   links:
     - label: Get started for free
       trailing-icon: i-ph-arrow-right
@@ -230,7 +230,7 @@ ai:
   headline:
     title: AI & Vectorize
     icon: i-ph-magic-wand
-  title: Build AI Full-Stack Apps
+  title: Build Full-Stack AI Apps
   description: 'Run generative AI tasks on a global network of NVIDIA GPUs with no extra setup and build full-stack Nuxt AI applications with our AI & Vectorize server composables.'
   features:
     - name: 'hubAI() & hubVectorize() server composables'
