@@ -1,15 +1,12 @@
 import { createError } from 'h3'
 import { defineDriver, joinKeys } from 'unstorage'
 
-let _binding
-const getCacheBinding = (name = 'CACHE') => {
-  if (!_binding) {
-    _binding = process.env[name] || globalThis.__env__?.[name] || globalThis[name]
-    if (!_binding) {
-      throw createError(`Missing Cloudflare KV binding (${name})`)
-    }
+function getCacheBinding(name = 'CACHE') {
+  const binding = process.env[name] || globalThis.__env__?.[name] || globalThis[name]
+  if (!binding) {
+    throw createError(`Missing Cloudflare KV binding (${name})`)
   }
-  return _binding
+  return binding
 }
 
 export default defineDriver((opts = {}) => {
