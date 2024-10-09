@@ -23,6 +23,8 @@
     "@nuxthq/studio": "^2.1.0",
     "@nuxtjs/plausible": "^1.0.2",
     "@nuxtjs/tailwindcss": "^6.12.1",
+    "@tsparticles/engine": "^3.5.0",
+    "@tsparticles/slim": "^3.5.0",
     "@vueuse/core": "^11.1.0",
     "@vueuse/nuxt": "^11.1.0",
     "feed": "^4.2.2",
