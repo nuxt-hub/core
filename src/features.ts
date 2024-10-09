@@ -8,7 +8,7 @@ import { $fetch } from 'ofetch'
 import { addDevToolsCustomTabs } from './utils/devtools'
 
 const log = logger.withTag('nuxt:hub')
-const { resolve } = createResolver(import.meta.url)
+const { resolve, resolvePath } = createResolver(import.meta.url)
 
 export interface HubConfig {
   remote: string | boolean
@@ -149,20 +149,20 @@ export async function setupBrowser(nuxt: Nuxt) {
   addServerImportsDir(resolve('./runtime/browser/server/utils'))
 }
 
-export function setupCache(nuxt: Nuxt) {
+export async function setupCache(nuxt: Nuxt) {
   // Add Server caching (Nitro)
+  const driver = await resolvePath('./runtime/cache/driver')
   nuxt.options.nitro = defu(nuxt.options.nitro, {
     storage: {
       cache: {
-        driver: 'cloudflare-kv-binding',
-        binding: 'CACHE',
-        base: 'cache'
+        driver,
+        binding: 'CACHE'
       }
     },
     devStorage: {
       cache: {
-        driver: 'fs',
-        base: join(nuxt.options.rootDir, '.data/cache')
+        driver,
+        binding: 'CACHE'
       }
     }
   })

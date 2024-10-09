@@ -21,11 +21,22 @@ export function generateWrangler(nuxt: Nuxt, hub: HubConfig) {
     }]
   }
 
-  if (hub.kv) {
-    wrangler['kv_namespaces'] = [{
-      binding: 'KV',
-      id: 'kv_default'
-    }]
+  if (hub.kv || hub.cache) {
+    wrangler['kv_namespaces'] = []
+
+    if (hub.kv) {
+      wrangler['kv_namespaces'].push({
+        binding: 'KV',
+        id: 'kv_default'
+      })
+    }
+
+    if (hub.cache) {
+      wrangler['kv_namespaces'].push({
+        binding: 'CACHE',
+        id: 'cache_default'
+      })
+    }
   }
 
   if (hub.database) {

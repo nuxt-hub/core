@@ -107,7 +107,7 @@ export default defineNuxtModule<ModuleOptions>({
     hub.analytics && setupAnalytics(nuxt)
     hub.blob && setupBlob(nuxt)
     hub.browser && await setupBrowser(nuxt)
-    hub.cache && setupCache(nuxt)
+    hub.cache && await setupCache(nuxt)
     hub.database && setupDatabase(nuxt)
     hub.kv && setupKV(nuxt)
     Object.keys(hub.vectorize!).length && setupVectorize(nuxt, hub)
@@ -201,7 +201,7 @@ export default defineNuxtModule<ModuleOptions>({
         await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}.data`, 'utf-8')
       }
 
-      const needWrangler = Boolean(hub.analytics || hub.blob || hub.database || hub.kv)
+      const needWrangler = Boolean(hub.analytics || hub.blob || hub.database || hub.kv || hub.cache)
       // const needWrangler = Boolean(hub.analytics || hub.blob || hub.database || hub.kv || Object.keys(hub.bindings.hyperdrive).length > 0)
       if (needWrangler) {
         // Generate the wrangler.toml file
