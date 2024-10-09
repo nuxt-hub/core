@@ -41,6 +41,14 @@ const links = [
         aria-label="Go to NuxtHub X account"
       />
       <UButton
+        icon="i-simple-icons-linkedin"
+        color="gray"
+        variant="ghost"
+        to="https://www.linkedin.com/showcase/nuxthub/"
+        target="_blank"
+        aria-label="Go to NuxtHub LinkedIn page"
+      />
+      <UButton
         icon="i-simple-icons-github"
         color="gray"
         variant="ghost"
