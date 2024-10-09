@@ -73,7 +73,7 @@ onMounted(async () => {
         <UButton color="gray" variant="ghost" icon="i-simple-icons-github" to="https://github.com/nuxt-hub/core" target="_blank" />
         <UColorModeButton class="hidden md:inline-flex" />
         <UButton v-if="ready && !authenticated" size="sm" variant="ghost" label="Log in" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" color="gray" class="hidden sm:inline-flex" external />
-        <UButton v-if="ready && !authenticated" size="sm" variant="solid" label="Sign up" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="hidden sm:inline-flex" external />
+        <UButton v-if="ready && !authenticated" size="sm" variant="solid" label="Get started" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="hidden sm:inline-flex" external />
         <UButton v-if="ready && authenticated" size="sm" icon="i-ph-app-window-duotone" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" color="green" class="hidden sm:inline-flex" external />
       </div>
     </template>

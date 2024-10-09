@@ -15,6 +15,14 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/scripts'
   ],
+  colorMode: {
+    preference: 'dark'
+  },
+  icon: {
+    clientBundle: {
+      scan: true
+    }
+  },
   hooks: {
     // Define `@nuxt/ui` components as global to use them in `.md` (feel free to add those you need)
     'components:extend': (components) => {
