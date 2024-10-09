@@ -226,12 +226,12 @@ ai:
     srcDark: '/images/landing/nuxthub-ai-dark.svg'
     srcLight: '/images/landing/nuxthub-ai-light.svg'
     width: 580
-    height: 177
+    height: 326
   headline:
     title: AI & Vectorize
     icon: i-ph-magic-wand
   title: Build AI Full-Stack Apps
-  description: 'Run machine learning models and build full-stack Nuxt AI applications running globally with our AI & Vectorize server composables.'
+  description: 'Run generative AI tasks on a global network of NVIDIA GPUs with no extra setup and build full-stack Nuxt AI applications with our AI & Vectorize server composables.'
   features:
     - name: 'hubAI() & hubVectorize() server composables'
       icon: i-ph-plugs-fill

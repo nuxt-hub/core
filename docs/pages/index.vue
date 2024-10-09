@@ -174,7 +174,7 @@ onMounted(() => {
     <!-- creator testimonial -->
     <ULandingSection
       :ui="{
-        wrapper: 'relative my-12 py-6 sm:py-12 bg-gradient-to-r from-white via-gray-50 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 border dark:border-gray-800',
+        wrapper: 'relative my-12 py-6 sm:py-12 bg-gradient-to-r from-white via-gray-50 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 border-t border-b dark:border-gray-800',
         container: 'gap-y-6 text-center'
       }"
     >
