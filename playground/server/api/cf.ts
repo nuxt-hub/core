@@ -1,5 +1,6 @@
 export default eventHandler(async (event) => {
   const { isEUCountry, continent, city, timezone, country, region, latitude, longitude, botManagement } = event.context.cf
+  const ip = getRequestIP(event, { xForwardedFor: true })
   return {
     continent,
     isEUCountry,
@@ -9,6 +10,7 @@ export default eventHandler(async (event) => {
     timezone,
     latitude,
     longitude,
-    botManagement
+    botManagement,
+    ip
   }
 })
