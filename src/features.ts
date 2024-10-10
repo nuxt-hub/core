@@ -2,13 +2,12 @@ import { execSync } from 'node:child_process'
 import type { Nuxt } from '@nuxt/schema'
 import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createResolver } from '@nuxt/kit'
 import { joinURL } from 'ufo'
-import { join } from 'pathe'
 import { defu } from 'defu'
 import { $fetch } from 'ofetch'
 import { addDevToolsCustomTabs } from './utils/devtools'
 
 const log = logger.withTag('nuxt:hub')
-const { resolve } = createResolver(import.meta.url)
+const { resolve, resolvePath } = createResolver(import.meta.url)
 
 export interface HubConfig {
   remote: string | boolean
@@ -149,20 +148,20 @@ export async function setupBrowser(nuxt: Nuxt) {
   addServerImportsDir(resolve('./runtime/browser/server/utils'))
 }
 
-export function setupCache(nuxt: Nuxt) {
+export async function setupCache(nuxt: Nuxt) {
   // Add Server caching (Nitro)
+  const driver = await resolvePath('./runtime/cache/driver')
   nuxt.options.nitro = defu(nuxt.options.nitro, {
     storage: {
       cache: {
-        driver: 'cloudflare-kv-binding',
-        binding: 'CACHE',
-        base: 'cache'
+        driver,
+        binding: 'CACHE'
       }
     },
     devStorage: {
       cache: {
-        driver: 'fs',
-        base: join(nuxt.options.rootDir, '.data/cache')
+        driver,
+        binding: 'CACHE'
       }
     }
   })
@@ -343,7 +342,7 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
   const availableStorages = Object.keys(remoteManifest?.storage || {}).filter(k => hub[k as keyof typeof hub] && remoteManifest?.storage[k])
   if (availableStorages.length > 0) {
     const storageDescriptions = availableStorages.map((storage) => {
-      if (storage === 'vectorize' && hub.vectorize) {
+      if (storage === 'vectorize' && Object.keys(hub.vectorize || {}).length) {
         const indexes = Object.keys(remoteManifest!.storage.vectorize!).join(', ')
         return `\`${storage} (${indexes})\``
       }

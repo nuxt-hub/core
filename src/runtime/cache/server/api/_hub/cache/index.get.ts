@@ -1,7 +1,6 @@
 import { eventHandler } from 'h3'
 import { requireNuxtHubAuthorization } from '../../../../../utils/auth'
 import { requireNuxtHubFeature } from '../../../../../utils/features'
-// @ts-expect-error (No types for #imports)
 import { useStorage } from '#imports'
 
 export default eventHandler(async (event) => {

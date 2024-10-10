@@ -79,13 +79,17 @@ It is important to note that the `event` argument should always be the first arg
 [Read more about this in the Nitro docs](https://nitro.unjs.io/guide/cache#edge-workers).
 ::
 
-## Cache Keys and Invalidation
+## Cache Invalidation
 
 When using the `defineCachedFunction` or `defineCachedEventHandler` functions, the cache key is generated using the following pattern:
 
 ```ts
 `${options.group}:${options.name}:${options.getKey(...args)}.json`
 ```
+
+The defaults are:
+- `group`: `'nitro'`
+- `name`: `'handlers'` for api routes and `'functions'` for server functions
 
 For example, the following function:
 
@@ -113,4 +117,12 @@ await useStorage('cache').removeItem('nitro:functions:getAccessToken:default.jso
 
 ::note{to="https://nitro.unjs.io/guide/cache"}
 Read more about Nitro Cache.
+::
+
+## Cache Expiration
+
+As NuxtHub leverages Cloudflare Workers KV to store your cache entries, we leverage the [`expiration` property](https://developers.cloudflare.com/kv/api/write-key-value-pairs/#expiring-keys) of the KV binding to handle the cache expiration.
+
+::note
+If you set an expiration (`maxAge`) lower than `60` seconds, NuxtHub will set the KV entry expiration to `60` seconds in the future (Cloudflare KV limitation) so it can be removed automatically.
 ::
