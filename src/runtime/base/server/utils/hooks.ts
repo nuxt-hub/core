@@ -28,8 +28,7 @@ export const hubHooks = createHooks<HubHooks>()
  * @see https://hub.nuxt.com/docs/recipes/hooks#onhubready
  */
 export function onHubReady(cb: HubHooks['bindings:ready']) {
-  const hub = useRuntimeConfig().hub
-  if (import.meta.dev && !hub.remote) {
+  if (import.meta.dev) {
     return hubHooks.hookOnce('bindings:ready', cb)
   }
   cb()

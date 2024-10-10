@@ -143,18 +143,10 @@ export default defineNuxtModule<ModuleOptions>({
     if (hub.remote) {
       await setupRemote(nuxt, hub)
       vectorizeRemoteCheck(hub)
-      return
     }
-
-    // Add node:stream to unenv external (only for Cloudflare Pages/Workers)
-    if (!nuxt.options.nitro.unenv.external.includes('node:stream')) {
-      nuxt.options.nitro.unenv.external.push('node:stream')
-    }
-
-    // Folowing lines are only executed when remote storage is disabled
 
     // Production mode without remote storage
-    if (!nuxt.options.dev) {
+    if (!hub.remote && !nuxt.options.dev) {
       // Make sure to fallback to cloudflare-pages preset
       let preset = nuxt.options.nitro.preset = nuxt.options.nitro.preset || 'cloudflare-pages'
       // Support also cloudflare_module
@@ -170,6 +162,11 @@ export default defineNuxtModule<ModuleOptions>({
       nuxt.options.nitro.commands.preview = 'npx nuxthub preview'
       nuxt.options.nitro.commands.deploy = 'npx nuxthub deploy'
 
+      // Add node:stream to unenv external (only for Cloudflare Pages/Workers)
+      if (!nuxt.options.nitro.unenv.external.includes('node:stream')) {
+        nuxt.options.nitro.unenv.external.push('node:stream')
+      }
+
       // Add the env middleware
       nuxt.options.nitro.handlers ||= []
       nuxt.options.nitro.handlers.unshift({
@@ -178,9 +175,11 @@ export default defineNuxtModule<ModuleOptions>({
       })
     }
 
-    // Local development without remote connection
+    // Local development
     if (nuxt.options.dev) {
-      log.info(`Using local storage from \`${hub.dir}\``)
+      if (!hub.remote) {
+        log.info(`Using local storage from \`${hub.dir}\``)
+      }
 
       // Create the hub.dir directory
       const hubDir = join(rootDir, hub.dir)
