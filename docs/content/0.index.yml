@@ -1,9 +1,9 @@
 title: 'Ship Nuxt apps that scale.'
 navigation: false
-description: 'Deploy and scale your Nuxt applications worldwide with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and full-stack capabilities.'
+description: 'Deploy and scale your Nuxt applications worldwide with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and with full-stack capabilities.'
 hero:
   title: 'Ship Nuxt apps that scale.'
-  description: 'Deploy and scale your Nuxt applications worldwide with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and full-stack capabilities.'
+  description: 'Deploy and scale your Nuxt applications worldwide with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and withfull-stack capabilities.'
   img:
     width: '1439'
     height: '681'
@@ -23,7 +23,7 @@ features:
     icon: i-ph-database
     to: /docs/features/database
   - name: Files Storage
-    description: Upload, store and serve images, videos and any kind of files.
+    description: Upload, store and serve images, videos and any kind of file.
     icon: i-ph-shapes
     to: /docs/features/blob
   - name: KV Storage
@@ -47,7 +47,7 @@ features:
     icon: i-ph-cursor-click
     soon: true
   - name: Cron Triggers & Queues
-    description: Run periodic jobs with cron triggers & make sure to guaranty delivery with queues.
+    description: Run periodic jobs with cron triggers & make sure to guarantee delivery with queues.
     icon: i-ph-timer
     soon: true
 creator:
@@ -102,14 +102,14 @@ tool:
     - title: 'Highly affordable'
       description: 'Pay only for what you use, no hidden fees. Start for free with a generous solo plan.'
       icon: i-ph-money
-    - title: 'Environment variables'
+    - title: 'Environment Variables'
       description: 'Securely store secrets, API keys, tokens, and other environment variables.'
       icon: i-ph-lock
     - title: 'Automatic HTTPS'
       description: 'SSL certificates are provisioned and renewed automatically.'
       icon: i-ph-shield-check
-    - title: 'Real-time logs'
-      description: 'Access to your Nuxt server logs in real-time for debugging purpose.'
+    - title: 'Real-time Logs'
+      description: 'Access to your Nuxt server logs in real-time for debugging purposes.'
       icon: i-ph-list-magnifying-glass
     - title: 'Import from Git'
       description: 'Select a repository from your favourite Git provider and deploy it globally.'
@@ -139,7 +139,7 @@ deploy:
         srcDark: '/images/landing/steps/deploy-nuxt-app-dark.svg'
         width: 460
         height: 259
-    - title: Share it to the world
+    - title: Share it with the world
       description: Instantly share your app globally. Monitor & manage resources through the NuxtHub dashboard.
       img:
         srcLight: '/images/landing/steps/share-nuxt-app-light.svg'
@@ -162,7 +162,7 @@ deploy:
       size: md
 fullStack:
   title: Your <span class="text-primary">full-stack</span> companion.
-  description: On top of hosting your Nuxt projects, you can add a database, key-value and blob storage with nearly-zero configuration, locally and globally. <br> Making it too easy to build & ship full-stack Nuxt applications.
+  description: On top of hosting your Nuxt projects, you can add a database, key-value and file storage with nearly-zero configuration, locally and globally. <br> Making it too easy to build & ship full-stack Nuxt applications.
 database:
   img:
     srcDark: '/images/landing/nuxthub-admin-database-dark.svg'
@@ -192,8 +192,7 @@ blob:
     title: Blob
     icon: i-ph-shapes
   title: Add & Manage File Uploads
-  description: 'NuxtHub Blob lets you to store and access media files on a global network, thanks to <a class="font-semibold text-gray-800 dark:text-gray-200 hover:underline underline-offset-4" href="https://developers.cloudflare.com/r2/" target="_blank">Cloudflare R2</a>
-Let users upload data like images, videos and audio files with our server composable and our blob validator.'
+  description: 'NuxtHub Blob lets you store and access media files on a global network thanks to <a class="font-semibold text-gray-800 dark:text-gray-200 hover:underline underline-offset-4" href="https://developers.cloudflare.com/r2/" target="_blank">Cloudflare R2</a>. Allow users to securely upload data-like images, videos and audio files with our server helpers.'
   features:
     - name: 'hubBlob() server composable'
       icon: i-ph-plugs-fill
@@ -294,7 +293,7 @@ storage:
       icon: i-ph-lock-fill
 testimonials:
   title: 'What people say about us'
-  description: 'NuxtHub empowers developers to ship full-stack Nuxt applications with zero configuration, hear what they think about it.'
+  description: 'NuxtHub empowers developers to ship full-stack Nuxt applications with zero configuration. Hear what they think about it.'
   cloudflare:
     title: 'Cloudflare’s Workers LaunchPad'
     description: 'NuxtHub is part of the Cloudflare’s Workers Launchpad Cohort to make sure you get a first-class experience on top of Cloudflare’s network.'
