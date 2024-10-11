@@ -50,9 +50,12 @@ export default eventHandler(async (event) => {
       metadata = {
         size: JSON.stringify(item).length,
         mtime: item.mtime,
-        expires: item.expires,
-        integrity: item.integrity
+        expires: item.expires
       }
+    }
+
+    if (!metadata.expires && metadata.ttl) {
+      metadata.expires = metadata.mtime + (metadata.ttl * 1000)
     }
     const entry = {
       key,
@@ -61,7 +64,7 @@ export default eventHandler(async (event) => {
     try {
       entry.duration = ms(metadata.expires - metadata.mtime, { long: true })
     } catch (err) {
-      entry.duration = 'unknown'
+      entry.duration = 'never'
     }
     stats.cache.push(entry)
   }))
