@@ -1,6 +1,32 @@
 # Changelog
 
 
+## v0.7.27
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.26...v0.7.27)
+
+### 🚀 Enhancements
+
+- Support cache expiration & improve admin speed ([#313](https://github.com/nuxt-hub/core/pull/313))
+
+### 📖 Documentation
+
+- Add linkedin links ([#309](https://github.com/nuxt-hub/core/pull/309))
+- New landing page ([#310](https://github.com/nuxt-hub/core/pull/310))
+- Minor updates ([11362aa](https://github.com/nuxt-hub/core/commit/11362aa))
+- Seo title ([d442ad5](https://github.com/nuxt-hub/core/commit/d442ad5))
+- Typos ([9b2514f](https://github.com/nuxt-hub/core/commit/9b2514f))
+- Typos ([406fb95](https://github.com/nuxt-hub/core/commit/406fb95))
+
+### 🏡 Chore
+
+- Remove unused ai binding ([#308](https://github.com/nuxt-hub/core/pull/308))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+
 ## v0.7.26
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.25...v0.7.26)
