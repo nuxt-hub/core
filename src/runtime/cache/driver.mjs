@@ -37,7 +37,6 @@ export default defineDriver((driverOpts) => {
         path: event?.path,
         ...options.metadata
       }
-      console.log('options', options)
       return driver.setItem(key, value, options)
     }
   }
