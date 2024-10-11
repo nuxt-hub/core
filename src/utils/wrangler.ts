@@ -7,28 +7,39 @@ import type { HubConfig } from '../features'
 export function generateWrangler(nuxt: Nuxt, hub: HubConfig) {
   const wrangler: { [key: string]: any } = {}
 
-  if (hub.analytics) {
+  if (hub.analytics && !hub.remote) {
     wrangler['analytics_engine_datasets'] = [{
       binding: 'ANALYTICS',
       dataset: 'default'
     }]
   }
 
-  if (hub.blob) {
+  if (hub.blob && !hub.remote) {
     wrangler['r2_buckets'] = [{
       binding: 'BLOB',
       bucket_name: 'default'
     }]
   }
 
-  if (hub.kv) {
-    wrangler['kv_namespaces'] = [{
-      binding: 'KV',
-      id: 'kv_default'
-    }]
+  if (hub.kv || hub.cache) {
+    wrangler['kv_namespaces'] = []
+
+    if (hub.kv && !hub.remote) {
+      wrangler['kv_namespaces'].push({
+        binding: 'KV',
+        id: 'kv_default'
+      })
+    }
+
+    if (hub.cache) {
+      wrangler['kv_namespaces'].push({
+        binding: 'CACHE',
+        id: 'cache_default'
+      })
+    }
   }
 
-  if (hub.database) {
+  if (hub.database && !hub.remote) {
     wrangler['d1_databases'] = [{
       binding: 'DB',
       database_name: 'default',
