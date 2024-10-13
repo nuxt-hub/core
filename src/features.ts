@@ -1,5 +1,6 @@
 import { execSync } from 'node:child_process'
 import type { Nuxt } from '@nuxt/schema'
+import { join } from 'pathe'
 import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createResolver } from '@nuxt/kit'
 import { joinURL } from 'ufo'
 import { defu } from 'defu'
@@ -164,6 +165,15 @@ export async function setupCache(nuxt: Nuxt) {
         binding: 'CACHE'
       }
     }
+  })
+  nuxt.hooks.hook('nitro:init', (nitro) => {
+    nitro.hooks.hook('prerender:config', (config) => {
+      config.devStorage ||= {}
+      config.devStorage.cache = {
+        driver: 'fs',
+        base: join(nuxt.options.rootDir, '.data/cache')
+      }
+    })
   })
 
   // Add Server scanning
