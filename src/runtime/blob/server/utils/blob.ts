@@ -396,9 +396,9 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
       return
     },
     async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}) {
-      return await blobAPI<BlobMultipartUpload>(`/multipart/${decodeURI(pathname)}`, {
+      return await blobAPI<BlobMultipartUpload>(`/multipart/create/${decodeURI(pathname)}`, {
         method: 'POST',
-        body: options
+        query: options
       })
     },
     resumeMultipartUpload(pathname: string, uploadId: string): BlobMultipartUpload {
@@ -406,7 +406,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
         pathname,
         uploadId,
         async uploadPart(partNumber: number, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob): Promise<BlobUploadedPart> {
-          return await blobAPI<BlobUploadedPart>(`/multipart/${decodeURI(pathname)}`, {
+          return await blobAPI<BlobUploadedPart>(`/multipart/upload/${decodeURI(pathname)}`, {
             method: 'PUT',
             query: {
               uploadId,
@@ -416,7 +416,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
           })
         },
         async abort(): Promise<void> {
-          await blobAPI(`/multipart/${decodeURI(pathname)}`, {
+          await blobAPI(`/multipart/abort/${decodeURI(pathname)}`, {
             method: 'DELETE',
             query: {
               uploadId
@@ -424,10 +424,9 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
           })
         },
         async complete(parts: BlobUploadedPart[]): Promise<BlobObject> {
-          return await blobAPI<BlobObject>('/multipart/complete', {
+          return await blobAPI<BlobObject>(`/multipart/complete/${decodeURI(pathname)}`, {
             method: 'POST',
             query: {
-              pathname,
               uploadId
             },
             body: {
