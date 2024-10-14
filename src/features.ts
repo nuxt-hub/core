@@ -158,24 +158,23 @@ export async function setupCache(nuxt: Nuxt) {
     storage: {
       cache: {
         driver,
-        binding: 'CACHE'
+        binding: 'CACHE',
+        base: 'cache'
       }
     },
     devStorage: {
-      cache: {
-        driver,
-        binding: 'CACHE'
-      }
+      cache: nuxt.options.dev
+        // if local development, use KV binding so it respect TTL
+        ? {
+            driver,
+            binding: 'CACHE'
+          }
+        : {
+            // Used for pre-rendering
+            driver: 'fs',
+            base: join(nuxt.options.rootDir, '.data/cache')
+          }
     }
-  })
-  nuxt.hooks.hook('nitro:init', (nitro) => {
-    nitro.hooks.hook('prerender:config', (config) => {
-      config.devStorage ||= {}
-      config.devStorage.cache = {
-        driver: 'fs',
-        base: join(nuxt.options.rootDir, '.data/cache')
-      }
-    })
   })
 
   // Add Server scanning
