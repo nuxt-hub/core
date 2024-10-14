@@ -84,7 +84,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Prepare environment
-        run: pnpm --shell-emulator dev:prepare
+        run: pnpm dev:prepare
       - name: Release Nightly
         run: pnpm changelogen --bump --canary --publish --publishTag nightly
         env:
