@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v0.7.28
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.27...v0.7.28)
+
+### 🩹 Fixes
+
+- Update cache storage for pre-rendering phase ([#319](https://github.com/nuxt-hub/core/pull/319))
+- Multipart with remote storage ([#318](https://github.com/nuxt-hub/core/pull/318))
+- Normalize path for windows ([#317](https://github.com/nuxt-hub/core/pull/317))
+
+### 📖 Documentation
+
+- Show seed instructions ([cb2eb4e](https://github.com/nuxt-hub/core/commit/cb2eb4e))
+
+### 🏡 Chore
+
+- Fix types ([d05aa74](https://github.com/nuxt-hub/core/commit/d05aa74))
+- Update deps ([2b7ee79](https://github.com/nuxt-hub/core/commit/2b7ee79))
+- Lint fix ([3ffcfb2](https://github.com/nuxt-hub/core/commit/3ffcfb2))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.27
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.26...v0.7.27)
