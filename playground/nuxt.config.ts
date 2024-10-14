@@ -37,6 +37,10 @@ export default defineNuxtConfig({
     // projectUrl: ({ branch }) => branch === 'main' ? 'https://playground.nuxt.dev' : `https://${encodeHost(branch).replace(/\//g, '-')}.playground-to39.pages.dev`
   },
 
+  routeRules: {
+    '/cached': { prerender: true }
+  },
+
   basicAuth: {
     enabled: process.env.NODE_ENV === 'production',
     allowedRoutes: ['/api/_hub/'],
