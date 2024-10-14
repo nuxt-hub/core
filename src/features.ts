@@ -158,8 +158,7 @@ export async function setupCache(nuxt: Nuxt) {
     storage: {
       cache: {
         driver,
-        binding: 'CACHE',
-        base: 'cache'
+        binding: 'CACHE'
       }
     },
     devStorage: {
