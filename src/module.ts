@@ -166,6 +166,9 @@ export default defineNuxtModule<ModuleOptions>({
       if (!nuxt.options.nitro.unenv.external.includes('node:stream')) {
         nuxt.options.nitro.unenv.external.push('node:stream')
       }
+      if (!nuxt.options.nitro.unenv.external.includes('node:process')) {
+        nuxt.options.nitro.unenv.external.push('node:process')
+      }
 
       // Add the env middleware
       nuxt.options.nitro.handlers ||= []
