@@ -44,7 +44,7 @@ jobs:
         run: pnpm lint
 
   test:
-    runs-on: windows-latest
+    runs-on: [ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v4
