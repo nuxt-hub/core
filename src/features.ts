@@ -167,8 +167,7 @@ export async function setupCache(nuxt: Nuxt) {
         // if local development, use KV binding so it respect TTL
         ? {
             driver,
-            binding: 'CACHE',
-            base: 'cache'
+            binding: 'CACHE'
           }
         : {
             // Used for pre-rendering
