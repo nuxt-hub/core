@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.7.29
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.28...v0.7.29)
+
+### 🩹 Fixes
+
+- **cache:** Smartly overwrite devStorage to handle pre-rendering ([#320](https://github.com/nuxt-hub/core/pull/320))
+
+### 📖 Documentation
+
+- Update social card ([a566d34](https://github.com/nuxt-hub/core/commit/a566d34))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.28
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.27...v0.7.28)
