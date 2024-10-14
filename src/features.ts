@@ -1,5 +1,5 @@
 import { execSync } from 'node:child_process'
-import { resolvePath } from 'mlly'
+import { pathToFileURL } from 'node:url'
 import type { Nuxt } from '@nuxt/schema'
 import { join } from 'pathe'
 import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createResolver } from '@nuxt/kit'
@@ -9,7 +9,7 @@ import { $fetch } from 'ofetch'
 import { addDevToolsCustomTabs } from './utils/devtools'
 
 const log = logger.withTag('nuxt:hub')
-const { resolve } = createResolver(import.meta.url)
+const { resolve, resolvePath } = createResolver(import.meta.url)
 
 export interface HubConfig {
   remote: string | boolean
@@ -152,10 +152,8 @@ export async function setupBrowser(nuxt: Nuxt) {
 
 export async function setupCache(nuxt: Nuxt) {
   // Add Server caching (Nitro)
-  const driver = await resolvePath('./runtime/cache/driver', {
-    url: import.meta.url,
-    extensions: ['.js', '.mjs']
-  })
+  let driver = await resolvePath('./runtime/cache/driver')
+  driver = pathToFileURL(driver).href
   nuxt.options.nitro = defu(nuxt.options.nitro, {
     storage: {
       cache: {

@@ -38,9 +38,6 @@ importers:
       mime:
         specifier: ^4.0.4
         version: 4.0.4
-      mlly:
-        specifier: ^1.7.2
-        version: 1.7.2
       nitro-cloudflare-dev:
         specifier: ^0.1.6
         version: 0.1.6
@@ -6405,7 +6402,7 @@ packages:
   site-config-stack@2.2.18:
     resolution: {integrity: sha512-kwyuCwYZBJikuLN3IB15cGT7SHQQxAitLaDs1b6eNZbb+tBHubVUhj0pnFZnZZi4+5eNCO+3HiZxaU3qpFxP2A==}
     peerDependencies:
-      vue: 3.4.38
+      vue: ^3
 
   skin-tone@2.0.0:
     resolution: {integrity: sha512-kUMbT1oBJCpgrnKoSr0o6wPtvRWT9W9UKvGLwfJYO2WuahZRHOpEyL1ckyMGgMWh0UdpmaoFqKKD29WTomNEGA==}
