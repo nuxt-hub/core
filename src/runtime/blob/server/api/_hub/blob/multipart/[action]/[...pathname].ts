@@ -7,8 +7,15 @@ export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
   requireNuxtHubFeature('blob')
 
-  const query = getQuery(event)
+  const options = { ...getQuery(event) }
+  if (typeof options.customMetadata === 'string') {
+    try {
+      options.customMetadata = JSON.parse(options.customMetadata)
+    } catch (e) {
+      options.customMetadata = {}
+    }
+  }
   return await hubBlob().handleMultipartUpload(event, {
-    ...query
+    ...options
   })
 })
