@@ -1,5 +1,5 @@
 import { execSync } from 'node:child_process'
-import { pathToFileURL } from 'node:url'
+// import { pathToFileURL } from 'node:url'
 import type { Nuxt } from '@nuxt/schema'
 import { join } from 'pathe'
 import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createResolver } from '@nuxt/kit'
