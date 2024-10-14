@@ -541,6 +541,68 @@ Returns a `BlobMultipartUpload`
 ::
 
 
+### `createCredentials()`
+
+Creates temporary access credentials that can be optionally scoped to prefixes or objects.
+
+Useful to create a signed url to upload directory to R2 from client-side.
+
+::note
+This method is only available in production or in development with `--remote` flag.
+::
+
+```ts
+// Create credentials with default permission & scope (admin-read-write)
+const credentials = await hubBlob().createCredentials()
+
+// Limit the scope to a specific object & permission
+const credentials = await hubBlob().createCredentials({
+  permission: 'object-read-write',
+  pathnames: ['only-this-file.png']
+})
+```
+
+Read more about [creating presigned URLs to upload files to R2](#create-presigned-urls-to-upload-files-to-r2).
+
+#### Params
+
+::field-group
+  ::field{name="options" type="Object"}
+    The options to create the credentials.
+    ::collapsible
+      ::field{name="permission" type="string"}
+        The permission of the credentials, defaults to `'admin-read-write'`{lang=ts}.
+        ```ts
+        'admin-read-write' | 'admin-read-only' | 'object-read-write' | 'object-read-only'
+        ```
+      ::
+      ::field{name="ttl" type="number"}
+        The ttl of the credentials in seconds, defaults to `900`.
+      ::
+      ::field{name="pathnames" type="string[]"}
+        The pathnames to scope the credentials to.
+      ::
+      ::field{name="prefixes" type="string[]"}
+        The prefixes to scope the credentials to.
+      ::
+    ::
+  ::
+::
+
+#### Return
+
+Returns an object with the following properties:
+
+```ts
+{
+  accountId: string
+  bucketName: string
+  accessKeyId: string
+  secretAccessKey: string
+  sessionToken: string
+}
+```
+
 ## `ensureBlob()`
 
 `ensureBlob()` is a handy util to validate a `Blob` by checking its size and type:
@@ -791,3 +853,98 @@ async function loadMore() {
 </template>
 ```
 ::
+
+### Create presigned URLs to upload files to R2
+
+Presigned URLs can be used to upload files to R2 from client-side without using an API key.
+
+::callout
+Read more about presigned URLS on Cloudflare's [official documentation](https://developers.cloudflare.com/r2/api/s3/presigned-urls/).
+::
+
+First, we need to create an API route that will return a presigned URL to the client.
+
+As we use [aws4fetch](https://github.com/mhart/aws4fetch) to sign the request and [zod](https://github.com/colinhacks/zod) to validate the request, we need to install the packages:
+
+```bash [Terminal]
+npx nypm i aws4fetch zod
+```
+
+Then, we need to create the API route that will return a presigned URL to the client:
+
+```ts [server/api/blob/sign/\[...pathname\\].get.ts]
+import { z } from 'zod'
+import { AwsClient } from 'aws4fetch'
+
+export default eventHandler(async (event) => {
+  const { pathname } = await getValidatedRouterParams(event, z.object({
+    pathname: z.string().min(1)
+  }).parse)
+  const { accountId, bucketName, ...credentials } = await hubBlob().createCredentials({
+    permission: 'object-read-write',
+    pathnames: [pathname]
+  })
+  const client = new AwsClient(credentials)
+  const endpoint = new URL(pathname, `https://${bucketName}.${accountId}.r2.cloudflarestorage.com`)
+
+  const { url } = await client.sign(endpoint, {
+    method: 'PUT',
+    aws: { signQuery: true }
+  })
+  return url
+})
+```
+
+We can now create the Vue component to upload a file to R2 using the presigned URL:
+
+```vue [pages/upload.vue]
+<script setup lang="ts">
+function uploadWithPresignedUrl(file: File) {
+  console.log(file)
+  $fetch(`/api/blob/sign/${file.name}`)
+    .then((url) => {
+      $fetch(url, {
+        method: 'PUT',
+        body: file
+      })
+    })
+}
+</script>
+
+<template>
+  <input type="file" @change="uploadWithPresignedUrl($event.target.files[0])">
+</template>
+```
+
+::warning
+Make sure to authenticate the request on the server side to avoid letting anyone upload files to your R2 bucket.
+::
+
+Lastly, you need to setup the CORS on your R2 bucket to allow the origin of your presigned URLs:
+- Open your project on NuxtHub Admin with `npx nuxthub manage`
+- Go to the **Blob tab** (make sure to be on the right environment: production or preview)
+- Click on the Cloudflare icon on the top right corner
+- Once on Cloudflare, Go to the `Settings` tab of your R2 bucket
+- Scroll to **CORS policy**
+- Click on `Edit CORS policy`
+- Update the allowed origins with your origins by following this example:
+```json
+[
+  {
+    "AllowedOrigins": [
+      "http://localhost:3000",
+      "https://my-app.nuxt.dev"
+    ],
+    "AllowedMethods": [
+      "GET",
+      "PUT"
+    ],
+    "AllowedHeaders": [
+      "*"
+    ]
+  }
+]
+```
+- Save the changes
+
+That's it! You can now upload files to R2 using the presigned URLs.
