@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.7.31
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.30...v0.7.31)
+
+### 🩹 Fixes
+
+- **cache:** Driver not found with file:// ([#322](https://github.com/nuxt-hub/core/pull/322))
+
+### 🏡 Chore
+
+- Update deps ([8fd38d1](https://github.com/nuxt-hub/core/commit/8fd38d1))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.30
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.29...v0.7.30)
