@@ -170,8 +170,9 @@ export async function setupCache(nuxt: Nuxt) {
   })
   nuxt.hooks.hook('nitro:init', (nitro) => {
     nitro.hooks.hook('prerender:config', (config) => {
+      config.storage ||= {}
       config.devStorage ||= {}
-      config.devStorage.cache = {
+      config.storage.cache = config.devStorage.cache = {
         driver: 'fs',
         base: join(nuxt.options.rootDir, '.data/cache')
       }
