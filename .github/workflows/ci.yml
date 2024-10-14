@@ -47,8 +47,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        # os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest]
+        # os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
       - run: corepack enable
@@ -84,7 +84,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Prepare environment
-        run: pnpm dev:prepare
+        run: pnpm --shell-emulator dev:prepare
       - name: Release Nightly
         run: pnpm changelogen --bump --canary --publish --publishTag nightly
         env:
