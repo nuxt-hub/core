@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.7.30
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.29...v0.7.30)
+
+### 🩹 Fixes
+
+- Remove extra base ([a05a8c7](https://github.com/nuxt-hub/core/commit/a05a8c7))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.29
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.28...v0.7.29)
