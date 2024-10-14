@@ -1,5 +1,6 @@
 import { execSync } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
+import { isWindows } from 'std-env'
 import type { Nuxt } from '@nuxt/schema'
 import { join } from 'pathe'
 import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createResolver } from '@nuxt/kit'
@@ -153,7 +154,9 @@ export async function setupBrowser(nuxt: Nuxt) {
 export async function setupCache(nuxt: Nuxt) {
   // Add Server caching (Nitro)
   let driver = await resolvePath('./runtime/cache/driver')
-  driver = pathToFileURL(driver).href
+  if (isWindows) {
+    driver = pathToFileURL(driver).href
+  }
   nuxt.options.nitro = defu(nuxt.options.nitro, {
     storage: {
       cache: {
