@@ -1,6 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-08-06',
   // experimental: { buildCache: true },
   extends: ['@nuxt/ui-pro'],
   modules: [
@@ -15,21 +14,11 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/scripts'
   ],
+  devtools: {
+    enabled: true
+  },
   colorMode: {
     preference: 'dark'
-  },
-  icon: {
-    clientBundle: {
-      scan: true
-    }
-  },
-  hooks: {
-    // Define `@nuxt/ui` components as global to use them in `.md` (feel free to add those you need)
-    'components:extend': (components) => {
-      const globals = components.filter(c => ['UButton', 'UIcon'].includes(c.pascalName))
-
-      globals.forEach(c => c.global = true)
-    }
   },
   routeRules: {
     '/': { prerender: true },
@@ -46,6 +35,7 @@ export default defineNuxtConfig({
     '/docs/server/cache': { redirect: { statusCode: 301, to: '/docs/features/cache' } },
     '/docs/server/logs': { redirect: { statusCode: 301, to: '/docs/getting-started/server-logs' } }
   },
+  compatibilityDate: '2024-08-06',
   nitro: {
     prerender: {
       crawlLinks: true,
@@ -54,14 +44,24 @@ export default defineNuxtConfig({
       autoSubfolderIndex: false
     }
   },
+  typescript: {
+    strict: false
+  },
+  hooks: {
+    // Define `@nuxt/ui` components as global to use them in `.md` (feel free to add those you need)
+    'components:extend': (components) => {
+      const globals = components.filter(c => ['UButton', 'UIcon'].includes(c.pascalName))
+
+      globals.forEach(c => c.global = true)
+    }
+  },
   cloudflareAnalytics: {
     token: '469b1f7049f14941acef0d0262a07ab3',
     scriptPath: false
   },
-  devtools: {
-    enabled: true
-  },
-  typescript: {
-    strict: false
+  icon: {
+    clientBundle: {
+      scan: true
+    }
   }
 })
