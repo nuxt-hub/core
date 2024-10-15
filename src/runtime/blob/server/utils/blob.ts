@@ -1,4 +1,4 @@
-import type { R2Bucket, ReadableStream, R2MultipartUpload } from '@cloudflare/workers-types/experimental'
+import type { R2Bucket, ReadableStream, R2MultipartUpload, R2Object } from '@cloudflare/workers-types/experimental'
 import { ofetch } from 'ofetch'
 import mime from 'mime'
 import { z } from 'zod'
@@ -278,7 +278,7 @@ export function hubBlob(): HubBlob {
         multiple: true
       })
       const form = await readFormData(event)
-      const files = form.getAll(options.formKey) as File[]
+      const files = form.getAll(options.formKey!) as File[]
       if (!files) {
         throw createError({ statusCode: 400, message: 'Missing files' })
       }
@@ -289,7 +289,7 @@ export function hubBlob(): HubBlob {
       const objects: BlobObject[] = []
       try {
         // Ensure the files meet the requirements
-        if (options.maxSize || options.types?.length) {
+        if (options.ensure) {
           for (const file of files) {
             ensureBlob(file, options.ensure)
           }
