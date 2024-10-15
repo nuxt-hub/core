@@ -1,6 +1,100 @@
 # Changelog
 
 
+## v0.7.31
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.30...v0.7.31)
+
+### 🩹 Fixes
+
+- **cache:** Driver not found with file:// ([#322](https://github.com/nuxt-hub/core/pull/322))
+
+### 🏡 Chore
+
+- Update deps ([8fd38d1](https://github.com/nuxt-hub/core/commit/8fd38d1))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.30
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.29...v0.7.30)
+
+### 🩹 Fixes
+
+- Remove extra base ([a05a8c7](https://github.com/nuxt-hub/core/commit/a05a8c7))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.29
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.28...v0.7.29)
+
+### 🩹 Fixes
+
+- **cache:** Smartly overwrite devStorage to handle pre-rendering ([#320](https://github.com/nuxt-hub/core/pull/320))
+
+### 📖 Documentation
+
+- Update social card ([a566d34](https://github.com/nuxt-hub/core/commit/a566d34))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.28
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.27...v0.7.28)
+
+### 🩹 Fixes
+
+- Update cache storage for pre-rendering phase ([#319](https://github.com/nuxt-hub/core/pull/319))
+- Multipart with remote storage ([#318](https://github.com/nuxt-hub/core/pull/318))
+- Normalize path for windows ([#317](https://github.com/nuxt-hub/core/pull/317))
+
+### 📖 Documentation
+
+- Show seed instructions ([cb2eb4e](https://github.com/nuxt-hub/core/commit/cb2eb4e))
+
+### 🏡 Chore
+
+- Fix types ([d05aa74](https://github.com/nuxt-hub/core/commit/d05aa74))
+- Update deps ([2b7ee79](https://github.com/nuxt-hub/core/commit/2b7ee79))
+- Lint fix ([3ffcfb2](https://github.com/nuxt-hub/core/commit/3ffcfb2))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
+## v0.7.27
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.26...v0.7.27)
+
+### 🚀 Enhancements
+
+- Support cache expiration & improve admin speed ([#313](https://github.com/nuxt-hub/core/pull/313))
+
+### 📖 Documentation
+
+- Add linkedin links ([#309](https://github.com/nuxt-hub/core/pull/309))
+- New landing page ([#310](https://github.com/nuxt-hub/core/pull/310))
+- Minor updates ([11362aa](https://github.com/nuxt-hub/core/commit/11362aa))
+- Seo title ([d442ad5](https://github.com/nuxt-hub/core/commit/d442ad5))
+- Typos ([9b2514f](https://github.com/nuxt-hub/core/commit/9b2514f))
+- Typos ([406fb95](https://github.com/nuxt-hub/core/commit/406fb95))
+
+### 🏡 Chore
+
+- Remove unused ai binding ([#308](https://github.com/nuxt-hub/core/pull/308))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+
 ## v0.7.26
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.25...v0.7.26)

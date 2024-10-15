@@ -1,6 +1,16 @@
 import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
+import { createError } from 'h3'
+import type { KVNamespace } from '@cloudflare/workers-types'
 import { requireNuxtHubFeature } from '../../../utils/features'
+
+export function hubCacheBinding(name: string = 'CACHE'): KVNamespace {
+  const binding = process.env[name] || globalThis.__env__?.[name] || globalThis[name]
+  if (!binding) {
+    throw createError(`Missing Cloudflare KV binding (${name})`)
+  }
+  return binding as KVNamespace
+}
 
 /**
  * Manage server cache

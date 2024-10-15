@@ -10,8 +10,8 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: "Vectorize is out"
-    to: /changelog/hub-vectorize
+    label: "Blob: Presigned URLs"
+    to: /changelog/blob-presigned-urls
     icon: i-ph-arrow-right
 features:
   - name: Cloud Hosting

@@ -2,7 +2,6 @@ import { eventHandler, readValidatedBody, sendNoContent } from 'h3'
 import { z } from 'zod'
 import { requireNuxtHubAuthorization } from '../../../../../utils/auth'
 import { requireNuxtHubFeature } from '../../../../../utils/features'
-// @ts-expect-error missing type
 import { useStorage } from '#imports'
 
 export default eventHandler(async (event) => {
