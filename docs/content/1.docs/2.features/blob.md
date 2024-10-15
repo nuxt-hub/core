@@ -545,7 +545,7 @@ Returns a `BlobMultipartUpload`
 
 Creates temporary access credentials that can be optionally scoped to prefixes or objects.
 
-Useful to create a signed url to upload directory to R2 from client-side.
+Useful to create presigned URLs to upload files to R2 from client-side ([see example](#create-presigned-urls-to-upload-files-to-r2)).
 
 ::note
 This method is only available in production or in development with `--remote` flag.
@@ -859,7 +859,7 @@ async function loadMore() {
 Presigned URLs can be used to upload files to R2 from client-side without using an API key.
 
 ::callout
-Read more about presigned URLS on Cloudflare's [official documentation](https://developers.cloudflare.com/r2/api/s3/presigned-urls/).
+Read more about presigned URLs on Cloudflare's [official documentation](https://developers.cloudflare.com/r2/api/s3/presigned-urls/).
 ::
 
 First, we need to create an API route that will return a presigned URL to the client.
@@ -899,15 +899,12 @@ We can now create the Vue component to upload a file to R2 using the presigned U
 
 ```vue [pages/upload.vue]
 <script setup lang="ts">
-function uploadWithPresignedUrl(file: File) {
-  console.log(file)
-  $fetch(`/api/blob/sign/${file.name}`)
-    .then((url) => {
-      $fetch(url, {
-        method: 'PUT',
-        body: file
-      })
-    })
+async function uploadWithPresignedUrl(file: File) {
+  const url = await $fetch(`/api/blob/sign/${file.name}`)
+  await $fetch(url, {
+    method: 'PUT',
+    body: file
+  })
 }
 </script>
 
