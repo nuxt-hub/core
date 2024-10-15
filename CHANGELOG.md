@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.7.32
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.31...v0.7.32)
+
+### 🚀 Enhancements
+
+- **blob:** Add `createCredentials()` to support presigned URLs ([#323](https://github.com/nuxt-hub/core/pull/323))
+
+### 🩹 Fixes
+
+- **blob:** Use `ensure` option if present ([#324](https://github.com/nuxt-hub/core/pull/324))
+
+### ❤️ Contributors
+
+- Johann Schopplich ([@johannschopplich](http://github.com/johannschopplich))
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.31
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.30...v0.7.31)
