@@ -8,7 +8,7 @@ import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
 import { parse } from 'pathe'
 import { joinURL } from 'ufo'
-import type { BlobType, FileSizeUnit, BlobUploadedPart, BlobListResult, BlobMultipartUpload, HandleMPUResponse, BlobMultipartOptions, BlobUploadOptions, BlobPutOptions, BlobEnsureOptions, BlobObject, BlobListOptions } from '@nuxthub/core'
+import type { BlobType, FileSizeUnit, BlobUploadedPart, BlobListResult, BlobMultipartUpload, HandleMPUResponse, BlobMultipartOptions, BlobUploadOptions, BlobPutOptions, BlobEnsureOptions, BlobObject, BlobListOptions, BlobCredentialsOptions, BlobCredentials } from '@nuxthub/core'
 import { streamToArrayBuffer } from '../../../utils/stream'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { useRuntimeConfig } from '#imports'
@@ -136,6 +136,18 @@ interface HubBlob {
    * @see https://hub.nuxt.com/docs/features/blob#handleupload
    */
   handleUpload(event: H3Event, options?: BlobUploadOptions): Promise<BlobObject[]>
+  /**
+   * Creates temporary access credentials that can be optionally scoped to prefixes or objects.
+   *
+   * Useful to create a signed url to upload directory to R2 from client-side.
+   *
+   * Only available in production or in development with `--remote` flag.
+   *
+   * @example ```ts
+   * const { accountId, bucketName, accessKeyId, secretAccessKey, sessionToken } = await hubBlob().createCredentials()
+   * ```
+   */
+  createCredentials(options?: BlobCredentialsOptions): Promise<BlobCredentials>
 }
 
 /**
@@ -306,6 +318,23 @@ export function hubBlob(): HubBlob {
       }
 
       return objects
+    },
+    async createCredentials(options: BlobCredentialsOptions = {}): Promise<BlobCredentials> {
+      if (import.meta.dev) {
+        throw createError('hubBlob().createCredentials() is only available in production or in development with `--remote` flag.')
+      }
+      if (!process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN) {
+        throw createError('Missing `NUXT_HUB_PROJECT_DEPLOY_TOKEN` environment variable, make sure to deploy with `npx nuxthub deploy` or with the NuxtHub Admin.')
+      }
+      const env = process.env.NUXT_HUB_ENV || hub.env || 'production'
+      return await $fetch(`/api/projects/${hub.projectKey}/blob/${env}/credentials`, {
+        baseURL: hub.url,
+        method: 'POST',
+        body: options,
+        headers: {
+          authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
+        }
+      })
     }
   }
   return {
@@ -441,6 +470,13 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
         method: 'POST',
         body: await readFormData(event),
         query: options
+      })
+    },
+
+    async createCredentials(options: BlobCredentialsOptions = {}): Promise<BlobCredentials> {
+      return await blobAPI<BlobCredentials>('/credentials', {
+        method: 'POST',
+        body: options
       })
     }
   }

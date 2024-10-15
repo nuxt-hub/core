@@ -16,10 +16,12 @@
     "@nuxthub/core": "latest",
     "@nuxtjs/mdc": "^0.9.0",
     "ai": "^3.4.7",
+    "aws4fetch": "^1.0.20",
     "drizzle-orm": "^0.33.0",
     "nuxt": "^3.13.2",
     "postgres": "^3.4.4",
-    "puppeteer": "^23.5.0"
+    "puppeteer": "^23.5.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest"
