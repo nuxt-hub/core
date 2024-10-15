@@ -858,11 +858,7 @@ async function loadMore() {
 
 Presigned URLs can be used to upload files to R2 from client-side without using an API key.
 
-::callout
-Read more about presigned URLs on Cloudflare's [official documentation](https://developers.cloudflare.com/r2/api/s3/presigned-urls/).
-::
-
-First, we need to create an API route that will return a presigned URL to the client.
+:img{src="/images/docs/blob-presigned-urls.png" alt="NuxtHub presigned URLs to upload files to R2" width="915" height="515" class="rounded"}
 
 As we use [aws4fetch](https://github.com/mhart/aws4fetch) to sign the request and [zod](https://github.com/colinhacks/zod) to validate the request, we need to install the packages:
 
@@ -870,7 +866,7 @@ As we use [aws4fetch](https://github.com/mhart/aws4fetch) to sign the request an
 npx nypm i aws4fetch zod
 ```
 
-Then, we need to create the API route that will return a presigned URL to the client:
+First, we need to create an API route that will return a presigned URL to the client.
 
 ```ts [server/api/blob/sign/\[...pathname\\].get.ts]
 import { z } from 'zod'
@@ -880,27 +876,37 @@ export default eventHandler(async (event) => {
   const { pathname } = await getValidatedRouterParams(event, z.object({
     pathname: z.string().min(1)
   }).parse)
-  const { accountId, bucketName, ...credentials } = await hubBlob().createCredentials({
+  // Create credentials with the right permission & scope
+  const blob = hubBlob()
+  const { accountId, bucketName, ...credentials } = await blob.createCredentials({
     permission: 'object-read-write',
     pathnames: [pathname]
   })
+  // Create the presigned URL
   const client = new AwsClient(credentials)
-  const endpoint = new URL(pathname, `https://${bucketName}.${accountId}.r2.cloudflarestorage.com`)
-
+  const endpoint = new URL(
+    pathname,
+    `https://${bucketName}.${accountId}.r2.cloudflarestorage.com`
+  )
   const { url } = await client.sign(endpoint, {
     method: 'PUT',
     aws: { signQuery: true }
   })
-  return url
+  // Return the presigned URL to the client
+  return { url }
 })
 ```
 
-We can now create the Vue component to upload a file to R2 using the presigned URL:
+::important
+Make sure to authenticate the request on the server side to avoid letting anyone upload files to your R2 bucket. Checkout [nuxt-auth-utils](https://github.com/atinux/nuxt-auth-utils) as one of the possible solutions.
+::
+
+Next, we need to create the Vue page to upload a file to our R2 bucket using the presigned URL:
 
 ```vue [pages/upload.vue]
 <script setup lang="ts">
 async function uploadWithPresignedUrl(file: File) {
-  const url = await $fetch(`/api/blob/sign/${file.name}`)
+  const { url } = await $fetch(`/api/blob/sign/${file.name}`)
   await $fetch(url, {
     method: 'PUT',
     body: file
@@ -913,12 +919,10 @@ async function uploadWithPresignedUrl(file: File) {
 </template>
 ```
 
-::warning
-Make sure to authenticate the request on the server side to avoid letting anyone upload files to your R2 bucket.
-::
+At this stage, you will get a CORS error because we did not setup the CORS on our R2 bucket.
 
-Lastly, you need to setup the CORS on your R2 bucket to allow the origin of your presigned URLs:
-- Open your project on NuxtHub Admin with `npx nuxthub manage`
+To setup the CORS on our R2 bucket:
+- Open the project on NuxtHub Admin with `npx nuxthub manage`
 - Go to the **Blob tab** (make sure to be on the right environment: production or preview)
 - Click on the Cloudflare icon on the top right corner
 - Once on Cloudflare, Go to the `Settings` tab of your R2 bucket
@@ -945,3 +949,7 @@ Lastly, you need to setup the CORS on your R2 bucket to allow the origin of your
 - Save the changes
 
 That's it! You can now upload files to R2 using the presigned URLs.
+
+::callout
+Read more about presigned URLs on Cloudflare's [official documentation](https://developers.cloudflare.com/r2/api/s3/presigned-urls/).
+::
