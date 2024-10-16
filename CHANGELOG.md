@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.7.33
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.32...v0.7.33)
+
+### 🩹 Fixes
+
+- Enable back AI in dev ([#327](https://github.com/nuxt-hub/core/pull/327))
+
+### 🏡 Chore
+
+- Update deps ([ef50db8](https://github.com/nuxt-hub/core/commit/ef50db8))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.32
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.31...v0.7.32)
