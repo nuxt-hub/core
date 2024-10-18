@@ -1,6 +1,24 @@
 # Changelog
 
 
+## v0.7.34
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.33...v0.7.34)
+
+### 🩹 Fixes
+
+- Remove ttl if 0 ([1f67732](https://github.com/nuxt-hub/core/commit/1f67732))
+- **blob:** Encode pathname ([#330](https://github.com/nuxt-hub/core/pull/330))
+- Decode also in proxy ([b79b41c](https://github.com/nuxt-hub/core/commit/b79b41c))
+
+### 🏡 Chore
+
+- Fix test ([223f2f6](https://github.com/nuxt-hub/core/commit/223f2f6))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.33
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.32...v0.7.33)
