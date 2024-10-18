@@ -31,11 +31,13 @@ export default defineDriver((driverOpts) => {
       }
 
       options.metadata = {
-        ttl: options.ttl,
         mtime: Date.now(),
         size: value.length,
         path: event?.path,
         ...options.metadata
+      }
+      if (!options.ttl) {
+        delete options.ttl
       }
       return driver.setItem(key, value, options)
     }
