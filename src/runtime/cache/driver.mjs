@@ -31,6 +31,7 @@ export default defineDriver((driverOpts) => {
       }
 
       options.metadata = {
+        ttl: options.ttl,
         mtime: Date.now(),
         size: value.length,
         path: event?.path,
