@@ -191,7 +191,8 @@ export function hubBlob(): HubBlob {
       }
     },
     async serve(event: H3Event, pathname: string) {
-      const object = await bucket.get(decodeURI(pathname))
+      pathname = decodeURIComponent(pathname)
+      const object = await bucket.get(pathname)
 
       if (!object) {
         throw createError({ message: 'File not found', statusCode: 404 })
@@ -204,7 +205,7 @@ export function hubBlob(): HubBlob {
       return object.body
     },
     async get(pathname: string): Promise<Blob | null> {
-      const object = await bucket.get(decodeURI(pathname))
+      const object = await bucket.get(decodeURIComponent(pathname))
 
       if (!object) {
         return null
@@ -213,7 +214,7 @@ export function hubBlob(): HubBlob {
       return object.blob() as Promise<Blob>
     },
     async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = {}) {
-      pathname = decodeURI(pathname)
+      pathname = decodeURIComponent(pathname)
       const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, customMetadata } = options
       const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
 
@@ -238,7 +239,7 @@ export function hubBlob(): HubBlob {
       return mapR2ObjectToBlob(object)
     },
     async head(pathname: string) {
-      const object = await bucket.head(decodeURI(pathname))
+      const object = await bucket.head(decodeURIComponent(pathname))
 
       if (!object) {
         throw createError({ message: 'Blob not found', statusCode: 404 })
@@ -248,13 +249,13 @@ export function hubBlob(): HubBlob {
     },
     async del(pathnames: string | string[]) {
       if (Array.isArray(pathnames)) {
-        return await bucket.delete(pathnames.map(p => decodeURI(p)))
+        return await bucket.delete(pathnames.map(p => decodeURIComponent(p)))
       } else {
-        return await bucket.delete(decodeURI(pathnames))
+        return await bucket.delete(decodeURIComponent(pathnames))
       }
     },
     async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}): Promise<BlobMultipartUpload> {
-      pathname = decodeURI(pathname)
+      pathname = decodeURIComponent(pathname)
       const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, customMetadata } = options
       const contentType = optionsContentType || getContentType(pathname)
 
@@ -278,7 +279,7 @@ export function hubBlob(): HubBlob {
       return mapR2MpuToBlobMpu(mpu)
     },
     resumeMultipartUpload(pathname: string, uploadId: string) {
-      const mpu = bucket.resumeMultipartUpload(pathname, uploadId)
+      const mpu = bucket.resumeMultipartUpload(decodeURIComponent(pathname), uploadId)
 
       return mapR2MpuToBlobMpu(mpu)
     },
@@ -375,7 +376,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
       })
     },
     async serve(_event: H3Event, pathname: string) {
-      return blobAPI<ReadableStream<any>>(decodeURI(pathname), {
+      return blobAPI<ReadableStream<any>>(encodeURIComponent(pathname), {
         method: 'GET'
       })
     },
@@ -391,7 +392,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
       if (body instanceof Uint8Array) {
         body = new Blob([body])
       }
-      return await blobAPI<BlobObject>(decodeURI(pathname), {
+      return await blobAPI<BlobObject>(encodeURIComponent(pathname), {
         method: 'PUT',
         headers,
         body,
@@ -399,12 +400,12 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
       })
     },
     async head(pathname: string): Promise<BlobObject> {
-      return await blobAPI(`/head/${decodeURI(pathname)}`, {
+      return await blobAPI(`/head/${encodeURIComponent(pathname)}`, {
         method: 'GET'
       })
     },
     async get(pathname: string): Promise<Blob> {
-      return await blobAPI(`/${decodeURI(pathname)}`, {
+      return await blobAPI(`/${encodeURIComponent(pathname)}`, {
         method: 'GET',
         responseType: 'blob'
       })
@@ -414,18 +415,18 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
         await blobAPI('/delete', {
           method: 'POST',
           body: {
-            pathnames: pathnames.map(p => decodeURI(p))
+            pathnames: pathnames.map(p => encodeURIComponent(p))
           }
         })
       } else {
-        await blobAPI(decodeURI(pathnames), {
+        await blobAPI(encodeURIComponent(pathnames), {
           method: 'DELETE'
         })
       }
       return
     },
     async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}) {
-      return await blobAPI<BlobMultipartUpload>(`/multipart/create/${decodeURI(pathname)}`, {
+      return await blobAPI<BlobMultipartUpload>(`/multipart/create/${encodeURIComponent(pathname)}`, {
         method: 'POST',
         query: options
       })
@@ -435,7 +436,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
         pathname,
         uploadId,
         async uploadPart(partNumber: number, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob): Promise<BlobUploadedPart> {
-          return await blobAPI<BlobUploadedPart>(`/multipart/upload/${decodeURI(pathname)}`, {
+          return await blobAPI<BlobUploadedPart>(`/multipart/upload/${encodeURIComponent(pathname)}`, {
             method: 'PUT',
             query: {
               uploadId,
@@ -445,7 +446,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
           })
         },
         async abort(): Promise<void> {
-          await blobAPI(`/multipart/abort/${decodeURI(pathname)}`, {
+          await blobAPI(`/multipart/abort/${encodeURIComponent(pathname)}`, {
             method: 'DELETE',
             query: {
               uploadId
@@ -453,7 +454,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
           })
         },
         async complete(parts: BlobUploadedPart[]): Promise<BlobObject> {
-          return await blobAPI<BlobObject>(`/multipart/complete/${decodeURI(pathname)}`, {
+          return await blobAPI<BlobObject>(`/multipart/complete/${encodeURIComponent(pathname)}`, {
             method: 'POST',
             query: {
               uploadId
