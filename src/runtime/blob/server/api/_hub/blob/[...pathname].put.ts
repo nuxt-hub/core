@@ -37,5 +37,5 @@ export default eventHandler(async (event) => {
   const stream = getRequestWebStream(event)!
   const body = await streamToArrayBuffer(stream, Number(contentLength))
 
-  return hubBlob().put(pathname, body, options)
+  return hubBlob().put(decodeURIComponent(pathname), body, options)
 })

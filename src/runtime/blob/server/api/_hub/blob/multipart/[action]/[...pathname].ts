@@ -15,6 +15,7 @@ export default eventHandler(async (event) => {
       options.customMetadata = {}
     }
   }
+  event.context.params!.pathname = decodeURIComponent(event.context.params!.pathname)
   return await hubBlob().handleMultipartUpload(event, {
     ...options
   })

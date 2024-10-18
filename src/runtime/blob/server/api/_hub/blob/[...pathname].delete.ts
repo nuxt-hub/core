@@ -12,7 +12,7 @@ export default eventHandler(async (event) => {
     pathname: z.string().min(1)
   }).parse)
 
-  await hubBlob().delete(pathname)
+  await hubBlob().delete(decodeURIComponent(pathname))
 
   return sendNoContent(event)
 })
