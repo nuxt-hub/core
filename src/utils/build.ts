@@ -1,4 +1,4 @@
-import { writeFile } from 'node:fs/promises'
+import { writeFile, cp } from 'node:fs/promises'
 import { logger } from '@nuxt/kit'
 import { join } from 'pathe'
 import { $fetch } from 'ofetch'
@@ -110,6 +110,17 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
         bindings: hub.bindings
       }
       await writeFile(join(nitro.options.output.publicDir, 'hub.config.json'), JSON.stringify(hubConfig, null, 2), 'utf-8')
+
+      if (hub.database) {
+        try {
+          await cp(join(nitro.options.rootDir, 'server/database/migrations'), join(nitro.options.output.dir, 'database/migrations'), { recursive: true })
+          log.info('Database migrations included in build')
+        } catch (error: unknown) {
+          if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+            log.info('Skipping bundling database migrations - no migrations found')
+          }
+        }
+      }
     })
   }
 }
