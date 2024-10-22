@@ -754,8 +754,10 @@ interface BlobObject {
   pathname: string
   contentType: string | undefined
   size: number
-  uploadedAt: Date,
-  customMetadata?: Record<string, string> | undefined
+  httpEtag: string
+  uploadedAt: Date
+  httpMetadata: Record<string, string>
+  customMetadata: Record<string, string>
 }
 ```
 
