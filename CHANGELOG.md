@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.7.35
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.34...v0.7.35)
+
+### 🚀 Enhancements
+
+- **cache:** Support batch delete ([#336](https://github.com/nuxt-hub/core/pull/336))
+
+### 📖 Documentation
+
+- Update `pg` note ([#332](https://github.com/nuxt-hub/core/pull/332))
+
+### 🏡 Chore
+
+- Update deps ([9c3bd45](https://github.com/nuxt-hub/core/commit/9c3bd45))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Sandro Circi ([@sandros94](http://github.com/sandros94))
+
 ## v0.7.34
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.33...v0.7.34)
