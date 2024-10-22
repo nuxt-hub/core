@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.7.36
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.35...v0.7.36)
+
+### 🚀 Enhancements
+
+- **blob:** Expose more data ([#337](https://github.com/nuxt-hub/core/pull/337))
+
+### 🏡 Chore
+
+- **playground:** Update deps ([3758f41](https://github.com/nuxt-hub/core/commit/3758f41))
+- Update wrangler ([f1733d9](https://github.com/nuxt-hub/core/commit/f1733d9))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.35
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.34...v0.7.35)
