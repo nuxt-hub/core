@@ -1,3 +1,4 @@
+import { useRuntimeConfig } from '@nuxt/kit'
 import { createHooks } from 'hookable'
 
 export interface HubHooks {
@@ -9,7 +10,7 @@ export interface HubHooks {
  * Access Hub lifecycle hooks.
  *
  * @example ```ts
- * hubHooks.on('bindings:ready', () => {
+ * hubHooks.hook('bindings:ready', () => {
  *   console.log('Bindings are ready!')
  * })
  * ```
@@ -29,6 +30,8 @@ export const hubHooks = createHooks<HubHooks>()
  */
 export function onHubReady(cb: HubHooks['bindings:ready']) {
   if (import.meta.dev) {
+    const hub = useRuntimeConfig().hub
+    if (hub.database) return hubHooks.hookOnce('migrations:done', cb)
     return hubHooks.hookOnce('bindings:ready', cb)
   }
   cb()
