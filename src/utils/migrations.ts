@@ -8,15 +8,16 @@ const log = logger.withTag('nuxt:hub')
 
 export const runMigrations = async () => {
   const srcStorage = useMigrationsStorage()
+  const hub = useRuntimeConfig().hub
   await createMigrationsTable()
 
   log.info('Checking for pending migrations...')
   const remoteMigrations = await getRemoteMigrations().catch((error) => {
-    log.error(`Could not retrieve migrations on ${process.env.NUXT_HUB_ENV}.`)
+    log.error(`Could not retrieve migrations on ${hub.env}.`)
     if (error) log.error(error)
   })
   if (!remoteMigrations) process.exit(1)
-  if (!remoteMigrations.length) log.warn(`No applied migrations on ${process.env.NUXT_HUB_ENV}.`)
+  if (!remoteMigrations.length) log.warn(`No applied migrations on ${hub.env}.`)
 
   const localMigrations = (await getMigrationFiles()).map(fileName => fileName.replace('.sql', ''))
   const pendingMigrations = localMigrations.filter(localName => !remoteMigrations.find(({ name }) => name === localName))
@@ -33,7 +34,7 @@ export const runMigrations = async () => {
     `
 
     try {
-      await useDatabaseQuery(query)
+      await useRemoteDatabaseQuery(query)
     } catch (error: any) {
       log.error(`Failed to apply migration \`${migration}\`.`)
       if (error && error.response) log.error(error.response?._data?.message || error)
@@ -44,18 +45,22 @@ export const runMigrations = async () => {
   }
 }
 
-export const useDatabaseQuery = async <T>(query: string) => {
-  const config = useRuntimeConfig().hub
-  return await $fetch<Array<{ results: Array<T>, success: boolean, meta: object }>>(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/database/${process.env.NUXT_HUB_ENV}/query`, {
-    baseURL: config.url,
+export const runLocalMigrations = async () => {
+  log.error('Local migrations are not supported yet.')
+}
+
+export const useRemoteDatabaseQuery = async <T>(query: string) => {
+  const hub = useRuntimeConfig().hub
+  return await $fetch<Array<{ results: Array<T>, success: boolean, meta: object }>>(`/api/projects/${hub.projectKey}/database/${hub.env}/query`, {
+    baseURL: hub.url,
     method: 'POST',
     headers: {
-      authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
+      authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN} || ${hub.userToken}`
     },
     body: { query, mode: 'raw' }
   }).catch((error) => {
     if (error.response?.status === 400) {
-      throw `NuxtHub database is not enabled on \`${process.env.NUXT_HUB_ENV}\`. Deploy a new version with \`hub.database\` enabled and try again.`
+      throw `NuxtHub database is not enabled on \`${hub.env}\`. Deploy a new version with \`hub.database\` enabled and try again.`
     }
     throw error
   })
@@ -79,7 +84,7 @@ export const getMigrationFiles = async () => {
 
 export const getRemoteMigrations = async () => {
   const query = 'select "id", "name", "applied_at" from "hub_migrations" order by "hub_migrations"."id"'
-  return (await useDatabaseQuery<{ id: number, name: string, applied_at: string }>(query).catch((error) => {
+  return (await useRemoteDatabaseQuery<{ id: number, name: string, applied_at: string }>(query).catch((error) => {
     if (error.response?.status === 500 && error.response?._data?.message.includes('no such table')) {
       return []
     }
@@ -93,5 +98,5 @@ export const createMigrationsTable = async () => {
     name       TEXT UNIQUE,
     applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
   );`
-  await useDatabaseQuery(query)
+  await useRemoteDatabaseQuery(query)
 }
