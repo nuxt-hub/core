@@ -3,7 +3,6 @@ import { createStorage } from 'unstorage'
 import fsDriver from 'unstorage/drivers/fs'
 import { $fetch } from 'ofetch'
 import { useRuntimeConfig, logger } from '@nuxt/kit'
-import { hubHooks } from '../runtime/base/server/utils/hooks'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -21,8 +20,6 @@ export const runMigrations = async () => {
 
   const pendingMigrations = localMigrations.filter(localName => !remoteMigrations.find(({ name }) => name === localName))
   if (!pendingMigrations.length) log.info('No pending migrations to apply.')
-
-  await hubHooks.callHookParallel('migrations:done')
 }
 
 export const useDatabaseQuery = async <T>(query: string) => {
