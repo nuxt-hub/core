@@ -4,6 +4,7 @@ import { join } from 'pathe'
 import { $fetch } from 'ofetch'
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig } from '../features'
+import { runMigrations } from './migrations'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -76,6 +77,8 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
     })
 
     nuxt.hook('build:done', async () => {
+      await runMigrations()
+
       await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/done`, {
         baseURL: hub.url,
         method: 'POST',

@@ -2,6 +2,7 @@ import { createHooks } from 'hookable'
 
 export interface HubHooks {
   'bindings:ready': () => void
+  'migrations:done': () => void
 }
 
 /**
