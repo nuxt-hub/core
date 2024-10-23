@@ -638,7 +638,9 @@ function mapR2ObjectToBlob(object: R2Object): BlobObject {
     pathname: object.key,
     contentType: object.httpMetadata?.contentType,
     size: object.size,
+    httpEtag: object.httpEtag,
     uploadedAt: object.uploaded,
+    httpMetadata: object.httpMetadata || {},
     customMetadata: object.customMetadata || {}
   }
 }

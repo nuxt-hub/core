@@ -73,8 +73,7 @@ Returns [`BlobListResult`](#bloblistresult).
 
 ### `serve()`
 
-Returns a blob's data.
-
+Returns a blob's data and sets `Content-Type`, `Content-Length` and `ETag` headers.
 
 ::code-group
 ```ts [server/routes/images/[...pathname\\].get.ts]
@@ -90,6 +89,21 @@ export default eventHandler(async (event) => {
 </template>
 ```
 ::
+
+::important
+To prevent XSS attacks, make sure to control the Content type of the blob you serve.
+::
+
+You can also set a `Content-Security-Policy` header to add an additional layer of security:
+
+```ts [server/api/images/[...pathname\\].get.ts]
+export default eventHandler(async (event) => {
+  const { pathname } = getRouterParams(event)
+
+  setHeader(event, 'Content-Security-Policy', 'default-src \'none\';')
+  return hubBlob().serve(event, pathname)
+})
+```
 
 #### Params
 
@@ -754,8 +768,10 @@ interface BlobObject {
   pathname: string
   contentType: string | undefined
   size: number
-  uploadedAt: Date,
-  customMetadata?: Record<string, string> | undefined
+  httpEtag: string
+  uploadedAt: Date
+  httpMetadata: Record<string, string>
+  customMetadata: Record<string, string>
 }
 ```
 
