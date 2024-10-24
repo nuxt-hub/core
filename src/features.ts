@@ -56,7 +56,7 @@ export interface HubConfig {
 export function setupBase(nuxt: Nuxt, hub: HubConfig) {
   // Add Server scanning
   addServerScanDir(resolve('./runtime/base/server'))
-  addServerImportsDir(resolve('./runtime/base/server/utils'))
+  addServerImportsDir([resolve('./runtime/base/server/utils'), resolve('./runtime/base/server/utils/migrations')])
 
   // Add custom tabs to Nuxt DevTools
   if (nuxt.options.dev) {
