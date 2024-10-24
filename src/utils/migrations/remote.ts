@@ -1,17 +1,17 @@
+import consola from 'consola'
 import { $fetch } from 'ofetch'
-import { useRuntimeConfig, logger } from '@nuxt/kit'
-import { appliedMigrationsQuery, createMigrationsTableQuery, useMigrationsStorage } from './helpers'
+import type { HubConfig } from '../../features'
+import { appliedMigrationsQuery, createMigrationsTableQuery, getMigrationFiles, useMigrationsStorage } from './helpers'
 
-const log = logger.withTag('nuxt:hub')
+const log = consola.withTag('nuxt:hub')
 
-export const applyRemoteMigrations = async () => {
+export const applyRemoteMigrations = async (hub: HubConfig) => {
   const srcStorage = useMigrationsStorage()
-  const hub = useRuntimeConfig().hub
 
-  await createRemoteMigrationsTable()
+  await createRemoteMigrationsTable(hub)
 
   log.info('Checking for pending migrations')
-  const appliedMigrations = await getRemoteAppliedMigrations().catch((error) => {
+  const appliedMigrations = await getRemoteAppliedMigrations(hub).catch((error) => {
     log.error(`Could not retrieve migrations on \`${hub.env}\``)
     if (error) log.error(error)
   })
@@ -33,7 +33,7 @@ export const applyRemoteMigrations = async () => {
     `
 
     try {
-      await useRemoteDatabaseQuery(query)
+      await useRemoteDatabaseQuery(hub, query)
     } catch (error: any) {
       log.error(`Failed to apply migration \`${migration}\``)
       if (error && error.response) log.error(error.response?._data?.message || error)
@@ -44,8 +44,7 @@ export const applyRemoteMigrations = async () => {
   }
 }
 
-export const useRemoteDatabaseQuery = async <T>(query: string) => {
-  const hub = useRuntimeConfig().hub
+export const useRemoteDatabaseQuery = async <T>(hub: HubConfig, query: string) => {
   return await $fetch<Array<{ results: Array<T>, success: boolean, meta: object }>>(`/api/projects/${hub.projectKey}/database/${hub.env}/query`, {
     baseURL: hub.url,
     method: 'POST',
@@ -61,17 +60,12 @@ export const useRemoteDatabaseQuery = async <T>(query: string) => {
   })
 }
 
-export const getMigrationFiles = async () => {
-  const fileKeys = await useMigrationsStorage().getKeys()
-  return fileKeys.filter(file => file.endsWith('.sql'))
+export const createRemoteMigrationsTable = async (hub: HubConfig) => {
+  await useRemoteDatabaseQuery(hub, createMigrationsTableQuery)
 }
 
-export const createRemoteMigrationsTable = async () => {
-  await useRemoteDatabaseQuery(createMigrationsTableQuery)
-}
-
-export const getRemoteAppliedMigrations = async () => {
-  return (await useRemoteDatabaseQuery<{ id: number, name: string, applied_at: string }>(appliedMigrationsQuery).catch((error) => {
+export const getRemoteAppliedMigrations = async (hub: HubConfig) => {
+  return (await useRemoteDatabaseQuery<{ id: number, name: string, applied_at: string }>(hub, appliedMigrationsQuery).catch((error) => {
     if (error.response?.status === 500 && error.response?._data?.message.includes('no such table')) {
       return []
     }

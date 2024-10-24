@@ -77,7 +77,7 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
     })
 
     nuxt.hook('build:done', async () => {
-      await applyRemoteMigrations()
+      await applyRemoteMigrations(hub)
 
       await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/done`, {
         baseURL: hub.url,

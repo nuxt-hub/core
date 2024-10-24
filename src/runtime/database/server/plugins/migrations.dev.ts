@@ -1,4 +1,4 @@
-// import { applyRemoteMigrations } from '../../../../utils/database/migrations'
+import { applyRemoteMigrations } from '../../../../utils/migrations/remote'
 import { hubHooks } from '../../../base/server/utils/hooks'
 import { applyMigrations } from '../utils/migrations'
 import { useRuntimeConfig, defineNitroPlugin } from '#imports'
@@ -11,7 +11,7 @@ export default defineNitroPlugin(async () => {
 
   hubHooks.hookOnce('bindings:ready', async () => {
     if (hub.remote && hub.projectKey) { // linked to a NuxtHub project
-      // await applyRemoteMigrations()
+      await applyRemoteMigrations(hub)
     } else { // local dev & self hosted
       await applyMigrations()
     }
