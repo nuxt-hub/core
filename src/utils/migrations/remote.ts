@@ -1,8 +1,6 @@
-import { join } from 'pathe'
-import { createStorage } from 'unstorage'
-import fsDriver from 'unstorage/drivers/fs'
 import { $fetch } from 'ofetch'
 import { useRuntimeConfig, logger } from '@nuxt/kit'
+import { appliedMigrationsQuery, createMigrationsTableQuery, useMigrationsStorage } from './helpers'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -63,32 +61,15 @@ export const useRemoteDatabaseQuery = async <T>(query: string) => {
   })
 }
 
-export const useMigrationsStorage = () => {
-  const cwd = process.cwd()
-  const migrationsDir = join(cwd, 'server/database/migrations')
-  return createStorage({
-    driver: fsDriver({
-      base: migrationsDir,
-      ignore: ['.DS_Store']
-    })
-  })
-}
-
 export const getMigrationFiles = async () => {
   const fileKeys = await useMigrationsStorage().getKeys()
   return fileKeys.filter(file => file.endsWith('.sql'))
 }
 
-export const createMigrationsTableQuery = `CREATE TABLE IF NOT EXISTS hub_migrations (
-  id         INTEGER PRIMARY KEY AUTOINCREMENT,
-  name       TEXT UNIQUE,
-  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-);`
 export const createRemoteMigrationsTable = async () => {
   await useRemoteDatabaseQuery(createMigrationsTableQuery)
 }
 
-export const appliedMigrationsQuery = 'select "id", "name", "applied_at" from "hub_migrations" order by "hub_migrations"."id"'
 export const getRemoteAppliedMigrations = async () => {
   return (await useRemoteDatabaseQuery<{ id: number, name: string, applied_at: string }>(appliedMigrationsQuery).catch((error) => {
     if (error.response?.status === 500 && error.response?._data?.message.includes('no such table')) {

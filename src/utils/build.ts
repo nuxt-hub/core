@@ -4,7 +4,7 @@ import { join } from 'pathe'
 import { $fetch } from 'ofetch'
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig } from '../features'
-import { applyRemoteMigrations } from './migrations'
+import { applyRemoteMigrations } from './migrations/remote'
 
 const log = logger.withTag('nuxt:hub')
 

@@ -1,5 +1,5 @@
 import consola from 'consola'
-import { appliedMigrationsQuery, createMigrationsTableQuery, getMigrationFiles, useMigrationsStorage } from '../../../../utils/migrations'
+import { appliedMigrationsQuery, createMigrationsTableQuery, getMigrationFiles, useMigrationsStorage } from '../../../../utils/migrations/helpers'
 import { hubDatabase } from './database'
 
 const log = consola.withTag('nuxt:hub')
@@ -8,7 +8,7 @@ export const applyMigrations = async () => {
   const srcStorage = useMigrationsStorage()
   const db = hubDatabase()
 
-  await db.exec(createMigrationsTableQuery) // create migrations table
+  await db.prepare(createMigrationsTableQuery).run() // create migrations table
 
   log.info('Checking for pending migrations')
   const remoteMigrations = (await db.prepare(appliedMigrationsQuery).all()).results
