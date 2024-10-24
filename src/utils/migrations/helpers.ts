@@ -25,3 +25,30 @@ export const createMigrationsTableQuery = `CREATE TABLE IF NOT EXISTS hub_migrat
 );`
 
 export const appliedMigrationsQuery = 'select "id", "name", "applied_at" from "hub_migrations" order by "hub_migrations"."id"'
+
+export function splitSqlQueries(sqlFileContent: string): string[] {
+  // Remove all inline comments (-- ...)
+  let content = sqlFileContent.replace(/--.*$/gm, '')
+
+  // Remove all multi-line comments (/* ... */)
+  content = content.replace(/\/\*[\s\S]*?\*\//g, '')
+
+  // Split by semicolons but keep them in the result
+  const rawQueries = content.split(/(?<=;)/)
+
+  // Process each query
+  return rawQueries
+    .map(query => query.trim()) // Remove whitespace
+    .filter((query) => {
+      // Remove empty queries and standalone semicolons
+      return query !== '' && query !== ';'
+    })
+    .map((query) => {
+      // Ensure each query ends with exactly one semicolon
+      if (!query.endsWith(';')) {
+        query += ';'
+      }
+      // Remove multiple semicolons at the end
+      return query.replace(/;+$/, ';')
+    })
+}

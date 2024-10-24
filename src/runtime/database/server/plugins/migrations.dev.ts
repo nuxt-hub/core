@@ -1,4 +1,3 @@
-import { useRuntimeConfig } from '@nuxt/kit'
 // import { applyRemoteMigrations } from '../../../../utils/database/migrations'
 import { hubHooks } from '../../../base/server/utils/hooks'
 import { applyMigrations } from '../utils/migrations'
