@@ -76,26 +76,28 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
       })
     })
 
-    nuxt.hook('build:done', async () => {
-      await applyRemoteMigrations(hub)
+    nuxt.hook('nitro:init', async (nitro) => {
+      nitro.hooks.hook('compiled', async () => {
+        await applyRemoteMigrations(hub)
 
-      await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/done`, {
-        baseURL: hub.url,
-        method: 'POST',
-        headers: {
-          authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
-        },
-        body: {
-          pagesUrl: process.env.CF_PAGES_URL
-        }
-      }).catch((e) => {
-        if (e.response?._data?.message) {
-          log.error(e.response._data.message)
-        } else {
-          log.error('Failed run build:done hook on NuxtHub.', e)
-        }
+        await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/done`, {
+          baseURL: hub.url,
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
+          },
+          body: {
+            pagesUrl: process.env.CF_PAGES_URL
+          }
+        }).catch((e) => {
+          if (e.response?._data?.message) {
+            log.error(e.response._data.message)
+          } else {
+            log.error('Failed run build:done hook on NuxtHub.', e)
+          }
 
-        process.exit(1)
+          process.exit(1)
+        })
       })
     })
   } else {

@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.7.37
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.36...v0.7.37)
+
+### 📖 Documentation
+
+- Add note about CSP when serving blobs ([47448a2](https://github.com/nuxt-hub/core/commit/47448a2))
+
+### 🏡 Chore
+
+- Use `compiled` hook from nitro to final build event ([#338](https://github.com/nuxt-hub/core/pull/338))
+- Update deps ([9fd90f4](https://github.com/nuxt-hub/core/commit/9fd90f4))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.7.36
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.35...v0.7.36)
