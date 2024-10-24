@@ -10,11 +10,11 @@ export const applyMigrations = async () => {
 
   await db.prepare(createMigrationsTableQuery).run() // create migrations table
 
-  const remoteMigrations = (await db.prepare(appliedMigrationsQuery).all()).results
-  if (!remoteMigrations.length) log.warn(`No applied migrations on \`dev\``)
+  const appliedMigrations = (await db.prepare(appliedMigrationsQuery).all()).results
+  if (!appliedMigrations.length) log.warn(`No applied migrations on \`dev\``)
 
   const localMigrations = (await getMigrationFiles()).map(fileName => fileName.replace('.sql', ''))
-  const pendingMigrations = localMigrations.filter(localName => !remoteMigrations.find(({ name }) => name === localName))
+  const pendingMigrations = localMigrations.filter(localName => !appliedMigrations.find(({ name }) => name === localName))
   if (!pendingMigrations.length) return log.info('No pending migrations to apply')
 
   for (const migration of pendingMigrations) {
