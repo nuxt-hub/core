@@ -1,17 +1,22 @@
 import consola from 'consola'
 import { appliedMigrationsQuery, createMigrationsTableQuery, getMigrationFiles, splitSqlQueries, useMigrationsStorage } from '../../../../utils/migrations/helpers'
 import { hubDatabase } from './database'
+import { useRuntimeConfig } from '#imports'
 
 const log = consola.withTag('nuxt:hub')
 
+// Apply migrations during local development and self-hosted remote development.
+// See src/utils/migrations/remote.ts for applying migrations on remote development (linked projects) and Pages CI deployments
 export const applyMigrations = async () => {
   const srcStorage = useMigrationsStorage()
-  const db = hubDatabase()
+  const hub = useRuntimeConfig().hub
+  const env = hub.remote ? hub.env : 'local'
 
+  const db = hubDatabase()
   await db.prepare(createMigrationsTableQuery).run() // create migrations table
 
   const appliedMigrations = (await db.prepare(appliedMigrationsQuery).all()).results
-  if (!appliedMigrations.length) log.warn(`No applied migrations on \`dev\``)
+  if (!appliedMigrations.length) log.warn(`No applied migrations on \`${env}\``)
 
   const localMigrations = (await getMigrationFiles()).map(fileName => fileName.replace('.sql', ''))
   const pendingMigrations = localMigrations.filter(localName => !appliedMigrations.find(({ name }) => name === localName))
