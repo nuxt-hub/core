@@ -1,6 +1,6 @@
 import consola from 'consola'
 import { $fetch } from 'ofetch'
-import type { HubConfig } from '../../../../features'
+import type { HubConfig } from '../../../../../features'
 import { appliedMigrationsQuery, createMigrationsTableQuery, getMigrationFiles, useMigrationsStorage } from './helpers'
 
 const log = consola.withTag('nuxt:hub')
@@ -22,7 +22,7 @@ export const applyRemoteMigrations = async (hub: HubConfig) => {
   const pendingMigrations = localMigrations.filter(localName => !appliedMigrations.find(({ name }) => name === localName))
   if (!pendingMigrations.length) return log.info('No pending migrations to apply')
 
-  log.info('Applying migrations...')
+  log.info('Applying migrations')
   for (const migration of pendingMigrations) {
     const migrationFile = await srcStorage.getItemRaw(`${migration}.sql`)
     let query = migrationFile.toString()
@@ -40,7 +40,7 @@ export const applyRemoteMigrations = async (hub: HubConfig) => {
       break
     }
 
-    log.success(`Applied migration \`${migration}\`.`)
+    log.success(`Applied migration \`${migration}\``)
   }
 }
 
