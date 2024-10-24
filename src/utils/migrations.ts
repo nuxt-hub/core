@@ -6,22 +6,23 @@ import { useRuntimeConfig, logger } from '@nuxt/kit'
 
 const log = logger.withTag('nuxt:hub')
 
-export const runMigrations = async () => {
+export const applyRemoteMigrations = async () => {
   const srcStorage = useMigrationsStorage()
   const hub = useRuntimeConfig().hub
-  await createMigrationsTable()
 
-  log.info('Checking for pending migrations...')
-  const remoteMigrations = await getRemoteMigrations().catch((error) => {
-    log.error(`Could not retrieve migrations on ${hub.env}.`)
+  await createRemoteMigrationsTable()
+
+  log.info('Checking for pending migrations')
+  const appliedMigrations = await getRemoteAppliedMigrations().catch((error) => {
+    log.error(`Could not retrieve migrations on \`${hub.env}\``)
     if (error) log.error(error)
   })
-  if (!remoteMigrations) process.exit(1)
-  if (!remoteMigrations.length) log.warn(`No applied migrations on ${hub.env}.`)
+  if (!appliedMigrations) process.exit(1)
+  if (!appliedMigrations.length) log.warn(`No applied migrations on \`${hub.env}\``)
 
   const localMigrations = (await getMigrationFiles()).map(fileName => fileName.replace('.sql', ''))
-  const pendingMigrations = localMigrations.filter(localName => !remoteMigrations.find(({ name }) => name === localName))
-  if (!pendingMigrations.length) return log.info('No pending migrations to apply.')
+  const pendingMigrations = localMigrations.filter(localName => !appliedMigrations.find(({ name }) => name === localName))
+  if (!pendingMigrations.length) return log.info('No pending migrations to apply')
 
   log.info('Applying migrations...')
   for (const migration of pendingMigrations) {
@@ -36,17 +37,13 @@ export const runMigrations = async () => {
     try {
       await useRemoteDatabaseQuery(query)
     } catch (error: any) {
-      log.error(`Failed to apply migration \`${migration}\`.`)
+      log.error(`Failed to apply migration \`${migration}\``)
       if (error && error.response) log.error(error.response?._data?.message || error)
       break
     }
 
     log.success(`Applied migration \`${migration}\`.`)
   }
-}
-
-export const runLocalMigrations = async () => {
-  log.error('Local migrations are not supported yet.')
 }
 
 export const useRemoteDatabaseQuery = async <T>(query: string) => {
@@ -82,21 +79,21 @@ export const getMigrationFiles = async () => {
   return fileKeys.filter(file => file.endsWith('.sql'))
 }
 
-export const getRemoteMigrations = async () => {
-  const query = 'select "id", "name", "applied_at" from "hub_migrations" order by "hub_migrations"."id"'
-  return (await useRemoteDatabaseQuery<{ id: number, name: string, applied_at: string }>(query).catch((error) => {
+export const createMigrationsTableQuery = `CREATE TABLE IF NOT EXISTS hub_migrations (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  name       TEXT UNIQUE,
+  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);`
+export const createRemoteMigrationsTable = async () => {
+  await useRemoteDatabaseQuery(createMigrationsTableQuery)
+}
+
+export const appliedMigrationsQuery = 'select "id", "name", "applied_at" from "hub_migrations" order by "hub_migrations"."id"'
+export const getRemoteAppliedMigrations = async () => {
+  return (await useRemoteDatabaseQuery<{ id: number, name: string, applied_at: string }>(appliedMigrationsQuery).catch((error) => {
     if (error.response?.status === 500 && error.response?._data?.message.includes('no such table')) {
       return []
     }
     throw ''
   }))?.[0]?.results ?? []
-}
-
-export const createMigrationsTable = async () => {
-  const query = `CREATE TABLE IF NOT EXISTS hub_migrations (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    name       TEXT UNIQUE,
-    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-  );`
-  await useRemoteDatabaseQuery(query)
 }
