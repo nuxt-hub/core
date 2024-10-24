@@ -1,9 +1,7 @@
-import consola from 'consola'
-import { appliedMigrationsQuery, createMigrationsTableQuery, getMigrationFiles, splitSqlQueries, useMigrationsStorage } from '../../../../utils/migrations/helpers'
-import { hubDatabase } from './database'
+import log from 'consola'
+import { hubDatabase } from '../database'
+import { appliedMigrationsQuery, createMigrationsTableQuery, getMigrationFiles, splitSqlQueries, useMigrationsStorage } from './helpers'
 import { useRuntimeConfig } from '#imports'
-
-const log = consola.withTag('nuxt:hub')
 
 // Apply migrations during local development and self-hosted remote development.
 // See src/utils/migrations/remote.ts for applying migrations on remote development (linked projects) and Pages CI deployments

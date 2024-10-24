@@ -1,6 +1,6 @@
 import consola from 'consola'
 import { $fetch } from 'ofetch'
-import type { HubConfig } from '../../features'
+import type { HubConfig } from '../../../../features'
 import { appliedMigrationsQuery, createMigrationsTableQuery, getMigrationFiles, useMigrationsStorage } from './helpers'
 
 const log = consola.withTag('nuxt:hub')

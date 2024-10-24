@@ -1,6 +1,6 @@
-import { applyRemoteMigrations } from '../../../../utils/migrations/remote'
+import { applyRemoteMigrations } from '../utils/migrations/remote'
 import { hubHooks } from '../../../base/server/utils/hooks'
-import { applyMigrations } from '../utils/migrations'
+import { applyMigrations } from '../utils/migrations/migrations'
 import { useRuntimeConfig, defineNitroPlugin } from '#imports'
 
 export default defineNitroPlugin(async () => {
