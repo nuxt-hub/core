@@ -49,7 +49,7 @@ export const useRemoteDatabaseQuery = async <T>(hub: HubConfig, query: string) =
     baseURL: hub.url,
     method: 'POST',
     headers: {
-      authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN} || ${hub.userToken}`
+      authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN || hub.userToken}`
     },
     body: { query, mode: 'raw' }
   }).catch((error) => {
