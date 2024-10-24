@@ -1,5 +1,5 @@
-import { useRuntimeConfig } from '@nuxt/kit'
 import { createHooks } from 'hookable'
+import { useRuntimeConfig } from '#imports'
 
 export interface HubHooks {
   'bindings:ready': () => void
