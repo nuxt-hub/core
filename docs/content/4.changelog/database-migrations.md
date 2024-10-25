@@ -52,7 +52,7 @@ npx nuxthub database migrations mark-all-applied
 ```
 
 Learn more about:
-- [Creating migrations](/docs/features/database##creating-migrations)
+- [Creating migrations](/docs/features/database#creating-migrations)
 - [Checking migration status](/docs/features/database#checking-migration-status)
 - [Marking migrations as applied](/docs/features/database#marking-migrations-as-applied)
 
