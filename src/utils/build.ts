@@ -1,9 +1,10 @@
-import { writeFile } from 'node:fs/promises'
+import { writeFile, cp } from 'node:fs/promises'
 import { logger } from '@nuxt/kit'
 import { join } from 'pathe'
 import { $fetch } from 'ofetch'
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig } from '../features'
+import { applyRemoteMigrations } from '../runtime/database/server/utils/migrations/remote'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -90,11 +91,16 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
           if (e.response?._data?.message) {
             log.error(e.response._data.message)
           } else {
-            log.error('Failed run build:done hook on NuxtHub.', e)
+            log.error('Failed run compiled:done hook on NuxtHub.', e)
           }
 
           process.exit(1)
         })
+        // Apply migrations
+        const migrationsApplied = await applyRemoteMigrations(hub)
+        if (!migrationsApplied) {
+          process.exit(1)
+        }
       })
     })
   } else {
@@ -112,6 +118,17 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
         bindings: hub.bindings
       }
       await writeFile(join(nitro.options.output.publicDir, 'hub.config.json'), JSON.stringify(hubConfig, null, 2), 'utf-8')
+
+      if (hub.database) {
+        try {
+          await cp(join(nitro.options.rootDir, 'server/database/migrations'), join(nitro.options.output.dir, 'database/migrations'), { recursive: true })
+          log.info('Database migrations included in build')
+        } catch (error: unknown) {
+          if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+            log.info('Skipping bundling database migrations - no migrations found')
+          }
+        }
+      }
     })
   }
 }

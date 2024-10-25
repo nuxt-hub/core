@@ -51,12 +51,14 @@ export interface HubConfig {
       vectorize?: HubConfig['vectorize']
     } & Record<string, boolean>
   }
+
+  migrationsPath?: string
 }
 
 export function setupBase(nuxt: Nuxt, hub: HubConfig) {
   // Add Server scanning
   addServerScanDir(resolve('./runtime/base/server'))
-  addServerImportsDir(resolve('./runtime/base/server/utils'))
+  addServerImportsDir([resolve('./runtime/base/server/utils'), resolve('./runtime/base/server/utils/migrations')])
 
   // Add custom tabs to Nuxt DevTools
   if (nuxt.options.dev) {
@@ -183,7 +185,9 @@ export async function setupCache(nuxt: Nuxt) {
   addServerScanDir(resolve('./runtime/cache/server'))
 }
 
-export function setupDatabase(_nuxt: Nuxt) {
+export function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
+  // Keep track of the path to migrations
+  hub.migrationsPath = join(nuxt.options.rootDir, 'server/database/migrations')
   // Add Server scanning
   addServerScanDir(resolve('./runtime/database/server'))
   addServerImportsDir(resolve('./runtime/database/server/utils'))
