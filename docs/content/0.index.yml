@@ -10,8 +10,8 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: "Blob: Presigned URLs"
-    to: /changelog/blob-presigned-urls
+    label: "Automatic Database Migrations"
+    to: /changelog/database-migrations
     icon: i-ph-arrow-right
 features:
   - name: Cloud Hosting

@@ -99,6 +99,20 @@ console.log(results)
 */
 ```
 
+The method return an object that contains the results (if applicable), the success status and a meta object:
+
+```ts
+{
+  results: array | null, // [] if empty, or null if it does not apply
+  success: boolean, // true if the operation was successful, false otherwise
+  meta: {
+    duration: number, // duration of the operation in milliseconds
+    rows_read: number, // the number of rows read (scanned) by this query
+    rows_written: number // the number of rows written by this query
+  }
+}
+```
+
 ### `first()`
 
 Returns the first row of the results. This does not return metadata like the other methods. Instead, it returns the object directly.
@@ -202,6 +216,8 @@ console.log(info1)
 */
 ```
 
+The object returned is the same as the [`.all()`](#all) method.
+
 ### `exec()`
 
 Executes one or more queries directly without prepared statements or parameters binding. The input can be one or multiple queries separated by \n.
@@ -223,94 +239,109 @@ console.log(result)
 This method can have poorer performance (prepared statements can be reused in some cases) and, more importantly, is less safe. Only use this method for maintenance and one-shot tasks (for example, migration jobs). The input can be one or multiple queries separated by \n.
 ::
 
-## Return Object
+## Database Migrations
 
-The methods [`.all()`](#all) and [`.batch()`](#batch) return an object that contains the results (if applicable), the success status and a meta object:
+Database migrations provide version control for your database schema. They track changes and ensure consistent schema evolution across all environments through incremental updates.
 
-```ts
-{
-  results: array | null, // [] if empty, or null if it does not apply
-  success: boolean, // true if the operation was successful, false otherwise
-  meta: {
-    duration: number, // duration of the operation in milliseconds
-    rows_read: number, // the number of rows read (scanned) by this query
-    rows_written: number // the number of rows written by this query
-  }
-}
-```
+### Automatic Application
 
-::callout
-Read more on [Cloudflare D1 documentation](https://developers.cloudflare.com/d1/build-databases/query-databases/).
-::
-
-## Migrations
-
-Database migrations are a system for managing incremental, version-controlled changes to database schemas that tracks modifications and ensures consistent database evolution across all environments.
-
-### Applying migrations
-
-Database migrations are automatically applied when:
-- Starting the development server with `npx nuxt dev` or [`npx nuxt dev --remote`](/docs/getting-started/remote-storage)
-- Locally previewing a build with [`npx nuxthub preview`](/changelog/nuxthub-preview)
-- Deploying via [CLI](/docs/getting-started/deploy#nuxthub-cli) or [Cloudflare Pages CI](/docs/getting-started/deploy#cloudflare-pages-ci) for projects linked to NuxtHub
+SQL migrations in `server/database/migrations/*.sql` now automatically apply when you:
+- Start the development server (`npx nuxt dev` or [`npx nuxt dev --remote`](/docs/getting-started/remote-storage))
+- Preview builds locally ([`npx nuxthub preview`](/changelog/nuxthub-preview))
+- Deploy via [`npx nuxthub deploy`](/docs/getting-started/deploy#nuxthub-cli) or [Cloudflare Pages CI](/docs/getting-started/deploy#cloudflare-pages-ci)
 
 ::tip
-Applied migrations are tracked within the `_hub_migrations` database table.
+All applied migrations are tracked in the `_hub_migrations` database table.
 ::
 
-### Create new migration
+### Creating Migrations
 
-You can create a new blank database migration file by running this command.
+Generate a new migration file using:
 
 ```bash [Terminal]
 npx nuxthub database migrations create <name>
 ```
 
 ::important
-The migration name can only include alphanumeric characters and `-` (spaces are converted to `-`).
+Migration names must only contain alphanumeric characters and `-` (spaces are converted to `-`).
 ::
 
-Migration files are created in the `server/database/migrations/` directory.
+Migration files are created in `server/database/migrations/`.
+
+```bash [Example]
+> npx nuxthub database migrations create create-todos
+✔ Created ./server/database/migrations/0001_create-todos.sql
+```
+
+After creation, add your SQL queries to modify the database schema.
+
 
 ::note{to="/docs/recipes/drizzle#npm-run-dbgenerate"}
 With [Drizzle ORM](/docs/recipes/drizzle), migrations are automatically created when you run `npx drizzle-kit generate`.
 ::
 
-### List applied and pending migrations
+### Checking Migration Status
 
-List migrations which are pending, and which have been applied to local/preview/production.
+View pending and applied migrations across environments:
 
 ```bash [Terminal]
-npx nuxthub database migrations list [--preview] [--production]
+# Local environment status
+npx nuxthub database migrations list
+
+# Preview environment status
+npx nuxthub database migrations list --preview
+
+# Production environment status
+npx nuxthub database migrations list --production
 ```
 
-By default it will show you applied and pending migrations for the local environment.
+```bash [Example output]
+> npx nuxthub database migrations list --production
+ℹ Connected to project atidone.
+ℹ Using https://todos.nuxt.dev to retrieve migrations.
+✔ Found 1 migration on atidone...
+✅ ./server/database/migrations/0001_create-todos.sql 10/25/2024, 2:43:32 PM
+🕒 ./server/database/migrations/0002_create-users.sql Pending
+```
 
-### Migrating from Drizzle ORM
+### Marking Migrations as Applied
 
-NuxtHub will attempt to rerun all migrations within `server/database/migrations/*.sql` since it is unaware they are already applied, as migrations previously applied with Drizzle ORM are stored within the `__drizzle_migrations` table.
-
-::note
-Make sure to remove the `server/plugins/migrations.ts` file if you were using Drizzle ORM as it is no longer needed.
-::
-
-Run the command `nuxthub database migrations mark-all-applied` on each environment to mark all existing migration files as applied.
+For databases with existing migrations, prevent NuxtHub from rerunning them by marking them as applied:
 
 ```bash [Terminal]
-# Apply migrations on local environment
+# Mark applied in local environment
 npx nuxthub database migrations mark-all-applied
-# Apply migrations on preview environment
+
+# Mark applied in preview environment
 npx nuxthub database migrations mark-all-applied --preview
-# Apply migrations on production environment
+
+# Mark applied in production environment
 npx nuxthub database migrations mark-all-applied --production
 ```
 
 ::collapsible{name="self-hosting docs"}
-
-If you are [self-hosting](/docs/getting-started/deploy#self-hosted) NuxtHub, set the `NUXT_HUB_PROJECT_URL` and `NUXT_HUB_PROJECT_SECRET_KEY` environment variable before running the command. :br :br
+When [self-hosting](/docs/getting-started/deploy#self-hosted), set these environment variables before running commands: :br :br
 
 ```bash [Terminal]
 NUXT_HUB_PROJECT_URL=<url> NUXT_HUB_PROJECT_SECRET_KEY=<secret> nuxthub database migrations mark-all-applied
 ```
-
 ::
+
+### Migrating from Drizzle ORM
+
+Since NuxtHub doesn't recognize previously applied Drizzle ORM migrations (stored in `__drizzle_migrations`), it will attempt to rerun all migrations in `server/database/migrations/*.sql`. To prevent this:
+
+1. Mark existing migrations as applied in each environment:
+
+    ```bash [Terminal]
+    # Local environment
+    npx nuxthub database migrations mark-all-applied
+
+    # Preview environment
+    npx nuxthub database migrations mark-all-applied --preview
+
+    # Production environment
+    npx nuxthub database migrations mark-all-applied --production
+    ```
+
+2. Remove `server/plugins/database.ts` as it's no longer needed.
