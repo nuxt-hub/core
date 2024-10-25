@@ -245,7 +245,7 @@ Database migrations provide version control for your database schema. They track
 
 ### Automatic Application
 
-SQL migrations in `server/database/migrations/*.sql` now automatically apply when you:
+SQL migrations in `server/database/migrations/*.sql` are automatically applied when you:
 - Start the development server (`npx nuxt dev` or [`npx nuxt dev --remote`](/docs/getting-started/remote-storage))
 - Preview builds locally ([`npx nuxthub preview`](/changelog/nuxthub-preview))
 - Deploy via [`npx nuxthub deploy`](/docs/getting-started/deploy#nuxthub-cli) or [Cloudflare Pages CI](/docs/getting-started/deploy#cloudflare-pages-ci)
