@@ -65,7 +65,7 @@ export async function fetchRemoteMigrations(hub: HubConfig) {
     if (error.response?._data?.message.includes('no such table')) {
       return []
     }
-    throw error.message
+    throw error
   })
   return res[0]?.results ?? []
 }
