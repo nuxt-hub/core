@@ -16,6 +16,6 @@ export default defineNitroPlugin(async () => {
       await applyMigrations()
     }
 
-    await hubHooks.callHookParallel('migrations:done')
+    await hubHooks.callHookParallel('database:migrations:done')
   })
 })
