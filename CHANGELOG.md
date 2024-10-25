@@ -1,6 +1,32 @@
 # Changelog
 
 
+## v0.8.0
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.7.37...v0.8.0)
+
+### 🚀 Enhancements
+
+- ⚠️  Automatic database migrations ([#333](https://github.com/nuxt-hub/core/pull/333))
+
+### 📖 Documentation
+
+- 6K+ ([bd47e98](https://github.com/nuxt-hub/core/commit/bd47e98))
+- It's 26th today ([f139730](https://github.com/nuxt-hub/core/commit/f139730))
+
+### 🏡 Chore
+
+- Update deps ([32ea9bb](https://github.com/nuxt-hub/core/commit/32ea9bb))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Automatic database migrations ([#333](https://github.com/nuxt-hub/core/pull/333))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+
 ## v0.7.37
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.36...v0.7.37)
