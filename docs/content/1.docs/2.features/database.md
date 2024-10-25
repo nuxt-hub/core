@@ -249,12 +249,12 @@ Database migrations are a system for managing incremental, version-controlled ch
 
 ### Applying migrations
 
-Database migrations are automatically applied during:
+Database migrations are automatically applied when:
+- Starting the development server with `npx nuxt dev` or [`npx nuxt dev --remote`](/docs/getting-started/remote-storage)
+- Locally previewing a build with [`npx nuxthub preview`](/changelog/nuxthub-preview)
 - Deploying via [CLI](/docs/getting-started/deploy#nuxthub-cli) or [Cloudflare Pages CI](/docs/getting-started/deploy#cloudflare-pages-ci) for projects linked to NuxtHub
-- Starting the development server `npm run dev [--remote]`
-- Locally previewing a build with [nuxthub preview](/changelog/nuxthub-preview)
 
-::callout
+::tip
 Applied migrations are tracked within the `_hub_migrations` database table.
 ::
 
@@ -266,11 +266,15 @@ You can create a new blank database migration file by running this command.
 npx nuxthub database migrations create <name>
 ```
 
-::note
-The migration name can only include alphanumeric characters and `-`. Spaces are converted into `-`.
+::important
+The migration name can only include alphanumeric characters and `-` (spaces are converted to `-`).
 ::
 
 Migration files are created in the `server/database/migrations/` directory.
+
+::note{to="/docs/recipes/drizzle#npm-run-dbgenerate"}
+With [Drizzle ORM](/docs/recipes/drizzle), migrations are automatically created when you run `npx drizzle-kit generate`.
+::
 
 ### List applied and pending migrations
 
@@ -286,20 +290,27 @@ By default it will show you applied and pending migrations for the local environ
 
 NuxtHub will attempt to rerun all migrations within `server/database/migrations/*.sql` since it is unaware they are already applied, as migrations previously applied with Drizzle ORM are stored within the `__drizzle_migrations` table.
 
+::note
+Make sure to remove the `server/plugins/migrations.ts` file if you were using Drizzle ORM as it is no longer needed.
+::
+
 Run the command `nuxthub database migrations mark-all-applied` on each environment to mark all existing migration files as applied.
 
 ```bash [Terminal]
-nuxthub database migrations mark-all-applied --local|preview|production
+# Apply migrations on local environment
+npx nuxthub database migrations mark-all-applied
+# Apply migrations on preview environment
+npx nuxthub database migrations mark-all-applied --preview
+# Apply migrations on production environment
+npx nuxthub database migrations mark-all-applied --production
 ```
-
-By default it will mark all migrations as applied on the local environment.
 
 ::collapsible{name="self-hosting docs"}
 
-If you are [self-hosting](/docs/getting-started/deploy#self-hosted) NuxtHub, set the `NUXT_HUB_PROJECT_SECRET_KEY` environment variable before running the command. <br><br>
+If you are [self-hosting](/docs/getting-started/deploy#self-hosted) NuxtHub, set the `NUXT_HUB_PROJECT_URL` and `NUXT_HUB_PROJECT_SECRET_KEY` environment variable before running the command. :br :br
 
 ```bash [Terminal]
-NUXT_HUB_PROJECT_SECRET_KEY=<secret> nuxthub database migrations mark-all-applied --local|preview|production
+NUXT_HUB_PROJECT_URL=<url> NUXT_HUB_PROJECT_SECRET_KEY=<secret> nuxthub database migrations mark-all-applied
 ```
 
 ::
