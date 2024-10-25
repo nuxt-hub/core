@@ -34,6 +34,8 @@ SQL migrations in `server/database/migrations/*.sql` are automatically applied w
 
 Starting now, when you clone any of [our templates](/templates) with a database, all migrations apply automatically!
 
+[→ Deploy the Todo App template](https://admin.hub.nuxt.com/new?template=atidone).
+
 ::note{to="/docs/features/database#migrations"}
 Learn more about database migrations in our **full documentation**.
 ::
