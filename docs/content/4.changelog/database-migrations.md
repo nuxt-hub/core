@@ -18,7 +18,7 @@ authors:
 ---
 
 ::tip
-This feature is available on both [free and pro plans](/pricing) and in [`@nuxthub/core >= v0.8.0`](https://github.com/nuxt-hub/core/releases).
+This feature is available on both [free and pro plans](/pricing) starting with [`@nuxthub/core >= v0.8.0`](https://github.com/nuxt-hub/core/releases).
 ::
 
 We're excited to introduce automatic [database migrations](/docs/features/database#migrations) in NuxtHub.

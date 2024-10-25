@@ -1,74 +1,71 @@
-import consola from 'consola'
+import log from 'consola'
 import { $fetch } from 'ofetch'
 import type { HubConfig } from '../../../../../features'
-import { appliedMigrationsQuery, createMigrationsTableQuery, getMigrationFiles, useMigrationsStorage } from './helpers'
+import { AppliedMigrationsQuery, CreateMigrationsTableQuery, getMigrationFiles, useMigrationsStorage } from './helpers'
 
-const log = consola.withTag('nuxt:hub')
-
-export const applyRemoteMigrations = async (hub: HubConfig) => {
-  const srcStorage = useMigrationsStorage()
-
-  await createRemoteMigrationsTable(hub)
-
-  log.info('Checking for pending migrations')
-  const appliedMigrations = await getRemoteAppliedMigrations(hub).catch((error) => {
-    log.error(`Could not retrieve migrations on \`${hub.env}\``)
-    if (error) log.error(error)
-  })
-  if (!appliedMigrations) process.exit(1)
-  if (!appliedMigrations.length) log.warn(`No applied migrations on \`${hub.env}\``)
-
-  const localMigrations = (await getMigrationFiles()).map(fileName => fileName.replace('.sql', ''))
+export async function applyRemoteMigrations(hub: HubConfig) {
+  const srcStorage = useMigrationsStorage(hub)
+  let appliedMigrations = []
+  try {
+    appliedMigrations = await fetchRemoteMigrations(hub)
+  } catch (error: any) {
+    log.error(`Could not fetch applied migrations: ${error.response?._data?.message}`)
+    return false
+  }
+  const localMigrations = (await getMigrationFiles(hub)).map(fileName => fileName.replace('.sql', ''))
   const pendingMigrations = localMigrations.filter(localName => !appliedMigrations.find(({ name }) => name === localName))
-  if (!pendingMigrations.length) return log.info('No pending migrations to apply')
 
-  log.info('Applying migrations')
+  if (!pendingMigrations.length) {
+    log.success('Database migrations up to date')
+    return true
+  }
+
   for (const migration of pendingMigrations) {
-    const migrationFile = await srcStorage.getItemRaw(`${migration}.sql`)
-    let query = migrationFile.toString()
-
-    if (query.at(-1) !== ';') query += ';' // ensure previous statement ended before running next query
+    let query = await srcStorage.getItem<string>(`${migration}.sql`)
+    if (!query) continue
+    if (query.replace(/\s$/, '').at(-1) !== ';') query += ';' // ensure previous statement ended before running next query
     query += `
+      ${CreateMigrationsTableQuery}
       INSERT INTO _hub_migrations (name) values ('${migration}');
     `
 
     try {
-      await useRemoteDatabaseQuery(hub, query)
+      await queryRemoteDatabase(hub, query)
     } catch (error: any) {
-      log.error(`Failed to apply migration \`${migration}\``)
-      if (error && error.response) log.error(error.response?._data?.message || error)
-      break
+      log.error(`Failed to apply migration \`./server/database/migrations/${migration}.sql\`: ${error.response?._data?.message}`)
+      if (error.response?._data?.message?.includes('already exists')) {
+        log.info(`To mark all migrations as already applied, run: \`npx nuxthub database migrations mark-all-applied --${hub.env}\``)
+      }
+      return false
     }
 
-    log.success(`Applied migration \`${migration}\``)
+    log.success(`Database migration \`./server/database/migrations/${migration}.sql\` applied`)
+    log.success('Database migrations up to date')
+    return true
   }
 }
 
-export const useRemoteDatabaseQuery = async <T>(hub: HubConfig, query: string) => {
+export async function queryRemoteDatabase<T>(hub: HubConfig, query: string) {
   return await $fetch<Array<{ results: Array<T>, success: boolean, meta: object }>>(`/api/projects/${hub.projectKey}/database/${hub.env}/query`, {
     baseURL: hub.url,
     method: 'POST',
     headers: {
       authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN || hub.userToken}`
     },
-    body: { query, mode: 'raw' }
-  }).catch((error) => {
-    if (error.response?.status === 400) {
-      throw `NuxtHub database is not enabled on \`${hub.env}\`. Deploy a new version with \`hub.database\` enabled and try again.`
-    }
-    throw error
+    body: { query }
   })
 }
 
-export const createRemoteMigrationsTable = async (hub: HubConfig) => {
-  await useRemoteDatabaseQuery(hub, createMigrationsTableQuery)
+export async function createRemoteMigrationsTable(hub: HubConfig) {
+  await queryRemoteDatabase(hub, CreateMigrationsTableQuery)
 }
 
-export const getRemoteAppliedMigrations = async (hub: HubConfig) => {
-  return (await useRemoteDatabaseQuery<{ id: number, name: string, applied_at: string }>(hub, appliedMigrationsQuery).catch((error) => {
-    if (error.response?.status === 500 && error.response?._data?.message.includes('no such table')) {
+export async function fetchRemoteMigrations(hub: HubConfig) {
+  const res = await queryRemoteDatabase<{ id: number, name: string, applied_at: string }>(hub, AppliedMigrationsQuery).catch((error) => {
+    if (error.response?._data?.message.includes('no such table')) {
       return []
     }
-    throw ''
-  }))?.[0]?.results ?? []
+    throw error.message
+  })
+  return res[0]?.results ?? []
 }

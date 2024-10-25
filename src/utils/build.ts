@@ -78,8 +78,6 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
 
     nuxt.hook('nitro:init', async (nitro) => {
       nitro.hooks.hook('compiled', async () => {
-        await applyRemoteMigrations(hub)
-
         await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY}/build/${process.env.NUXT_HUB_ENV}/done`, {
           baseURL: hub.url,
           method: 'POST',
@@ -93,11 +91,16 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
           if (e.response?._data?.message) {
             log.error(e.response._data.message)
           } else {
-            log.error('Failed run build:done hook on NuxtHub.', e)
+            log.error('Failed run compiled:done hook on NuxtHub.', e)
           }
 
           process.exit(1)
         })
+        // Apply migrations
+        const migrationsApplied = await applyRemoteMigrations(hub)
+        if (!migrationsApplied) {
+          process.exit(1)
+        }
       })
     })
   } else {

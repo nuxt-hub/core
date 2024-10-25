@@ -1,29 +1,24 @@
 import log from 'consola'
 import { hubDatabase } from '../database'
-import { appliedMigrationsQuery, createMigrationsTableQuery, getMigrationFiles, splitSqlQueries, useMigrationsStorage } from './helpers'
-import { useRuntimeConfig } from '#imports'
+import type { HubConfig } from '../../../../../features'
+import { AppliedMigrationsQuery, CreateMigrationsTableQuery, getMigrationFiles, splitSqlQueries, useMigrationsStorage } from './helpers'
 
 // Apply migrations during local development and self-hosted remote development.
 // See src/utils/migrations/remote.ts for applying migrations on remote development (linked projects) and Pages CI deployments
-export const applyMigrations = async () => {
-  const srcStorage = useMigrationsStorage()
-  const hub = useRuntimeConfig().hub
-  const env = hub.remote ? hub.env : 'local'
-
+export async function applyMigrations(hub: HubConfig) {
+  const migrationsStorage = useMigrationsStorage(hub)
   const db = hubDatabase()
-  await db.prepare(createMigrationsTableQuery).run() // create migrations table
 
-  const appliedMigrations = (await db.prepare(appliedMigrationsQuery).all()).results
-  if (!appliedMigrations.length) log.warn(`No applied migrations on \`${env}\``)
-
-  const localMigrations = (await getMigrationFiles()).map(fileName => fileName.replace('.sql', ''))
+  const appliedMigrations = (await db.prepare(AppliedMigrationsQuery).all()).results
+  const localMigrations = (await getMigrationFiles(hub)).map(fileName => fileName.replace('.sql', ''))
   const pendingMigrations = localMigrations.filter(localName => !appliedMigrations.find(({ name }) => name === localName))
-  if (!pendingMigrations.length) return log.info('No pending migrations to apply')
+  if (!pendingMigrations.length) return log.success('Database migrations up to date')
 
   for (const migration of pendingMigrations) {
-    const migrationFile = await srcStorage.getItemRaw(`${migration}.sql`)
-    let query = migrationFile.toString()
+    let query = await migrationsStorage.getItem<string>(`${migration}.sql`)
+    if (!query) continue
     query += `
+      ${CreateMigrationsTableQuery}
       INSERT INTO _hub_migrations (name) values ('${migration}');
     `
     const queries = splitSqlQueries(query)
@@ -31,10 +26,13 @@ export const applyMigrations = async () => {
     try {
       await db.batch(queries.map(q => db.prepare(q)))
     } catch (error: any) {
-      log.error(`Failed to apply migration \`${migration}\``, error?.message || error, { query })
+      log.error(`Failed to apply migration \`./server/database/migrations/${migration}.sql\`\n`, error?.message)
+      if (error?.message?.includes('already exists')) {
+        log.info('If your database already contains the migration, run `npx nuxthub database migrations mark-all-applied` to mark all migrations as applied.')
+      }
       break
     }
 
-    log.success(`Applied migration \`${migration}\``)
+    log.success(`Database migration \`./server/database/migrations/${migration}.sql\` applied`)
   }
 }

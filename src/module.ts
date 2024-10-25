@@ -108,7 +108,7 @@ export default defineNuxtModule<ModuleOptions>({
     hub.blob && setupBlob(nuxt)
     hub.browser && await setupBrowser(nuxt)
     hub.cache && await setupCache(nuxt)
-    hub.database && setupDatabase(nuxt)
+    hub.database && setupDatabase(nuxt, hub as HubConfig)
     hub.kv && setupKV(nuxt)
     Object.keys(hub.vectorize!).length && setupVectorize(nuxt, hub as HubConfig)
 

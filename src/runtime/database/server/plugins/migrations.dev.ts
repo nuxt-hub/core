@@ -13,7 +13,7 @@ export default defineNitroPlugin(async () => {
     if (hub.remote && hub.projectKey) { // linked to a NuxtHub project
       await applyRemoteMigrations(hub)
     } else { // local dev & self hosted
-      await applyMigrations()
+      await applyMigrations(hub)
     }
 
     await hubHooks.callHookParallel('database:migrations:done')
