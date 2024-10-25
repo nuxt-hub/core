@@ -18,13 +18,13 @@ export const getMigrationFiles = async () => {
   return fileKeys.filter(file => file.endsWith('.sql'))
 }
 
-export const createMigrationsTableQuery = `CREATE TABLE IF NOT EXISTS hub_migrations (
+export const createMigrationsTableQuery = `CREATE TABLE IF NOT EXISTS _hub_migrations (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
   name       TEXT UNIQUE,
   applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );`
 
-export const appliedMigrationsQuery = 'select "id", "name", "applied_at" from "hub_migrations" order by "hub_migrations"."id"'
+export const appliedMigrationsQuery = 'select "id", "name", "applied_at" from "_hub_migrations" order by "_hub_migrations"."id"'
 
 export function splitSqlQueries(sqlFileContent: string): string[] {
   // Remove all inline comments (-- ...)

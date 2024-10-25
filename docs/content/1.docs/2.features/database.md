@@ -255,7 +255,7 @@ Database migrations are automatically applied during:
 - Locally previewing a build with [nuxthub preview](/changelog/nuxthub-preview)
 
 ::callout
-Applied migrations are tracked within the `hub_migrations` database table.
+Applied migrations are tracked within the `_hub_migrations` database table.
 ::
 
 ### Create new migration

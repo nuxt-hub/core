@@ -24,7 +24,7 @@ export const applyMigrations = async () => {
     const migrationFile = await srcStorage.getItemRaw(`${migration}.sql`)
     let query = migrationFile.toString()
     query += `
-      INSERT INTO hub_migrations (name) values ('${migration}');
+      INSERT INTO _hub_migrations (name) values ('${migration}');
     `
     const queries = splitSqlQueries(query)
 
