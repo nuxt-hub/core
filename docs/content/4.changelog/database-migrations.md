@@ -1,7 +1,7 @@
 ---
 title: Automatic Database Migrations
 description: "Database migrations now automatically apply during development and deployment."
-date: 2024-10-25
+date: 2024-10-26
 image: '/images/changelog/database-migrations.png'
 category: Core
 authors:
