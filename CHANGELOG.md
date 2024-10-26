@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v0.8.1
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.0...v0.8.1)
+
+### 🩹 Fixes
+
+- **database:** Create migrations table in dev ([#342](https://github.com/nuxt-hub/core/pull/342))
+
+### 📖 Documentation
+
+- Improvements ([7806397](https://github.com/nuxt-hub/core/commit/7806397))
+- Add example for the Todo App ([07adcd4](https://github.com/nuxt-hub/core/commit/07adcd4))
+- Add example ([080708a](https://github.com/nuxt-hub/core/commit/080708a))
+- Fix migrations hash ([#341](https://github.com/nuxt-hub/core/pull/341))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Estéban <e.soubiran25@gmail.com>
+
 ## v0.8.0
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.7.37...v0.8.0)
