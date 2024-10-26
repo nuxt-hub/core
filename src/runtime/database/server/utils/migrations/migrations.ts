@@ -9,6 +9,7 @@ export async function applyMigrations(hub: HubConfig) {
   const migrationsStorage = useMigrationsStorage(hub)
   const db = hubDatabase()
 
+  await db.prepare(CreateMigrationsTableQuery).all()
   const appliedMigrations = (await db.prepare(AppliedMigrationsQuery).all()).results
   const localMigrations = (await getMigrationFiles(hub)).map(fileName => fileName.replace('.sql', ''))
   const pendingMigrations = localMigrations.filter(localName => !appliedMigrations.find(({ name }) => name === localName))
@@ -18,7 +19,6 @@ export async function applyMigrations(hub: HubConfig) {
     let query = await migrationsStorage.getItem<string>(`${migration}.sql`)
     if (!query) continue
     query += `
-      ${CreateMigrationsTableQuery}
       INSERT INTO _hub_migrations (name) values ('${migration}');
     `
     const queries = splitSqlQueries(query)
