@@ -328,13 +328,14 @@ export function hubBlob(): HubBlob {
  *
  * @see https://hub.nuxt.com/docs/features/blob
  */
-export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
+export function proxyHubBlob(projectUrl: string, secretKey?: string, headers?: HeadersInit): HubBlob {
   requireNuxtHubFeature('blob')
 
   const blobAPI = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/blob'),
     headers: {
-      Authorization: `Bearer ${secretKey}`
+      Authorization: `Bearer ${secretKey}`,
+      ...headers
     }
   })
 

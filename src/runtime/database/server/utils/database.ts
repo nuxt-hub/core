@@ -51,14 +51,15 @@ export function hubDatabase(): D1Database {
  *
  * @see https://hub.nuxt.com/docs/features/database
  */
-export function proxyHubDatabase(projectUrl: string, secretKey?: string): D1Database {
+export function proxyHubDatabase(projectUrl: string, secretKey?: string, headers?: HeadersInit): D1Database {
   requireNuxtHubFeature('database')
 
   const d1API = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/database'),
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${secretKey}`
+      Authorization: `Bearer ${secretKey}`,
+      ...headers
     }
   })
   return {

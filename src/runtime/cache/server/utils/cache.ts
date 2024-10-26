@@ -14,13 +14,14 @@ import { requireNuxtHubFeature } from '../../../utils/features'
  * ```
  *
  */
-export function proxyHubCache(projectUrl: string, secretKey?: string) {
+export function proxyHubCache(projectUrl: string, secretKey?: string, headers?: HeadersInit) {
   requireNuxtHubFeature('cache')
 
   const cacheAPI = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/cache'),
     headers: {
-      Authorization: `Bearer ${secretKey}`
+      Authorization: `Bearer ${secretKey}`,
+      ...headers
     }
   })
 

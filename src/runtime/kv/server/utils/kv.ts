@@ -56,14 +56,15 @@ export function hubKV(): HubKV {
  *
  * @see https://hub.nuxt.com/docs/features/kv
  */
-export function proxyHubKV(projectUrl: string, secretKey?: string): HubKV {
+export function proxyHubKV(projectUrl: string, secretKey?: string, headers?: HeadersInit): HubKV {
   requireNuxtHubFeature('kv')
 
   const storage = createStorage({
     driver: httpDriver({
       base: joinURL(projectUrl, '/api/_hub/kv/'),
       headers: {
-        Authorization: `Bearer ${secretKey}`
+        Authorization: `Bearer ${secretKey}`,
+        ...headers
       }
     })
   })

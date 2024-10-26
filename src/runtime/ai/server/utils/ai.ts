@@ -84,14 +84,15 @@ export function hubAI(): Ai {
  *
  * @see https://developers.cloudflare.com/workers-ai/configuration/bindings/#methods
  */
-export function proxyHubAI(projectUrl: string, secretKey?: string): Ai {
+export function proxyHubAI(projectUrl: string, secretKey?: string, headers?: HeadersInit): Ai {
   requireNuxtHubFeature('ai')
 
   const aiAPI = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/ai'),
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${secretKey}`
+      Authorization: `Bearer ${secretKey}`,
+      ...headers
     }
   })
   return {
