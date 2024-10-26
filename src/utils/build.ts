@@ -96,10 +96,12 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
 
           process.exit(1)
         })
-        // Apply migrations
-        const migrationsApplied = await applyRemoteMigrations(hub)
-        if (!migrationsApplied) {
-          process.exit(1)
+        // Apply migrations if database is enabled
+        if (hub.database) {
+          const migrationsApplied = await applyRemoteMigrations(hub)
+          if (!migrationsApplied) {
+            process.exit(1)
+          }
         }
       })
     })
