@@ -345,3 +345,5 @@ Since NuxtHub doesn't recognize previously applied Drizzle ORM migrations (store
     ```
 
 2. Remove `server/plugins/database.ts` as it's no longer needed.
+
+That's it! You can keep using `npx drizzle-kit generate` to generate migrations when updating your Drizzle ORM schema.
