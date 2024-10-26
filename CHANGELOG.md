@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.8.2
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.1...v0.8.2)
+
+### 🩹 Fixes
+
+- Only apply migrations if database is enabled ([#343](https://github.com/nuxt-hub/core/pull/343))
+
+### 📖 Documentation
+
+- Improvements ([e0e493d](https://github.com/nuxt-hub/core/commit/e0e493d))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.8.1
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.0...v0.8.1)
