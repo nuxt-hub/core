@@ -155,4 +155,20 @@ export interface ModuleOptions {
       [key: string]: string
     }
   }
+  /**
+   * Cloudflare Access authentication for remote storage.
+   * @see https://hub.nuxt.com/recipes/cloudflare-access
+   */
+  cloudflareAccess?: {
+    /**
+     * The client ID for Cloudflare Access.
+     * @default process.env.NUXT_HUB_CLOUDFLARE_ACCESS_CLIENT_ID
+     */
+    clientId?: string
+    /**
+     * The client secret for Cloudflare Access.
+     * @default process.env.NUXT_HUB_CLOUDFLARE_ACCESS_CLIENT_SECRET
+     */
+    clientSecret?: string
+  }
 }

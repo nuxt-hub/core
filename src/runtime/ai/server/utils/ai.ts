@@ -5,6 +5,7 @@ import type { H3Error } from 'h3'
 import type { Ai } from '@cloudflare/workers-types/experimental'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { useRuntimeConfig } from '#imports'
+import { getCloudflareAccessHeaders } from '~/src/runtime/utils/cloudflareAccess'
 
 let _ai: Ai
 
@@ -30,7 +31,8 @@ export function hubAI(): Ai {
   // @ts-expect-error globalThis.__env__ is not defined
   const binding = process.env.AI || globalThis.__env__?.AI || globalThis.AI
   if (hub.remote && hub.projectUrl && !binding) {
-    _ai = proxyHubAI(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
+    _ai = proxyHubAI(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
     return _ai
   }
   if (binding) {

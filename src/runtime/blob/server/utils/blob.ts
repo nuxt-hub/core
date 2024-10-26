@@ -12,6 +12,7 @@ import type { BlobType, FileSizeUnit, BlobUploadedPart, BlobListResult, BlobMult
 import { streamToArrayBuffer } from '../../../utils/stream'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { useRuntimeConfig } from '#imports'
+import { getCloudflareAccessHeaders } from '~/src/runtime/utils/cloudflareAccess'
 
 const _r2_buckets: Record<string, R2Bucket> = {}
 
@@ -154,7 +155,8 @@ export function hubBlob(): HubBlob {
   const hub = useRuntimeConfig().hub
   const binding = getBlobBinding()
   if (hub.remote && hub.projectUrl && !binding) {
-    return proxyHubBlob(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
+    return proxyHubBlob(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
   }
   const bucket = _useBucket()
 

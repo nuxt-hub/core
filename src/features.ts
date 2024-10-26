@@ -19,6 +19,10 @@ export interface HubConfig {
   userToken?: string
   env?: string
   version?: string
+  cloudflareAccess?: {
+    clientId: string
+    clientSecret: string
+  }
 
   ai?: boolean
   analytics?: boolean
@@ -310,7 +314,11 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
   const remoteManifest = hub.remoteManifest = await $fetch<HubConfig['remoteManifest']>('/api/_hub/manifest', {
     baseURL: hub.projectUrl as string,
     headers: {
-      authorization: `Bearer ${hub.projectSecretKey || hub.userToken}`
+      authorization: `Bearer ${hub.projectSecretKey || hub.userToken}`,
+      ...(hub.cloudflareAccess?.clientId && hub.cloudflareAccess?.clientSecret && {
+        'CF-Access-Client-Id': hub.cloudflareAccess?.clientId,
+        'CF-Access-Client-Secret': hub.cloudflareAccess?.clientSecret
+      })
     }
   })
     .catch(async (err) => {

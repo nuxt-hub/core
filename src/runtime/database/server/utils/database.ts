@@ -5,6 +5,7 @@ import type { H3Error } from 'h3'
 import type { D1Database } from '@nuxthub/core'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { useRuntimeConfig } from '#imports'
+import { getCloudflareAccessHeaders } from '~/src/runtime/utils/cloudflareAccess'
 
 let _db: D1Database
 
@@ -28,7 +29,8 @@ export function hubDatabase(): D1Database {
   // @ts-expect-error globalThis.__env__ is not defined
   const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
   if (hub.remote && hub.projectUrl && !binding) {
-    _db = proxyHubDatabase(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
+    _db = proxyHubDatabase(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
     return _db
   }
   if (binding) {

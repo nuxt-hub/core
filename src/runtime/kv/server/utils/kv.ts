@@ -6,6 +6,7 @@ import { createError } from 'h3'
 import type { HubKV } from '@nuxthub/core'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { useRuntimeConfig } from '#imports'
+import { getCloudflareAccessHeaders } from '~/src/runtime/utils/cloudflareAccess'
 
 let _kv: HubKV
 
@@ -29,7 +30,8 @@ export function hubKV(): HubKV {
   // @ts-expect-error globalThis.__env__ is not defined
   const binding = process.env.KV || globalThis.__env__?.KV || globalThis.KV
   if (hub.remote && hub.projectUrl && !binding) {
-    return proxyHubKV(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
+    return proxyHubKV(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
   }
   if (binding) {
     const storage = createStorage({

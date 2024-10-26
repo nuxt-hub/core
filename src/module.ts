@@ -69,6 +69,11 @@ export default defineNuxtModule<ModuleOptions>({
         hyperdrive: {},
         // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
         compatibilityFlags: nuxt.options.nitro.cloudflare?.wrangler?.compatibility_flags
+      },
+      // Cloudflare Access
+      cloudflareAccess: {
+        clientId: process.env.NUXT_HUB_CLOUDFLARE_ACCESS_CLIENT_ID || null,
+        clientSecret: process.env.NUXT_HUB_CLOUDFLARE_ACCESS_CLIENT_SECRET || null
       }
     })
     runtimeConfig.hub = hub

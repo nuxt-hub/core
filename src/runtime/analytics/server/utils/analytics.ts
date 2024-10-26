@@ -4,6 +4,7 @@ import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { useRuntimeConfig } from '#imports'
+import { getCloudflareAccessHeaders } from '~/src/runtime/utils/cloudflareAccess'
 
 const _datasets: Record<string, AnalyticsEngineDataset> = {}
 
@@ -45,7 +46,8 @@ export function hubAnalytics() {
   const hub = useRuntimeConfig().hub
   const binding = getAnalyticsBinding()
   if (hub.remote && hub.projectUrl && !binding) {
-    return proxyHubAnalytics(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
+    return proxyHubAnalytics(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
   }
   const dataset = _useDataset()
 

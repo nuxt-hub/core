@@ -6,6 +6,7 @@ import type { RuntimeConfig } from 'nuxt/schema'
 import type { Vectorize } from '../../../../types/vectorize'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { useRuntimeConfig } from '#imports'
+import { getCloudflareAccessHeaders } from '~/src/runtime/utils/cloudflareAccess'
 
 const _vectorize: Record<string, Vectorize> = {}
 
@@ -42,7 +43,8 @@ export function hubVectorize(index: VectorizeIndexes): Vectorize {
   // @ts-expect-error globalThis.__env__ is not defined
   const binding = process.env[bindingName] || globalThis.__env__?.[bindingName] || globalThis[bindingName]
   if (hub.remote && hub.projectUrl && !binding) {
-    _vectorize[index] = proxyHubVectorize(index, hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
+    _vectorize[index] = proxyHubVectorize(index, hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
     return _vectorize[index]
   }
   if (binding) {
