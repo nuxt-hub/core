@@ -21,7 +21,7 @@ authors:
 This feature is available on both [free and pro plans](/pricing) starting with [`@nuxthub/core >= v0.8.0`](https://github.com/nuxt-hub/core/releases).
 ::
 
-We're excited to introduce automatic [database migrations](/docs/features/database#migrations) in NuxtHub.
+We're excited to introduce automatic [database migrations](/docs/features/database#database-migrations) in NuxtHub.
 
 :nuxt-img{src="/images/changelog/database-migrations.png" alt="Automatic Database Migrations" width="915" height="515"}
 
@@ -38,7 +38,7 @@ Starting now, when you clone any of [our templates](/templates) with a database,
 
 :nuxt-img{src="/images/changelog/database-migration-on-deploy.png" alt="Database Migrations applied during deployment" width="915" height="515"}
 
-::note{to="/docs/features/database#migrations"}
+::note{to="/docs/features/database#database-migrations"}
 Learn more about database migrations in our **full documentation**.
 ::
 
