@@ -17,9 +17,6 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true
   },
-  colorMode: {
-    preference: 'dark'
-  },
   routeRules: {
     '/': { prerender: true },
     '/api/search.json': { prerender: true },
