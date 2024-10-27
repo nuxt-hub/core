@@ -36,7 +36,7 @@ export default eventHandler(async (event) => {
         returnValues: z.boolean().optional(),
         returnMetadata: z.union([z.literal('none'), z.literal('indexed'), z.literal('all')]).optional(),
         filter: z.record(z.string(), z.any()).optional()
-      })
+      }).optional()
     }).parse)
     return vectorize.query(query, params)
   }
