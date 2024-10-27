@@ -3,7 +3,7 @@ import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import type { H3Error } from 'h3'
 import type { RuntimeConfig } from 'nuxt/schema'
-import type { Vectorize } from '../../../../types/vectorize'
+import type { Vectorize } from '@nuxthub/core'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { useRuntimeConfig } from '#imports'
 
