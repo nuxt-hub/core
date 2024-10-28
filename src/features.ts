@@ -8,6 +8,7 @@ import { joinURL } from 'ufo'
 import { defu } from 'defu'
 import { $fetch } from 'ofetch'
 import { addDevToolsCustomTabs } from './utils/devtools'
+import { getCloudflareAccessHeaders } from './runtime/utils/cloudflareAccess'
 
 const log = logger.withTag('nuxt:hub')
 const { resolve, resolvePath } = createResolver(import.meta.url)
@@ -337,10 +338,7 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
     baseURL: hub.projectUrl as string,
     headers: {
       authorization: `Bearer ${hub.projectSecretKey || hub.userToken}`,
-      ...(hub.cloudflareAccess?.clientId && hub.cloudflareAccess?.clientSecret && {
-        'CF-Access-Client-Id': hub.cloudflareAccess?.clientId,
-        'CF-Access-Client-Secret': hub.cloudflareAccess?.clientSecret
-      })
+      ...getCloudflareAccessHeaders(hub.cloudflareAccess)
     }
   })
     .catch(async (err) => {
