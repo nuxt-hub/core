@@ -1,9 +1,8 @@
-import { eventHandler, readValidatedBody, sendNoContent } from 'h3'
+import { eventHandler, readValidatedBody, sendNoContent, getHeader } from 'h3'
 import { z } from 'zod'
 import { requireNuxtHubAuthorization } from '../../../../../utils/auth'
 import { requireNuxtHubFeature } from '../../../../../utils/features'
-// @ts-expect-error missing type
-import { useStorage } from '#imports'
+import { useStorage, useRuntimeConfig } from '#imports'
 
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
@@ -14,11 +13,22 @@ export default eventHandler(async (event) => {
   }).parse)
 
   const storage = useStorage('cache')
-  // delete with batch of 25 keys
-  do {
-    const keysToDelete = keys.splice(0, 25)
-    await Promise.all(keysToDelete.map(key => storage.removeItem(key)))
-  } while (keys.length)
-
+  const hub = useRuntimeConfig(event).hub
+  if (import.meta.dev) {
+    // delete with batch of 100 keys
+    do {
+      const keysToDelete = keys.splice(0, 100)
+      await Promise.all(keysToDelete.map(storage.removeItem))
+    } while (keys.length)
+  } else {
+    await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY || hub.projectKey}/cache/${process.env.NUXT_HUB_ENV || hub.env}/batch-delete`, {
+      baseURL: process.env.NUXT_HUB_URL || hub.url,
+      method: 'POST',
+      body: { keys },
+      headers: {
+        authorization: getHeader(event, 'authorization')
+      }
+    })
+  }
   return sendNoContent(event)
 })

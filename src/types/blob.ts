@@ -1,4 +1,4 @@
-import type { ReadableStream } from '@cloudflare/workers-types/experimental'
+import type { ReadableStream, R2HTTPMetadata } from '@cloudflare/workers-types/experimental'
 import type { MimeType } from '@uploadthing/mime-types'
 
 // Credits from shared utils of https://github.com/pingdotgg/uploadthing
@@ -22,13 +22,21 @@ export interface BlobObject {
    */
   size: number
   /**
+   * The blob's etag, in quotes so as to be returned as a header.
+   */
+  httpEtag: string
+  /**
    * The date the blob was uploaded at.
    */
   uploadedAt: Date
   /**
+   * The HTTP metadata of the blob.
+   */
+  httpMetadata: R2HTTPMetadata
+  /**
    * The custom metadata of the blob.
    */
-  customMetadata?: Record<string, string>
+  customMetadata: Record<string, string>
 }
 
 export interface BlobUploadedPart {
@@ -209,4 +217,48 @@ export interface BlobListResult {
    * The list of folders with `/` delimiter.
    */
   folders?: string[]
+}
+
+export interface BlobCredentialsOptions {
+  /**
+   * The permission of the credentials.
+   * @default 'admin-read-write'
+   */
+  permission?: 'admin-read-write' | 'admin-read-only' | 'object-read-write' | 'object-read-only'
+  /**
+   * The ttl of the credentials in seconds.
+   * @default 900
+   */
+  ttl?: number
+  /**
+   * The prefixes to scope the credentials to.
+   */
+  prefixes?: string[]
+  /**
+   * The pathnames to scope the credentials to.
+   */
+  pathnames?: string[]
+}
+
+export interface BlobCredentials {
+  /**
+   * The Cloudflare account id
+   */
+  accountId: string
+  /**
+   * The Cloudflare R2 bucket name
+   */
+  bucketName: string
+  /**
+   * The access key id for the R2 bucket
+   */
+  accessKeyId: string
+  /**
+   * The secret access key for the R2 bucket
+   */
+  secretAccessKey: string
+  /**
+   * The session token for the R2 bucket
+   */
+  sessionToken: string
 }

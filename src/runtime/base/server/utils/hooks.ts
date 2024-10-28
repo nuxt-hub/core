@@ -3,13 +3,14 @@ import { useRuntimeConfig } from '#imports'
 
 export interface HubHooks {
   'bindings:ready': () => void
+  'database:migrations:done': () => void
 }
 
 /**
  * Access Hub lifecycle hooks.
  *
  * @example ```ts
- * hubHooks.on('bindings:ready', () => {
+ * hubHooks.hook('bindings:ready', () => {
  *   console.log('Bindings are ready!')
  * })
  * ```
@@ -28,8 +29,9 @@ export const hubHooks = createHooks<HubHooks>()
  * @see https://hub.nuxt.com/docs/recipes/hooks#onhubready
  */
 export function onHubReady(cb: HubHooks['bindings:ready']) {
-  const hub = useRuntimeConfig().hub
-  if (import.meta.dev && !hub.remote) {
+  if (import.meta.dev) {
+    const hub = useRuntimeConfig().hub
+    if (hub.database) return hubHooks.hookOnce('database:migrations:done', cb)
     return hubHooks.hookOnce('bindings:ready', cb)
   }
   cb()

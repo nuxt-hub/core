@@ -1,8 +1,7 @@
-import { eventHandler, sendNoContent, getRouterParam, createError } from 'h3'
+import { eventHandler, sendNoContent, getRouterParam, createError, getHeader } from 'h3'
 import { requireNuxtHubAuthorization } from '../../../../../../utils/auth'
 import { requireNuxtHubFeature } from '../../../../../../utils/features'
-// @ts-expect-error useStorage not yet typed
-import { useStorage } from '#imports'
+import { useStorage, useRuntimeConfig } from '#imports'
 
 export default eventHandler(async (event) => {
   await requireNuxtHubAuthorization(event)
@@ -18,11 +17,25 @@ export default eventHandler(async (event) => {
 
   const storage = useStorage(`cache:${base}`)
   const keys = await storage.getKeys()
-  // delete with batch of 25 keys
-  do {
-    const keysToDelete = keys.splice(0, 25)
-    await Promise.all(keysToDelete.map(storage.removeItem))
-  } while (keys.length)
+  const hub = useRuntimeConfig(event).hub
+  if (import.meta.dev) {
+    // delete with batch of 100 keys
+    do {
+      const keysToDelete = keys.splice(0, 100)
+      await Promise.all(keysToDelete.map(storage.removeItem))
+    } while (keys.length)
+  } else {
+    await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY || hub.projectKey}/cache/${process.env.NUXT_HUB_ENV || hub.env}/batch-delete`, {
+      baseURL: process.env.NUXT_HUB_URL || hub.url,
+      method: 'POST',
+      body: {
+        keys: keys.map(key => `${base}:${key}`)
+      },
+      headers: {
+        authorization: getHeader(event, 'authorization')
+      }
+    })
+  }
 
   return sendNoContent(event)
 })

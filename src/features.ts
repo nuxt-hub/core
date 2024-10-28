@@ -1,14 +1,16 @@
 import { execSync } from 'node:child_process'
+import { pathToFileURL } from 'node:url'
+import { isWindows } from 'std-env'
 import type { Nuxt } from '@nuxt/schema'
+import { join } from 'pathe'
 import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createResolver } from '@nuxt/kit'
 import { joinURL } from 'ufo'
-import { join } from 'pathe'
 import { defu } from 'defu'
 import { $fetch } from 'ofetch'
 import { addDevToolsCustomTabs } from './utils/devtools'
 
 const log = logger.withTag('nuxt:hub')
-const { resolve } = createResolver(import.meta.url)
+const { resolve, resolvePath } = createResolver(import.meta.url)
 
 export interface HubConfig {
   remote: string | boolean
@@ -49,12 +51,14 @@ export interface HubConfig {
       vectorize?: HubConfig['vectorize']
     } & Record<string, boolean>
   }
+
+  migrationsPath?: string
 }
 
 export function setupBase(nuxt: Nuxt, hub: HubConfig) {
   // Add Server scanning
   addServerScanDir(resolve('./runtime/base/server'))
-  addServerImportsDir(resolve('./runtime/base/server/utils'))
+  addServerImportsDir([resolve('./runtime/base/server/utils'), resolve('./runtime/base/server/utils/migrations')])
 
   // Add custom tabs to Nuxt DevTools
   if (nuxt.options.dev) {
@@ -80,12 +84,13 @@ export function setupBase(nuxt: Nuxt, hub: HubConfig) {
 export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
   // If we are in dev mode and the project is not linked, disable it
   if (nuxt.options.dev && !hub.remote && !hub.projectKey) {
-    return log.warn('`hubAI()` is disabled: link a project with `nuxthub link` to run AI models in development mode.')
+    return log.warn('`hubAI()` is disabled: link a project with `npx nuxthub link` to run AI models in development mode.')
   }
   // If we are in dev mode and the project is linked, verify it
   if (nuxt.options.dev && !hub.remote && hub.projectKey) {
     try {
       await $fetch<any>(`/api/projects/${hub.projectKey}`, {
+        method: 'HEAD',
         baseURL: hub.url,
         headers: {
           authorization: `Bearer ${hub.userToken}`
@@ -95,9 +100,9 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
       if (!err.status) {
         log.warn ('`hubAI()` is disabled: it seems that you are offline.')
       } else if (err.status === 401) {
-        log.warn ('`hubAI()` is disabled: you are not logged in, make sure to run `nuxthub login`.')
+        log.warn ('`hubAI()` is disabled: you are not logged in, make sure to run `npx nuxthub login`.')
       } else {
-        log.error('`hubAI()` is disabled: failed to fetch linked project `' + hub.projectKey + '` on NuxtHub, make sure to run `nuxthub link` again.')
+        log.error('`hubAI()` is disabled: failed to fetch linked project `' + hub.projectKey + '` on NuxtHub, make sure to run `npx nuxthub link` again.')
       }
       return
     }
@@ -148,21 +153,31 @@ export async function setupBrowser(nuxt: Nuxt) {
   addServerImportsDir(resolve('./runtime/browser/server/utils'))
 }
 
-export function setupCache(nuxt: Nuxt) {
+export async function setupCache(nuxt: Nuxt) {
   // Add Server caching (Nitro)
+  let driver = await resolvePath('./runtime/cache/driver')
+  if (isWindows) {
+    driver = pathToFileURL(driver).href
+  }
   nuxt.options.nitro = defu(nuxt.options.nitro, {
     storage: {
       cache: {
-        driver: 'cloudflare-kv-binding',
-        binding: 'CACHE',
-        base: 'cache'
+        driver,
+        binding: 'CACHE'
       }
     },
     devStorage: {
-      cache: {
-        driver: 'fs',
-        base: join(nuxt.options.rootDir, '.data/cache')
-      }
+      cache: nuxt.options.dev
+        // if local development, use KV binding so it respect TTL
+        ? {
+            driver,
+            binding: 'CACHE'
+          }
+        : {
+            // Used for pre-rendering
+            driver: 'fs',
+            base: join(nuxt.options.rootDir, '.data/cache')
+          }
     }
   })
 
@@ -170,7 +185,9 @@ export function setupCache(nuxt: Nuxt) {
   addServerScanDir(resolve('./runtime/cache/server'))
 }
 
-export function setupDatabase(_nuxt: Nuxt) {
+export function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
+  // Keep track of the path to migrations
+  hub.migrationsPath = join(nuxt.options.rootDir, 'server/database/migrations')
   // Add Server scanning
   addServerScanDir(resolve('./runtime/database/server'))
   addServerImportsDir(resolve('./runtime/database/server/utils'))
@@ -262,12 +279,17 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
       if (!err.status) {
         log.error('It seems that you are offline.')
       } else if (err.status === 401) {
-        log.error('It seems that you are not logged in, make sure to run `nuxthub login`.')
+        log.error('It seems that you are not logged in, make sure to run `npx nuxthub login`.')
       } else {
-        log.error('Failed to fetch linked project on NuxtHub, make sure to run `nuxthub link` again.')
+        log.error('Failed to fetch linked project on NuxtHub, make sure to run `npx nuxthub link` again.')
       }
       process.exit(1)
     })
+
+    // Overwrite userToken with userProjectToken
+    if (project.userProjectToken) {
+      hub.userToken = project.userProjectToken
+    }
 
     // Adapt env based on project defined production branch
     if (String(hub.remote) === 'true') {
@@ -286,7 +308,7 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
     hub.projectUrl = hub.projectUrl || (env === 'production' ? project.url : project.previewUrl)
     // No production or preview URL found
     if (!hub.projectUrl) {
-      log.error(`No deployment found for \`${env}\`, make sure to deploy the project using \`nuxthub deploy\`.`)
+      log.error(`No deployment found for \`${env}\`, make sure to deploy the project using \`npx nuxthub deploy\`.`)
       process.exit(1)
     }
     // Update hub.env in runtimeConfig
@@ -295,7 +317,7 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
 
   // Make sure we have a projectUrl when using the remote option
   if (!hub.projectUrl) {
-    log.error('No project URL defined, make sure to link your project with `nuxthub link` or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable (if self-hosted).')
+    log.error('No project URL defined, make sure to link your project with `npx nuxthub link` or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable (if self-hosted).')
     process.exit(1)
   }
 
@@ -314,11 +336,11 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
     }
   })
     .catch(async (err) => {
-      let message = 'Project not found.\nMake sure to deploy the project using `nuxthub deploy` or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable.'
+      let message = 'Project not found.\nMake sure to deploy the project using `npx nuxthub deploy` or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable.'
       if (err.status >= 500) {
         message = 'Internal server error'
       } else if (err.status === 401) {
-        message = 'Authorization failed.\nMake sure to provide a valid NUXT_HUB_PROJECT_SECRET_KEY or being logged in with `nuxthub login`'
+        message = 'Authorization failed.\nMake sure to provide a valid NUXT_HUB_PROJECT_SECRET_KEY or being logged in with `npx nuxthub login`'
       }
       log.error(`Failed to fetch remote storage: ${message}`)
       process.exit(1)

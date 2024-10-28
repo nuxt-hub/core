@@ -1,4 +1,4 @@
-import type { R2Bucket, ReadableStream, R2MultipartUpload } from '@cloudflare/workers-types/experimental'
+import type { R2Bucket, ReadableStream, R2MultipartUpload, R2Object } from '@cloudflare/workers-types/experimental'
 import { ofetch } from 'ofetch'
 import mime from 'mime'
 import { z } from 'zod'
@@ -8,7 +8,7 @@ import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
 import { parse } from 'pathe'
 import { joinURL } from 'ufo'
-import type { BlobType, FileSizeUnit, BlobUploadedPart, BlobListResult, BlobMultipartUpload, HandleMPUResponse, BlobMultipartOptions, BlobUploadOptions, BlobPutOptions, BlobEnsureOptions, BlobObject, BlobListOptions } from '@nuxthub/core'
+import type { BlobType, FileSizeUnit, BlobUploadedPart, BlobListResult, BlobMultipartUpload, HandleMPUResponse, BlobMultipartOptions, BlobUploadOptions, BlobPutOptions, BlobEnsureOptions, BlobObject, BlobListOptions, BlobCredentialsOptions, BlobCredentials } from '@nuxthub/core'
 import { streamToArrayBuffer } from '../../../utils/stream'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { useRuntimeConfig } from '#imports'
@@ -136,6 +136,18 @@ interface HubBlob {
    * @see https://hub.nuxt.com/docs/features/blob#handleupload
    */
   handleUpload(event: H3Event, options?: BlobUploadOptions): Promise<BlobObject[]>
+  /**
+   * Creates temporary access credentials that can be optionally scoped to prefixes or objects.
+   *
+   * Useful to create a signed url to upload directory to R2 from client-side.
+   *
+   * Only available in production or in development with `--remote` flag.
+   *
+   * @example ```ts
+   * const { accountId, bucketName, accessKeyId, secretAccessKey, sessionToken } = await hubBlob().createCredentials()
+   * ```
+   */
+  createCredentials(options?: BlobCredentialsOptions): Promise<BlobCredentials>
 }
 
 /**
@@ -179,7 +191,8 @@ export function hubBlob(): HubBlob {
       }
     },
     async serve(event: H3Event, pathname: string) {
-      const object = await bucket.get(decodeURI(pathname))
+      pathname = decodeURIComponent(pathname)
+      const object = await bucket.get(pathname)
 
       if (!object) {
         throw createError({ message: 'File not found', statusCode: 404 })
@@ -192,7 +205,7 @@ export function hubBlob(): HubBlob {
       return object.body
     },
     async get(pathname: string): Promise<Blob | null> {
-      const object = await bucket.get(decodeURI(pathname))
+      const object = await bucket.get(decodeURIComponent(pathname))
 
       if (!object) {
         return null
@@ -201,7 +214,7 @@ export function hubBlob(): HubBlob {
       return object.blob() as Promise<Blob>
     },
     async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = {}) {
-      pathname = decodeURI(pathname)
+      pathname = decodeURIComponent(pathname)
       const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, customMetadata } = options
       const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
 
@@ -226,7 +239,7 @@ export function hubBlob(): HubBlob {
       return mapR2ObjectToBlob(object)
     },
     async head(pathname: string) {
-      const object = await bucket.head(decodeURI(pathname))
+      const object = await bucket.head(decodeURIComponent(pathname))
 
       if (!object) {
         throw createError({ message: 'Blob not found', statusCode: 404 })
@@ -236,13 +249,13 @@ export function hubBlob(): HubBlob {
     },
     async del(pathnames: string | string[]) {
       if (Array.isArray(pathnames)) {
-        return await bucket.delete(pathnames.map(p => decodeURI(p)))
+        return await bucket.delete(pathnames.map(p => decodeURIComponent(p)))
       } else {
-        return await bucket.delete(decodeURI(pathnames))
+        return await bucket.delete(decodeURIComponent(pathnames))
       }
     },
     async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}): Promise<BlobMultipartUpload> {
-      pathname = decodeURI(pathname)
+      pathname = decodeURIComponent(pathname)
       const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, customMetadata } = options
       const contentType = optionsContentType || getContentType(pathname)
 
@@ -266,7 +279,7 @@ export function hubBlob(): HubBlob {
       return mapR2MpuToBlobMpu(mpu)
     },
     resumeMultipartUpload(pathname: string, uploadId: string) {
-      const mpu = bucket.resumeMultipartUpload(pathname, uploadId)
+      const mpu = bucket.resumeMultipartUpload(decodeURIComponent(pathname), uploadId)
 
       return mapR2MpuToBlobMpu(mpu)
     },
@@ -278,7 +291,7 @@ export function hubBlob(): HubBlob {
         multiple: true
       })
       const form = await readFormData(event)
-      const files = form.getAll(options.formKey) as File[]
+      const files = form.getAll(options.formKey!) as File[]
       if (!files) {
         throw createError({ statusCode: 400, message: 'Missing files' })
       }
@@ -289,7 +302,7 @@ export function hubBlob(): HubBlob {
       const objects: BlobObject[] = []
       try {
         // Ensure the files meet the requirements
-        if (options.maxSize || options.types?.length) {
+        if (options.ensure) {
           for (const file of files) {
             ensureBlob(file, options.ensure)
           }
@@ -306,6 +319,23 @@ export function hubBlob(): HubBlob {
       }
 
       return objects
+    },
+    async createCredentials(options: BlobCredentialsOptions = {}): Promise<BlobCredentials> {
+      if (import.meta.dev) {
+        throw createError('hubBlob().createCredentials() is only available in production or in development with `--remote` flag.')
+      }
+      if (!process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN) {
+        throw createError('Missing `NUXT_HUB_PROJECT_DEPLOY_TOKEN` environment variable, make sure to deploy with `npx nuxthub deploy` or with the NuxtHub Admin.')
+      }
+      const env = process.env.NUXT_HUB_ENV || hub.env || 'production'
+      return await $fetch(`/api/projects/${hub.projectKey}/blob/${env}/credentials`, {
+        baseURL: hub.url,
+        method: 'POST',
+        body: options,
+        headers: {
+          authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN}`
+        }
+      })
     }
   }
   return {
@@ -346,7 +376,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
       })
     },
     async serve(_event: H3Event, pathname: string) {
-      return blobAPI<ReadableStream<any>>(decodeURI(pathname), {
+      return blobAPI<ReadableStream<any>>(encodeURIComponent(pathname), {
         method: 'GET'
       })
     },
@@ -362,7 +392,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
       if (body instanceof Uint8Array) {
         body = new Blob([body])
       }
-      return await blobAPI<BlobObject>(decodeURI(pathname), {
+      return await blobAPI<BlobObject>(encodeURIComponent(pathname), {
         method: 'PUT',
         headers,
         body,
@@ -370,12 +400,12 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
       })
     },
     async head(pathname: string): Promise<BlobObject> {
-      return await blobAPI(`/head/${decodeURI(pathname)}`, {
+      return await blobAPI(`/head/${encodeURIComponent(pathname)}`, {
         method: 'GET'
       })
     },
     async get(pathname: string): Promise<Blob> {
-      return await blobAPI(`/${decodeURI(pathname)}`, {
+      return await blobAPI(`/${encodeURIComponent(pathname)}`, {
         method: 'GET',
         responseType: 'blob'
       })
@@ -385,20 +415,20 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
         await blobAPI('/delete', {
           method: 'POST',
           body: {
-            pathnames: pathnames.map(p => decodeURI(p))
+            pathnames: pathnames.map(p => encodeURIComponent(p))
           }
         })
       } else {
-        await blobAPI(decodeURI(pathnames), {
+        await blobAPI(encodeURIComponent(pathnames), {
           method: 'DELETE'
         })
       }
       return
     },
     async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}) {
-      return await blobAPI<BlobMultipartUpload>(`/multipart/${decodeURI(pathname)}`, {
+      return await blobAPI<BlobMultipartUpload>(`/multipart/create/${encodeURIComponent(pathname)}`, {
         method: 'POST',
-        body: options
+        query: options
       })
     },
     resumeMultipartUpload(pathname: string, uploadId: string): BlobMultipartUpload {
@@ -406,7 +436,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
         pathname,
         uploadId,
         async uploadPart(partNumber: number, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob): Promise<BlobUploadedPart> {
-          return await blobAPI<BlobUploadedPart>(`/multipart/${decodeURI(pathname)}`, {
+          return await blobAPI<BlobUploadedPart>(`/multipart/upload/${encodeURIComponent(pathname)}`, {
             method: 'PUT',
             query: {
               uploadId,
@@ -416,7 +446,7 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
           })
         },
         async abort(): Promise<void> {
-          await blobAPI(`/multipart/${decodeURI(pathname)}`, {
+          await blobAPI(`/multipart/abort/${encodeURIComponent(pathname)}`, {
             method: 'DELETE',
             query: {
               uploadId
@@ -424,10 +454,9 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
           })
         },
         async complete(parts: BlobUploadedPart[]): Promise<BlobObject> {
-          return await blobAPI<BlobObject>('/multipart/complete', {
+          return await blobAPI<BlobObject>(`/multipart/complete/${encodeURIComponent(pathname)}`, {
             method: 'POST',
             query: {
-              pathname,
               uploadId
             },
             body: {
@@ -442,6 +471,13 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
         method: 'POST',
         body: await readFormData(event),
         query: options
+      })
+    },
+
+    async createCredentials(options: BlobCredentialsOptions = {}): Promise<BlobCredentials> {
+      return await blobAPI<BlobCredentials>('/credentials', {
+        method: 'POST',
+        body: options
       })
     }
   }
@@ -602,7 +638,9 @@ function mapR2ObjectToBlob(object: R2Object): BlobObject {
     pathname: object.key,
     contentType: object.httpMetadata?.contentType,
     size: object.size,
+    httpEtag: object.httpEtag,
     uploadedAt: object.uploaded,
+    httpMetadata: object.httpMetadata || {},
     customMetadata: object.customMetadata || {}
   }
 }
