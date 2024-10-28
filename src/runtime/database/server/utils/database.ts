@@ -45,6 +45,7 @@ export function hubDatabase(): D1Database {
  *
  * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
  * @param secretKey The secret key to authenticate to the remote endpoint
+ * @param headers The headers to send with the request to the remote endpoint
  *
  * @example ```ts
  * const db = proxyHubDatabase('https://my-deployed-project.nuxt.dev', 'my-secret-key')

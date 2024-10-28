@@ -50,6 +50,7 @@ export function hubKV(): HubKV {
  *
  * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
  * @param secretKey The secret key to authenticate to the remote endpoint
+ * @param headers The headers to send with the request to the remote endpoint
  *
  * @example ```ts
  * const kv = proxyHubKV('https://my-deployed-project.nuxt.dev', 'my-secret-key')
@@ -58,7 +59,7 @@ export function hubKV(): HubKV {
  *
  * @see https://hub.nuxt.com/docs/features/kv
  */
-export function proxyHubKV(projectUrl: string, secretKey?: string, headers?: HeadersInit): HubKV {
+export function proxyHubKV(projectUrl: string, secretKey?: string, headers?: Record<string, string>): HubKV {
   requireNuxtHubFeature('kv')
 
   const storage = createStorage({
