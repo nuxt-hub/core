@@ -356,11 +356,16 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
     }
   })
 
-  const availableStorages = Object.keys(remoteManifest?.storage || {}).filter(k => hub[k as keyof typeof hub] && remoteManifest?.storage[k])
+  const availableStorages = Object.keys(remoteManifest?.storage || {}).filter((k) => {
+    if (k === 'vectorize') {
+      return Object.keys(remoteManifest!.storage.vectorize!).length > 0
+    }
+    return hub[k as keyof typeof hub] && remoteManifest?.storage[k]
+  })
+
   if (availableStorages.length > 0) {
     const storageDescriptions = availableStorages.map((storage) => {
       if (storage === 'vectorize') {
-        if (!Object.keys(remoteManifest!.storage.vectorize!).length) return
         const indexes = Object.keys(remoteManifest!.storage.vectorize!).join(', ')
         return `\`${storage} (${indexes})\``
       }
