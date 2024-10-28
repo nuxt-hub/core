@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v0.8.3
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.2...v0.8.3)
+
+### 🩹 Fixes
+
+- Make vectorize query params optional ([#351](https://github.com/nuxt-hub/core/pull/351))
+- Correctly resolve vectorize type ([#349](https://github.com/nuxt-hub/core/pull/349))
+- Only show vectorize as remote storage if indexes present ([#352](https://github.com/nuxt-hub/core/pull/352))
+
+### 📖 Documentation
+
+- Let auto mode for color mode ([a823ba7](https://github.com/nuxt-hub/core/commit/a823ba7))
+- Add back studio ([1826a4c](https://github.com/nuxt-hub/core/commit/1826a4c))
+
+### ❤️ Contributors
+
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.8.2
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.1...v0.8.2)
