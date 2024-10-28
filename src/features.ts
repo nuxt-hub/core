@@ -358,7 +358,7 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
 
   const availableStorages = Object.keys(remoteManifest?.storage || {}).filter((k) => {
     if (k === 'vectorize') {
-      return Object.keys(remoteManifest!.storage.vectorize!).length > 0
+      return Object.keys(hub.vectorize ?? {}).length && Object.keys(remoteManifest!.storage.vectorize!).length
     }
     return hub[k as keyof typeof hub] && remoteManifest?.storage[k]
   })
