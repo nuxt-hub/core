@@ -4,8 +4,8 @@ import { createError } from 'h3'
 import type { H3Error } from 'h3'
 import type { Ai } from '@cloudflare/workers-types/experimental'
 import { requireNuxtHubFeature } from '../../../utils/features'
+import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
 import { useRuntimeConfig } from '#imports'
-import { getCloudflareAccessHeaders } from '~/src/runtime/utils/cloudflareAccess'
 
 let _ai: Ai
 

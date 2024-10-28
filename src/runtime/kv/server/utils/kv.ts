@@ -5,8 +5,8 @@ import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import type { HubKV } from '@nuxthub/core'
 import { requireNuxtHubFeature } from '../../../utils/features'
+import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
 import { useRuntimeConfig } from '#imports'
-import { getCloudflareAccessHeaders } from '~/src/runtime/utils/cloudflareAccess'
 
 let _kv: HubKV
 

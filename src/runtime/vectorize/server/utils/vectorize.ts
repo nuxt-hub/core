@@ -5,8 +5,8 @@ import type { H3Error } from 'h3'
 import type { RuntimeConfig } from 'nuxt/schema'
 import type { Vectorize } from '../../../../types/vectorize'
 import { requireNuxtHubFeature } from '../../../utils/features'
+import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
 import { useRuntimeConfig } from '#imports'
-import { getCloudflareAccessHeaders } from '~/src/runtime/utils/cloudflareAccess'
 
 const _vectorize: Record<string, Vectorize> = {}
 
