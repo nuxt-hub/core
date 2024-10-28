@@ -31,6 +31,39 @@ export function hubAI(): Ai {
   // @ts-expect-error globalThis.__env__ is not defined
   const binding = process.env.AI || globalThis.__env__?.AI || globalThis.AI
   if (hub.remote && hub.projectUrl && !binding) {
+    _ai = proxyHubAI(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+  } else if (import.meta.dev) {
+    // Mock _ai to call NuxtHub Admin API to proxy CF account & API token
+    _ai = {
+      async run(model: string, params?: Record<string, unknown>) {
+        if (!hub.projectKey) {
+          throw createError({
+            statusCode: 500,
+            message: 'Missing hub.projectKey variable to use hubAI()'
+          })
+        }
+        if (!hub.userToken) {
+          throw createError({
+            statusCode: 500,
+            message: 'Missing hub.userToken variable to use hubAI()'
+          })
+        }
+        return $fetch(`/api/projects/${hub.projectKey}/ai/run`, {
+          baseURL: hub.url,
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${hub.userToken}`
+          },
+          body: { model, params },
+          responseType: params?.stream ? 'stream' : undefined
+        }).catch(handleProxyError)
+      }
+    } as Ai
+  } else if (binding) {
+    _ai = binding as Ai
+  }
+  if (!_ai) {
+    throw createError('Missing Cloudflare AI binding (AI)')
     const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
     _ai = proxyHubAI(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
     return _ai
@@ -68,7 +101,7 @@ export function hubAI(): Ai {
     }
     return _ai
   }
-  throw createError('Missing Cloudflare AI binding (AI)')
+  return _ai
 }
 
 /**

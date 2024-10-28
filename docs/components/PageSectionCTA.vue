@@ -1,7 +1,16 @@
+<script setup>
+defineProps({
+  loose: {
+    type: Boolean,
+    default: false
+  }
+})
+</script>
+
 <template>
   <ULandingSection
     :ui="{
-      wrapper: 'mt-10 py-12 sm:py-12 not-prose relative',
+      wrapper: 'mt-10 not-prose relative' + (!loose ? ' py-12 sm:py-12' : ''),
       container: 'gap-8 sm:gap-y-8',
       title: 'lg:text-4xl font-semibold'
     }"
@@ -12,7 +21,7 @@
         trailingIcon: 'i-ph-arrow-right'
       },
       {
-        label: 'Read docs',
+        label: 'Read the docs',
         to: '/docs/getting-started',
         variant: 'ghost',
         color: 'gray'
@@ -39,6 +48,12 @@
         </linearGradient>
       </defs>
     </svg>
+    <ClientOnly>
+      <Sparkles
+        :density="100"
+        class="absolute inset-0 w-full pointer-events-none"
+      />
+    </ClientOnly>
 
     <template #title>
       <span>Start with NuxtHub <span class="text-primary">today</span></span>

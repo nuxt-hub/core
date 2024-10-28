@@ -2,15 +2,28 @@
 import module from '../src/module'
 
 export default defineNuxtConfig({
-  future: { compatibilityVersion: 4 },
-  devtools: { enabled: true },
-
   modules: [
     '@nuxt/ui',
     '@nuxtjs/mdc',
     '@kgierke/nuxt-basic-auth',
     module
   ],
+  devtools: { enabled: true },
+
+  routeRules: {
+    '/cached': { prerender: true }
+  },
+  future: { compatibilityVersion: 4 },
+
+  // nitro: {
+  //   cloudflare: {
+  //     wrangler: {
+  //       compatibility_flags: ['nodejs_compat_v2']
+  //     }
+  //   }
+  // },
+
+  compatibilityDate: '2024-08-08',
 
   hub: {
     ai: true,
@@ -46,15 +59,5 @@ export default defineNuxtConfig({
         password: process.env.NUXT_ADMIN_PASSWORD || 'admin'
       }
     ]
-  },
-
-  // nitro: {
-  //   cloudflare: {
-  //     wrangler: {
-  //       compatibility_flags: ['nodejs_compat_v2']
-  //     }
-  //   }
-  // },
-
-  compatibilityDate: '2024-08-08'
+  }
 })

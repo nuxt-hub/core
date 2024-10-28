@@ -13,5 +13,5 @@ export default eventHandler(async (event) => {
     pathname: z.string().min(1)
   }).parse)
 
-  return hubBlob().serve(event, pathname)
+  return hubBlob().serve(event, decodeURIComponent(pathname))
 })

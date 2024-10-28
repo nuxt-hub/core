@@ -8,7 +8,7 @@ import { parseArgs } from 'citty'
 import type { Nuxt } from '@nuxt/schema'
 import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
-import { setupAI, setupCache, setupAnalytics, setupBlob, setupBrowser, setupOpenAPI, setupDatabase, setupKV, setupVectorize, setupBase, setupRemote, vectorizeRemoteCheck } from './features'
+import { setupAI, setupCache, setupAnalytics, setupBlob, setupBrowser, setupOpenAPI, setupDatabase, setupKV, setupVectorize, setupBase, setupRemote, vectorizeRemoteCheck, type HubConfig } from './features'
 import type { ModuleOptions } from './types/module'
 import { addBuildHooks } from './utils/build'
 
@@ -77,6 +77,7 @@ export default defineNuxtModule<ModuleOptions>({
       }
     })
     runtimeConfig.hub = hub
+    runtimeConfig.public.hub = {}
     // Make sure to tell Nitro to not generate the wrangler.toml file
     // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
     delete nuxt.options.nitro.cloudflare?.wrangler?.compatibility_flags
@@ -105,23 +106,23 @@ export default defineNuxtModule<ModuleOptions>({
       })
     }
 
-    setupBase(nuxt, hub)
+    setupBase(nuxt, hub as HubConfig)
     setupOpenAPI(nuxt)
-    hub.ai && await setupAI(nuxt, hub)
+    hub.ai && await setupAI(nuxt, hub as HubConfig)
     hub.analytics && setupAnalytics(nuxt)
     hub.blob && setupBlob(nuxt)
     hub.browser && await setupBrowser(nuxt)
-    hub.cache && setupCache(nuxt)
-    hub.database && setupDatabase(nuxt)
+    hub.cache && await setupCache(nuxt)
+    hub.database && setupDatabase(nuxt, hub as HubConfig)
     hub.kv && setupKV(nuxt)
-    Object.keys(hub.vectorize).length && setupVectorize(nuxt, hub)
+    Object.keys(hub.vectorize!).length && setupVectorize(nuxt, hub as HubConfig)
 
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {
       return
     }
 
-    addBuildHooks(nuxt, hub)
+    addBuildHooks(nuxt, hub as HubConfig)
 
     // Fix cloudflare:* externals in rollup
     nuxt.options.nitro.rollupConfig = nuxt.options.nitro.rollupConfig || {}
@@ -145,20 +146,12 @@ export default defineNuxtModule<ModuleOptions>({
     }
 
     if (hub.remote) {
-      await setupRemote(nuxt, hub)
-      vectorizeRemoteCheck(hub)
-      return
+      await setupRemote(nuxt, hub as HubConfig)
+      vectorizeRemoteCheck(hub as HubConfig)
     }
-
-    // Add node:stream to unenv external (only for Cloudflare Pages/Workers)
-    if (!nuxt.options.nitro.unenv.external.includes('node:stream')) {
-      nuxt.options.nitro.unenv.external.push('node:stream')
-    }
-
-    // Folowing lines are only executed when remote storage is disabled
 
     // Production mode without remote storage
-    if (!nuxt.options.dev) {
+    if (!hub.remote && !nuxt.options.dev) {
       // Make sure to fallback to cloudflare-pages preset
       let preset = nuxt.options.nitro.preset = nuxt.options.nitro.preset || 'cloudflare-pages'
       // Support also cloudflare_module
@@ -174,6 +167,14 @@ export default defineNuxtModule<ModuleOptions>({
       nuxt.options.nitro.commands.preview = 'npx nuxthub preview'
       nuxt.options.nitro.commands.deploy = 'npx nuxthub deploy'
 
+      // Add node:stream to unenv external (only for Cloudflare Pages/Workers)
+      if (!nuxt.options.nitro.unenv.external.includes('node:stream')) {
+        nuxt.options.nitro.unenv.external.push('node:stream')
+      }
+      if (!nuxt.options.nitro.unenv.external.includes('node:process')) {
+        nuxt.options.nitro.unenv.external.push('node:process')
+      }
+
       // Add the env middleware
       nuxt.options.nitro.handlers ||= []
       nuxt.options.nitro.handlers.unshift({
@@ -182,9 +183,11 @@ export default defineNuxtModule<ModuleOptions>({
       })
     }
 
-    // Local development without remote connection
+    // Local development
     if (nuxt.options.dev) {
-      log.info(`Using local storage from \`${hub.dir}\``)
+      if (!hub.remote) {
+        log.info(`Using local storage from \`${hub.dir}\``)
+      }
 
       // Create the hub.dir directory
       const hubDir = join(rootDir, hub.dir)
@@ -205,12 +208,12 @@ export default defineNuxtModule<ModuleOptions>({
         await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}.data`, 'utf-8')
       }
 
-      const needWrangler = Boolean(hub.ai || hub.analytics || hub.blob || hub.database || hub.kv)
-      // const needWrangler = Boolean(hub.ai || hub.analytics || hub.blob || hub.database || hub.kv || Object.keys(hub.bindings.hyperdrive).length > 0)
+      const needWrangler = Boolean(hub.analytics || hub.blob || hub.database || hub.kv || hub.cache)
+      // const needWrangler = Boolean(hub.analytics || hub.blob || hub.database || hub.kv || Object.keys(hub.bindings.hyperdrive).length > 0)
       if (needWrangler) {
         // Generate the wrangler.toml file
         const wranglerPath = join(hubDir, './wrangler.toml')
-        await writeFile(wranglerPath, generateWrangler(nuxt, hub), 'utf-8')
+        await writeFile(wranglerPath, generateWrangler(nuxt, hub as HubConfig), 'utf-8')
         // @ts-expect-error cloudflareDev is not typed here
         nuxt.options.nitro.cloudflareDev = {
           persistDir: hubDir,
