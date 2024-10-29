@@ -10,8 +10,8 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: "Automatic Database Migrations"
-    to: /changelog/database-migrations
+    label: "Cloudflare Access integration"
+    to: /changelog/cloudflare-access
     icon: i-ph-arrow-right
 features:
   - name: Cloud Hosting
