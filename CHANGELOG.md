@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.8.4
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.3...v0.8.4)
+
+### 🚀 Enhancements
+
+- Support cloudflare access ([#348](https://github.com/nuxt-hub/core/pull/348))
+
+### 📖 Documentation
+
+- Add note about CF routes limit ([6556a74](https://github.com/nuxt-hub/core/commit/6556a74))
+
+### 🏡 Chore
+
+- Update deps ([afec71e](https://github.com/nuxt-hub/core/commit/afec71e))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+
 ## v0.8.3
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.2...v0.8.3)
