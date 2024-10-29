@@ -17,6 +17,7 @@ export function hubCacheBinding(name: string = 'CACHE'): KVNamespace {
  *
  * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
  * @param secretKey The secret key to authenticate to the remote endpoint
+ * @param headers The headers to send with the request to the remote endpoint
  *
  * @example ```ts
  * const cache = proxyHubCache('https://my-deployed-project.nuxt.dev', 'my-secret-key')
@@ -24,13 +25,14 @@ export function hubCacheBinding(name: string = 'CACHE'): KVNamespace {
  * ```
  *
  */
-export function proxyHubCache(projectUrl: string, secretKey?: string) {
+export function proxyHubCache(projectUrl: string, secretKey?: string, headers?: HeadersInit) {
   requireNuxtHubFeature('cache')
 
   const cacheAPI = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/cache'),
     headers: {
-      Authorization: `Bearer ${secretKey}`
+      Authorization: `Bearer ${secretKey}`,
+      ...headers
     }
   })
 

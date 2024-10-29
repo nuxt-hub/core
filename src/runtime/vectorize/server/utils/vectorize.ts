@@ -5,6 +5,7 @@ import type { H3Error } from 'h3'
 import type { RuntimeConfig } from 'nuxt/schema'
 import type { Vectorize } from '@nuxthub/core'
 import { requireNuxtHubFeature } from '../../../utils/features'
+import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
 import { useRuntimeConfig } from '#imports'
 
 const _vectorize: Record<string, Vectorize> = {}
@@ -42,7 +43,8 @@ export function hubVectorize(index: VectorizeIndexes): Vectorize {
   // @ts-expect-error globalThis.__env__ is not defined
   const binding = process.env[bindingName] || globalThis.__env__?.[bindingName] || globalThis[bindingName]
   if (hub.remote && hub.projectUrl && !binding) {
-    _vectorize[index] = proxyHubVectorize(index, hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
+    _vectorize[index] = proxyHubVectorize(index, hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
     return _vectorize[index]
   }
   if (binding) {
@@ -58,6 +60,7 @@ export function hubVectorize(index: VectorizeIndexes): Vectorize {
  * @param index The Vectorize index to access
  * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
  * @param secretKey The secret key to authenticate to the remote endpoint
+ * @param headers The headers to send with the request to the remote endpoint
  *
  * @example ```ts
  * const db = proxyHubVectorize('https://my-deployed-project.nuxt.dev', 'my-secret-key')
@@ -70,14 +73,15 @@ export function hubVectorize(index: VectorizeIndexes): Vectorize {
  *
  * @see https://developers.cloudflare.com/vectorize/reference/client-api/
  */
-export function proxyHubVectorize(index: VectorizeIndexes, projectUrl: string, secretKey?: string): Vectorize {
+export function proxyHubVectorize(index: VectorizeIndexes, projectUrl: string, secretKey?: string, headers?: HeadersInit): Vectorize {
   requireNuxtHubFeature('vectorize')
 
   const vectorizeAPI = ofetch.create({
     baseURL: joinURL(projectUrl, `/api/_hub/vectorize/${index}`),
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${secretKey}`
+      Authorization: `Bearer ${secretKey}`,
+      ...headers
     }
   })
   return {

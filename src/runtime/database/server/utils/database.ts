@@ -4,6 +4,7 @@ import { createError } from 'h3'
 import type { H3Error } from 'h3'
 import type { D1Database } from '@nuxthub/core'
 import { requireNuxtHubFeature } from '../../../utils/features'
+import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
 import { useRuntimeConfig } from '#imports'
 
 let _db: D1Database
@@ -28,7 +29,8 @@ export function hubDatabase(): D1Database {
   // @ts-expect-error globalThis.__env__ is not defined
   const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
   if (hub.remote && hub.projectUrl && !binding) {
-    _db = proxyHubDatabase(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
+    _db = proxyHubDatabase(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
     return _db
   }
   if (binding) {
@@ -43,6 +45,7 @@ export function hubDatabase(): D1Database {
  *
  * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
  * @param secretKey The secret key to authenticate to the remote endpoint
+ * @param headers The headers to send with the request to the remote endpoint
  *
  * @example ```ts
  * const db = proxyHubDatabase('https://my-deployed-project.nuxt.dev', 'my-secret-key')
@@ -51,14 +54,15 @@ export function hubDatabase(): D1Database {
  *
  * @see https://hub.nuxt.com/docs/features/database
  */
-export function proxyHubDatabase(projectUrl: string, secretKey?: string): D1Database {
+export function proxyHubDatabase(projectUrl: string, secretKey?: string, headers?: HeadersInit): D1Database {
   requireNuxtHubFeature('database')
 
   const d1API = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/database'),
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${secretKey}`
+      Authorization: `Bearer ${secretKey}`,
+      ...headers
     }
   })
   return {

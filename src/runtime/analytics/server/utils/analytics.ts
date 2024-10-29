@@ -3,6 +3,7 @@ import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import { requireNuxtHubFeature } from '../../../utils/features'
+import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
 import { useRuntimeConfig } from '#imports'
 
 const _datasets: Record<string, AnalyticsEngineDataset> = {}
@@ -45,7 +46,8 @@ export function hubAnalytics() {
   const hub = useRuntimeConfig().hub
   const binding = getAnalyticsBinding()
   if (hub.remote && hub.projectUrl && !binding) {
-    return proxyHubAnalytics(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
+    return proxyHubAnalytics(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
   }
   const dataset = _useDataset()
 
@@ -57,13 +59,14 @@ export function hubAnalytics() {
   }
 }
 
-export function proxyHubAnalytics(projectUrl: string, secretKey?: string) {
+export function proxyHubAnalytics(projectUrl: string, secretKey?: string, headers?: HeadersInit) {
   requireNuxtHubFeature('analytics')
 
   const analyticsAPI = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/analytics'),
     headers: {
-      Authorization: `Bearer ${secretKey}`
+      Authorization: `Bearer ${secretKey}`,
+      ...headers
     }
   })
 

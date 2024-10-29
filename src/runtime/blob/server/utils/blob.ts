@@ -11,6 +11,7 @@ import { joinURL } from 'ufo'
 import type { BlobType, FileSizeUnit, BlobUploadedPart, BlobListResult, BlobMultipartUpload, HandleMPUResponse, BlobMultipartOptions, BlobUploadOptions, BlobPutOptions, BlobEnsureOptions, BlobObject, BlobListOptions, BlobCredentialsOptions, BlobCredentials } from '@nuxthub/core'
 import { streamToArrayBuffer } from '../../../utils/stream'
 import { requireNuxtHubFeature } from '../../../utils/features'
+import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
 import { useRuntimeConfig } from '#imports'
 
 const _r2_buckets: Record<string, R2Bucket> = {}
@@ -166,7 +167,8 @@ export function hubBlob(): HubBlob {
   const hub = useRuntimeConfig().hub
   const binding = getBlobBinding()
   if (hub.remote && hub.projectUrl && !binding) {
-    return proxyHubBlob(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
+    return proxyHubBlob(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
   }
   const bucket = _useBucket()
 
@@ -350,6 +352,7 @@ export function hubBlob(): HubBlob {
  *
  * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
  * @param secretKey The secret key to authenticate to the remote endpoint
+ * @param headers The headers to send with the request to the remote endpoint
  *
  * @example ```ts
  * const blob = proxyHubBlob('https://my-deployed-project.nuxt.dev', 'my-secret-key')
@@ -358,13 +361,14 @@ export function hubBlob(): HubBlob {
  *
  * @see https://hub.nuxt.com/docs/features/blob
  */
-export function proxyHubBlob(projectUrl: string, secretKey?: string): HubBlob {
+export function proxyHubBlob(projectUrl: string, secretKey?: string, headers?: HeadersInit): HubBlob {
   requireNuxtHubFeature('blob')
 
   const blobAPI = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/blob'),
     headers: {
-      Authorization: `Bearer ${secretKey}`
+      Authorization: `Bearer ${secretKey}`,
+      ...headers
     }
   })
 

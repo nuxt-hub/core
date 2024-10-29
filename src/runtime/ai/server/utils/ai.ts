@@ -4,6 +4,7 @@ import { createError } from 'h3'
 import type { H3Error } from 'h3'
 import type { Ai } from '@cloudflare/workers-types/experimental'
 import { requireNuxtHubFeature } from '../../../utils/features'
+import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
 import { useRuntimeConfig } from '#imports'
 
 let _ai: Ai
@@ -30,7 +31,8 @@ export function hubAI(): Ai {
   // @ts-expect-error globalThis.__env__ is not defined
   const binding = process.env.AI || globalThis.__env__?.AI || globalThis.AI
   if (hub.remote && hub.projectUrl && !binding) {
-    _ai = proxyHubAI(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
+    _ai = proxyHubAI(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
   } else if (import.meta.dev) {
     // Mock _ai to call NuxtHub Admin API to proxy CF account & API token
     _ai = {
@@ -72,6 +74,7 @@ export function hubAI(): Ai {
  *
  * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
  * @param secretKey The secret key to authenticate to the remote endpoint
+ * @param headers The headers to send with the request to the remote endpoint
  *
  * @example ```ts
  * const ai = proxyHubAI('https://my-deployed-project.nuxt.dev', 'my-secret-key')
@@ -82,14 +85,15 @@ export function hubAI(): Ai {
  *
  * @see https://developers.cloudflare.com/workers-ai/configuration/bindings/#methods
  */
-export function proxyHubAI(projectUrl: string, secretKey?: string): Ai {
+export function proxyHubAI(projectUrl: string, secretKey?: string, headers?: HeadersInit): Ai {
   requireNuxtHubFeature('ai')
 
   const aiAPI = ofetch.create({
     baseURL: joinURL(projectUrl, '/api/_hub/ai'),
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${secretKey}`
+      Authorization: `Bearer ${secretKey}`,
+      ...headers
     }
   })
   return {
