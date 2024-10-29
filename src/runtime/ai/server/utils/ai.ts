@@ -32,7 +32,7 @@ export function hubAI(): Ai {
   const binding = process.env.AI || globalThis.__env__?.AI || globalThis.AI
   if (hub.remote && hub.projectUrl && !binding) {
     const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
-    _ai = proxyHubAI(hub.projectUrl, hub.projectSecretKey || hub.userToken)
+    _ai = proxyHubAI(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
   } else if (import.meta.dev) {
     // Mock _ai to call NuxtHub Admin API to proxy CF account & API token
     _ai = {
