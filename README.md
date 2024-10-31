@@ -15,7 +15,7 @@ NuxtHub provides optional features to help you build full-stack applications:
 - [**AI Models**](https://hub.nuxt.com/docs/features/ai) & [**Vector database**](https://hub.nuxt.com/docs/features/vectorize) to run machine learning models and build full-stack AI-powered apps.
 - [**Files storage**](https://hub.nuxt.com/docs/features/blob) to store static assets, such as images, videos and more
 - [**Caching system**](https://hub.nuxt.com/docs/features/cache) for your Nuxt pages, API routes or server functions
-- [**SQL database**](https://hub.nuxt.com/docs/features/database) to store your application's data
+- [**SQL database**](https://hub.nuxt.com/docs/features/database) to store your application's data with [automatic migrations](https://hub.nuxt.com/docs/features/database#database-migrations)
 - [**Key-Value**](https://hub.nuxt.com/docs/features/kv) to store JSON data accessible globally with low-latency
 - [**Browser Rendering**](https://hub.nuxt.com/docs/features/browser) to take screenshots, generate PDFs, craw web pages using a headless browser on the edge.
 - [**Open API**](https://hub.nuxt.com/docs/features/open-api) to generate your API documentation with [Scalar](https://scalar.com)
