@@ -3,7 +3,7 @@ navigation: false
 description: 'Deploy and scale your Nuxt applications worldwide with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and with full-stack capabilities.'
 hero:
   title: 'Ship Nuxt apps that scale.'
-  description: 'Deploy and scale your Nuxt applications worldwide with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and withfull-stack capabilities.'
+  description: 'Deploy and scale your Nuxt applications worldwide with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and with full-stack capabilities.'
   img:
     width: '1439'
     height: '681'
