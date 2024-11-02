@@ -39,7 +39,7 @@ export default defineNuxtConfig({
   hub: {
     vectorize: {
       products: {
-        dimensions: '768',
+        dimensions: 768,
         metric: 'cosine',
         metadataIndexes: {
           name: 'string',
@@ -47,7 +47,7 @@ export default defineNuxtConfig({
         }
       },
       reviews: {
-        dimensions: '1024',
+        dimensions: 1024,
         metric: 'euclidean',
         metadataIndexes: {
           rating: 'number'
