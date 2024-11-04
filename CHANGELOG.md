@@ -1,6 +1,29 @@
 # Changelog
 
 
+## v0.8.5
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.4...v0.8.5)
+
+### 🩹 Fixes
+
+- Support nitro dir as priority instead of publicDir ([f21dfa1](https://github.com/nuxt-hub/core/commit/f21dfa1))
+- **openapi:** Use new Nitro 2.10 format ([#365](https://github.com/nuxt-hub/core/pull/365))
+
+### 📖 Documentation
+
+- Add db migrations ([b5b66f9](https://github.com/nuxt-hub/core/commit/b5b66f9))
+- Add note about preview and prod deployments ([b4cbe99](https://github.com/nuxt-hub/core/commit/b4cbe99))
+- Use h3 instead ([7ad1fee](https://github.com/nuxt-hub/core/commit/7ad1fee))
+- Typo index page ([#361](https://github.com/nuxt-hub/core/pull/361))
+- Update `vectorize.dimensions` example to numbers ([#362](https://github.com/nuxt-hub/core/pull/362))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Max ([@onmax](http://github.com/onmax))
+- Cyril ([@cyrilf](http://github.com/cyrilf))
+
 ## v0.8.4
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.3...v0.8.4)
