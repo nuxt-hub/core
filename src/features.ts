@@ -58,6 +58,7 @@ export interface HubConfig {
   }
 
   migrationsPath?: string
+  openAPIRoute?: string
 }
 
 export function setupBase(nuxt: Nuxt, hub: HubConfig) {
@@ -237,12 +238,15 @@ export function vectorizeRemoteCheck(hub: HubConfig) {
   }
 }
 
-export function setupOpenAPI(nuxt: Nuxt) {
-  // Fallback to custom placeholder when openAPI is disabled
-  nuxt.options.alias['#hub/openapi'] = nuxt.options.nitro?.experimental?.openAPI === true
-    ? 'nitropack/runtime/routes/openapi'
-    : resolve('./runtime/openapi/server/templates/openapi')
-
+export function setupOpenAPI(nuxt: Nuxt, hub: HubConfig) {
+  nuxt.options.nitro ||= {}
+  nuxt.options.nitro.openAPI ||= {}
+  nuxt.options.nitro.openAPI.production ||= 'runtime'
+  nuxt.options.nitro.openAPI.route ||= '/api/_hub/openapi.json'
+  nuxt.options.nitro.openAPI.ui ||= {}
+  nuxt.options.nitro.openAPI.ui.scalar ||= false
+  nuxt.options.nitro.openAPI.ui.swagger ||= false
+  hub.openAPIRoute = nuxt.options.nitro.openAPI.route
   addServerScanDir(resolve('./runtime/openapi/server'))
 }
 
