@@ -67,7 +67,6 @@ export default defineNuxtModule<ModuleOptions>({
       // Extra bindings for the project
       bindings: {
         hyperdrive: {},
-        // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
         compatibilityFlags: nuxt.options.nitro.cloudflare?.wrangler?.compatibility_flags
       },
       // Cloudflare Access
@@ -79,12 +78,9 @@ export default defineNuxtModule<ModuleOptions>({
     runtimeConfig.hub = hub
     runtimeConfig.public.hub = {}
     // Make sure to tell Nitro to not generate the wrangler.toml file
-    // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
     delete nuxt.options.nitro.cloudflare?.wrangler?.compatibility_flags
-    // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
     if (nuxt.options.nitro.cloudflare?.wrangler && Object.keys(nuxt.options.nitro.cloudflare.wrangler).length) {
       log.warn('The `nitro.cloudflare.wrangler` defined options are not supported by NuxtHub, ignoring...')
-      // @ts-expect-error nitro.cloudflare.wrangler is not yet typed
       nuxt.options.nitro.cloudflare.wrangler = {}
     }
     // validate remote option
