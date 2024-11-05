@@ -147,7 +147,7 @@ onMounted(() => {
             </template>
           </UTable>
           <div v-if="item.buttons?.length" class="mt-2 flex items-center gap-2 justify-center">
-            <UButton v-for="button of item.buttons" :key="button.to" v-bind="button" color="gray" size="xs" variant="link" trailing-icon="i-ph-arrow-up-right" target="_blank" />
+            <UButton v-for="button of item.buttons" :key="button.to" v-bind="button" color="gray" size="xs" variant="link" trailing-icon="i-lucide-arrow-up-right" target="_blank" />
           </div>
         </template>
       </UTabs>

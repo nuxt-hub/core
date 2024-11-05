@@ -1,6 +1,6 @@
 title: 'Pricing'
 description: 'Get started with NuxtHub for free and upgrade as you grow.'
-icon: i-ph-credit-card
+icon: i-lucide-credit-card
 hero:
   headline: '2 months off with yearly plan'
   title: 'Start for free, upgrade <span class="text-primary">as you grow</span>'
@@ -19,22 +19,22 @@ pricing:
       cycle: ''
       features:
         - title: 'One member'
-          icon: i-ph-user-fill
+          icon: i-lucide-user
         - title: 'Up to 5 projects'
-          icon: i-ph-app-window-fill
+          icon: i-lucide-panels-top-left
         - title: 'Unlimited deployments'
-          icon: i-ph-rocket-launch-fill
+          icon: i-lucide-cloud-upload
         - title: 'Custom domains'
-          icon: i-ph-globe-stand-fill
+          icon: i-lucide-globe
         - title: 'Remote Storage'
-          icon: i-ph-cloud-fill
-        - title: 'Deploy to your Cloudflare account'
-          icon: i-simple-icons-cloudflare
+          icon: i-lucide-hard-drive-upload
+        - title: 'Community support'
+          icon: i-lucide-message-circle-question
       button:
         label: 'Get started for free'
         color: 'gray'
         to: https://admin.hub.nuxt.com
-    - title: 'Pro'
+    - title: 'Team'
       description: 'Everything in Solo, plus higher limits and team features.'
       price:
         monthly: '$12'
@@ -46,17 +46,17 @@ pricing:
       scale: true
       features:
         - title: 'Collaborate with your team'
-          icon: i-ph-users-fill
+          icon: i-lucide-users
         - title: 'Unlimited projects'
-          icon: i-ph-app-window-fill
+          icon: i-lucide-panels-top-left
         - title: 'Unlimited deployments'
-          icon: i-ph-rocket-launch-fill
-        - title: 'Access control on remote storage'
-          icon: i-ph-cloud-check-fill
+          icon: i-lucide-cloud-upload
+        - title: 'Access control on remote storage (soon)'
+          icon: i-lucide-user-cog
         - title: 'Early access to new features'
-          icon: i-ph-confetti-fill
+          icon: i-lucide-gift
         - title: 'Priority support'
-          icon: i-ph-question-fill
+          icon: i-lucide-circle-help
       button:
         label: 'Get started as a team'
         to: https://admin.hub.nuxt.com
@@ -64,25 +64,27 @@ pricing:
         inner: 'justify-between'
         body:
           background: 'bg-gradient-to-t from-primary/10 via-white to-white dark:from-primary/20 dark:via-gray-900 dark:to-gray-900 rounded-xl'
-    - title: 'On-Premise'
-      description: 'Deploy NuxtHub on your own infrastructure.'
+    - title: 'Enterprise'
+      description: 'For large teams with advanced usage and needs.'
       cycle: ''
       price: 'Custom'
       features:
-        - title: 'Unlimited projects'
-          icon: i-ph-app-window-fill
-        - title: 'Unlimited teams'
-          icon: i-ph-users-four-fill
         - title: 'Unlimited members'
-          icon: i-ph-users-fill
-        - title: 'Self-host NuxtHub Admin'
-          icon: i-ph-computer-tower-fill
-        - title: 'Priority Support'
-          icon: i-ph-question-fill
+          icon: i-lucide-users
+        - title: 'Unlimited projects'
+          icon: i-lucide-panels-top-left
+        - title: 'Unlimited deployments'
+          icon: i-lucide-cloud-upload
+        - title: 'Advanced access control'
+          icon: i-lucide-user-cog
+        - title: 'Custom feature development'
+          icon: i-lucide-code
+        - title: 'Dedicated support'
+          icon: i-lucide-shield-question
       button:
         label: 'Contact us'
         color: gray
-        to: 'mailto:hub@nuxt.com?subject=On-Premise%20Deployment&body=Hi%20NuxtHub%20Team%2C%0A%0AI%20am%20interested%20in%20deploying%20NuxtHub%20on%20my%20own%20infrastructure.%0A%0AKind%20regards%2C'
+        to: 'mailto:hub@nuxt.com?subject=Enterprise%20Offer&body=Hi%20NuxtHub%20Team%2C%0A%0AI%20am%20interested%20in%20the%20Enterprise%20offer.%0A%0AKind%20regards%2C'
   info: 'Prices does not include your <a href="https://www.cloudflare.com/plans/developer-platform/" target="_blank" class="underline underline-offset-4 dark:hover:text-white hover:text-gray-900">Cloudflare costs</a>.'
   contact:
     title: 'Are you an open source or non-profit organization?'
@@ -96,7 +98,7 @@ cloudflare:
   description: 'You can start for free with Cloudflare and seamlessly upgrade to Workers Paid plan when needed for $5/month.'
   plans:
     - label: 'App'
-      icon: i-ph-app-window-fill
+      icon: i-lucide-panels-top-left
       buttons:
         - label: 'Cloudflare Workers pricing'
           to: 'https://developers.cloudflare.com/workers/platform/pricing/'
@@ -124,7 +126,7 @@ cloudflare:
           free: '100'
           paid: '500'
     - label: 'DB'
-      icon: i-ph-database-fill
+      icon: i-lucide-database
       buttons:
         - label: 'Cloudflare D1 pricing'
           to: 'https://developers.cloudflare.com/d1/platform/pricing/'
@@ -152,7 +154,7 @@ cloudflare:
           free: '500 MB'
           paid: '10 GB (<a href="https://developers.cloudflare.com/d1/platform/limits/" target="_blank" class="underline underline-offset-2 dark:hover:text-gray-200 hover:text-gray-900">learn more</a>)'
     - label: 'KV'
-      icon: i-ph-coin-fill
+      icon: i-lucide-list
       buttons:
         - label: 'Cloudflare KV pricing'
           to: 'https://developers.cloudflare.com/kv/platform/pricing/'
@@ -180,7 +182,7 @@ cloudflare:
           free: '1 GB'
           paid: '1 GB + $0.50/GB-month'
     - label: 'Blob'
-      icon: i-ph-shapes-fill
+      icon: i-lucide-shapes
       buttons:
         - label: 'Cloudflare R2 pricing'
           to: 'https://developers.cloudflare.com/r2/pricing/'
@@ -205,7 +207,7 @@ cloudflare:
           free: 'Unlimited'
           paid: 'Unlimited'
     - label: 'AI'
-      icon: i-ph-sparkle-fill
+      icon: i-lucide-wand
       buttons:
         - label: 'Cloudflare AI pricing'
           to: 'https://developers.cloudflare.com/workers-ai/platform/pricing/'
@@ -230,7 +232,7 @@ cloudflare:
           free: '10 minutes of audio / day'
           paid: '10 minutes of audio / day + $0.0039 per minute of audio input'
     - label: 'Vectorize'
-      icon: i-ph-circles-three-fill
+      icon: i-lucide-move-3d
       buttons:
         - label: 'Cloudflare Vectorize pricing'
           to: 'https://developers.cloudflare.com/vectorize/platform/pricing/'
@@ -256,7 +258,7 @@ cloudflare:
     external: true
     variant: 'link'
     padded: false
-    trailingIcon: 'i-ph-arrow-up-right'
+    trailingIcon: 'i-lucide-arrow-up-right'
     color: black
     to: 'https://www.cloudflare.com/plans/developer-platform/'
 faq:

@@ -1,7 +1,7 @@
 <template>
   <Alert
     title="Note"
-    icon="i-ph-info-duotone"
+    icon="i-lucide-info"
     color="blue"
     class="_note"
     :class="$attrs.to ? 'dark:hover:!border-blue-600/50 hover:!border-blue-400/50' : ''"

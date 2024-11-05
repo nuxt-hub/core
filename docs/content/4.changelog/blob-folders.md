@@ -34,7 +34,7 @@ await put('my-blob.txt', myFile, {
 })
 ```
 
-::callout{icon="i-ph-book-open-duotone" to="/docs/features/blob"}
+::callout{icon="i-lucide-book" to="/docs/features/blob"}
 Learn more about Blob Storage.
 ::
 
@@ -42,6 +42,6 @@ When viewing your blobs in the [NuxtHub admin](https://admin.hub.nuxt.com), you 
 
 :nuxt-img{src="/images/changelog/server-cache.png" alt="NuxtHub Deployment Details" width="915" height="515"}
 
-::callout{icon="i-ph-heart-duotone"}
+::callout{icon="i-lucide-heart"}
 Thank you to [Gerben Mulder](https://github.com/Gerbuuun) for suggesting this feature on [nuxt-hub/core#101](https://github.com/nuxt-hub/core/issues/101).
 ::

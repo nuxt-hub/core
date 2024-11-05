@@ -89,7 +89,7 @@ defineOgImageComponent('Docs')
           <UButton
             v-if="template.demoUrl"
             label="Demo"
-            icon="i-ph-desktop-duotone"
+            trailing-icon="i-lucide-arrow-up-right"
             :to="template.demoUrl"
             target="_blank"
             size="sm"
@@ -99,7 +99,7 @@ defineOgImageComponent('Docs')
           />
           <UButton
             label="Deploy"
-            icon="i-ph-rocket-launch-duotone"
+            icon="i-lucide-cloud-upload"
             :to="`https://hub.nuxt.com/new?template=${template.slug}`"
             size="sm"
             color="gray"

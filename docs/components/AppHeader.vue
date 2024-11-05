@@ -6,23 +6,23 @@ const links = [
   {
     label: 'Docs',
     to: '/docs/getting-started',
-    icon: 'i-ph-books'
+    icon: 'i-lucide-book'
   }, {
     label: 'Templates',
     to: '/templates',
-    icon: 'i-ph-layout'
+    icon: 'i-lucide-panels-top-left'
   }, {
     label: 'Pricing',
     to: '/pricing',
-    icon: 'i-ph-credit-card'
+    icon: 'i-lucide-credit-card'
   }, {
     label: 'Changelog',
     to: '/changelog',
-    icon: 'i-ph-pulse'
+    icon: 'i-lucide-megaphone'
   }, {
     label: 'Blog',
     to: '/blog',
-    icon: 'i-ph-newspaper'
+    icon: 'i-lucide-newspaper'
   }
 ]
 const navLinks = links.map((link) => {
@@ -74,7 +74,7 @@ onMounted(async () => {
         <UColorModeButton class="hidden md:inline-flex" />
         <UButton v-if="ready && !authenticated" size="sm" variant="ghost" label="Log in" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" color="gray" class="hidden sm:inline-flex" external />
         <UButton v-if="ready && !authenticated" size="sm" variant="solid" label="Get started" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="hidden sm:inline-flex" external />
-        <UButton v-if="ready && authenticated" size="sm" icon="i-ph-app-window-duotone" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" color="green" class="hidden sm:inline-flex" external />
+        <UButton v-if="ready && authenticated" size="sm" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" color="green" class="hidden sm:inline-flex" external />
       </div>
     </template>
 
@@ -85,7 +85,7 @@ onMounted(async () => {
         <UDivider class="mb-4" />
         <UButton v-if="ready && !authenticated" variant="solid" label="Log in" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" color="white" class="flex justify-center sm:hidden" external />
         <UButton v-if="ready && !authenticated" variant="solid" label="Sign up" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
-        <UButton v-if="ready && authenticated" variant="solid" color="green" icon="i-ph-app-window-duotone" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
+        <UButton v-if="ready && authenticated" variant="solid" color="green" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
       </div>
     </template>
   </UHeader>

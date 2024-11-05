@@ -63,7 +63,7 @@ onMounted(() => {
     <UPage>
       <UPageHeader :title="post.title" :description="post.description" :ui="{ headline: 'flex flex-col gap-y-8 items-start', description: 'text-gray-700 dark:text-gray-300' }">
         <template #headline>
-          <UBreadcrumb :links="[{ label: 'Blog', icon: 'i-ph-newspaper-duotone', to: '/blog' }, { label: post.title }]" :ui="{ wrapper: 'max-w-full' }" />
+          <UBreadcrumb :links="[{ label: 'Blog', to: '/blog' }, { label: post.title }]" :ui="{ wrapper: 'max-w-full' }" />
           <div class="flex items-center space-x-2">
             <UBadge :label="post?.category || 'Article'" color="gray" />
             <span class="text-gray-500 dark:text-gray-400">&middot;&nbsp;&nbsp;<time>{{ formatDateByLocale('en', post.date) }}</time></span>
@@ -95,12 +95,12 @@ onMounted(() => {
           <ContentRenderer v-if="post && post.body" :value="post" />
           <PageSectionCTA />
           <div class="flex items-center justify-between mt-12 not-prose">
-            <UButton to="/blog" variant="link" :padded="false" color="gray" icon="i-ph-arrow-left">
+            <UButton to="/blog" variant="link" :padded="false" color="gray" icon="i-lucide-arrow-left">
               Back to blog
             </UButton>
             <div class="flex justify-end items-center gap-1.5">
               Share:
-              <UButton icon="i-ph-link-simple" color="gray" variant="ghost" @click="copyLink" />
+              <UButton icon="i-lucide-link" color="gray" variant="ghost" @click="copyLink" />
               <UButton
                 v-for="(link, index) in socialLinks"
                 :key="index"

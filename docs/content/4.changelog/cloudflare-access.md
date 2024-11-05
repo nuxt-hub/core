@@ -27,6 +27,6 @@ We now fully support Cloudflare Access across admin, module and CLI.
 
 This enables you to create secure internal web applications on NuxtHub, without compromising on features like NuxtHub admin for management and remote storage during development.
 
-::callout{to="/docs/recipes/cloudflare-access" icon="i-ph-book-open-duotone"}
+::callout{to="/docs/recipes/cloudflare-access" icon="i-lucide-book"}
 Learn more about enabling Cloudflare Access with NuxtHub.
 ::

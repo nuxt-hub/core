@@ -18,7 +18,7 @@ const { copy, copied } = useClipboard()
       <div class="absolute inset-0" :class="[copied ? 'cursor-default' : 'cursor-copy']" @click="copy(value)" />
       <template #trailing>
         <UButton
-          :icon="copied ? 'i-ph-check' : 'i-ph-copy'"
+          :icon="copied ? 'i-lucide-check' : 'i-lucide-copy'"
           color="gray"
           variant="link"
           :padded="false"

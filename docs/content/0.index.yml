@@ -12,7 +12,7 @@ hero:
   headline:
     label: "Cloudflare Access integration"
     to: /changelog/cloudflare-access
-    icon: i-ph-arrow-right
+    icon: i-lucide-arrow-right
 features:
   - name: Cloud Hosting
     description: Deploy your application with confidence on our Nuxt-optimized Cloud hosting platform.
@@ -20,35 +20,35 @@ features:
     to: /docs/getting-started/deploy
   - name: SQL Database
     description: Add SQL databases to your app and build any kind of full-stack applications.
-    icon: i-ph-database
+    icon: i-lucide-database
     to: /docs/features/database
   - name: Files Storage
     description: Upload, store and serve images, videos and any kind of file.
-    icon: i-ph-shapes
+    icon: i-lucide-shapes
     to: /docs/features/blob
   - name: KV Storage
     description: Leverage a Key-Value data store replicated globally for maximum performance.
-    icon: i-ph-coin
+    icon: i-lucide-list
     to: /docs/features/kv
   - name: Caching
     description: Cache Nuxt pages, API routes and server functions on the Edge.
-    icon: i-ph-lightning
+    icon: i-lucide-zap
     to: /docs/features/cache
   - name: AI & Vectorize
     description: Run generative AI tasks on a global network and build full-stack AI applications.
-    icon: i-ph-magic-wand
+    icon: i-lucide-wand
     to: /docs/features/ai
   - name: Analytics Engine
     description: Write data points & query with an SQL API with a unlimited-cardinality analytics service at scale.
-    icon: i-ph-chart-bar
+    icon: i-lucide-bar-chart-4
     soon: true
   - name: Real-time & sockets
     description: Create collaborative applications, real-time chat, multiplayer games and more.
-    icon: i-ph-cursor-click
+    icon: i-lucide-mouse-pointer-click
     soon: true
   - name: Cron Triggers & Queues
     description: Run periodic jobs with cron triggers & make sure to guarantee delivery with queues.
-    icon: i-ph-timer
+    icon: i-lucide-timer
     soon: true
 creator:
   quote: "I created NuxtHub to give Nuxt developers the hosting solution I always wanted: blazing-fast performance on Cloudflare's edge network, a Nuxt-like developer experience and the freedom to own your infrastructure. With a generous free tier & predictable pricing, NuxtHub allows you to deploy your ideas without upfront costs or lock-in concerns. It's hosting that gets out of your way, so you can focus on building great applications."
@@ -64,13 +64,13 @@ tool:
   description: NuxtHub offers a comprehensive suite of tools and features to let you build and deploy full-stack Nuxt applications worldwide.
   links:
     - label: Get started for free
-      trailing-icon: i-ph-arrow-right
+      trailing-icon: i-lucide-arrow-right
       to: https://admin.hub.nuxt.com
       external: true
       color: black
       size: md
     - label: Watch a 3 min intro
-      trailing-icon: i-ph-play-circle
+      trailing-icon: i-lucide-circle-play
       color: gray
       size: md
       variant: ghost
@@ -80,40 +80,40 @@ tool:
   features:
     - title: 'Edge Rendering'
       description: 'Your Nuxt apps render in milliseconds from 300+ locations around the world.'
-      icon: i-ph-globe
+      icon: i-lucide-rocket
     - title: 'Hybrid Rendering'
       description: 'Render your Nuxt app with SSR, SPA or pre-rendering at the page level.'
-      icon: i-ph-sparkle
+      icon: i-lucide-split
     - title: 'Auto Scaling'
       description: 'Your app handles traffic spikes without manual intervention.'
-      icon: i-ph-arrows-out
+      icon: i-lucide-move-diagonal
     - title: 'Global CDN'
       description: "Leverages Cloudflare's worldwide network to deliver blazing fast static assets."
       icon: i-simple-icons-cloudflare
     - title: 'Instant Rollbacks'
       description: 'Quickly revert to previous deployments with one click if issues arise.'
-      icon: i-ph-arrow-counter-clockwise
+      icon: i-lucide-undo
     - title: 'Preview Deployments'
       description: 'Test pull requests and branches in isolated environments before going live.'
-      icon: i-ph-desktop
+      icon: i-lucide-toggle-right
     - title: 'Custom Domains'
       description: 'Easy setup for your own domains or use our free .nuxt.dev subdomains.'
-      icon: i-ph-cloud
+      icon: i-lucide-globe
     - title: 'Highly affordable'
       description: 'Pay only for what you use, no hidden fees. Start for free with a generous solo plan.'
-      icon: i-ph-money
+      icon: i-lucide-calculator
     - title: 'Environment Variables'
       description: 'Securely store secrets, API keys, tokens, and other environment variables.'
-      icon: i-ph-lock
+      icon: i-lucide-lock
     - title: 'Automatic HTTPS'
       description: 'SSL certificates are provisioned and renewed automatically.'
-      icon: i-ph-shield-check
+      icon: i-lucide-shield-check
     - title: 'Real-time Logs'
       description: 'Access to your Nuxt server logs in real-time for debugging purposes.'
-      icon: i-ph-list-magnifying-glass
+      icon: i-lucide-logs
     - title: 'Import from Git'
       description: 'Select a repository from your favourite Git provider and deploy it globally.'
-      icon: i-ph-git-branch
+      icon: i-lucide-git-branch
 deploy:
   title: Deploy a Nuxt application <span class="text-primary">in one minute</span>.
   description: Once you've linked your Cloudflare account, deploy your Nuxt application all over the world with our CLI or from Git.<br>You also get a free <span class="font-semibold">.nuxt.dev</span> domain.
@@ -148,14 +148,14 @@ deploy:
         height: 259
   links:
     - label: Deploy now
-      trailing-icon: i-ph-arrow-right
+      trailing-icon: i-lucide-arrow-right
       color: black
       size: md
       to: /docs/getting-started/deploy#nuxthub-cli
     - label: Watch a 1 min demo
       color: gray
       variant: ghost
-      trailing-icon: i-ph-play-circle
+      trailing-icon: i-lucide-circle-play
       to: 'https://www.youtube.com/watch?v=NgmyCN4bIp0'
       target: _blank
       id: demo-video
@@ -171,17 +171,17 @@ database:
     height: 293
   headline:
     title: Database
-    icon: i-ph-database
+    icon: i-lucide-database
   title: A Scalable SQL Database
   description: 'NuxtHub Database unlocks the power of <a class="font-semibold text-gray-800 dark:text-gray-300 hover:underline underline-offset-4" href="https://developers.cloudflare.com/d1/" target="_blank">Cloudflare D1</a> to give you access to a serverless SQL database, with zero configuration.
   Scale and manage effortlessly, and pay only for what you use.'
   features:
-    - name: 'hubDatabase() server composable'
-      icon: i-ph-plugs-fill
+    - name: 'hubDatabase() server helper'
+      icon: i-lucide-square-function
     - name: 'Database browser'
-      icon: i-ph-sidebar-fill
-    - name: 'Nuxt DevTools integration'
-      icon: i-simple-icons-nuxtdotjs
+      icon: i-lucide-table
+    - name: 'Automatic database migrations'
+      icon: i-lucide-circle-check
 blob:
   img:
     srcDark: '/images/landing/nuxthub-admin-blob-dark.svg'
@@ -190,14 +190,14 @@ blob:
     height: 317
   headline:
     title: Blob
-    icon: i-ph-shapes
+    icon: i-lucide-shapes
   title: Add & Manage File Uploads
   description: 'NuxtHub Blob lets you store and access media files on a global network thanks to <a class="font-semibold text-gray-800 dark:text-gray-200 hover:underline underline-offset-4" href="https://developers.cloudflare.com/r2/" target="_blank">Cloudflare R2</a>. Allow users to securely upload data-like images, videos and audio files with our server helpers.'
   features:
-    - name: 'hubBlob() server composable'
-      icon: i-ph-plugs-fill
+    - name: 'hubBlob() server helper'
+      icon: i-lucide-square-function
     - name: 'Dashboard to upload and manage files'
-      icon: i-ph-folder-simple-fill
+      icon: i-lucide-panel-left
     - name: 'Manage blobs in the Nuxt DevTools'
       icon: i-simple-icons-nuxtdotjs
 kv:
@@ -208,15 +208,15 @@ kv:
     height: 310
   headline:
     title: Key-Value
-    icon: i-ph-coin
+    icon: i-lucide-list
   title: A Global Key-Value Database
   description: 'NuxtHub KV leverages <a href="https://developers.cloudflare.com/kv/" target="_blank" class="font-semibold text-gray-800 dark:text-gray-200 hover:underline underline-offset-4">Cloudflare Workers KV</a> to access a global, low-latency, key-value data storage across 300+ global locations.
 Access it in your Nuxt codebase, with zero-configuration.'
   features:
-    - name: 'hubKV() server composable'
-      icon: i-ph-plugs-fill
+    - name: 'hubKV() server helper'
+      icon: i-lucide-square-function
     - name: 'Key-Value storage visual browser'
-      icon: i-ph-sidebar-fill
+      icon: i-lucide-panel-left
     - name: 'Manage KV storage in the Nuxt DevTools'
       icon: i-simple-icons-nuxtdotjs
 ai:
@@ -227,16 +227,16 @@ ai:
     height: 326
   headline:
     title: AI & Vectorize
-    icon: i-ph-magic-wand
+    icon: i-lucide-wand
   title: Build Full-Stack AI Apps
-  description: 'Run generative AI tasks on a global network of NVIDIA GPUs with no extra setup and build full-stack Nuxt AI applications with our AI & Vectorize server composables.'
+  description: 'Run generative AI tasks on a global network of NVIDIA GPUs with no extra setup and build full-stack Nuxt AI applications with our AI & Vectorize server helpers.'
   features:
-    - name: 'hubAI() & hubVectorize() server composables'
-      icon: i-ph-plugs-fill
+    - name: 'hubAI() & hubVectorize() server helpers'
+      icon: i-lucide-square-function
     - name: 'Run 60+ machine learning models'
-      icon: i-ph-circuitry-fill
+      icon: i-lucide-cpu
     - name: 'Access a vector database to create RAG applications'
-      icon: i-ph-vector-three-fill
+      icon: i-lucide-move-3d
 cache:
   img:
     srcDark: '/images/landing/nuxthub-admin-cache-dark.svg'
@@ -245,16 +245,16 @@ cache:
     height: 310
   headline:
     title: Caching
-    icon: i-ph-speedometer
+    icon: i-lucide-database-zap
   title: Optimize your Nuxt app performance
   description: "NuxtHub's Cache feature provides powerful tools to optimize your application's performance by caching pages, API routes, and server functions. This can significantly reduce load times and improve user experience."
   features:
     - name: 'API Routes Caching'
-      icon: i-ph-signpost-fill
+      icon: i-lucide-signpost
     - name: 'Server Functions Caching'
-      icon: i-ph-function-fill
+      icon: i-lucide-square-function
     - name: 'Cache storage browser management'
-      icon: i-ph-sidebar-fill
+      icon: i-lucide-panel-left
 browser:
   img:
     srcDark: '/images/landing/nuxthub-admin-browser-dark.svg'
@@ -263,16 +263,16 @@ browser:
     height: 326
   headline:
     title: Browser Rendering
-    icon: i-ph-google-chrome-logo-fill
+    icon: i-lucide-chrome
   title: Access a headless browser on the edge
   description: "Simplify your web workflows with headless browser capabilities. From basic image capture to complex data extraction, NuxtHub lets you automate tasks. Experience the power of web automation in a single click."
   features:
-    - name: 'hubBrowser() server composables'
-      icon: i-ph-plugs-fill
+    - name: 'hubBrowser() server helpers'
+      icon: i-lucide-square-function
     - name: 'Access a headless browser on the edge'
-      icon: i-ph-globe
+      icon: i-lucide-globe
     - name: 'Take screenshots of web pages'
-      icon: i-ph-camera-plus-fill
+      icon: i-lucide-camera
 storage:
   img:
     srcDark: '/images/landing/nuxthub-remote-access-dark.svg'
@@ -281,16 +281,16 @@ storage:
     height: 284
   headline:
     title: Remote Storage
-    icon: i-ph-cloud
+    icon: i-lucide-hard-drive-upload
   title: Works locally as a team with shared data
   description: NuxtHub grants the ability to access your remote storage from your local environment or from external Nuxt projects. This is made possible by our secured proxy system.
   features:
     - name: "Work as a team on the same database"
-      icon: i-ph-users-fill
-    - name: "Apply migrations or scripts to your remote storage"
-      icon: i-ph-terminal-fill
+      icon: i-lucide-users
+    - name: "Apply scripts to your remote storage"
+      icon: i-lucide-terminal
     - name: "Lock/Unlock access to your production with one click"
-      icon: i-ph-lock-fill
+      icon: i-lucide-lock
 testimonials:
   title: 'What people say about us'
   description: 'NuxtHub empowers developers to ship full-stack Nuxt applications with zero configuration. Hear what they think about it.'

@@ -36,20 +36,20 @@ const capture = async () => {
       <div class="flex lg:flex-row flex-col items-center gap-2">
         <UInput v-model="url" type="url" class="w-full flex-1" placeholder="https://hub.nuxt.com" />
         <USelect v-model="theme" :options="['light', 'dark']" />
-        <UButton type="submit" icon="i-ph-camera-duotone" size="sm" :loading="loading">
+        <UButton type="submit" icon="i-lucide-camera" size="sm" :loading="loading">
           Capture
         </UButton>
       </div>
     </template>
-    <UAlert v-if="!image" :title="loading ? 'Capturing...' : 'No screenshot captured'" color="white" icon="i-ph-info-duotone" />
+    <UAlert v-if="!image" :title="loading ? 'Capturing...' : 'No screenshot captured'" color="white" icon="i-lucide-info" />
     <img v-if="image" :src="image" class="rounded border dark:border-gray-800" style="aspect-ratio: 16/9;" :class="{ 'animate-pulse': loading }">
-    <UAlert v-if="framework" class="mt-4" :class="{ 'animate-pulse': loading }" :title="`This website is made with ${framework}`" color="white" icon="i-ph-code-duotone" />
+    <UAlert v-if="framework" class="mt-4" :class="{ 'animate-pulse': loading }" :title="`This website is made with ${framework}`" color="white" icon="i-lucide-code-xml" />
     <p class="mt-4">
       Or open our <UButtonGroup>
         <UButton to="/invoice.pdf" external color="gray">
           PDF invoice
         </UButton>
-        <UButton to="/invoice.pdf" external download color="gray" icon="i-ph-download-duotone" />
+        <UButton to="/invoice.pdf" external download color="gray" icon="i-lucide-download" />
       </UButtonGroup>
     </p>
   </UCard>

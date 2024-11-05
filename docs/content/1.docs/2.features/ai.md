@@ -78,7 +78,7 @@ export default defineEventHandler(async () => {
 
 Workers AI comes with a curated set of popular open-source models that enable you to do tasks such as image classification, text generation, object detection and more.
 
-:u-button{icon="i-ph-arrow-square-out" trailing to="https://developers.cloudflare.com/workers-ai/models/" target="_blank" label="See all Workers AI models"}
+:u-button{icon="i-lucide-arrow-up-right" trailing to="https://developers.cloudflare.com/workers-ai/models/" target="_blank" label="See all Workers AI models"}
 
 ## Streaming
 

@@ -1,7 +1,7 @@
 <template>
   <Alert
     title="Important"
-    icon="i-ph-warning-diamond-duotone"
+    icon="i-lucide-badge-alert"
     color="violet"
     class="_important"
     :class="$attrs.to ? 'dark:hover:!border-violet-600/50 hover:!border-violet-400/50' : ''"

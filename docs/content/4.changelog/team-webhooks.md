@@ -42,6 +42,6 @@ When pasting a webhook URL from these services, we will automatically send a pre
 
 :nuxt-img{src="/images/changelog/team-webhooks-slack.png" alt="NuxtHub Slack Integration" width="915" height="515"}
 
-::callout{icon="i-ph-heart-duotone"}
+::callout{icon="i-lucide-heart"}
 Thank you to [Israel Ortuno](https://github.com/IsraelOrtuno) for suggesting this feature on [nuxt-hub/core#102](https://github.com/nuxt-hub/core/issues/102).
 ::

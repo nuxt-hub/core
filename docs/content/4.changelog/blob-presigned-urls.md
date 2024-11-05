@@ -65,7 +65,7 @@ const { url } = await client.sign(endpoint, {
 })
 ```
 
-::callout{icon="i-ph-book-open-duotone" to="/docs/features/blob#create-presigned-urls-to-upload-files-to-r2"}
+::callout{icon="i-lucide-book" to="/docs/features/blob#create-presigned-urls-to-upload-files-to-r2"}
 Checkout the example on how to create a presigned URL with NuxtHub.
 ::
 

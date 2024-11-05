@@ -28,10 +28,10 @@ We also added the possibility to add a name to the webhook for better identifica
 
 :nuxt-img{src="/images/changelog/team-webhooks-env.png" alt="Team Webhooks Env selection" width="915" height="515" class="rounded"}
 
-::callout{icon="i-ph-webhooks-logo" to="/changelog/team-webhooks"}
+::callout{icon="i-lucide-webhooks" to="/changelog/team-webhooks"}
 Learn more about team webhooks.
 ::
 
-::callout{icon="i-ph-heart-duotone"}
+::callout{icon="i-lucide-heart"}
 Thank you to [Estéban Soubiran](https://github.com/Barbapapazes) for suggesting this feature on [nuxt-hub/core#127](https://github.com/nuxt-hub/core/issues/127).
 ::

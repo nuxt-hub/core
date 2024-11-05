@@ -8,7 +8,7 @@ export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
       category: 'server',
       name: 'hub-database',
       title: 'Hub Database',
-      icon: 'i-ph-database',
+      icon: 'i-lucide-database',
       view: {
         type: 'iframe',
         src: `https://admin.hub.nuxt.com/embed/database?url=${url}`
@@ -19,7 +19,7 @@ export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
       category: 'server',
       name: 'hub-kv',
       title: 'Hub KV',
-      icon: 'i-ph-coin',
+      icon: 'i-lucide-list',
       view: {
         type: 'iframe',
         src: `https://admin.hub.nuxt.com/embed/kv?url=${url}`
@@ -30,7 +30,7 @@ export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
       category: 'server',
       name: 'hub-blob',
       title: 'Hub Blob',
-      icon: 'i-ph-shapes',
+      icon: 'i-lucide-shapes',
       view: {
         type: 'iframe',
         src: `https://admin.hub.nuxt.com/embed/blob?url=${url}`
@@ -41,7 +41,7 @@ export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
       category: 'server',
       name: 'hub-cache',
       title: 'Hub Cache',
-      icon: 'i-ph-lightning',
+      icon: 'i-lucide-database-zap',
       view: {
         type: 'iframe',
         src: `https://admin.hub.nuxt.com/embed/cache?url=${url}`

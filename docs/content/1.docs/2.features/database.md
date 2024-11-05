@@ -67,7 +67,7 @@ const stmt = db.prepare('SELECT * FROM users WHERE name = ?1')
 stmt.bind('Evan You')
 ```
 
-::callout{icon="i-ph-info-duotone"}
+::note
 The `?` character followed by a number (1-999) represents an ordered parameter. The number represents the position of the parameter when calling `.bind(...params)`.
 ::
 

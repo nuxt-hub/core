@@ -68,7 +68,7 @@ onMounted(() => {
       <template #links>
         <div class="flex flex-col gap-y-6">
           <div class="flex flex-wrap gap-x-6 gap-y-3">
-            <UButton to="https://admin.hub.nuxt.com" external size="md" trailing-icon="i-ph-arrow-right">
+            <UButton to="https://admin.hub.nuxt.com" external size="md" trailing-icon="i-lucide-arrow-right">
               Get started for free
             </UButton>
             <UInputCopy value="npx nuxthub deploy" size="md" />
@@ -161,7 +161,7 @@ onMounted(() => {
               {{ feature.name }} <UBadge v-if="feature.soon" color="white" size="xs" class="rounded-full">
                 Soon
               </UBadge>
-              <UIcon v-if="feature.to" name="i-ph-arrow-right" class="size-4 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all duration-200 -translate-x-1 group-hover:translate-x-0" />
+              <UIcon v-if="feature.to" name="i-lucide-arrow-right" class="size-4 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all duration-200 -translate-x-1 group-hover:translate-x-0" />
             </h2>
             <p class="text-sm text-gray-500 dark:text-gray-400">
               {{ feature.description }}
@@ -298,7 +298,7 @@ onMounted(() => {
             <span>{{ feature.name }}</span>
           </div>
           <div>
-            <UButton to="/docs/features/database" size="xs" trailing-icon="i-ph-arrow-right" color="gray" :padded="false" variant="link">
+            <UButton to="/docs/features/database" size="xs" trailing-icon="i-lucide-arrow-right" color="gray" :padded="false" variant="link">
               Learn more
             </UButton>
           </div>
@@ -342,7 +342,7 @@ onMounted(() => {
             <span>{{ feature.name }}</span>
           </div>
           <div>
-            <UButton to="/docs/features/blob" size="xs" trailing-icon="i-ph-arrow-right" color="gray" :padded="false" variant="link">
+            <UButton to="/docs/features/blob" size="xs" trailing-icon="i-lucide-arrow-right" color="gray" :padded="false" variant="link">
               Learn more
             </UButton>
           </div>
@@ -386,7 +386,7 @@ onMounted(() => {
             <span>{{ feature.name }}</span>
           </div>
           <div>
-            <UButton to="/docs/features/kv" size="xs" trailing-icon="i-ph-arrow-right" color="gray" :padded="false" variant="link">
+            <UButton to="/docs/features/kv" size="xs" trailing-icon="i-lucide-arrow-right" color="gray" :padded="false" variant="link">
               Learn more
             </UButton>
           </div>
@@ -429,10 +429,10 @@ onMounted(() => {
             <span>{{ feature.name }}</span>
           </div>
           <div class="flex items-center gap-3">
-            <UButton to="/docs/features/ai" size="xs" trailing-icon="i-ph-arrow-right" color="gray" :padded="false" variant="link">
+            <UButton to="/docs/features/ai" size="xs" trailing-icon="i-lucide-arrow-right" color="gray" :padded="false" variant="link">
               AI docs
             </UButton>
-            <UButton to="/docs/features/ai" size="xs" trailing-icon="i-ph-arrow-right" color="gray" :padded="false" variant="link">
+            <UButton to="/docs/features/ai" size="xs" trailing-icon="i-lucide-arrow-right" color="gray" :padded="false" variant="link">
               Vectorize docs
             </UButton>
           </div>
@@ -475,7 +475,7 @@ onMounted(() => {
             <span>{{ feature.name }}</span>
           </div>
           <div>
-            <UButton to="/docs/features/cache" size="xs" trailing-icon="i-ph-arrow-right" color="gray" :padded="false" variant="link">
+            <UButton to="/docs/features/cache" size="xs" trailing-icon="i-lucide-arrow-right" color="gray" :padded="false" variant="link">
               Learn more
             </UButton>
           </div>
@@ -519,7 +519,7 @@ onMounted(() => {
             <span>{{ feature.name }}</span>
           </div>
           <div>
-            <UButton to="/docs/features/browser" size="xs" trailing-icon="i-ph-arrow-right" color="gray" :padded="false" variant="link">
+            <UButton to="/docs/features/browser" size="xs" trailing-icon="i-lucide-arrow-right" color="gray" :padded="false" variant="link">
               Learn more
             </UButton>
           </div>
@@ -563,7 +563,7 @@ onMounted(() => {
             <span>{{ feature.name }}</span>
           </div>
           <div>
-            <UButton to="/docs/getting-started/remote-storage" size="xs" trailing-icon="i-ph-arrow-right" color="gray" :padded="false" variant="link">
+            <UButton to="/docs/getting-started/remote-storage" size="xs" trailing-icon="i-lucide-arrow-right" color="gray" :padded="false" variant="link">
               Learn more
             </UButton>
           </div>

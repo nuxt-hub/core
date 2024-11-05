@@ -1,7 +1,7 @@
 title: The NuxtHub Blog
 navigation.title: Blog
 description: 'Read the latest news about NuxtHub or articles about fullstack development with Nuxt.'
-icon: i-ph-newspaper
+icon: i-lucide-newspaper
 hero:
   title: 'Blog'
   description: 'Read the latest news about NuxtHub.'

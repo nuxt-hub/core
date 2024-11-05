@@ -1,7 +1,7 @@
 <template>
   <Alert
     title="Tip"
-    icon="i-ph-lightbulb-duotone"
+    icon="i-lucide-lightbulb"
     color="green"
     class="_tip"
     :class="$attrs.to ? 'dark:hover:!border-green-600/50 hover:!border-green-400/50' : ''"

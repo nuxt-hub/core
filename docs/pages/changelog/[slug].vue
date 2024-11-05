@@ -55,7 +55,7 @@ function copyLink() {
     <UPage>
       <UPageHeader :title="changelog.title" :description="changelog.description" :ui="{ headline: 'flex flex-col gap-y-8 items-start' }">
         <template #headline>
-          <UBreadcrumb :links="[{ label: 'Changelog', icon: 'i-ph-newspaper-duotone', to: '/changelog' }, { label: changelog.title }]" />
+          <UBreadcrumb :links="[{ label: 'Changelog', to: '/changelog' }, { label: changelog.title }]" />
 
           <time class="text-gray-500 dark:text-gray-400">{{ formatDateByLocale('en', changelog.date) }}</time>
         </template>
@@ -89,12 +89,12 @@ function copyLink() {
           <ContentRenderer v-if="changelog && changelog.body" :value="changelog" />
           <PageSectionCTA />
           <div class="flex items-center justify-between mt-12 not-prose">
-            <UButton to="/changelog" variant="link" :padded="false" color="gray" icon="i-ph-arrow-left">
+            <UButton to="/changelog" variant="link" :padded="false" color="gray" icon="i-lucide-arrow-left">
               Back to changelog
             </UButton>
             <div class="flex justify-end items-center gap-1.5">
               Share:
-              <UButton icon="i-ph-link-simple" color="gray" variant="ghost" @click="copyLink" />
+              <UButton icon="i-lucide-link" color="gray" variant="ghost" @click="copyLink" />
               <UButton
                 v-for="(link, index) in socialLinks"
                 :key="index"

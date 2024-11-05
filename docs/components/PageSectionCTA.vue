@@ -18,7 +18,7 @@ defineProps({
       {
         label: 'Get started for free',
         to: 'https://admin.hub.nuxt.com',
-        trailingIcon: 'i-ph-arrow-right'
+        trailingIcon: 'i-lucide-arrow-right'
       },
       {
         label: 'Read the docs',
