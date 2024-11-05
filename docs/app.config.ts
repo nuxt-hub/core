@@ -9,6 +9,18 @@ export default defineAppConfig({
     },
     header: {
       wrapper: 'lg:mb-0 border-0'
+    },
+    icons: {
+      dark: 'i-lucide-moon',
+      light: 'i-lucide-sun',
+      system: 'i-lucide-screen',
+      search: 'i-lucide-search',
+      external: 'i-lucide-arrow-up-right',
+      chevron: 'i-lucide-chevron-down',
+      hash: 'i-lucide-hash',
+      menu: 'i-lucide-menu',
+      close: 'i-lucide-x',
+      check: 'i-lucide-circle-check'
     }
   },
   seo: {
