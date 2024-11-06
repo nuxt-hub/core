@@ -300,7 +300,7 @@ export default eventHandler(async (event) => {
     formKey: 'files', // read file or files form the `formKey` field of request body (body should be a `FormData` object)
     multiple: true, // when `true`, the `formKey` field will be an array of `Blob` objects
     ensure: {
-      contentType: ['image/jpeg', 'images/png'], // allowed types of the file
+      types: ['image/jpeg', 'image/png'], // allowed types of the file
     },
     put: {
       addRandomSuffix: true
@@ -623,7 +623,7 @@ Returns an object with the following properties:
 
 ```ts
 // Will throw an error if the file is not an image or is larger than 1MB
-ensureBlob(file, { maxSize: '1MB', types: ['image' ]})
+ensureBlob(file, { maxSize: '1MB', types: ['image']})
 ```
 
 #### Params
