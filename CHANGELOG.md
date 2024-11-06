@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v0.8.6
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.5...v0.8.6)
+
+### 📖 Documentation
+
+- Update to lucide ([e99ea45](https://github.com/nuxt-hub/core/commit/e99ea45))
+- Small update ([2d2ea75](https://github.com/nuxt-hub/core/commit/2d2ea75))
+- Fix system icon ([62e614c](https://github.com/nuxt-hub/core/commit/62e614c))
+
+### 🏡 Chore
+
+- Update deps ([2f39b34](https://github.com/nuxt-hub/core/commit/2f39b34))
+- Update icons to lucide ([a81a5ad](https://github.com/nuxt-hub/core/commit/a81a5ad))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.8.5
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.4...v0.8.5)
