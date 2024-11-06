@@ -67,11 +67,11 @@ onMounted(async () => {
 
     <template #right>
       <div class="flex items-center gap-1.5 transition-opacity duration-300" :class="[ready ? 'opacity-100' : 'opacity-0']">
+        <UButton color="gray" variant="ghost" icon="i-simple-icons-github" to="https://github.com/nuxt-hub/core" target="_blank" />
         <UTooltip text="Search" :shortcuts="[metaSymbol, 'K']" :popper="{ strategy: 'absolute' }">
           <UContentSearchButton :label="null" />
         </UTooltip>
-        <UButton color="gray" variant="ghost" icon="i-simple-icons-github" to="https://github.com/nuxt-hub/core" target="_blank" />
-        <UColorModeButton class="hidden md:inline-flex" />
+        <UColorModeButton />
         <UButton v-if="ready && !authenticated" size="sm" variant="ghost" label="Log in" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" color="gray" class="hidden sm:inline-flex" external />
         <UButton v-if="ready && !authenticated" size="sm" variant="solid" label="Get started" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="hidden sm:inline-flex" external />
         <UButton v-if="ready && authenticated" size="sm" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" color="green" class="hidden sm:inline-flex" external />

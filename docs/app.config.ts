@@ -13,7 +13,7 @@ export default defineAppConfig({
     icons: {
       dark: 'i-lucide-moon',
       light: 'i-lucide-sun',
-      system: 'i-lucide-screen',
+      system: 'i-lucide-laptop',
       search: 'i-lucide-search',
       external: 'i-lucide-arrow-up-right',
       chevron: 'i-lucide-chevron-down',
