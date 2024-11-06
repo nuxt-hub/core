@@ -24,6 +24,8 @@ Once your Nuxt project is deployed, you can manage your cache entries in the `Ca
 
 :nuxt-img{src="/images/landing/nuxthub-admin-cache.png" alt="NuxtHub Admin Cache" width="915" height="515" data-zoom-src="/images/landing/nuxthub-admin-cache.png"}
 
+In development, checkout the Hub Cache section in the Nuxt Devtools.
+
 ## API Routes Caching
 
 To cache Nuxt API and server routes, use the `cachedEventHandler` function. This function will cache the response of the server route into the cache storage.
