@@ -71,9 +71,6 @@ export function proxyHubDatabase(projectUrl: string, secretKey?: string, headers
         body: { query }
       }).catch(handleProxyError)
     },
-    async dump() {
-      return d1API<ArrayBuffer>('/dump').catch(handleProxyError)
-    },
     prepare(query: string) {
       const stmt = {
         _body: {
