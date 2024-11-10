@@ -15,16 +15,13 @@ export default eventHandler(async (event) => {
 
   // https://developers.cloudflare.com/d1/build-databases/query-databases/
   const { command } = await getValidatedRouterParams(event, z.object({
-    command: z.enum(['first', 'all', 'raw', 'run', 'dump', 'exec', 'batch'])
+    command: z.enum(['first', 'all', 'raw', 'run', 'exec', 'batch'])
   }).parse)
   const db = hubDatabase()
 
   if (command === 'exec') {
     const { query } = await readValidatedBody(event, statementValidation.pick({ query: true }).parse)
     return db.exec(query)
-  }
-  if (command === 'dump') {
-    return db.dump()
   }
   if (command === 'first') {
     const { query, params, colName } = await readValidatedBody(event, z.intersection(
