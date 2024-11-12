@@ -56,6 +56,8 @@ export default eventHandler(async (event) => {
 
     if (!metadata.expires && metadata.ttl) {
       metadata.expires = metadata.mtime + (metadata.ttl * 1000)
+    } else if (metadata.expires) {
+      metadata.expires = 'never'
     }
     const entry = {
       key,
