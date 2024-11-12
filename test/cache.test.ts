@@ -3,7 +3,7 @@ import fs from 'node:fs/promises'
 import { describe, it, expect } from 'vitest'
 import { setup, $fetch } from '@nuxt/test-utils'
 
-const cacheListFields = ['duration', 'expires', 'key', 'mtime', 'size']
+const cacheListFields = ['duration', 'key', 'mtime', 'size']
 
 describe('KV', async () => {
   // clean up
