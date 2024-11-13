@@ -1,6 +1,29 @@
 # Changelog
 
 
+## v0.8.7
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.6...v0.8.7)
+
+### 🚀 Enhancements
+
+- **cache:** Add support for swr detection ([#376](https://github.com/nuxt-hub/core/pull/376))
+
+### 📖 Documentation
+
+- Update blob.md to match the ensureBlob types ([#371](https://github.com/nuxt-hub/core/pull/371))
+
+### 🏡 Chore
+
+- Remove deprecated D1 dump() ([#373](https://github.com/nuxt-hub/core/pull/373))
+- Update deps ([7532538](https://github.com/nuxt-hub/core/commit/7532538))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Mathieu NICOLAS ([@arkhaiel](http://github.com/arkhaiel))
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+
 ## v0.8.6
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.5...v0.8.6)
