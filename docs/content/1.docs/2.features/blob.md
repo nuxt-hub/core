@@ -71,6 +71,21 @@ export default eventHandler(async () => {
 
 Returns [`BlobListResult`](#bloblistresult).
 
+#### Return all blobs
+
+To fetch all blobs, you can use a `while` loop to fetch the next page until the `cursor` is `null`. 
+
+```ts
+let blobs = []
+let cursor = null
+
+do {
+  const res = await hubBlob().list({ cursor })
+  blobs.push(...res.blobs)
+  cursor = res.cursor
+} while (cursor)
+```
+
 ### `serve()`
 
 Returns a blob's data and sets `Content-Type`, `Content-Length` and `ETag` headers.

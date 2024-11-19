@@ -63,7 +63,7 @@ tool:
   title: A tailored solution for faster Nuxt app management
   description: NuxtHub offers a comprehensive suite of tools and features to let you build and deploy full-stack Nuxt applications worldwide.
   links:
-    - label: Get started for free
+    - label: Open the dashboard
       trailing-icon: i-lucide-arrow-right
       to: https://admin.hub.nuxt.com
       external: true

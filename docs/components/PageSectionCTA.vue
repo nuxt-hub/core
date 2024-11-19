@@ -16,7 +16,7 @@ defineProps({
     }"
     :links="[
       {
-        label: 'Get started for free',
+        label: 'Deploy now',
         to: 'https://admin.hub.nuxt.com',
         trailingIcon: 'i-lucide-arrow-right'
       },

@@ -68,8 +68,8 @@ onMounted(() => {
       <template #links>
         <div class="flex flex-col gap-y-6">
           <div class="flex flex-wrap gap-x-6 gap-y-3">
-            <UButton to="https://admin.hub.nuxt.com" external size="md" trailing-icon="i-lucide-arrow-right">
-              Get started for free
+            <UButton to="/docs/getting-started/installation" size="md" trailing-icon="i-lucide-arrow-right">
+              Get started
             </UButton>
             <UInputCopy value="npx nuxthub deploy" size="md" />
           </div>
