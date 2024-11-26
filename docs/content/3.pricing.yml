@@ -114,7 +114,7 @@ cloudflare:
           free: '100,000 / day'
           paid: '10 million / month + $0.30/million'
         - title: 'Worker size'
-          free: '1 MB'
+          free: '3 MB'
           paid: '10 MB'
         - title: 'CPU time'
           free: '10ms per invocation'
