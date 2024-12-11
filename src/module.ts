@@ -153,10 +153,21 @@ export default defineNuxtModule<ModuleOptions>({
       // Support also cloudflare_module
       preset = String(preset).replace('_', '-')
 
-      if (preset !== 'cloudflare-pages' && preset !== 'cloudflare-module') {
-        log.error('NuxtHub is only compatible with the `cloudflare-pages` and `cloudflare-module` presets.')
+      if (!['cloudflare-pages', 'cloudflare-module', 'cloudflare-durable'].includes(preset)) {
+        log.error('NuxtHub is only compatible with the `cloudflare-pages`, `cloudflare-module` or `cloudflare-durable` presets.')
         process.exit(1)
       }
+
+      // @ts-expect-error compatibilityDate is not properly typed
+      if (preset !== 'cloudflare-pages' && nuxt.options.compatibilityDate?.default && nuxt.options.compatibilityDate.default < '2024-11-20') {
+        log.warn('Found a compatibility date in `nuxt.config.ts` earlier than `2024-09-19`, forcing it to `2024-09-19`. Please update your `nuxt.config.ts` file.')
+        // @ts-expect-error compatibilityDate is not properly typed
+        nuxt.options.compatibilityDate.default = '2024-09-19'
+      }
+
+      // Make sure to always set the output to dist/
+      nuxt.options.nitro.output ||= {}
+      nuxt.options.nitro.output.dir = 'dist'
 
       // Update the deploy command displayed in the console
       nuxt.options.nitro.commands = nuxt.options.nitro.commands || {}
