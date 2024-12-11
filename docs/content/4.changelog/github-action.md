@@ -1,6 +1,6 @@
 ---
-title: GitHub Action
-description: "Introducing our GitHub Action for improved automated deployments"
+title: NuxtHub GitHub Action
+description: "Introducing our GitHub Action for automating your Nuxt deployments with GitHub."
 date: 2024-12-11
 image: '/images/changelog/cloudflare-access.png'
 authors:

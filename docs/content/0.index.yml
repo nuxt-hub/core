@@ -10,7 +10,7 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: "Github Action"
+    label: "NuxtHub Github Action"
     to: /changelog/github-action
     icon: i-lucide-arrow-right
 features:
