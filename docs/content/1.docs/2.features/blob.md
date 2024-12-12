@@ -334,7 +334,7 @@ async function onFileSelect(event: Event) {
 </script>
 
 <template>
-  <input type="file" name="file" @change="onFileSelect" multiple accept="jpeg, png" />
+  <input type="file" name="file" @change="onFileSelect" multiple accept="image/jpeg, image/png" />
 </template>
 ```
 ::
@@ -691,7 +691,7 @@ async function onFileSelect({ target }: Event) {
 
 <template>
   <input
-    accept="jpeg, png"
+    accept="image/jpeg, image/png"
     type="file"
     name="file"
     multiple
