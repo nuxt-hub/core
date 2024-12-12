@@ -10,8 +10,8 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: "NuxtHub Github Action"
-    to: /changelog/github-action
+    label: "NuxtHub Github App & Action"
+    to: /changelog/github-app-and-action
     icon: i-lucide-arrow-right
 features:
   - name: Cloud Hosting
