@@ -92,6 +92,9 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
   if (nuxt.options.dev && !hub.remote && !hub.projectKey) {
     return log.warn('`hubAI()` is disabled: link a project with `npx nuxthub link` to run AI models in development mode.')
   }
+
+  // Register auto-imports first so types are correct even when not running remotely
+  addServerImportsDir(resolve('./runtime/ai/server/utils'))
   // If we are in dev mode and the project is linked, verify it
   if (nuxt.options.dev && !hub.remote && hub.projectKey) {
     try {
@@ -115,7 +118,6 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
   }
   // Add Server scanning
   addServerScanDir(resolve('./runtime/ai/server'))
-  addServerImportsDir(resolve('./runtime/ai/server/utils'))
 }
 
 export function setupAnalytics(_nuxt: Nuxt) {
@@ -134,6 +136,8 @@ export function setupBlob(_nuxt: Nuxt) {
 }
 
 export async function setupBrowser(nuxt: Nuxt) {
+  // Register auto-imports first so types are correct even when not running remotely
+  addServerImportsDir(resolve('./runtime/browser/server/utils'))
   // Check if dependencies are installed
   const missingDeps = []
   try {
@@ -156,7 +160,6 @@ export async function setupBrowser(nuxt: Nuxt) {
   }
   // Add Server scanning
   // addServerScanDir(resolve('./runtime/browser/server'))
-  addServerImportsDir(resolve('./runtime/browser/server/utils'))
 }
 
 export async function setupCache(nuxt: Nuxt) {
@@ -206,13 +209,14 @@ export function setupKV(_nuxt: Nuxt) {
 }
 
 export function setupVectorize(nuxt: Nuxt, hub: HubConfig) {
+  // Register auto-imports first so types are correct even when not running remotely
+  addServerImportsDir(resolve('./runtime/vectorize/server/utils'))
   if (nuxt.options.dev && !hub.remote) {
     log.warn('`hubVectorize()` is disabled: it is currently only supported with `--remote`.')
     return
   }
   // Add Server scanning
   addServerScanDir(resolve('./runtime/vectorize/server'))
-  addServerImportsDir(resolve('./runtime/vectorize/server/utils'))
 }
 
 export function vectorizeRemoteCheck(hub: HubConfig) {

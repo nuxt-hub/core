@@ -30,7 +30,7 @@ type VectorizeIndexes = keyof RuntimeConfig['hub']['vectorize'] & string
  *
  * @see https://hub.nuxt.com/docs/features/vectorize
  */
-export function hubVectorize(index: VectorizeIndexes): Vectorize {
+export function hubVectorize(index: VectorizeIndexes): Vectorize | undefined {
   requireNuxtHubFeature('vectorize')
 
   if (_vectorize[index]) {
@@ -38,6 +38,11 @@ export function hubVectorize(index: VectorizeIndexes): Vectorize {
   }
 
   const hub = useRuntimeConfig().hub
+
+  if (!hub.remote) {
+    return undefined
+  }
+
   const bindingName = `VECTORIZE_${index.toUpperCase()}`
 
   // @ts-expect-error globalThis.__env__ is not defined
@@ -73,8 +78,13 @@ export function hubVectorize(index: VectorizeIndexes): Vectorize {
  *
  * @see https://developers.cloudflare.com/vectorize/reference/client-api/
  */
-export function proxyHubVectorize(index: VectorizeIndexes, projectUrl: string, secretKey?: string, headers?: HeadersInit): Vectorize {
+export function proxyHubVectorize(index: VectorizeIndexes, projectUrl: string, secretKey?: string, headers?: HeadersInit): Vectorize | undefined {
   requireNuxtHubFeature('vectorize')
+
+  const hub = useRuntimeConfig().hub
+  if (!hub.remote) {
+    return undefined
+  }
 
   const vectorizeAPI = ofetch.create({
     baseURL: joinURL(projectUrl, `/api/_hub/vectorize/${index}`),
