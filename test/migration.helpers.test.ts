@@ -2,7 +2,17 @@ import { describe, expect, it } from 'vitest'
 import { splitSqlQueries } from '~/src/runtime/database/server/utils/migrations/helpers'
 
 describe('splitSqlQueries', () => {
-  it('Sould respect ; within a query', () => {
+  it('Should split minified sql', () => {
+    const sqlFileContent = `CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255));INSERT INTO users (id, name) VALUES (1, 'Jo;hn');`
+    const queries = splitSqlQueries(sqlFileContent)
+    expect(queries).toHaveLength(2)
+    expect(queries).toMatchObject([
+      'CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255));',
+      'INSERT INTO users (id, name) VALUES (1, \'Jo;hn\');'
+    ])
+  })
+
+  it('Should respect ; within a query', () => {
     const sqlFileContent = `
       CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255));
       INSERT INTO users (id, name) VALUES (1, 'Jo;hn');
@@ -11,7 +21,7 @@ describe('splitSqlQueries', () => {
     expect(queries).toHaveLength(2)
   })
 
-  it('Sould ignore extra semicolons', () => {
+  it('Should ignore extra semicolons', () => {
     const sqlFileContent = `
       ;;;;;
       CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255));

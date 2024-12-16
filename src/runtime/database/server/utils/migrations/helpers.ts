@@ -72,7 +72,6 @@ export function splitSqlQueries(sqlFileContent: string): string[] {
           queries.push(result.trim())
           result = ''
         }
-        i += 1
         continue
       }
     }
