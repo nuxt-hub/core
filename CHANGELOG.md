@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.8.8
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.7...v0.8.8)
+
+### 📖 Documentation
+
+- Various improvements ([77c4de4](https://github.com/nuxt-hub/core/commit/77c4de4))
+- Free plan is now 3MB ([f03e6ec](https://github.com/nuxt-hub/core/commit/f03e6ec))
+- 7k ([21aa978](https://github.com/nuxt-hub/core/commit/21aa978))
+
+### 🏡 Chore
+
+- **playground:** Update compatibility date ([baf7b3b](https://github.com/nuxt-hub/core/commit/baf7b3b))
+- **playground:** Add password for invoice ([f45a682](https://github.com/nuxt-hub/core/commit/f45a682))
+- Add support for other cf presets ([d589d57](https://github.com/nuxt-hub/core/commit/d589d57))
+- Update deps ([84bc2ff](https://github.com/nuxt-hub/core/commit/84bc2ff))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.8.7
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.6...v0.8.7)

@@ -717,7 +717,11 @@ export function ensureBlob(blob: Blob, options: BlobEnsureOptions = {}) {
     }
   }
   const blobShortType = blob.type.split('/')[0]
-  if (options.types?.length && !options.types.includes(blob.type as BlobType) && !options.types.includes(blobShortType as BlobType)) {
+  if (options.types?.length
+    && !options.types.includes(blob.type as BlobType)
+    && !options.types.includes(blobShortType as BlobType)
+    && !(options.types.includes('pdf' as BlobType) && blob.type === 'application/pdf')
+  ) {
     throw createError({
       statusCode: 400,
       message: `File type is invalid, must be: ${options.types.join(', ')}`

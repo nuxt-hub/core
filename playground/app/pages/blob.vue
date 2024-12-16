@@ -188,7 +188,6 @@ async function deleteFile(pathname: string) {
         <input
           ref="uploadRef"
           tabindex="-1"
-          accept="jpeg, png"
           type="file"
           name="files"
           multiple
