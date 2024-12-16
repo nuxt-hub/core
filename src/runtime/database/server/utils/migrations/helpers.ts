@@ -25,28 +25,67 @@ export const CreateMigrationsTableQuery = `CREATE TABLE IF NOT EXISTS _hub_migra
 export const AppliedMigrationsQuery = 'select "id", "name", "applied_at" from "_hub_migrations" order by "_hub_migrations"."id"'
 
 export function splitSqlQueries(sqlFileContent: string): string[] {
-  // Remove all inline comments (-- ...)
-  let content = sqlFileContent.replace(/--.*$/gm, '')
-
-  // Remove all multi-line comments (/* ... */)
-  content = content.replace(/\/\*[\s\S]*?\*\//g, '')
+  const result = removeSqlComments(sqlFileContent)
 
   // Split by semicolons but keep them in the result
-  const rawQueries = content.split(/(?<=;)/)
+  const rawQueries = result.split(/(?<=;)/)
 
   // Process each query
   return rawQueries
-    .map(query => query.trim()) // Remove whitespace
-    .filter((query) => {
-      // Remove empty queries and standalone semicolons
-      return query !== '' && query !== ';'
-    })
+    .map(query => query.trim())
+    .filter(query => query !== '' && query !== ';')
     .map((query) => {
-      // Ensure each query ends with exactly one semicolon
       if (!query.endsWith(';')) {
         query += ';'
       }
-      // Remove multiple semicolons at the end
       return query.replace(/;+$/, ';')
     })
+}
+
+export function removeSqlComments(content: string) {
+  // Track whether we're inside a string literal
+  let inString = false
+  let stringFence = ''
+  let result = ''
+
+  // Process the content character by character
+  for (let i = 0; i < content.length; i++) {
+    const char = content[i]
+    const nextChar = content[i + 1]
+
+    // Handle string literals
+    if ((char === '\'' || char === '"') && content[i - 1] !== '\\') {
+      if (!inString) {
+        inString = true
+        stringFence = char
+      } else if (char === stringFence) {
+        inString = false
+      }
+    }
+
+    // Only remove comments when not inside a string
+    if (!inString) {
+      // `--` comments
+      if (char === '-' && nextChar === '-') {
+        while (i < content.length && content[i] !== '\n') {
+          i++
+        }
+        continue
+      }
+
+      // `/* */` comments
+      if (char === '/' && nextChar === '*') {
+        i += 2
+        while (i < content.length && !(content[i] === '*' && content[i + 1] === '/')) {
+          i++
+        }
+        i += 2
+        continue
+      }
+    }
+
+    result += char
+  }
+
+  return result
 }
