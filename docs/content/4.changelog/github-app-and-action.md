@@ -1,7 +1,7 @@
 ---
 title: NuxtHub GitHub App & Action
 description: "Introducing our GitHub App & Action for automating your Nuxt deployments with GitHub as well as a new project creation flow."
-date: 2024-12-12
+date: 2024-12-16
 image: '/images/changelog/nuxthub-github-app-action.png'
 authors:
   - name: Rihan Arfan
@@ -9,6 +9,11 @@ authors:
       src: https://avatars.githubusercontent.com/u/20425781?v=4
     to: https://bsky.app/profile/rihan.dev
     username: RihanArfan
+  - name: Sebastien Chopin
+    avatar: 
+      src: https://avatars.githubusercontent.com/u/904724?v=4
+    to: https://bsky.app/profile/atinux.com
+    username: atinux
 ---
 
 We're thrilled to release our brand new [GitHub Application](https://github.com/apps/nuxthub-admin) & [GitHub Action](https://github.com/marketplace/actions/deploy-to-nuxthub) to help you create and deploy Nuxt applications to NuxtHub.
