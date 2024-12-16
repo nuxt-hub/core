@@ -2,6 +2,36 @@ import { describe, expect, it } from 'vitest'
 import { splitSqlQueries } from '~/src/runtime/database/server/utils/migrations/helpers'
 
 describe('splitSqlQueries', () => {
+  it('Sould respect ; within a query', () => {
+    const sqlFileContent = `
+      CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255));
+      INSERT INTO users (id, name) VALUES (1, 'Jo;hn');
+    `
+    const queries = splitSqlQueries(sqlFileContent)
+    expect(queries).toHaveLength(2)
+  })
+
+  it('Sould ignore extra semicolons', () => {
+    const sqlFileContent = `
+      ;;;;;
+      CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255));
+      INSERT INTO users (id, name) VALUES (1, 'Jo;hn');;;;;;;
+      INSERT INTO users (id, name) VALUES (1, 'Jo;hn');;;;;;;
+      ;;;;
+    `
+    const queries = splitSqlQueries(sqlFileContent)
+    expect(queries).toHaveLength(3)
+  })
+
+  it('Should handle last query without semicolon', () => {
+    const sqlFileContent = `
+      CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255));
+      INSERT INTO users (id, name) VALUES (1, 'Jo;hn')
+    `
+    const queries = splitSqlQueries(sqlFileContent)
+    expect(queries).toHaveLength(2)
+  })
+
   it('should split the SQL file into separate queries', () => {
     const sqlFileContent = `
       CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255));
