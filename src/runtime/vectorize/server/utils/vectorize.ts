@@ -30,7 +30,7 @@ type VectorizeIndexes = keyof RuntimeConfig['hub']['vectorize'] & string
  *
  * @see https://hub.nuxt.com/docs/features/vectorize
  */
-export function hubVectorize(index: VectorizeIndexes): Vectorize | undefined {
+export function hubVectorize(index: VectorizeIndexes): Vectorize {
   requireNuxtHubFeature('vectorize')
 
   if (_vectorize[index]) {
@@ -38,11 +38,6 @@ export function hubVectorize(index: VectorizeIndexes): Vectorize | undefined {
   }
 
   const hub = useRuntimeConfig().hub
-
-  if (!hub.remote) {
-    return undefined
-  }
-
   const bindingName = `VECTORIZE_${index.toUpperCase()}`
 
   // @ts-expect-error globalThis.__env__ is not defined
@@ -56,6 +51,13 @@ export function hubVectorize(index: VectorizeIndexes): Vectorize | undefined {
     _vectorize[index] = binding as Vectorize
     return _vectorize[index]
   }
+  if (import.meta.dev && !hub.remote) {
+    throw createError({
+      statusCode: 500,
+      message: 'hubVectorize() is only supported with remote storage in development mode'
+    })
+  }
+
   throw createError(`Missing Cloudflare Vectorize binding (${bindingName})`)
 }
 

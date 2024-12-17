@@ -212,7 +212,7 @@ export function setupVectorize(nuxt: Nuxt, hub: HubConfig) {
   // Register auto-imports first so types are correct even when not running remotely
   addServerImportsDir(resolve('./runtime/vectorize/server/utils'))
   if (nuxt.options.dev && !hub.remote) {
-    log.warn('`hubVectorize()` is disabled: it is currently only supported with `--remote`.')
+    log.warn('`hubVectorize()` is disabled: only supported with remote storage in development mode.')
     return
   }
   // Add Server scanning
