@@ -1,6 +1,33 @@
 # Changelog
 
 
+## v0.8.9
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.8...v0.8.9)
+
+### 🩹 Fixes
+
+- **blob:** Handle `pdf` type correctly in `ensureBlob` ([#392](https://github.com/nuxt-hub/core/pull/392))
+- **migration:** Invalid behavior while using `--` or `/* */` inside column string ([#397](https://github.com/nuxt-hub/core/pull/397))
+- Register vectorize utils even if not running remotely ([#396](https://github.com/nuxt-hub/core/pull/396))
+
+### 📖 Documentation
+
+- **blob:** Proper input file type specifiers ([#393](https://github.com/nuxt-hub/core/pull/393))
+- Improve postgres hyperdrive binding example ([#394](https://github.com/nuxt-hub/core/pull/394))
+
+### 🏡 Chore
+
+- Update deps ([f420340](https://github.com/nuxt-hub/core/commit/f420340))
+
+### ❤️ Contributors
+
+- Sébastien Chopin <atinux@gmail.com>
+- Daniel Roe ([@danielroe](http://github.com/danielroe))
+- Farnabaz <farnabaz@gmail.com>
+- Gerben Mulder <github.undergo381@passmail.net>
+- Yizack Rangel ([@Yizack](http://github.com/Yizack))
+
 ## v0.8.8
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.7...v0.8.8)
