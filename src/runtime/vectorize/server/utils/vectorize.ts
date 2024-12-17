@@ -80,13 +80,8 @@ export function hubVectorize(index: VectorizeIndexes): Vectorize {
  *
  * @see https://developers.cloudflare.com/vectorize/reference/client-api/
  */
-export function proxyHubVectorize(index: VectorizeIndexes, projectUrl: string, secretKey?: string, headers?: HeadersInit): Vectorize | undefined {
+export function proxyHubVectorize(index: VectorizeIndexes, projectUrl: string, secretKey?: string, headers?: HeadersInit): Vectorize {
   requireNuxtHubFeature('vectorize')
-
-  const hub = useRuntimeConfig().hub
-  if (!hub.remote) {
-    return undefined
-  }
 
   const vectorizeAPI = ofetch.create({
     baseURL: joinURL(projectUrl, `/api/_hub/vectorize/${index}`),
