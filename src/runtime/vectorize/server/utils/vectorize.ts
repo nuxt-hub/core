@@ -51,6 +51,13 @@ export function hubVectorize(index: VectorizeIndexes): Vectorize {
     _vectorize[index] = binding as Vectorize
     return _vectorize[index]
   }
+  if (import.meta.dev && !hub.remote) {
+    throw createError({
+      statusCode: 500,
+      message: 'hubVectorize() is only supported with remote storage in development mode'
+    })
+  }
+
   throw createError(`Missing Cloudflare Vectorize binding (${bindingName})`)
 }
 
