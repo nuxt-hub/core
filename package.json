@@ -38,8 +38,8 @@
     "test:watch": "vitest watch"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "^4.20241205.0",
-    "@nuxt/devtools-kit": "^1.6.3",
+    "@cloudflare/workers-types": "^4.20241216.0",
+    "@nuxt/devtools-kit": "^1.6.4",
     "@nuxt/kit": "^3.14.1592",
     "@uploadthing/mime-types": "^0.3.2",
     "citty": "^0.1.6",
@@ -59,19 +59,19 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^1.6.3",
-    "@nuxt/eslint-config": "^0.7.2",
+    "@nuxt/devtools": "^1.6.4",
+    "@nuxt/eslint-config": "^0.7.3",
     "@nuxt/module-builder": "^0.8.4",
     "@nuxt/schema": "^3.14.1592",
     "@nuxt/test-utils": "^3.15.1",
     "@nuxthub/core": "link:",
     "@types/node": "^22.10.2",
     "changelogen": "^0.5.7",
-    "eslint": "^9.16.0",
+    "eslint": "^9.17.0",
     "nuxt": "^3.14.1592",
     "typescript": "5.6.3",
     "vitest": "^2.1.8",
-    "wrangler": "^3.95.0"
+    "wrangler": "^3.96.0"
   },
   "packageManager": "pnpm@9.15.0"
 }
