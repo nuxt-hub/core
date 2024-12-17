@@ -30,7 +30,7 @@ type VectorizeIndexes = keyof RuntimeConfig['hub']['vectorize'] & string
  *
  * @see https://hub.nuxt.com/docs/features/vectorize
  */
-export function hubVectorize(index: VectorizeIndexes): Vectorize {
+export function hubVectorize(index: VectorizeIndexes): Vectorize | undefined {
   requireNuxtHubFeature('vectorize')
 
   if (_vectorize[index]) {
@@ -52,10 +52,7 @@ export function hubVectorize(index: VectorizeIndexes): Vectorize {
     return _vectorize[index]
   }
   if (import.meta.dev && !hub.remote) {
-    throw createError({
-      statusCode: 500,
-      message: 'hubVectorize() is only supported with remote storage in development mode'
-    })
+    return undefined
   }
 
   throw createError(`Missing Cloudflare Vectorize binding (${bindingName})`)
