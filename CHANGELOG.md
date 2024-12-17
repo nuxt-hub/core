@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.8.10
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.9...v0.8.10)
+
+### 🩹 Fixes
+
+- **vectorize:** Return `undefined` instead of throwing in dev with no remote ([#399](https://github.com/nuxt-hub/core/pull/399))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.8.9
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.8...v0.8.9)
