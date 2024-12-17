@@ -25,28 +25,69 @@ export const CreateMigrationsTableQuery = `CREATE TABLE IF NOT EXISTS _hub_migra
 export const AppliedMigrationsQuery = 'select "id", "name", "applied_at" from "_hub_migrations" order by "_hub_migrations"."id"'
 
 export function splitSqlQueries(sqlFileContent: string): string[] {
-  // Remove all inline comments (-- ...)
-  let content = sqlFileContent.replace(/--.*$/gm, '')
+  const queries = []
+  // Track whether we're inside a string literal
+  let inString = false
+  let stringFence = ''
+  let result = ''
 
-  // Remove all multi-line comments (/* ... */)
-  content = content.replace(/\/\*[\s\S]*?\*\//g, '')
+  // Process the content character by character
+  for (let i = 0; i < sqlFileContent.length; i += 1) {
+    const char = sqlFileContent[i]
+    const nextChar = sqlFileContent[i + 1]
 
-  // Split by semicolons but keep them in the result
-  const rawQueries = content.split(/(?<=;)/)
+    // Handle string literals
+    if ((char === '\'' || char === '"') && sqlFileContent[i - 1] !== '\\') {
+      if (!inString) {
+        inString = true
+        stringFence = char
+      } else if (char === stringFence) {
+        inString = false
+      }
+    }
+
+    // Only remove comments when not inside a string
+    if (!inString) {
+      // `--` comments
+      if (char === '-' && nextChar === '-') {
+        while (i < sqlFileContent.length && sqlFileContent[i] !== '\n') {
+          i += 1
+        }
+        continue
+      }
+
+      // `/* */` comments
+      if (char === '/' && nextChar === '*') {
+        i += 2
+        while (i < sqlFileContent.length && !(sqlFileContent[i] === '*' && sqlFileContent[i + 1] === '/')) {
+          i += 1
+        }
+        i += 2
+        continue
+      }
+
+      if (char === ';' && sqlFileContent[i - 1] !== '\\') {
+        if (result.trim() !== '') {
+          result += char
+          queries.push(result.trim())
+          result = ''
+        }
+        continue
+      }
+    }
+
+    result += char
+  }
+  if (result.trim() !== '') {
+    queries.push(result.trim())
+  }
 
   // Process each query
-  return rawQueries
-    .map(query => query.trim()) // Remove whitespace
-    .filter((query) => {
-      // Remove empty queries and standalone semicolons
-      return query !== '' && query !== ';'
-    })
+  return queries
     .map((query) => {
-      // Ensure each query ends with exactly one semicolon
       if (!query.endsWith(';')) {
         query += ';'
       }
-      // Remove multiple semicolons at the end
       return query.replace(/;+$/, ';')
     })
 }
