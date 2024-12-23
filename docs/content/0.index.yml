@@ -10,8 +10,8 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: "Cloudflare Access integration"
-    to: /changelog/cloudflare-access
+    label: "NuxtHub Github App & Action"
+    to: /changelog/github-app-and-action
     icon: i-lucide-arrow-right
 features:
   - name: Cloud Hosting
