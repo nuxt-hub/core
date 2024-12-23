@@ -1,7 +1,7 @@
 ---
 title: NuxtHub GitHub App & Action
 description: "Introducing our GitHub App & Action for automating your Nuxt deployments with GitHub as well as a new project creation flow."
-date: 2024-12-16
+date: 2024-12-23
 image: '/images/changelog/nuxthub-github-app-action.png'
 authors:
   - name: Rihan Arfan
