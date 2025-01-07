@@ -1,5 +1,12 @@
 import { AIStream, formatStreamPart } from 'ai'
 
+defineRouteMeta({
+  openAPI: {
+    description: 'Chat with AI.',
+    tags: ['ai']
+  }
+})
+
 export default defineEventHandler(async (event) => {
   const { messages } = await readBody(event)
 

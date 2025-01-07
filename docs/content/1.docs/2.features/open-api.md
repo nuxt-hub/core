@@ -28,9 +28,26 @@ After you deploy your project, NuxtHub Admin will showcase your API documentatio
 
 :nuxt-img{src="/images/landing/nuxthub-admin-open-api.png" alt="Nuxt Open API Scalar integration" width="915" height="515" data-zoom-src="/images/landing/nuxthub-admin-open-api.png"}
 
+You can define route handler meta (at build time) using the `defineRouteMeta` macro:
+
+```ts [pages/api/ok.ts]
+defineRouteMeta({
+  openAPI: {
+    description: 'Test route description',
+    parameters: [{ in: "query", name: "test", required: true }],
+  },
+});
+
+export default defineEventHandler(() => "OK");
+```
+
+::note{to="https://swagger.io/specification/v3/"}
+See swagger specification for available OpenAPI options.
+::
+
 ## Nuxt DevTools
 
-In development, you can use Nuxt DevTools to access your API routes. using the `Server Routes` tab.
+In development, you can use Nuxt DevTools to access your API routes using the `Open API` or  `Server Routes` tabs.
 
 It list all the API routes in your project as well as providing a playground to send and test your endpoints.
 

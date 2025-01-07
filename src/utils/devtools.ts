@@ -47,5 +47,16 @@ export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
         src: `https://admin.hub.nuxt.com/embed/cache?url=${url}`
       }
     })
+
+    hub.openAPIRoute && addCustomTab({
+      category: 'server',
+      name: 'hub-open-api',
+      title: 'OpenAPI',
+      icon: 'i-lucide-file-text',
+      view: {
+        type: 'iframe',
+        src: `/api/_hub/scalar`
+      }
+    })
   })
 }

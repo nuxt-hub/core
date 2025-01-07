@@ -248,7 +248,11 @@ export function setupOpenAPI(nuxt: Nuxt, hub: HubConfig) {
   nuxt.options.nitro.openAPI.production ||= 'runtime'
   nuxt.options.nitro.openAPI.route ||= '/api/_hub/openapi.json'
   nuxt.options.nitro.openAPI.ui ||= {}
-  nuxt.options.nitro.openAPI.ui.scalar ||= false
+  if (nuxt.options.dev) {
+    nuxt.options.nitro.openAPI.ui.scalar = {
+      route: '/api/_hub/scalar'
+    }
+  }
   nuxt.options.nitro.openAPI.ui.swagger ||= false
   hub.openAPIRoute = nuxt.options.nitro.openAPI.route
   addServerScanDir(resolve('./runtime/openapi/server'))
