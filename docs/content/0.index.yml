@@ -173,8 +173,8 @@ database:
     title: Database
     icon: i-lucide-database
   title: A Scalable SQL Database
-  description: 'NuxtHub Database unlocks the power of <a class="font-semibold text-gray-800 dark:text-gray-300 hover:underline underline-offset-4" href="https://developers.cloudflare.com/d1/" target="_blank">Cloudflare D1</a> to give you access to a serverless SQL database, with zero configuration.
-  Scale and manage effortlessly, and pay only for what you use.'
+  description: >
+    NuxtHub Database unlocks the power of <a class="font-semibold text-gray-800 dark:text-gray-300 hover:underline underline-offset-4" href="https://developers.cloudflare.com/d1/" target="_blank">Cloudflare D1</a> to give you access to a serverless SQL database, with zero configuration. Scale and manage effortlessly, and pay only for what you use.
   features:
     - name: 'hubDatabase() server helper'
       icon: i-lucide-square-function
@@ -210,8 +210,8 @@ kv:
     title: Key-Value
     icon: i-lucide-list
   title: A Global Key-Value Database
-  description: 'NuxtHub KV leverages <a href="https://developers.cloudflare.com/kv/" target="_blank" class="font-semibold text-gray-800 dark:text-gray-200 hover:underline underline-offset-4">Cloudflare Workers KV</a> to access a global, low-latency, key-value data storage across 300+ global locations.
-Access it in your Nuxt codebase, with zero-configuration.'
+  description: >
+    NuxtHub KV leverages <a href="https://developers.cloudflare.com/kv/" target="_blank" class="font-semibold text-gray-800 dark:text-gray-200 hover:underline underline-offset-4">Cloudflare Workers KV</a> to access a global, low-latency, key-value data storage across 300+ global locations. Access it in your Nuxt codebase, with zero-configuration.
   features:
     - name: 'hubKV() server helper'
       icon: i-lucide-square-function
