@@ -1,6 +1,36 @@
 # Changelog
 
 
+## v0.8.11
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.10...v0.8.11)
+
+### 🚀 Enhancements
+
+- Add Open API tab in Nuxt Devtools with Scalar ([91d5016](https://github.com/nuxt-hub/core/commit/91d5016))
+
+### 🩹 Fixes
+
+- **api:** Disable cache and prerender on `/api/_hub/**` ([#414](https://github.com/nuxt-hub/core/pull/414))
+
+### 📖 Documentation
+
+- Add blog post about libsodium ([#400](https://github.com/nuxt-hub/core/pull/400))
+- NuxtHub github action & app ([#390](https://github.com/nuxt-hub/core/pull/390))
+- List supported package managers ([#407](https://github.com/nuxt-hub/core/pull/407))
+- Add note for sync issue with private github repo ([46fc4e3](https://github.com/nuxt-hub/core/commit/46fc4e3))
+- **deploy:** Correct path for linking repository to project and migration ti GH Actions ([#411](https://github.com/nuxt-hub/core/pull/411))
+
+### 🏡 Chore
+
+- Update deps ([#415](https://github.com/nuxt-hub/core/pull/415))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- GiveGet <giveget.ee@gmail.com>
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+
 ## v0.8.10
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.9...v0.8.10)
