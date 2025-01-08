@@ -76,6 +76,8 @@ export function setupBase(nuxt: Nuxt, hub: HubConfig) {
   nuxt.options.routeRules['/api/_hub/**'] = nuxt.options.routeRules['/api/_hub/**'] || {}
   // @ts-expect-error csurf is not typed here
   nuxt.options.routeRules['/api/_hub/**'].csurf = false
+  nuxt.options.routeRules['/api/_hub/**'].cache = false
+  nuxt.options.routeRules['/api/_hub/**'].prerender = false
   // Add X-Robots-Tag: noindex
   if (!nuxt.options.dev && hub.env === 'preview') {
     nuxt.options.routeRules['/**'] ||= {}
