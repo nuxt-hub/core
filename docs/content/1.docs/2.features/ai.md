@@ -169,7 +169,7 @@ NuxtHub AI is compatible with some functions of the  [Vercel AI SDK](https://sdk
 Make sure to install the Vercel AI SDK in your project.
 
 ```[Terminal]
-npx nypm i ai @ai-sdk/vue
+npx nypm i ai @ai-sdk/vue workers-ai-provider
 ```
 
 ::note
@@ -181,21 +181,18 @@ npx nypm i ai @ai-sdk/vue
 To leverage the `useChat()` Vue composable, you need to create a `POST /api/chat` endpoint that uses the `hubAI()` server composable and returns a compatible stream for the Vercel AI SDK.
 
 ```ts [server/api/chat.post.ts]
-import { AIStream, formatStreamPart } from 'ai'
+import { streamText } from 'ai'
+import { createWorkersAI } from 'workers-ai-provider'
 
 export default defineEventHandler(async (event) => {
   const { messages } = await readBody(event)
 
-  const stream = await hubAI().run('@cf/meta/llama-3.1-8b-instruct', {
-    messages,
-    stream: true
-  }) as ReadableStream
+  const workersAI = createWorkersAI({ binding: hubAI() })
 
-  // Return a compatible stream for the Vercel AI SDK
-  return AIStream(
-    new Response(stream),
-    data => formatStreamPart('text', JSON.parse(data).response)
-  )
+  return streamText({
+    model: workersAI('@cf/meta/llama-3.1-8b-instruct'),
+    messages
+  }).toDataStreamResponse()
 })
 ```
 
@@ -227,5 +224,5 @@ const { messages, input, handleSubmit, isLoading, stop, error, reload } = useCha
 Learn more about the [`useChat()` Vue composable](https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat).
 
 ::callout
-Check out our [`pages/ai.vue` full example](https://github.com/nuxt-hub/core/blob/main/playground/app/pages/ai.vue) with Nuxt UI & Nuxt MDC.
+Check out our [`pages/ai.vue` full example](https://github.com/nuxt-hub/core/blob/main/playground/app/pages/ai.vue) with Nuxt UI & [Nuxt MDC](https://github.com/nuxt-modules/mdc).
 ::

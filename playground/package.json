@@ -21,6 +21,7 @@
     "nuxt": "^3.15.1",
     "postgres": "^3.4.5",
     "puppeteer": "^23.11.1",
+    "workers-ai-provider": "^0.0.10",
     "zod": "^3.24.1"
   },
   "devDependencies": {
