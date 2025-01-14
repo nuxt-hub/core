@@ -13,12 +13,12 @@ const { copy } = useCopyToClipboard()
 const { toc } = useAppConfig()
 const { url } = useSiteConfig()
 
-const { data: post } = await useAsyncData(route.path, () => queryContent<BlogPost>(route.path).findOne())
+const { data: post } = await useAsyncData(`blog-${route.params.slug}`, () => queryContent<BlogPost>(route.path).findOne())
 if (!post.value) {
   throw createError({ statusCode: 404, statusMessage: 'Post not found', fatal: true })
 }
 
-const { data: surround } = await useAsyncData(`${route.path}-surround`, () => queryContent()
+const { data: surround } = await useAsyncData(`blog-${route.params.slug}-surround`, () => queryContent()
   .where({ _extension: 'md', navigation: { $ne: false }, _path: { $regex: /^\/blog/ } })
   .without(['body', 'excerpt'])
   .sort({ date: -1 })

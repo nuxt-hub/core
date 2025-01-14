@@ -10,13 +10,14 @@ definePageMeta({
 
 const route = useRoute()
 const { toc, seo } = useAppConfig()
+const slug = route.params.slug.join('-')
 
-const { data: page } = await useAsyncData(route.path, () => queryContent(route.path).findOne())
+const { data: page } = await useAsyncData(`docs-${slug}`, () => queryContent(route.path).findOne())
 if (!page.value) {
   throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
 }
 
-const { data: surround } = await useAsyncData(`${route.path}-surround`, () => queryContent()
+const { data: surround } = await useAsyncData(`docs-${slug}-surround`, () => queryContent()
   .where({ _extension: 'md', navigation: { $ne: false }, _path: { $regex: /^\/docs/ } })
   .only(['title', 'description', '_path'])
   .findSurround(withoutTrailingSlash(route.path))
