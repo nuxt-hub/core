@@ -11,12 +11,12 @@ const route = useRoute()
 const { copy } = useCopyToClipboard()
 const { url } = useSiteConfig()
 
-const { data: changelog } = await useAsyncData(route.path, () => queryContent<ChangelogPost>(route.path).findOne())
+const { data: changelog } = await useAsyncData(() => queryContent<ChangelogPost>(route.path).findOne())
 if (!changelog.value) {
   throw createError({ statusCode: 404, statusMessage: 'Post not found', fatal: true })
 }
 
-const { data: surround } = await useAsyncData(`${route.path}-surround`, () => queryContent('/changelog')
+const { data: surround } = await useAsyncData(() => queryContent('/changelog')
   .where({ _extension: 'md', navigation: { $ne: false }, _path: { $regex: /^\/changelog/ } })
   .without(['body', 'excerpt'])
   .sort({ date: -1 })
