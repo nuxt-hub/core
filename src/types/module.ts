@@ -1,3 +1,7 @@
+export interface ModuleHooks {
+  'hub:database:migrations:dirs': (dirs: string[]) => void | Promise<void>
+}
+
 export interface ModuleOptions {
   /**
    * Set `true` to enable AI for the project.

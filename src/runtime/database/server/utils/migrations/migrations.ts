@@ -26,13 +26,13 @@ export async function applyMigrations(hub: HubConfig) {
     try {
       await db.batch(queries.map(q => db.prepare(q)))
     } catch (error: any) {
-      log.error(`Failed to apply migration \`./server/database/migrations/${migration}.sql\`\n`, error?.message)
+      log.error(`Failed to apply migration \`.data/hub/database/migrations/${migration}.sql\`\n`, error?.message)
       if (error?.message?.includes('already exists')) {
         log.info('If your database already contains the migration, run `npx nuxthub database migrations mark-all-applied` to mark all migrations as applied.')
       }
       break
     }
 
-    log.success(`Database migration \`./server/database/migrations/${migration}.sql\` applied`)
+    log.success(`Database migration \`.data/hub/database/migrations/${migration}.sql\` applied`)
   }
 }

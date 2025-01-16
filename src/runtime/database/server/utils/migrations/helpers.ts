@@ -1,12 +1,14 @@
 import { createStorage } from 'unstorage'
 import fsDriver from 'unstorage/drivers/fs'
+import overlayDriver from 'unstorage/drivers/overlay'
+import { join } from 'pathe'
 import type { HubConfig } from '../../../../../features'
 
 export function useMigrationsStorage(hub: HubConfig) {
+  // .data/hub/database/migrations
   return createStorage({
     driver: fsDriver({
-      base: hub.migrationsPath,
-      ignore: ['.DS_Store']
+      base: join(hub.dir!, 'database/migrations')
     })
   })
 }
@@ -14,6 +16,24 @@ export function useMigrationsStorage(hub: HubConfig) {
 export async function getMigrationFiles(hub: HubConfig) {
   const fileKeys = await useMigrationsStorage(hub).getKeys()
   return fileKeys.filter(file => file.endsWith('.sql'))
+}
+
+export async function copyMigrationsToHubDir(hub: HubConfig) {
+  const srcStorage = createStorage({
+    driver: overlayDriver({
+      layers: hub.databaseMigrationsDirs!.map(dir => fsDriver({
+        base: dir,
+        ignore: ['.DS_Store']
+      }))
+    })
+  })
+  const destStorage = useMigrationsStorage(hub)
+  await destStorage.clear()
+  const migrationFiles = (await srcStorage.getKeys()).filter(file => file.endsWith('.sql'))
+  await Promise.all(migrationFiles.map(async (file) => {
+    const sql = await srcStorage.getItem(file)
+    await destStorage.setItem(file, sql)
+  }))
 }
 
 export const CreateMigrationsTableQuery = `CREATE TABLE IF NOT EXISTS _hub_migrations (

@@ -243,9 +243,60 @@ This method can have poorer performance (prepared statements can be reused in so
 
 Database migrations provide version control for your database schema. They track changes and ensure consistent schema evolution across all environments through incremental updates.
 
+### Migrations Directories
+
+NuxtHub scans the `server/database/migrations` directory for migrations **for each [Nuxt layer](https://nuxt.com/docs/getting-started/layers)**.
+
+If you need to scan additional migrations directories, you can specify them in your `nuxt.config.ts` file.
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  hub: {
+    databaseMigrationsDirs: [
+      'my-module/db-migrations/'
+    ]
+  }
+})
+```
+::note
+NuxtHub will scan both `server/database/migrations` and `my-module/db-migrations` directories for `.sql` files.
+::
+
+If you want more control to the migrations directories or you are working on a [Nuxt module](https://nuxt.com/docs/guide/going-further/modules), you can use the `hub:database:migrations:dirs` hook:
+
+::code-group
+```ts [modules/auth/index.ts]
+import { createResolver, defineNuxtModule } from 'nuxt/kit'
+
+export default defineNuxtModule({
+  meta: {
+    name: 'my-auth-module'
+  },
+  setup(options, nuxt) {
+    const { resolve } = createResolver(import.meta.url)
+
+    nuxt.hook('hub:database:migrations:dirs', (dirs) => {
+      dirs.push(resolve('db-migrations'))
+    })
+  }
+})
+```
+```sql [modules/auth/db-migrations/0001_create-users.sql]
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL
+);
+```
+::
+
+::tip
+All migrations files are copied to the `.data/hub/database/migrations` directory every time you run Nuxt. This is useful to see all migrations applied in the database as well as running the `npx nuxthub database migrations <command>` commands.
+::
+
 ### Automatic Application
 
-SQL migrations in `server/database/migrations/*.sql` are automatically applied when you:
+All `.sql` files in the database migrations directories are automatically applied when you:
 - Start the development server (`npx nuxt dev` or [`npx nuxt dev --remote`](/docs/getting-started/remote-storage))
 - Preview builds locally ([`npx nuxthub preview`](/changelog/nuxthub-preview))
 - Deploy via [`npx nuxthub deploy`](/docs/getting-started/deploy#nuxthub-cli) or [Cloudflare Pages CI](/docs/getting-started/deploy#cloudflare-pages-ci)

@@ -1,5 +1,6 @@
 import { execSync } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
+import { mkdir } from 'node:fs/promises'
 import { isWindows } from 'std-env'
 import type { Nuxt } from '@nuxt/schema'
 import { join } from 'pathe'
@@ -9,6 +10,7 @@ import { defu } from 'defu'
 import { $fetch } from 'ofetch'
 import { addDevToolsCustomTabs } from './utils/devtools'
 import { getCloudflareAccessHeaders } from './runtime/utils/cloudflareAccess'
+import { copyMigrationsToHubDir } from './runtime/database/server/utils/migrations/helpers'
 
 const log = logger.withTag('nuxt:hub')
 const { resolve, resolvePath } = createResolver(import.meta.url)
@@ -57,11 +59,24 @@ export interface HubConfig {
     } & Record<string, boolean>
   }
 
-  migrationsPath?: string
+  dir?: string
+  databaseMigrationsDirs?: string[]
   openAPIRoute?: string
 }
 
-export function setupBase(nuxt: Nuxt, hub: HubConfig) {
+export async function setupBase(nuxt: Nuxt, hub: HubConfig) {
+  // Create the hub.dir directory
+  hub.dir = join(nuxt.options.rootDir, hub.dir!)
+  try {
+    await mkdir(hub.dir, { recursive: true })
+  } catch (e: any) {
+    if (e.errno === -17) {
+      // File already exists
+    } else {
+      throw e
+    }
+  }
+
   // Add Server scanning
   addServerScanDir(resolve('./runtime/base/server'))
   addServerImportsDir([resolve('./runtime/base/server/utils'), resolve('./runtime/base/server/utils/migrations')])
@@ -196,12 +211,16 @@ export async function setupCache(nuxt: Nuxt) {
   addServerScanDir(resolve('./runtime/cache/server'))
 }
 
-export function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
-  // Keep track of the path to migrations
-  hub.migrationsPath = join(nuxt.options.rootDir, 'server/database/migrations')
+export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
   // Add Server scanning
   addServerScanDir(resolve('./runtime/database/server'))
   addServerImportsDir(resolve('./runtime/database/server/utils'))
+  nuxt.hook('modules:done', async () => {
+    // Call hub:database:migrations:dirs hook
+    await nuxt.callHook('hub:database:migrations:dirs', hub.databaseMigrationsDirs!)
+    // Copy all migrations files to the hub.dir directory
+    await copyMigrationsToHubDir(hub)
+  })
 }
 
 export function setupKV(_nuxt: Nuxt) {

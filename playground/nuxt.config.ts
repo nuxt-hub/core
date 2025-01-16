@@ -55,6 +55,11 @@ export default defineNuxtConfig({
     }
     // projectUrl: ({ branch }) => branch === 'main' ? 'https://playground.nuxt.dev' : `https://${encodeHost(branch).replace(/\//g, '-')}.playground-to39.pages.dev`
   },
+  hooks: {
+    'hub:database:migrations:dirs': (dirs) => {
+      dirs.push('my-module/database/migrations')
+    }
+  },
 
   basicAuth: {
     enabled: process.env.NODE_ENV === 'production',

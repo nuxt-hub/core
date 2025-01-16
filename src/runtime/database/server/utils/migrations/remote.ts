@@ -32,14 +32,14 @@ export async function applyRemoteMigrations(hub: HubConfig) {
     try {
       await queryRemoteDatabase(hub, query)
     } catch (error: any) {
-      log.error(`Failed to apply migration \`./server/database/migrations/${migration}.sql\`: ${error.response?._data?.message}`)
+      log.error(`Failed to apply migration \`${migration}.sql\`: ${error.response?._data?.message}`)
       if (error.response?._data?.message?.includes('already exists')) {
         log.info(`To mark all migrations as already applied, run: \`npx nuxthub database migrations mark-all-applied --${hub.env}\``)
       }
       return false
     }
 
-    log.success(`Database migration \`./server/database/migrations/${migration}.sql\` applied`)
+    log.success(`Database migration \`${migration}.sql\` applied`)
     log.success('Database migrations up to date')
     return true
   }

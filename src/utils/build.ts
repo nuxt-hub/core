@@ -124,7 +124,7 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
 
       if (hub.database) {
         try {
-          await cp(join(nitro.options.rootDir, 'server/database/migrations'), join(nitro.options.output.dir, 'database/migrations'), { recursive: true })
+          await cp(join(nitro.options.rootDir, hub.dir!, 'database/migrations'), join(nitro.options.output.dir, 'database/migrations'), { recursive: true })
           log.info('Database migrations included in build')
         } catch (error: unknown) {
           if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
