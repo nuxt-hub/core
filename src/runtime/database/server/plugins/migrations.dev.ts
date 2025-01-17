@@ -1,6 +1,6 @@
-import { applyRemoteMigrations } from '../utils/migrations/remote'
+import { applyRemoteDatabaseMigrations, applyRemoteDatabaseQueries } from '../utils/migrations/remote'
 import { hubHooks } from '../../../base/server/utils/hooks'
-import { applyMigrations } from '../utils/migrations/migrations'
+import { applyDatabaseMigrations, applyDatabaseQueries } from '../utils/migrations/migrations'
 import { useRuntimeConfig, defineNitroPlugin } from '#imports'
 
 export default defineNitroPlugin(async () => {
@@ -11,9 +11,11 @@ export default defineNitroPlugin(async () => {
 
   hubHooks.hookOnce('bindings:ready', async () => {
     if (hub.remote && hub.projectKey) { // linked to a NuxtHub project
-      await applyRemoteMigrations(hub)
+      await applyRemoteDatabaseMigrations(hub)
+      await applyRemoteDatabaseQueries(hub)
     } else { // local dev & self hosted
-      await applyMigrations(hub)
+      await applyDatabaseMigrations(hub)
+      await applyDatabaseQueries(hub)
     }
 
     await hubHooks.callHookParallel('database:migrations:done')

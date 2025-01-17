@@ -1,4 +1,4 @@
-import { mkdir, writeFile, readFile } from 'node:fs/promises'
+import { writeFile, readFile } from 'node:fs/promises'
 import { argv } from 'node:process'
 import { defineNuxtModule, createResolver, logger, installModule, addServerHandler, addServerPlugin } from '@nuxt/kit'
 import { join } from 'pathe'
@@ -38,6 +38,7 @@ export default defineNuxtModule<ModuleOptions>({
     let remoteArg = parseArgs(argv, { remote: { type: 'string' } }).remote as string
     remoteArg = (remoteArg === '' ? 'true' : remoteArg)
     const runtimeConfig = nuxt.options.runtimeConfig
+    const databaseMigrationsDirs = nuxt.options._layers?.map(layer => join(layer.config.serverDir!, 'database/migrations')).filter(Boolean)
     const hub = defu(runtimeConfig.hub || {}, options, {
       // Self-hosted project
       projectUrl: process.env.NUXT_HUB_PROJECT_URL || '',
@@ -60,6 +61,9 @@ export default defineNuxtModule<ModuleOptions>({
       database: false,
       kv: false,
       vectorize: {},
+      // Database Migrations
+      databaseMigrationsDirs,
+      databaseQueriesPaths: [],
       // Other options
       version,
       env: process.env.NUXT_HUB_ENV || 'production',
@@ -102,14 +106,14 @@ export default defineNuxtModule<ModuleOptions>({
       })
     }
 
-    setupBase(nuxt, hub as HubConfig)
+    await setupBase(nuxt, hub as HubConfig)
     hub.openapi && setupOpenAPI(nuxt, hub as HubConfig)
     hub.ai && await setupAI(nuxt, hub as HubConfig)
     hub.analytics && setupAnalytics(nuxt)
     hub.blob && setupBlob(nuxt)
     hub.browser && await setupBrowser(nuxt)
     hub.cache && await setupCache(nuxt)
-    hub.database && setupDatabase(nuxt, hub as HubConfig)
+    hub.database && await setupDatabase(nuxt, hub as HubConfig)
     hub.kv && setupKV(nuxt)
     Object.keys(hub.vectorize!).length && setupVectorize(nuxt, hub as HubConfig)
 
@@ -196,17 +200,6 @@ export default defineNuxtModule<ModuleOptions>({
         log.info(`Using local storage from \`${hub.dir}\``)
       }
 
-      // Create the hub.dir directory
-      const hubDir = join(rootDir, hub.dir)
-      try {
-        await mkdir(hubDir, { recursive: true })
-      } catch (e: any) {
-        if (e.errno === -17) {
-          // File already exists
-        } else {
-          throw e
-        }
-      }
       const workspaceDir = await findWorkspaceDir(rootDir)
       // Add it to .gitignore
       const gitignorePath = join(workspaceDir, '.gitignore')
@@ -219,11 +212,11 @@ export default defineNuxtModule<ModuleOptions>({
       // const needWrangler = Boolean(hub.analytics || hub.blob || hub.database || hub.kv || Object.keys(hub.bindings.hyperdrive).length > 0)
       if (needWrangler) {
         // Generate the wrangler.toml file
-        const wranglerPath = join(hubDir, './wrangler.toml')
+        const wranglerPath = join(hub.dir, './wrangler.toml')
         await writeFile(wranglerPath, generateWrangler(nuxt, hub as HubConfig), 'utf-8')
         // @ts-expect-error cloudflareDev is not typed here
         nuxt.options.nitro.cloudflareDev = {
-          persistDir: hubDir,
+          persistDir: hub.dir,
           configPath: wranglerPath,
           silent: true
         }

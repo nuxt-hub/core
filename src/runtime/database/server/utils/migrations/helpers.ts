@@ -1,29 +1,83 @@
+import { readFile } from 'node:fs/promises'
 import { createStorage } from 'unstorage'
 import fsDriver from 'unstorage/drivers/fs'
+import overlayDriver from 'unstorage/drivers/overlay'
+import { join } from 'pathe'
 import type { HubConfig } from '../../../../../features'
 
-export function useMigrationsStorage(hub: HubConfig) {
+// #region Migrations
+export function useDatabaseMigrationsStorage(hub: HubConfig) {
+  // .data/hub/database/migrations
   return createStorage({
     driver: fsDriver({
-      base: hub.migrationsPath,
-      ignore: ['.DS_Store']
+      base: join(hub.dir!, 'database/migrations')
     })
   })
 }
 
-export async function getMigrationFiles(hub: HubConfig) {
-  const fileKeys = await useMigrationsStorage(hub).getKeys()
+export async function getDatabaseMigrationFiles(hub: HubConfig) {
+  const fileKeys = await useDatabaseMigrationsStorage(hub).getKeys()
   return fileKeys.filter(file => file.endsWith('.sql'))
 }
 
-export const CreateMigrationsTableQuery = `CREATE TABLE IF NOT EXISTS _hub_migrations (
+export async function copyDatabaseMigrationsToHubDir(hub: HubConfig) {
+  const srcStorage = createStorage({
+    driver: overlayDriver({
+      layers: hub.databaseMigrationsDirs!.map(dir => fsDriver({
+        base: dir,
+        ignore: ['.DS_Store']
+      }))
+    })
+  })
+  const destStorage = useDatabaseMigrationsStorage(hub)
+  await destStorage.clear()
+  const migrationFiles = (await srcStorage.getKeys()).filter(file => file.endsWith('.sql'))
+  await Promise.all(migrationFiles.map(async (file) => {
+    const sql = await srcStorage.getItem(file)
+    await destStorage.setItem(file, sql)
+  }))
+}
+
+export const CreateDatabaseMigrationsTableQuery = `CREATE TABLE IF NOT EXISTS _hub_migrations (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
   name       TEXT UNIQUE,
   applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );`
 
-export const AppliedMigrationsQuery = 'select "id", "name", "applied_at" from "_hub_migrations" order by "_hub_migrations"."id"'
+export const AppliedDatabaseMigrationsQuery = 'select "id", "name", "applied_at" from "_hub_migrations" order by "_hub_migrations"."id"'
+// #endregion
 
+// #region Queries
+export function useDatabaseQueriesStorage(hub: HubConfig) {
+  // .data/hub/database/migrations
+  return createStorage({
+    driver: fsDriver({
+      base: join(hub.dir!, 'database/queries')
+    })
+  })
+}
+export async function getDatabaseQueryFiles(hub: HubConfig) {
+  const fileKeys = await useDatabaseQueriesStorage(hub).getKeys()
+  return fileKeys.filter(file => file.endsWith('.sql'))
+}
+
+export async function copyDatabaseQueriesToHubDir(hub: HubConfig) {
+  const destStorage = useDatabaseQueriesStorage(hub)
+  await destStorage.clear()
+
+  await Promise.all(hub.databaseQueriesPaths!.map(async (path) => {
+    try {
+      const filename = path.split('/').pop()!
+      const sql = await readFile(path, 'utf-8')
+      await destStorage.setItem(filename, sql)
+    } catch (error: any) {
+      console.error(`Failed to read database query file ${path}: ${error.message}`)
+    }
+  }))
+}
+// #endregion
+
+// #region Utils
 export function splitSqlQueries(sqlFileContent: string): string[] {
   const queries = []
   // Track whether we're inside a string literal
@@ -91,3 +145,4 @@ export function splitSqlQueries(sqlFileContent: string): string[] {
       return query.replace(/;+$/, ';')
     })
 }
+// #endregion

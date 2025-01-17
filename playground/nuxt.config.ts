@@ -1,5 +1,8 @@
 // import { encodeHost } from 'ufo'
+import { createResolver } from 'nuxt/kit'
 import module from '../src/module'
+
+const resolver = createResolver(import.meta.url)
 
 export default defineNuxtConfig({
   modules: [
@@ -54,6 +57,14 @@ export default defineNuxtConfig({
       // }
     }
     // projectUrl: ({ branch }) => branch === 'main' ? 'https://playground.nuxt.dev' : `https://${encodeHost(branch).replace(/\//g, '-')}.playground-to39.pages.dev`
+  },
+  hooks: {
+    'hub:database:migrations:dirs': (dirs) => {
+      dirs.push('my-module/database/migrations')
+    },
+    'hub:database:queries:paths': (queries) => {
+      queries.push(resolver.resolve('server/database/queries/admin.sql'))
+    }
   },
 
   basicAuth: {

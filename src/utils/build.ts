@@ -1,10 +1,10 @@
 import { writeFile, cp } from 'node:fs/promises'
 import { logger } from '@nuxt/kit'
-import { join } from 'pathe'
+import { join, resolve } from 'pathe'
 import { $fetch } from 'ofetch'
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig } from '../features'
-import { applyRemoteMigrations } from '../runtime/database/server/utils/migrations/remote'
+import { applyRemoteDatabaseMigrations, applyRemoteDatabaseQueries } from '../runtime/database/server/utils/migrations/remote'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -98,8 +98,13 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
         })
         // Apply migrations if database is enabled
         if (hub.database) {
-          const migrationsApplied = await applyRemoteMigrations(hub)
+          const migrationsApplied = await applyRemoteDatabaseMigrations(hub)
           if (!migrationsApplied) {
+            process.exit(1)
+          }
+
+          const queriesApplied = await applyRemoteDatabaseQueries(hub)
+          if (!queriesApplied) {
             process.exit(1)
           }
         }
@@ -124,8 +129,8 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
 
       if (hub.database) {
         try {
-          await cp(join(nitro.options.rootDir, 'server/database/migrations'), join(nitro.options.output.dir, 'database/migrations'), { recursive: true })
-          log.info('Database migrations included in build')
+          await cp(resolve(nitro.options.rootDir, hub.dir!, 'database'), resolve(nitro.options.output.dir, 'database'), { recursive: true })
+          log.info('Database migrations and queries included in build')
         } catch (error: unknown) {
           if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
             log.info('Skipping bundling database migrations - no migrations found')

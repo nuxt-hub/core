@@ -241,11 +241,63 @@ This method can have poorer performance (prepared statements can be reused in so
 
 ## Database Migrations
 
-Database migrations provide version control for your database schema. They track changes and ensure consistent schema evolution across all environments through incremental updates.
+Database migrations provide version control for your database schema. They track changes and ensure consistent schema evolution across all environments through incremental updates. NuxtHub supports SQL migration files (`.sql`).
+
+### Migrations Directories
+
+NuxtHub scans the `server/database/migrations` directory for migrations **for each [Nuxt layer](https://nuxt.com/docs/getting-started/layers)**.
+
+If you need to scan additional migrations directories, you can specify them in your `nuxt.config.ts` file.
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  hub: {
+    // Array of additional migration directories to scan
+    databaseMigrationsDirs: [
+      'my-module/db-migrations/'
+    ]
+  }
+})
+```
+::note
+NuxtHub will scan both `server/database/migrations` and `my-module/db-migrations` directories for `.sql` files.
+::
+
+If you want more control to the migrations directories or you are working on a [Nuxt module](https://nuxt.com/docs/guide/going-further/modules), you can use the `hub:database:migrations:dirs` hook:
+
+::code-group
+```ts [modules/auth/index.ts]
+import { createResolver, defineNuxtModule } from 'nuxt/kit'
+
+export default defineNuxtModule({
+  meta: {
+    name: 'my-auth-module'
+  },
+  setup(options, nuxt) {
+    const { resolve } = createResolver(import.meta.url)
+
+    nuxt.hook('hub:database:migrations:dirs', (dirs) => {
+      dirs.push(resolve('db-migrations'))
+    })
+  }
+})
+```
+```sql [modules/auth/db-migrations/0001_create-users.sql]
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL
+);
+```
+::
+
+::tip
+All migrations files are copied to the `.data/hub/database/migrations` directory when you run Nuxt. This consolidated view helps you track all migrations and enables you to use `npx nuxthub database migrations <command>` commands.
+::
 
 ### Automatic Application
 
-SQL migrations in `server/database/migrations/*.sql` are automatically applied when you:
+All `.sql` files in the database migrations directories are automatically applied when you:
 - Start the development server (`npx nuxt dev` or [`npx nuxt dev --remote`](/docs/getting-started/remote-storage))
 - Preview builds locally ([`npx nuxthub preview`](/changelog/nuxthub-preview))
 - Deploy via [`npx nuxthub deploy`](/docs/getting-started/deploy#nuxthub-cli) or [Cloudflare Pages CI](/docs/getting-started/deploy#cloudflare-pages-ci)
@@ -274,7 +326,6 @@ Migration files are created in `server/database/migrations/`.
 ```
 
 After creation, add your SQL queries to modify the database schema.
-
 
 ::note{to="/docs/recipes/drizzle#npm-run-dbgenerate"}
 With [Drizzle ORM](/docs/recipes/drizzle), migrations are automatically created when you run `npx drizzle-kit generate`.
@@ -327,23 +378,39 @@ NUXT_HUB_PROJECT_URL=<url> NUXT_HUB_PROJECT_SECRET_KEY=<secret> nuxthub database
 ```
 ::
 
-### Migrating from Drizzle ORM
+### Post-Migration Queries
 
-Since NuxtHub doesn't recognize previously applied Drizzle ORM migrations (stored in `__drizzle_migrations`), it will attempt to rerun all migrations in `server/database/migrations/*.sql`. To prevent this:
+::important
+This feature is for advanced use cases. As the queries are run after the migrations process (see [Automatic Application](#automatic-application)), you want to make sure your queries are idempotent.
+::
 
-1. Mark existing migrations as applied in each environment:
+Sometimes you need to run additional queries after migrations are applied without tracking them in the migrations table.
 
-    ```bash [Terminal]
-    # Local environment
-    npx nuxthub database migrations mark-all-applied
+NuxtHub provides the `hub:database:queries:paths` hook for this purpose:
 
-    # Preview environment
-    npx nuxthub database migrations mark-all-applied --preview
+::code-group
+```ts [modules/admin/index.ts]
+import { createResolver, defineNuxtModule } from 'nuxt/kit'
 
-    # Production environment
-    npx nuxthub database migrations mark-all-applied --production
-    ```
+export default defineNuxtModule({
+  meta: {
+    name: 'my-auth-module'
+  },
+  setup(options, nuxt) {
+    const { resolve } = createResolver(import.meta.url)
 
-2. Remove `server/plugins/database.ts` as it's no longer needed.
+    nuxt.hook('hub:database:queries:paths', (queries) => {
+      // Add SQL files to run after migrations
+      queries.push(resolve('./db-queries/seed-admin.sql'))
+    })
+  }
+})
+```
+```sql [modules/admin/db-queries/seed-admin.sql]
+INSERT OR IGNORE INTO admin_users (id, email, password) VALUES (1, 'admin@nuxt.com', 'admin');
+```
+::
 
-That's it! You can keep using `npx drizzle-kit generate` to generate migrations when updating your Drizzle ORM schema.
+::note
+These queries run after all migrations are applied but are not tracked in the `_hub_migrations` table. Use this for operations that should run when deploying your project.
+::
