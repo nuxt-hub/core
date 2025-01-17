@@ -241,7 +241,7 @@ This method can have poorer performance (prepared statements can be reused in so
 
 ## Database Migrations
 
-Database migrations provide version control for your database schema. They track changes and ensure consistent schema evolution across all environments through incremental updates.
+Database migrations provide version control for your database schema. They track changes and ensure consistent schema evolution across all environments through incremental updates. NuxtHub supports SQL migration files (`.sql`).
 
 ### Migrations Directories
 
@@ -252,6 +252,7 @@ If you need to scan additional migrations directories, you can specify them in y
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   hub: {
+    // Array of additional migration directories to scan
     databaseMigrationsDirs: [
       'my-module/db-migrations/'
     ]
@@ -291,7 +292,7 @@ CREATE TABLE IF NOT EXISTS users (
 ::
 
 ::tip
-All migrations files are copied to the `.data/hub/database/migrations` directory every time you run Nuxt. This is useful to see all migrations applied in the database as well as running the `npx nuxthub database migrations <command>` commands.
+All migrations files are copied to the `.data/hub/database/migrations` directory when you run Nuxt. This consolidated view helps you track all migrations and enables you to use `npx nuxthub database migrations <command>` commands.
 ::
 
 ### Automatic Application
