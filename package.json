@@ -70,7 +70,7 @@
     "eslint": "^9.18.0",
     "nuxt": "^3.15.2",
     "typescript": "5.6.3",
-    "vitest": "^2.1.8",
+    "vitest": "^3.0.2",
     "wrangler": "^3.100.0"
   },
   "packageManager": "pnpm@9.15.4"
