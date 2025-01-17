@@ -1,6 +1,29 @@
 # Changelog
 
 
+## v0.8.12
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.11...v0.8.12)
+
+### 🚀 Enhancements
+
+- **database:** Add support for multiple database migrations directories ([#423](https://github.com/nuxt-hub/core/pull/423))
+
+### 🩹 Fixes
+
+- **docs:** Migrations fragment identifier ([#417](https://github.com/nuxt-hub/core/pull/417))
+
+### 📖 Documentation
+
+- Remove using path as async data key ([0b15938](https://github.com/nuxt-hub/core/commit/0b15938))
+- Remove using path as async data key" ([355a8ff](https://github.com/nuxt-hub/core/commit/355a8ff))
+- Fix async data keys ([859a5f8](https://github.com/nuxt-hub/core/commit/859a5f8))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Yali ([@yusufalitangoz](http://github.com/yusufalitangoz))
+
 ## v0.8.11
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.10...v0.8.11)
