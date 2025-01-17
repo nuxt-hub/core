@@ -10,7 +10,7 @@ import { defu } from 'defu'
 import { $fetch } from 'ofetch'
 import { addDevToolsCustomTabs } from './utils/devtools'
 import { getCloudflareAccessHeaders } from './runtime/utils/cloudflareAccess'
-import { copyMigrationsToHubDir } from './runtime/database/server/utils/migrations/helpers'
+import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir } from './runtime/database/server/utils/migrations/helpers'
 
 const log = logger.withTag('nuxt:hub')
 const { resolve, resolvePath } = createResolver(import.meta.url)
@@ -61,6 +61,7 @@ export interface HubConfig {
 
   dir?: string
   databaseMigrationsDirs?: string[]
+  databaseQueriesPaths?: string[]
   openAPIRoute?: string
 }
 
@@ -219,7 +220,10 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
     // Call hub:database:migrations:dirs hook
     await nuxt.callHook('hub:database:migrations:dirs', hub.databaseMigrationsDirs!)
     // Copy all migrations files to the hub.dir directory
-    await copyMigrationsToHubDir(hub)
+    await copyDatabaseMigrationsToHubDir(hub)
+    // Call hub:database:migrations:queries hook
+    await nuxt.callHook('hub:database:queries:paths', hub.databaseQueriesPaths!)
+    await copyDatabaseQueriesToHubDir(hub)
   })
 }
 

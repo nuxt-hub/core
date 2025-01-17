@@ -17,6 +17,11 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true
   },
+  content: {
+    highlight: {
+      langs: ['sql']
+    }
+  },
   routeRules: {
     '/': { prerender: true },
     '/api/search.json': { prerender: true },

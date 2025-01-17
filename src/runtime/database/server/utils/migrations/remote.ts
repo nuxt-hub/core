@@ -1,18 +1,41 @@
 import log from 'consola'
 import { $fetch } from 'ofetch'
 import type { HubConfig } from '../../../../../features'
-import { AppliedMigrationsQuery, CreateMigrationsTableQuery, getMigrationFiles, useMigrationsStorage } from './helpers'
+import { AppliedDatabaseMigrationsQuery, CreateDatabaseMigrationsTableQuery, getDatabaseMigrationFiles, getDatabaseQueryFiles, useDatabaseMigrationsStorage, useDatabaseQueriesStorage } from './helpers'
 
-export async function applyRemoteMigrations(hub: HubConfig) {
-  const srcStorage = useMigrationsStorage(hub)
+export async function queryRemoteDatabase<T>(hub: HubConfig, query: string) {
+  return await $fetch<Array<{ results: Array<T>, success: boolean, meta: object }>>(`/api/projects/${hub.projectKey}/database/${hub.env}/query`, {
+    baseURL: hub.url,
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN || hub.userToken}`
+    },
+    body: { query }
+  })
+}
+
+// #region Remote migrations
+
+export async function fetchRemoteDatabaseMigrations(hub: HubConfig) {
+  const res = await queryRemoteDatabase<{ id: number, name: string, applied_at: string }>(hub, AppliedDatabaseMigrationsQuery).catch((error) => {
+    if (error.response?._data?.message.includes('no such table')) {
+      return []
+    }
+    throw error
+  })
+  return res[0]?.results ?? []
+}
+
+export async function applyRemoteDatabaseMigrations(hub: HubConfig) {
+  const migrationsStorage = useDatabaseMigrationsStorage(hub)
   let appliedMigrations = []
   try {
-    appliedMigrations = await fetchRemoteMigrations(hub)
+    appliedMigrations = await fetchRemoteDatabaseMigrations(hub)
   } catch (error: any) {
     log.error(`Could not fetch applied migrations: ${error.response?._data?.message}`)
     return false
   }
-  const localMigrations = (await getMigrationFiles(hub)).map(fileName => fileName.replace('.sql', ''))
+  const localMigrations = (await getDatabaseMigrationFiles(hub)).map(fileName => fileName.replace('.sql', ''))
   const pendingMigrations = localMigrations.filter(localName => !appliedMigrations.find(({ name }) => name === localName))
 
   if (!pendingMigrations.length) {
@@ -21,11 +44,11 @@ export async function applyRemoteMigrations(hub: HubConfig) {
   }
 
   for (const migration of pendingMigrations) {
-    let query = await srcStorage.getItem<string>(`${migration}.sql`)
+    let query = await migrationsStorage.getItem<string>(`${migration}.sql`)
     if (!query) continue
     if (query.replace(/\s$/, '').at(-1) !== ';') query += ';' // ensure previous statement ended before running next query
     query += `
-      ${CreateMigrationsTableQuery}
+      ${CreateDatabaseMigrationsTableQuery}
       INSERT INTO _hub_migrations (name) values ('${migration}');
     `
 
@@ -45,27 +68,32 @@ export async function applyRemoteMigrations(hub: HubConfig) {
   }
 }
 
-export async function queryRemoteDatabase<T>(hub: HubConfig, query: string) {
-  return await $fetch<Array<{ results: Array<T>, success: boolean, meta: object }>>(`/api/projects/${hub.projectKey}/database/${hub.env}/query`, {
-    baseURL: hub.url,
-    method: 'POST',
-    headers: {
-      authorization: `Bearer ${process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN || hub.userToken}`
-    },
-    body: { query }
-  })
-}
+// #endregion
+// #region Remote Queries
 
-export async function createRemoteMigrationsTable(hub: HubConfig) {
-  await queryRemoteDatabase(hub, CreateMigrationsTableQuery)
-}
+export async function applyRemoteDatabaseQueries(hub: HubConfig) {
+  const queriesStorage = useDatabaseQueriesStorage(hub)
+  const queriesPaths = await getDatabaseQueryFiles(hub)
+  if (!queriesPaths.length) {
+    log.success('No database queries to apply')
+    return true
+  }
 
-export async function fetchRemoteMigrations(hub: HubConfig) {
-  const res = await queryRemoteDatabase<{ id: number, name: string, applied_at: string }>(hub, AppliedMigrationsQuery).catch((error) => {
-    if (error.response?._data?.message.includes('no such table')) {
-      return []
+  for (const queryPath of queriesPaths) {
+    let query = await queriesStorage.getItem<string>(queryPath)
+    if (!query) continue
+    if (query.replace(/\s$/, '').at(-1) !== ';') query += ';' // ensure previous statement ended before running next query
+
+    try {
+      await queryRemoteDatabase(hub, query)
+    } catch (error: any) {
+      log.error(`Failed to apply query \`${queryPath}\`: ${error.response?._data?.message}`)
+      return false
     }
-    throw error
-  })
-  return res[0]?.results ?? []
+
+    log.success(`Database query \`${queryPath}\` applied`)
+    return true
+  }
 }
+
+// #endregion

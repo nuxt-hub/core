@@ -98,7 +98,7 @@ onMounted(() => {
               />
             </UAvatarGroup>
             <span class="text-sm text-gray-500 dark:text-gray-400">
-              Used and loved by <span class="font-medium dark:text-white text-gray-900">7K+ developers and teams</span>.
+              Used and loved by <span class="font-medium dark:text-white text-gray-900">8K+ developers and teams</span>.
             </span>
           </div>
           <UDivider type="dashed" class="w-24" />

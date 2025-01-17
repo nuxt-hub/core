@@ -1,17 +1,17 @@
 import log from 'consola'
 import { hubDatabase } from '../database'
 import type { HubConfig } from '../../../../../features'
-import { AppliedMigrationsQuery, CreateMigrationsTableQuery, getMigrationFiles, splitSqlQueries, useMigrationsStorage } from './helpers'
+import { AppliedDatabaseMigrationsQuery, CreateDatabaseMigrationsTableQuery, getDatabaseMigrationFiles, getDatabaseQueryFiles, splitSqlQueries, useDatabaseMigrationsStorage, useDatabaseQueriesStorage } from './helpers'
 
 // Apply migrations during local development and self-hosted remote development.
 // See src/utils/migrations/remote.ts for applying migrations on remote development (linked projects) and Pages CI deployments
-export async function applyMigrations(hub: HubConfig) {
-  const migrationsStorage = useMigrationsStorage(hub)
+export async function applyDatabaseMigrations(hub: HubConfig) {
+  const migrationsStorage = useDatabaseMigrationsStorage(hub)
   const db = hubDatabase()
 
-  await db.prepare(CreateMigrationsTableQuery).all()
-  const appliedMigrations = (await db.prepare(AppliedMigrationsQuery).all()).results
-  const localMigrations = (await getMigrationFiles(hub)).map(fileName => fileName.replace('.sql', ''))
+  await db.prepare(CreateDatabaseMigrationsTableQuery).all()
+  const appliedMigrations = (await db.prepare(AppliedDatabaseMigrationsQuery).all()).results
+  const localMigrations = (await getDatabaseMigrationFiles(hub)).map(fileName => fileName.replace('.sql', ''))
   const pendingMigrations = localMigrations.filter(localName => !appliedMigrations.find(({ name }) => name === localName))
   if (!pendingMigrations.length) return log.success('Database migrations up to date')
 
@@ -34,5 +34,29 @@ export async function applyMigrations(hub: HubConfig) {
     }
 
     log.success(`Database migration \`.data/hub/database/migrations/${migration}.sql\` applied`)
+  }
+}
+
+// Apply migrations during local development and self-hosted remote development.
+// See src/utils/migrations/remote.ts for applying migrations on remote development (linked projects) and Pages CI deployments
+export async function applyDatabaseQueries(hub: HubConfig) {
+  const queriesStorage = useDatabaseQueriesStorage(hub)
+  const db = hubDatabase()
+
+  const queriesPaths = await getDatabaseQueryFiles(hub)
+  if (!queriesPaths.length) return log.success('No database queries to apply')
+
+  for (const queryPath of queriesPaths) {
+    const sql = await queriesStorage.getItem<string>(queryPath)
+    if (!sql) continue
+    const queries = splitSqlQueries(sql)
+    try {
+      await db.batch(queries.map(q => db.prepare(q)))
+    } catch (error: any) {
+      log.error(`Failed to apply query \`.data/hub/database/queries/${queryPath}\`\n`, error?.message)
+      break
+    }
+
+    log.success(`Database query \`.data/hub/database/queries/${queryPath}\` applied`)
   }
 }

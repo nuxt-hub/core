@@ -63,6 +63,7 @@ export default defineNuxtModule<ModuleOptions>({
       vectorize: {},
       // Database Migrations
       databaseMigrationsDirs,
+      databaseQueriesPaths: [],
       // Other options
       version,
       env: process.env.NUXT_HUB_ENV || 'production',
