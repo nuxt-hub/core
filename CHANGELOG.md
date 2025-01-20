@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.8.13
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.12...v0.8.13)
+
+### 🩹 Fixes
+
+- **migrations:** Respect for loop for remote db migrations ([#426](https://github.com/nuxt-hub/core/pull/426))
+
+### 🏡 Chore
+
+- Update vitest ([3941629](https://github.com/nuxt-hub/core/commit/3941629))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+
 ## v0.8.12
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.11...v0.8.12)
