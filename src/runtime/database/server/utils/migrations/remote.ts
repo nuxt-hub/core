@@ -63,9 +63,9 @@ export async function applyRemoteDatabaseMigrations(hub: HubConfig) {
     }
 
     log.success(`Database migration \`${migration}.sql\` applied`)
-    log.success('Database migrations up to date')
-    return true
   }
+  log.success('Database migrations up to date')
+  return true
 }
 
 // #endregion
