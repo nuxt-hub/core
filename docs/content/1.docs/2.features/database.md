@@ -414,3 +414,19 @@ INSERT OR IGNORE INTO admin_users (id, email, password) VALUES (1, 'admin@nuxt.c
 ::note
 These queries run after all migrations are applied but are not tracked in the `_hub_migrations` table. Use this for operations that should run when deploying your project.
 ::
+
+### Foreign Key Constraints
+
+If you are using [Drizzle ORM](/docs/recipes/drizzle) to generate your database migrations, note that is uses `PRAGMA foreign_keys = ON | OFF;` in the generated migration files. This is not supported by Cloudflare D1 as they support instead [defer foreign key constraints](https://developers.cloudflare.com/d1/sql-api/foreign-keys/#defer-foreign-key-constraints).
+
+You need to update your migration file to use `PRAGMA defer_foreign_keys = on|off;` instead:
+
+```diff [Example]
+-PRAGMA foreign_keys = OFF;
++PRAGMA defer_foreign_keys = on;
+
+ALTER TABLE ...
+
+-PRAGMA foreign_keys = ON;
++PRAGMA defer_foreign_keys = off;
+```
