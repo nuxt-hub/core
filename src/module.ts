@@ -1,7 +1,7 @@
 import { writeFile, readFile } from 'node:fs/promises'
 import { argv } from 'node:process'
 import { defineNuxtModule, createResolver, logger, installModule, addServerHandler, addServerPlugin } from '@nuxt/kit'
-import { join } from 'pathe'
+import { join, relative } from 'pathe'
 import { defu } from 'defu'
 import { findWorkspaceDir } from 'pkg-types'
 import { parseArgs } from 'citty'
@@ -197,7 +197,7 @@ export default defineNuxtModule<ModuleOptions>({
     // Local development
     if (nuxt.options.dev) {
       if (!hub.remote) {
-        log.info(`Using local storage from \`${hub.dir}\``)
+        log.info(`Using local storage from \`${relative(nuxt.options.rootDir, hub.dir)}\``)
       }
 
       const workspaceDir = await findWorkspaceDir(rootDir)
