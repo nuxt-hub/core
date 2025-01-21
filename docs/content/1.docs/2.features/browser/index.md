@@ -4,6 +4,19 @@ navigation.title: Browser
 description: Control and interact with a headless browser instance in your Nuxt application using Puppeteer.
 ---
 
+NuxtHub's Browser Rendering uses [Puppeteer](https://pptr.dev/) to control a headless browser instance inside your Nuxt application. It uses Cloudflare's [Browser Rendering](https://developers.cloudflare.com/browser-rendering/), which works inside Cloudflare workers to provide browser automation capabilities.
+
+## Use Cases
+
+Some use cases for using a headless browser like Puppeteer in your Nuxt application include:
+
+- Taking screenshots of pages
+- Converting a page to a PDF
+- Testing web applications
+- Gathering page load performance metrics
+- Crawling web pages for information retrieval (extract metadata)
+
+
 ## Getting Started
 
 Enable browser rendering in your Nuxt project by enabling the `hub.browser` option:
@@ -40,17 +53,10 @@ In production, the instance will be from [`@cloudflare/puppeteer`](https://devel
 NuxtHub will automatically close the `page` instance when the response is sent as well as closing or disconnecting the `browser` instance when needed.
 ::
 
-Here are some use cases for using a headless browser like Puppeteer in your Nuxt application:
-- Take screenshots of pages
-- Convert a page to a PDF
-- Test web applications
-- Gather page load performance metrics
-- Crawl web pages for information retrieval (extract metadata)
-
 ## Limits
 
 ::important
-Browser rendering is only available on the [Workers Paid](https://www.cloudflare.com/plans/developer-platform/) plan for now.
+Currently, browser rendering is only available on the [Workers Paid](https://www.cloudflare.com/plans/developer-platform/) plan.
 ::
 
 To improve the performance in production, NuxtHub will reuse browser sessions. This means that the browser will stay open after each request (for 60 seconds), a new request will reuse the same browser session if available or open a new one.
@@ -60,7 +66,7 @@ The Cloudflare limits are:
 - 2 concurrent browser sessions per account
 - a browser instance gets killed if no activity is detected for 60 seconds (idle timeout)
 
-You can extend the idle timeout by giving the `keepAlive` option when creating the browser instance:
+You can extend the idle timeout by using the `keepAlive` option when creating the browser instance:
 
 ```ts
 // keep the browser instance alive for 120 seconds
@@ -73,7 +79,9 @@ The maximum idle timeout is 600 seconds (10 minutes).
 Once NuxtHub supports [Durable Objects](https://github.com/nuxt-hub/core/issues/50), you will be able to create a single browser instance that will stay open for a long time, and you will be able to reuse it across requests.
 ::
 
-## Screenshot Capture
+## Examples
+
+### Screenshot Capture
 
 Taking a screenshot of a website is a common use case for a headless browser. Let's create an API route to capture a screenshot of a website:
 
@@ -146,9 +154,9 @@ async function capture {
 
 That's it! You can now capture screenshots of websites using Puppeteer in your Nuxt application.
 
-### Storing the screenshots
+#### Storing the screenshots
 
-You can store the screenshots in the Blob storage:
+You can store the screenshots in the Blob storage. This is useful for archiving or sharing the screenshots or for other use cases like using browser screenshots as the `og:image` for social media links.
 
 ```ts
 const screenshot = await page.screenshot()
@@ -162,7 +170,7 @@ const blob = await hubBlob().put(filename, screenshot)
 Learn more about the Blob storage.
 ::
 
-## Metadata Extraction
+### Metadata Extraction
 
 Another common use case is to extract metadata from a website.
 
@@ -228,7 +236,7 @@ export default cachedEventHandler(async (event) => {
 })
 ```
 
-## PDF Generation
+### PDF Generation
 
 You can also generate PDF using `hubBrowser()`, this is useful if you want to generate an invoice or a receipt for example.
 

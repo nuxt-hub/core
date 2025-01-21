@@ -1,6 +1,6 @@
 ---
 title: Run AI Models
-navigation.title: AI
+navigation.title: Overview
 description: Run machine learning models, such as LLMs in Nuxt. Making the usage of AI models in your Nuxt application easy.
 ---
 
