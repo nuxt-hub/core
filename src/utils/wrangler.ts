@@ -6,18 +6,19 @@ import type { HubConfig } from '../features'
 // Please update nuxt-hub/cli preview command as well
 export function generateWrangler(nuxt: Nuxt, hub: HubConfig) {
   const wrangler: { [key: string]: any } = {}
+  const name = hub.env === 'test' ? 'test' : 'default'
 
   if (hub.analytics && !hub.remote) {
     wrangler['analytics_engine_datasets'] = [{
       binding: 'ANALYTICS',
-      dataset: 'default'
+      dataset: name
     }]
   }
 
   if (hub.blob && !hub.remote) {
     wrangler['r2_buckets'] = [{
       binding: 'BLOB',
-      bucket_name: 'default'
+      bucket_name: name
     }]
   }
 
@@ -27,14 +28,14 @@ export function generateWrangler(nuxt: Nuxt, hub: HubConfig) {
     if (hub.kv && !hub.remote) {
       wrangler['kv_namespaces'].push({
         binding: 'KV',
-        id: 'kv_default'
+        id: `kv_${name}`
       })
     }
 
     if (hub.cache) {
       wrangler['kv_namespaces'].push({
         binding: 'CACHE',
-        id: 'cache_default'
+        id: `cache_${name}`
       })
     }
   }
@@ -42,8 +43,8 @@ export function generateWrangler(nuxt: Nuxt, hub: HubConfig) {
   if (hub.database && !hub.remote) {
     wrangler['d1_databases'] = [{
       binding: 'DB',
-      database_name: 'default',
-      database_id: 'default'
+      database_name: name,
+      database_id: name
     }]
   }
 
