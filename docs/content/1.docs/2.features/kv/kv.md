@@ -179,3 +179,7 @@ Learn more about [Cloudflare KV limits](https://developers.cloudflare.com/kv/pla
 ## Learn More
 
 `hubKV()` is an instance of [unstorage](https://unstorage.unjs.io/guide#interface) with the [Cloudflare KV binding](https://unstorage.unjs.io/drivers/cloudflare#cloudflare-kv-binding) driver.
+
+## Pricing
+
+:pricing-table{:tabs='["KV"]'}

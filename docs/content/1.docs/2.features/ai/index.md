@@ -229,3 +229,7 @@ Learn more about the [`useChat()` Vue composable](https://sdk.vercel.ai/docs/ref
 ::callout
 Check out our [`pages/ai.vue` full example](https://github.com/nuxt-hub/core/blob/main/playground/app/pages/ai.vue) with Nuxt UI & Nuxt MDC.
 ::
+
+## Pricing
+
+:pricing-table{:tabs='["AI"]'}
