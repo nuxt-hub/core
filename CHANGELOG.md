@@ -1,6 +1,32 @@
 # Changelog
 
 
+## v0.8.14
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.13...v0.8.14)
+
+### 🚀 Enhancements
+
+- Add hub `test` env as well as supporting nuxt test option ([#429](https://github.com/nuxt-hub/core/pull/429))
+
+### 🩹 Fixes
+
+- Log relative path for hub dir ([c1cd2c3](https://github.com/nuxt-hub/core/commit/c1cd2c3))
+
+### 📖 Documentation
+
+- Update database migrations foreign keys constraints ([983e9c9](https://github.com/nuxt-hub/core/commit/983e9c9))
+- Fix typo in debug ([#431](https://github.com/nuxt-hub/core/pull/431))
+
+### 🏡 Chore
+
+- Update deps ([965a9fa](https://github.com/nuxt-hub/core/commit/965a9fa))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Yizack Rangel ([@Yizack](http://github.com/Yizack))
+
 ## v0.8.13
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.12...v0.8.13)
