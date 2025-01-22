@@ -4,6 +4,8 @@ navigation.title: Cache
 description: Learn how to cache Nuxt pages, API routes and functions in with NuxtHub cache storage.
 ---
 
+With NuxtHub and Nitro's cache storage, you can cache API routes and server functions using Cloudflare Workers KV.
+
 ## Getting Started
 
 Enable the cache storage in your NuxtHub project by adding the `cache` property to the `hub` object in your `nuxt.config.ts` file.
