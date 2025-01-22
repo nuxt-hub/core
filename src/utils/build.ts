@@ -122,7 +122,8 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
         database: hub.database,
         kv: hub.kv,
         vectorize: hub.vectorize,
-        bindings: hub.bindings
+        bindings: hub.bindings,
+        nitroPreset: nitro.options.preset
       }
       const distDir = nitro.options.output.dir || nitro.options.output.publicDir
       await writeFile(join(distDir, 'hub.config.json'), JSON.stringify(hubConfig, null, 2), 'utf-8')

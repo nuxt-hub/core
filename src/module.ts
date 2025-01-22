@@ -167,18 +167,18 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Production mode without remote storage
     if (!hub.remote && !nuxt.options.dev) {
-      // Make sure to fallback to cloudflare-pages preset
-      let preset = nuxt.options.nitro.preset = nuxt.options.nitro.preset || 'cloudflare-pages'
+      // Make sure to fallback to cloudflare_pages preset
+      let preset = nuxt.options.nitro.preset = nuxt.options.nitro.preset || 'cloudflare_pages'
       // Support also cloudflare_module
-      preset = String(preset).replace('_', '-')
+      preset = String(preset).replace('-', '_')
 
-      if (!['cloudflare-pages', 'cloudflare-module', 'cloudflare-durable'].includes(preset)) {
-        log.error('NuxtHub is only compatible with the `cloudflare-pages`, `cloudflare-module` or `cloudflare-durable` presets.')
+      if (!['cloudflare_pages', 'cloudflare_module', 'cloudflare_durable'].includes(preset)) {
+        log.error('NuxtHub is only compatible with the `cloudflare_pages`, `cloudflare_module` or `cloudflare_durable` presets.')
         process.exit(1)
       }
 
       // @ts-expect-error compatibilityDate is not properly typed
-      if (preset !== 'cloudflare-pages' && nuxt.options.compatibilityDate?.default && nuxt.options.compatibilityDate.default < '2024-11-20') {
+      if (preset !== 'cloudflare_pages' && nuxt.options.compatibilityDate?.default && nuxt.options.compatibilityDate.default < '2024-11-20') {
         log.warn('Found a compatibility date in `nuxt.config.ts` earlier than `2024-09-19`, forcing it to `2024-09-19`. Please update your `nuxt.config.ts` file.')
         // @ts-expect-error compatibilityDate is not properly typed
         nuxt.options.compatibilityDate.default = '2024-09-19'
