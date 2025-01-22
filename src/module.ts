@@ -35,8 +35,11 @@ export default defineNuxtModule<ModuleOptions>({
     const rootDir = nuxt.options.rootDir
     const { resolve } = createResolver(import.meta.url)
 
-    let remoteArg = parseArgs(argv, { remote: { type: 'string' } }).remote as string
-    remoteArg = (remoteArg === '' ? 'true' : remoteArg)
+    const cliArgs = parseArgs(argv, {
+      remote: { type: 'string' },
+      hubEnv: { type: 'string' }
+    })
+    const remoteArg = cliArgs.remote === '' ? 'true' : cliArgs.remote
     const runtimeConfig = nuxt.options.runtimeConfig
     const databaseMigrationsDirs = nuxt.options._layers?.map(layer => join(layer.config.serverDir!, 'database/migrations')).filter(Boolean)
     const hub = defu(runtimeConfig.hub || {}, options, {
@@ -66,7 +69,7 @@ export default defineNuxtModule<ModuleOptions>({
       databaseQueriesPaths: [],
       // Other options
       version,
-      env: process.env.NUXT_HUB_ENV || 'production',
+      env: process.env.NUXT_HUB_ENV || (cliArgs.hubEnv as string) || 'production',
       openapi: nuxt.options.nitro.experimental?.openAPI === true,
       // Extra bindings for the project
       bindings: {
@@ -79,6 +82,18 @@ export default defineNuxtModule<ModuleOptions>({
         clientSecret: process.env.NUXT_HUB_CLOUDFLARE_ACCESS_CLIENT_SECRET || null
       }
     })
+    if (!['test', 'preview', 'production'].includes(hub.env)) {
+      log.error('Invalid hub environment, should be `test`, `preview` or `production`')
+      process.exit(1)
+    }
+    // If testing environment detects, set the hub env to `test`
+    if (nuxt.options.test) {
+      hub.env = 'test'
+    }
+    if (hub.env === 'test') {
+      log.info('NuxtHub test environment detected, using `test` dataset for all storage & disabling remote storage.')
+      hub.remote = false
+    }
     runtimeConfig.hub = hub
     runtimeConfig.public.hub = {}
     // Make sure to tell Nitro to not generate the wrangler.toml file
