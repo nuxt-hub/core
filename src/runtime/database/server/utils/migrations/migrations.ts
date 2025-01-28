@@ -44,7 +44,7 @@ export async function applyDatabaseQueries(hub: HubConfig) {
   const db = hubDatabase()
 
   const queriesPaths = await getDatabaseQueryFiles(hub)
-  if (!queriesPaths.length) return log.success('No database queries to apply')
+  if (!queriesPaths.length) return
 
   for (const queryPath of queriesPaths) {
     const sql = await queriesStorage.getItem<string>(queryPath)

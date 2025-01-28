@@ -20,6 +20,7 @@ const links = [
   { label: 'AI', to: '/ai' },
   { label: 'Browser', to: '/browser' },
   { label: 'Blob', to: '/blob' },
+  { label: 'Chat', to: '/chat' },
   { label: 'Database', to: '/database' },
   { label: 'KV', to: '/kv' }
 ]

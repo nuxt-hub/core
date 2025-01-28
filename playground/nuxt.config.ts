@@ -8,7 +8,9 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
     '@nuxtjs/mdc',
-    '@kgierke/nuxt-basic-auth',
+    // '@kgierke/nuxt-basic-auth',
+    '@vueuse/nuxt',
+    'nuxt-auth-utils',
     module
   ],
   devtools: { enabled: true },
@@ -18,19 +20,13 @@ export default defineNuxtConfig({
   },
   future: { compatibilityVersion: 4 },
 
-  // nitro: {
-  //   cloudflare: {
-  //     wrangler: {
-  //       compatibility_flags: ['nodejs_compat_v2']
-  //     }
-  //   }
-  // },
-
-  compatibilityDate: '2024-08-08',
+  compatibilityDate: '2025-01-22',
 
   nitro: {
+    preset: 'cloudflare-durable',
     experimental: {
-      openAPI: true
+      openAPI: true,
+      websocket: true
     }
   },
 

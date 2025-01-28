@@ -75,7 +75,6 @@ export async function applyRemoteDatabaseQueries(hub: HubConfig) {
   const queriesStorage = useDatabaseQueriesStorage(hub)
   const queriesPaths = await getDatabaseQueryFiles(hub)
   if (!queriesPaths.length) {
-    log.success('No database queries to apply')
     return true
   }
 
