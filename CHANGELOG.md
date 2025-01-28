@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.8.15
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.14...v0.8.15)
+
+### 🚀 Enhancements
+
+- Prepare to CF Workers ([601034b](https://github.com/nuxt-hub/core/commit/601034b))
+
+### 🏡 Chore
+
+- Add nitroPreset in hub.config.json ([c2e29b3](https://github.com/nuxt-hub/core/commit/c2e29b3))
+
+### ❤️ Contributors
+
+- Sébastien Chopin <atinux@gmail.com>
+
 ## v0.8.14
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.13...v0.8.14)
