@@ -430,3 +430,7 @@ ALTER TABLE ...
 -PRAGMA foreign_keys = ON;
 +PRAGMA defer_foreign_keys = off;
 ```
+
+## Pricing
+
+:pricing-table{:tabs='["DB"]'}

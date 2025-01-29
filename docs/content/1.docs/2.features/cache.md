@@ -128,3 +128,7 @@ As NuxtHub leverages Cloudflare Workers KV to store your cache entries, we lever
 ::note
 If you set an expiration (`maxAge`) lower than `60` seconds, NuxtHub will set the KV entry expiration to `60` seconds in the future (Cloudflare KV limitation) so it can be removed automatically.
 ::
+
+## Pricing
+
+:pricing-table{:tabs='["KV"]'}

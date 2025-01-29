@@ -984,3 +984,8 @@ That's it! You can now upload files to R2 using the presigned URLs.
 ::callout
 Read more about presigned URLs on Cloudflare's [official documentation](https://developers.cloudflare.com/r2/api/s3/presigned-urls/).
 ::
+
+## Pricing
+
+:pricing-table{:tabs='["Blob"]'}
+
