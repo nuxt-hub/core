@@ -262,3 +262,7 @@ export interface BlobCredentials {
    */
   sessionToken: string
 }
+
+export interface BlobServeOptions {
+  stream: boolean
+}

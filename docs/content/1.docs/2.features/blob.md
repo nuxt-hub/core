@@ -90,6 +90,8 @@ do {
 
 Returns a blob's data and sets `Content-Type`, `Content-Length` and `ETag` headers.
 
+#### Image
+
 ::code-group
 ```ts [server/routes/images/[...pathname\\].get.ts]
 export default eventHandler(async (event) => {
@@ -101,6 +103,34 @@ export default eventHandler(async (event) => {
 ```vue [pages/index.vue]
 <template>
   <img src="/images/my-image.jpg">
+</template>
+```
+::
+
+#### Video
+
+::callout
+Add `stream: true` option to prevent videos downloading.
+::
+
+::code-group
+```ts [server/routes/videos/[...pathname\\].get.ts]
+export default eventHandler(async (event) => {
+  const { pathname } = getRouterParams(event)
+
+  return hubBlob().serve(event, pathname, {
+    stream: true
+  })
+})
+```
+```vue [pages/index.vue]
+<template>
+  <video
+    controls
+    playsinline
+    controlsList="nodownload"
+    src="/videos/my-video.mp4"
+  />
 </template>
 ```
 ::
@@ -832,6 +862,14 @@ interface BlobListResult {
   hasMore: boolean
   cursor?: string
   folders?: string[]
+}
+```
+
+### `BlobServeOptions`
+
+```ts
+interface BlobServeOptions {
+  stream: boolean
 }
 ```
 
