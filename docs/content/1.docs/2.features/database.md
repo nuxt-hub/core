@@ -260,6 +260,45 @@ console.log(result)
 This method can have poorer performance (prepared statements can be reused in some cases) and, more importantly, is less safe. Only use this method for maintenance and one-shot tasks (for example, migration jobs).
 ::
 
+## Working with JSON
+
+Cloudflare D1 supports querying and parsing JSON data. This can improve performance by reducing the amount of round-trips to your database. Instead of querying a JSON column, extracting the data you need, and using that data to make another query, you can do all of this work in a single query. 
+
+JSON columns are stored as `TEXT` columns in your database.
+
+```ts
+const framework = {
+  name: 'Nuxt',
+  year: 2016,
+  projects: [
+    'NuxtHub',
+    'Nuxt UI'
+  ]
+}
+
+await hubDatabase()
+  .prepare('INSERT INTO frameworks (info) VALUES (?1)')
+  .bind(JSON.stringify(framework))
+  .run()
+```
+
+Then, using D1's [JSON functions](https://developers.cloudflare.com/d1/sql-api/query-json/), which are built on the [SQLite JSON extension](https://www.sqlite.org/json1.html), you can make queries using the data in your JSON column.
+
+```ts
+const framework = await db.prepare('SELECT * FROM frameworks WHERE (json_extract(info, "$.name") = "Nuxt")').first()
+console.log(framework)
+/*
+{
+  "id": 1,
+  "info": "{\"name\":\"Nuxt\",\"year\":2016,\"projects\":[\"NuxtHub\",\"Nuxt UI\"]}"
+}
+*/
+```
+
+::callout
+For an in-depth guide on querying JSON and a list of all supported functions, see [Cloudlare's Query JSON documentation](https://developers.cloudflare.com/d1/sql-api/query-json/#generated-columns).
+::
+
 ## Using an ORM
 
 Instead of using `hubDatabase()` to make interact with your database, you can use an ORM like [Drizzle ORM](/docs/features/database/drizzle). This can improve the developer experience by providing a type-safe API, migrations, and more.
