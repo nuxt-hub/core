@@ -4,6 +4,8 @@ navigation.title: Database
 description: Access a SQL database in your Nuxt application to store and retrieve relational data.
 ---
 
+NuxtHub Database uses [Cloudflare D1](https://developers.cloudflare.com/d1/), a managed, serverless database built on SQLite to store and retrieve relational data.
+
 ## Getting Started
 
 Enable the database in your NuxtHub project by adding the `database` property to the `hub` object in your `nuxt.config.ts` file.
@@ -23,6 +25,8 @@ This option will use Cloudflare platform proxy in development and automatically 
 ::tip
 Checkout our [Drizzle ORM recipe](/docs/recipes/drizzle) to get started with the database by providing a schema and migrations.
 ::
+
+During local development, you can view and edit your database in the Nuxt DevTools. Once your project is deployed, you can inspect the database in the NuxtHub Admin Dashboard. 
 
 ::tabs
 ::div{label="Nuxt DevTools"}
@@ -59,23 +63,38 @@ Best practice is to use prepared statements which are precompiled objects used b
 
 ### `bind()`
 
-Binds parameters to a prepared statement.
+Binds parameters to a prepared statement, allowing you to pass dynamic values to the query.
 
 ```ts
 const stmt = db.prepare('SELECT * FROM users WHERE name = ?1')
 
 stmt.bind('Evan You')
+
+// SELECT * FROM users WHERE name = 'Evan You'
 ```
 
-::note
-The `?` character followed by a number (1-999) represents an ordered parameter. The number represents the position of the parameter when calling `.bind(...params)`.
-::
+The `?` character followed by a number (1-999) represents an ordered parameter. The number represents the position of the parameter when calling `.bind(...params)`. 
 
 ```ts
 const stmt = db
   .prepare('SELECT * FROM users WHERE name = ?2 AND age = ?1')
   .bind(3, 'Leo Chopin')
+// SELECT * FROM users WHERE name = 'Leo Chopin' AND age = 3 
 ```
+
+If you instead use anonymous parameters (without a number), the values passed to `bind` will be assigned in order to the `?` placeholders in the query.
+
+It's recommended to use ordered parameters to improve maintainable and ensure that removing or reordering parameters will not break your queries.
+
+```ts
+const stmt = db
+  .prepare('SELECT * FROM users WHERE name = ? AND age = ?')
+  .bind('Leo Chopin', 3)
+
+// SELECT * FROM users WHERE name = 'Leo Chopin' AND age = 3 
+```
+
+
 
 ### `all()`
 
@@ -190,7 +209,9 @@ console.log(result)
 
 ### `batch()`
 
-Sends multiple SQL statements inside a single call to the database. This can have a huge performance impact as it reduces latency from network round trips to the database. Each statement in the list will execute and commit, sequentially, non-concurrently and return the results in the same order.
+Sends multiple SQL statements inside a single call to the database. This can have a huge performance impact by reducing latency caused by multiple network round trips to the database. Each statement in the list will execute/commit sequentially and non-concurrently before returning the results in the same order.
+
+`batch` acts as a SQL transaction, meaning that if any statement fails, the entire transaction is aborted and rolled back.
 
 ```ts
 const [info1, info2] = await db.batch([
@@ -222,7 +243,7 @@ The object returned is the same as the [`.all()`](#all) method.
 
 Executes one or more queries directly without prepared statements or parameters binding. The input can be one or multiple queries separated by \n.
 
-If an error occurs, an exception is thrown with the query and error messages, execution stops and further statements are not executed.
+If an error occurs, an exception is thrown with the query and error messages, execution stops, and further queries are not executed.
 
 ```ts
 const result = await hubDatabase().exec(`CREATE TABLE IF NOT EXISTS frameworks (id INTEGER PRIMARY KEY, name TEXT NOT NULL, year INTEGER NOT NULL DEFAULT 0)`)
@@ -236,68 +257,20 @@ console.log(result)
 ```
 
 ::callout
-This method can have poorer performance (prepared statements can be reused in some cases) and, more importantly, is less safe. Only use this method for maintenance and one-shot tasks (for example, migration jobs). The input can be one or multiple queries separated by \n.
+This method can have poorer performance (prepared statements can be reused in some cases) and, more importantly, is less safe. Only use this method for maintenance and one-shot tasks (for example, migration jobs).
 ::
+
+## Using an ORM
+
+Instead of using `hubDatabase()` to make interact with your database, you can use an ORM like [Drizzle ORM](/docs/features/database/drizzle). This can improve the developer experience by providing a type-safe API, migrations, and more.
 
 ## Database Migrations
 
-Database migrations provide version control for your database schema. They track changes and ensure consistent schema evolution across all environments through incremental updates. NuxtHub supports SQL migration files (`.sql`).
-
-### Migrations Directories
-
-NuxtHub scans the `server/database/migrations` directory for migrations **for each [Nuxt layer](https://nuxt.com/docs/getting-started/layers)**.
-
-If you need to scan additional migrations directories, you can specify them in your `nuxt.config.ts` file.
-
-```ts [nuxt.config.ts]
-export default defineNuxtConfig({
-  hub: {
-    // Array of additional migration directories to scan
-    databaseMigrationsDirs: [
-      'my-module/db-migrations/'
-    ]
-  }
-})
-```
-::note
-NuxtHub will scan both `server/database/migrations` and `my-module/db-migrations` directories for `.sql` files.
-::
-
-If you want more control to the migrations directories or you are working on a [Nuxt module](https://nuxt.com/docs/guide/going-further/modules), you can use the `hub:database:migrations:dirs` hook:
-
-::code-group
-```ts [modules/auth/index.ts]
-import { createResolver, defineNuxtModule } from 'nuxt/kit'
-
-export default defineNuxtModule({
-  meta: {
-    name: 'my-auth-module'
-  },
-  setup(options, nuxt) {
-    const { resolve } = createResolver(import.meta.url)
-
-    nuxt.hook('hub:database:migrations:dirs', (dirs) => {
-      dirs.push(resolve('db-migrations'))
-    })
-  }
-})
-```
-```sql [modules/auth/db-migrations/0001_create-users.sql]
-CREATE TABLE IF NOT EXISTS users (
-  id INTEGER PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL
-);
-```
-::
-
-::tip
-All migrations files are copied to the `.data/hub/database/migrations` directory when you run Nuxt. This consolidated view helps you track all migrations and enables you to use `npx nuxthub database migrations <command>` commands.
-::
+Database migrations provide version control for your database schema. They track changes and ensure consistent schema evolution across all environments through incremental updates.
 
 ### Automatic Application
 
-All `.sql` files in the database migrations directories are automatically applied when you:
+SQL migrations in `server/database/migrations/*.sql` are automatically applied when you:
 - Start the development server (`npx nuxt dev` or [`npx nuxt dev --remote`](/docs/getting-started/remote-storage))
 - Preview builds locally ([`npx nuxthub preview`](/changelog/nuxthub-preview))
 - Deploy via [`npx nuxthub deploy`](/docs/getting-started/deploy#nuxthub-cli) or [Cloudflare Pages CI](/docs/getting-started/deploy#cloudflare-pages-ci)
@@ -326,6 +299,7 @@ Migration files are created in `server/database/migrations/`.
 ```
 
 After creation, add your SQL queries to modify the database schema.
+
 
 ::note{to="/docs/recipes/drizzle#npm-run-dbgenerate"}
 With [Drizzle ORM](/docs/recipes/drizzle), migrations are automatically created when you run `npx drizzle-kit generate`.
@@ -378,6 +352,27 @@ NUXT_HUB_PROJECT_URL=<url> NUXT_HUB_PROJECT_SECRET_KEY=<secret> nuxthub database
 ```
 ::
 
+### Migrating from Drizzle ORM
+
+Since NuxtHub doesn't recognize previously applied Drizzle ORM migrations (stored in `__drizzle_migrations`), it will attempt to rerun all migrations in `server/database/migrations/*.sql`. To prevent this:
+
+1. Mark existing migrations as applied in each environment:
+
+    ```bash [Terminal]
+    # Local environment
+    npx nuxthub database migrations mark-all-applied
+
+    # Preview environment
+    npx nuxthub database migrations mark-all-applied --preview
+
+    # Production environment
+    npx nuxthub database migrations mark-all-applied --production
+    ```
+
+2. Remove `server/plugins/database.ts` as it's no longer needed.
+
+That's it! You can keep using `npx drizzle-kit generate` to generate migrations when updating your Drizzle ORM schema.
+
 ### Post-Migration Queries
 
 ::important
@@ -417,7 +412,7 @@ These queries run after all migrations are applied but are not tracked in the `_
 
 ### Foreign Key Constraints
 
-If you are using [Drizzle ORM](/docs/recipes/drizzle) to generate your database migrations, note that is uses `PRAGMA foreign_keys = ON | OFF;` in the generated migration files. This is not supported by Cloudflare D1 as they support instead [defer foreign key constraints](https://developers.cloudflare.com/d1/sql-api/foreign-keys/#defer-foreign-key-constraints).
+If you are using [Drizzle ORM](/docs/recipes/drizzle) to generate your database migrations, your generated migration files will use1 `PRAGMA foreign_keys = ON | OFF;`. This is not supported by Cloudflare D1. Instead, they support [defer foreign key constraints](https://developers.cloudflare.com/d1/sql-api/foreign-keys/#defer-foreign-key-constraints).
 
 You need to update your migration file to use `PRAGMA defer_foreign_keys = on|off;` instead:
 
@@ -430,6 +425,13 @@ ALTER TABLE ...
 -PRAGMA foreign_keys = ON;
 +PRAGMA defer_foreign_keys = off;
 ```
+
+## Limits
+
+- The maximum database size is 10 GB
+- The maximum number of columns per table is 100
+
+See all of the [D1 Limits](https://developers.cloudflare.com/d1/platform/limits/)
 
 ## Pricing
 
