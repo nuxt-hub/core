@@ -262,7 +262,7 @@ This method can have poorer performance (prepared statements can be reused in so
 
 ## Working with JSON
 
-Cloudflare D1 supports querying and parsing JSON data. This can improve performance by reducing the amount of round-trips to your database. Instead of querying a JSON column, extracting the data you need, and using that data to make another query, you can do all of this work in a single query. 
+Cloudflare D1 supports querying and parsing JSON data. This can improve performance by reducing the number of round trips to your database. Instead of querying a JSON column, extracting the data you need, and using that data to make another query, you can do all of this work in a single query by using JSON functions. 
 
 JSON columns are stored as `TEXT` columns in your database.
 
@@ -330,14 +330,26 @@ npx nuxthub database migrations create <name>
 Migration names must only contain alphanumeric characters and `-` (spaces are converted to `-`).
 ::
 
-Migration files are created in `server/database/migrations/`.
+Migration files are created in `server/database/migrations/` and are prefixed by an auto-incrementing sequence number. This migration number is used to determine the order in which migrations are run.
 
 ```bash [Example]
 > npx nuxthub database migrations create create-todos
 ✔ Created ./server/database/migrations/0001_create-todos.sql
 ```
 
-After creation, add your SQL queries to modify the database schema.
+After creation, add your SQL queries to modify the database schema. For example, migrations should be used to create tables, add/delete/modify columns, and add/remove indexes.
+
+```sql [0001_create-todos.sql]
+-- Migration number: 0001 	 2025-01-30T17:17:37.252Z
+
+CREATE TABLE `todos` (
+	`id` integer PRIMARY KEY NOT NULL,
+	`user_id` integer NOT NULL,
+	`title` text NOT NULL,
+	`completed` integer DEFAULT 0 NOT NULL,
+	`created_at` integer NOT NULL
+);
+```
 
 
 ::note{to="/docs/recipes/drizzle#npm-run-dbgenerate"}
