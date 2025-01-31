@@ -935,3 +935,7 @@ export default defineTask({
 ```
 
 <!-- TODO: Recipe for Retrieval Augmented Generation (RAG) -->
+
+## Pricing
+
+:pricing-table{:tabs='["Vectorize"]'}
