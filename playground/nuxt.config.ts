@@ -8,7 +8,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
     '@nuxtjs/mdc',
-    '@kgierke/nuxt-basic-auth',
+    // '@kgierke/nuxt-basic-auth',
     '@vueuse/nuxt',
     'nuxt-auth-utils',
     module
