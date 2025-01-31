@@ -78,20 +78,28 @@ export async function copyDatabaseQueriesToHubDir(hub: HubConfig) {
 // #endregion
 
 // #region Utils
+/**
+ * Split a string containing SQL queries into an array of individual queries after removing comments
+ */
 export function splitSqlQueries(sqlFileContent: string): string[] {
-  const queries = []
-  // Track whether we're inside a string literal
+  const queries: string[] = []
   let inString = false
   let stringFence = ''
   let result = ''
 
-  // Process the content character by character
+  let currentGeneralWord = ''
+  let previousGeneralWord = ''
+  let inTrigger = false
+
+  let currentTriggerWord = ''
+  let triggerBlockNestingLevel = 0
+
   for (let i = 0; i < sqlFileContent.length; i += 1) {
     const char = sqlFileContent[i]
     const nextChar = sqlFileContent[i + 1]
 
     // Handle string literals
-    if ((char === '\'' || char === '"') && sqlFileContent[i - 1] !== '\\') {
+    if ((char === '\'' || char === '"') && (i === 0 || sqlFileContent[i - 1] !== '\\')) {
       if (!inString) {
         inString = true
         stringFence = char
@@ -102,7 +110,7 @@ export function splitSqlQueries(sqlFileContent: string): string[] {
 
     // Only remove comments when not inside a string
     if (!inString) {
-      // `--` comments
+      // Handle -- comments
       if (char === '-' && nextChar === '-') {
         while (i < sqlFileContent.length && sqlFileContent[i] !== '\n') {
           i += 1
@@ -110,7 +118,7 @@ export function splitSqlQueries(sqlFileContent: string): string[] {
         continue
       }
 
-      // `/* */` comments
+      // Handle /* */ comments
       if (char === '/' && nextChar === '*') {
         i += 2
         while (i < sqlFileContent.length && !(sqlFileContent[i] === '*' && sqlFileContent[i + 1] === '/')) {
@@ -120,23 +128,73 @@ export function splitSqlQueries(sqlFileContent: string): string[] {
         continue
       }
 
-      if (char === ';' && sqlFileContent[i - 1] !== '\\') {
-        if (result.trim() !== '') {
-          result += char
-          queries.push(result.trim())
-          result = ''
+      // Track general keywords for CREATE TRIGGER detection
+      if (/\w/.test(char)) {
+        currentGeneralWord += char.toLowerCase()
+      } else {
+        // Check if previous word was 'create' and current is 'trigger'
+        if (previousGeneralWord === 'create' && currentGeneralWord === 'trigger') {
+          inTrigger = true
         }
-        continue
+        previousGeneralWord = currentGeneralWord
+        currentGeneralWord = ''
+      }
+
+      // If in trigger, track BEGIN/END
+      if (inTrigger) {
+        if (/\w/.test(char)) {
+          currentTriggerWord += char.toLowerCase()
+        } else {
+          if (currentTriggerWord === 'begin') {
+            triggerBlockNestingLevel++
+          } else if (currentTriggerWord === 'end') {
+            triggerBlockNestingLevel = Math.max(triggerBlockNestingLevel - 1, 0)
+          }
+          currentTriggerWord = ''
+        }
+      }
+
+      // Handle semicolon
+      if (char === ';' && sqlFileContent[i - 1] !== '\\') {
+        if (inTrigger) {
+          if (triggerBlockNestingLevel === 0) {
+            // End of trigger, split here
+            result += char
+            const trimmedResult = result.trim()
+            if (trimmedResult !== '') {
+              queries.push(trimmedResult)
+            }
+            result = ''
+            inTrigger = false
+            triggerBlockNestingLevel = 0
+            continue
+          } else {
+            // Inside trigger, do not split
+            result += char
+          }
+        } else {
+          // Not in trigger, split as usual
+          result += char
+          const trimmedResult = result.trim()
+          if (trimmedResult !== '') {
+            queries.push(trimmedResult)
+          }
+          result = ''
+          continue
+        }
       }
     }
 
     result += char
   }
-  if (result.trim() !== '') {
-    queries.push(result.trim())
+
+  // Add any remaining content as a query
+  const finalTrimmed = result.trim()
+  if (finalTrimmed !== '') {
+    queries.push(finalTrimmed)
   }
 
-  // Process each query
+  // Process each query to ensure it ends with a single semicolon and filter out empty/semicolon-only
   return queries
     .map((query) => {
       if (!query.endsWith(';')) {
@@ -144,5 +202,6 @@ export function splitSqlQueries(sqlFileContent: string): string[] {
       }
       return query.replace(/;+$/, ';')
     })
+    .filter(query => query !== ';' && query.trim() !== '')
 }
 // #endregion
