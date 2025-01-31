@@ -4,6 +4,8 @@ navigation.title: Cache
 description: Learn how to cache Nuxt pages, API routes and functions in with NuxtHub cache storage.
 ---
 
+NuxtHub Cache is powered by [Nitro's cache storage](https://nitro.unjs.io/guide/cache#customize-cache-storage) and uses [Cloudflare Workers KV](https://developers.cloudflare.com/kv) as the cache storage. It allows you to cache API routes, server functions, and pages in your application.
+
 ## Getting Started
 
 Enable the cache storage in your NuxtHub project by adding the `cache` property to the `hub` object in your `nuxt.config.ts` file.
@@ -81,6 +83,28 @@ It is important to note that the `event` argument should always be the first arg
 [Read more about this in the Nitro docs](https://nitro.unjs.io/guide/cache#edge-workers).
 ::
 
+## Routes Caching
+
+You can enable route caching in your `nuxt.config.ts` file.
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    routeRules: {
+      '/blog/**': {
+        cache: {
+          maxAge: 60 * 60,
+          // other options like name, group, swr...
+        }
+      }
+  }
+})
+```
+
+::note
+Read more about [route rule caching in Nitro](https://nitro.build/guide/cache#caching-route-rules)
+::
+
 ## Cache Invalidation
 
 When using the `defineCachedFunction` or `defineCachedEventHandler` functions, the cache key is generated using the following pattern:
@@ -91,7 +115,7 @@ When using the `defineCachedFunction` or `defineCachedEventHandler` functions, t
 
 The defaults are:
 - `group`: `'nitro'`
-- `name`: `'handlers'` for api routes and `'functions'` for server functions
+- `name`: `'handlers'` for API routes,  `'functions'` for server functions, or `'routes'` for route handlers
 
 For example, the following function:
 
@@ -99,7 +123,7 @@ For example, the following function:
 const getAccessToken = defineCachedFunction(() => {
   return String(Date.now())
 }, {
-  maxAge: 10,
+  maxAge: 60,
   name: 'getAccessToken',
   getKey: () => 'default'
 })
@@ -111,11 +135,24 @@ Will generate the following cache key:
 nitro:functions:getAccessToken:default.json
 ```
 
-You can invalidate the cached function entry with:
+You can invalidate the cached function entry from your storage using cache key.
 
 ```ts
 await useStorage('cache').removeItem('nitro:functions:getAccessToken:default.json')
 ```
+
+You can use the `group` and `name` options to invalidate multiple cache entries based on their prefixes. 
+
+```ts
+// Gets all keys that start with nitro:handlers:
+const keysToInvalidate = await useStorage('cache').getKeys('nitro:handlers:')
+
+// Delete keys from the cache storage
+await Promise.all(keysToInvalidate.map(async key => {
+  return useStorage('cache').removeItem(key)
+}))
+```
+
 
 ::note{to="https://nitro.unjs.io/guide/cache"}
 Read more about Nitro Cache.
@@ -124,6 +161,25 @@ Read more about Nitro Cache.
 ## Cache Expiration
 
 As NuxtHub leverages Cloudflare Workers KV to store your cache entries, we leverage the [`expiration` property](https://developers.cloudflare.com/kv/api/write-key-value-pairs/#expiring-keys) of the KV binding to handle the cache expiration.
+
+By default, `stale-while-revalidate` behavior is enabled. If an expired cache entry is requested, the stale value will be served while the cache is asynchronously refreshed. This also means that all cache entries will remain in your KV namespace until they are manually invalidated/deleted. 
+
+To disable this behavior, set `swr` to `false` when defining a cache rule. This will delete the cache entry once `maxAge` is reached.
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    routeRules: {
+      '/blog/**': {
+        cache: {
+          maxAge: 60 * 60,
+          swr: false
+          // other options like name and group...
+        }
+      }
+  }
+})
+```
 
 ::note
 If you set an expiration (`maxAge`) lower than `60` seconds, NuxtHub will set the KV entry expiration to `60` seconds in the future (Cloudflare KV limitation) so it can be removed automatically.
