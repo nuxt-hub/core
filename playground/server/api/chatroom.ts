@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto'
+import { randomUUID } from 'uncrypto'
 
 export default defineWebSocketHandler({
   async upgrade(request) {
