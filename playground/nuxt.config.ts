@@ -23,10 +23,10 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-01-22',
 
   nitro: {
-    preset: 'cloudflare-durable',
+    // preset: 'cloudflare-durable',
     experimental: {
-      openAPI: true,
-      websocket: true
+      openAPI: true
+      // websocket: true
     }
   },
 
