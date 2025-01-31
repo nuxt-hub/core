@@ -8,7 +8,7 @@ import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
 import { parse } from 'pathe'
 import { joinURL } from 'ufo'
-import type { BlobType, FileSizeUnit, BlobUploadedPart, BlobListResult, BlobMultipartUpload, HandleMPUResponse, BlobMultipartOptions, BlobUploadOptions, BlobPutOptions, BlobEnsureOptions, BlobObject, BlobListOptions, BlobCredentialsOptions, BlobCredentials } from '@nuxthub/core'
+import type { BlobType, FileSizeUnit, BlobUploadedPart, BlobListResult, BlobMultipartUpload, HandleMPUResponse, BlobMultipartOptions, BlobUploadOptions, BlobPutOptions, BlobEnsureOptions, BlobObject, BlobListOptions, BlobCredentialsOptions, BlobCredentials, BlobServeOptions } from '@nuxthub/core'
 import { streamToArrayBuffer } from '../../../utils/stream'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
@@ -56,7 +56,7 @@ interface HubBlob {
    * })
    * ```
    */
-  serve(event: H3Event, pathname: string): Promise<ReadableStream<any>>
+  serve(event: H3Event, pathname: string, options?: BlobServeOptions): Promise<ReadableStream<any>>
   /**
    * Put a new blob into the bucket.
    *
@@ -192,7 +192,23 @@ export function hubBlob(): HubBlob {
         folders: resolvedOptions.delimiter ? listed.delimitedPrefixes : undefined
       }
     },
-    async serve(event: H3Event, pathname: string) {
+    async serve(event: H3Event, pathname: string, options?: BlobServeOptions) {
+      const resolvedOptions = defu(options, {
+        stream: false
+      })
+
+      if (resolvedOptions?.stream) {
+        const referrer = getHeader(event, 'referer')
+        const range = getHeader(event, 'range')
+
+        if (!referrer || !range) {
+          throw createError({
+            statusCode: 403,
+            message: 'Unauthorized'
+          })
+        }
+      }
+
       pathname = decodeURIComponent(pathname)
       const object = await bucket.get(pathname)
 
