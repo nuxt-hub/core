@@ -25,8 +25,8 @@ export default defineNuxtConfig({
   nitro: {
     // preset: 'cloudflare-durable',
     experimental: {
-      openAPI: true
-      // websocket: true
+      openAPI: true,
+      websocket: true
     }
   },
 
