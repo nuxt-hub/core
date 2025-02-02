@@ -197,8 +197,10 @@ export function splitSqlQueries(sqlFileContent: string): string[] {
   // Process each query to ensure it ends with a single semicolon and filter out empty/semicolon-only
   return queries
     .map((query) => {
-      if (!query.endsWith(';')) {
-        query += ';'
+      // Handle semicolons in trigger bodies
+      if (query.includes('TRIGGER') && query.includes('BEGIN')) {
+        // First, handle the statements inside the trigger
+        query = query.replace(/;+(?=\s+(?:END|\S|$))/g, ';')
       }
       return query.replace(/;+$/, ';')
     })
