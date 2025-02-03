@@ -133,6 +133,12 @@ Deletes all items from the KV namespace..
 await hubKV().clear()
 ```
 
+To delete all items for a specific prefix, you can pass the prefix as an argument. We recommend using prefixes for better organization in your KV namespace.
+
+```ts
+await hubKV().clear('react')
+```
+
 ### List all keys
 
 Retrieves all keys from the KV storage.

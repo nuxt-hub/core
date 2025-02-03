@@ -303,11 +303,63 @@ Instead of using `hubDatabase()` to make interact with your database, you can us
 
 ## Database Migrations
 
-Database migrations provide version control for your database schema. They track changes and ensure consistent schema evolution across all environments through incremental updates.
+Database migrations provide version control for your database schema. They track changes and ensure consistent schema evolution across all environments through incremental updates. NuxtHub supports SQL migration files (`.sql`).
+
+### Migrations Directories
+
+NuxtHub scans the `server/database/migrations` directory for migrations **for each [Nuxt layer](https://nuxt.com/docs/getting-started/layers)**.
+
+If you need to scan additional migrations directories, you can specify them in your `nuxt.config.ts` file.
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  hub: {
+    // Array of additional migration directories to scan
+    databaseMigrationsDirs: [
+      'my-module/db-migrations/'
+    ]
+  }
+})
+```
+::note
+NuxtHub will scan both `server/database/migrations` and `my-module/db-migrations` directories for `.sql` files.
+::
+
+If you want more control to the migrations directories or you are working on a [Nuxt module](https://nuxt.com/docs/guide/going-further/modules), you can use the `hub:database:migrations:dirs` hook:
+
+::code-group
+```ts [modules/auth/index.ts]
+import { createResolver, defineNuxtModule } from 'nuxt/kit'
+
+export default defineNuxtModule({
+  meta: {
+    name: 'my-auth-module'
+  },
+  setup(options, nuxt) {
+    const { resolve } = createResolver(import.meta.url)
+
+    nuxt.hook('hub:database:migrations:dirs', (dirs) => {
+      dirs.push(resolve('db-migrations'))
+    })
+  }
+})
+```
+```sql [modules/auth/db-migrations/0001_create-users.sql]
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL
+);
+```
+::
+
+::tip
+All migrations files are copied to the `.data/hub/database/migrations` directory when you run Nuxt. This consolidated view helps you track all migrations and enables you to use `npx nuxthub database migrations <command>` commands.
+::
 
 ### Automatic Application
 
-SQL migrations in `server/database/migrations/*.sql` are automatically applied when you:
+All `.sql` files in the database migrations directories are automatically applied when you:
 - Start the development server (`npx nuxt dev` or [`npx nuxt dev --remote`](/docs/getting-started/remote-storage))
 - Preview builds locally ([`npx nuxthub preview`](/changelog/nuxthub-preview))
 - Deploy via [`npx nuxthub deploy`](/docs/getting-started/deploy#nuxthub-cli) or [Cloudflare Pages CI](/docs/getting-started/deploy#cloudflare-pages-ci)
@@ -341,11 +393,11 @@ After creation, add your SQL queries to modify the database schema. For example,
 -- Migration number: 0001 	 2025-01-30T17:17:37.252Z
 
 CREATE TABLE `todos` (
-	`id` integer PRIMARY KEY NOT NULL,
-	`user_id` integer NOT NULL,
-	`title` text NOT NULL,
-	`completed` integer DEFAULT 0 NOT NULL,
-	`created_at` integer NOT NULL
+  `id` integer PRIMARY KEY NOT NULL,
+  `user_id` integer NOT NULL,
+  `title` text NOT NULL,
+  `completed` integer DEFAULT 0 NOT NULL,
+  `created_at` integer NOT NULL
 );
 ```
 
@@ -400,27 +452,6 @@ NUXT_HUB_PROJECT_URL=<url> NUXT_HUB_PROJECT_SECRET_KEY=<secret> nuxthub database
 ```
 ::
 
-### Migrating from Drizzle ORM
-
-Since NuxtHub doesn't recognize previously applied Drizzle ORM migrations (stored in `__drizzle_migrations`), it will attempt to rerun all migrations in `server/database/migrations/*.sql`. To prevent this:
-
-1. Mark existing migrations as applied in each environment:
-
-    ```bash [Terminal]
-    # Local environment
-    npx nuxthub database migrations mark-all-applied
-
-    # Preview environment
-    npx nuxthub database migrations mark-all-applied --preview
-
-    # Production environment
-    npx nuxthub database migrations mark-all-applied --production
-    ```
-
-2. Remove `server/plugins/database.ts` as it's no longer needed.
-
-That's it! You can keep using `npx drizzle-kit generate` to generate migrations when updating your Drizzle ORM schema.
-
 ### Post-Migration Queries
 
 ::important
@@ -460,7 +491,7 @@ These queries run after all migrations are applied but are not tracked in the `_
 
 ### Foreign Key Constraints
 
-If you are using [Drizzle ORM](/docs/recipes/drizzle) to generate your database migrations, your generated migration files will use1 `PRAGMA foreign_keys = ON | OFF;`. This is not supported by Cloudflare D1. Instead, they support [defer foreign key constraints](https://developers.cloudflare.com/d1/sql-api/foreign-keys/#defer-foreign-key-constraints).
+If you are using [Drizzle ORM](/docs/recipes/drizzle) to generate your database migrations, your generated migration files will use `PRAGMA foreign_keys = ON | OFF;`. This is not supported by Cloudflare D1. Instead, they support [defer foreign key constraints](https://developers.cloudflare.com/d1/sql-api/foreign-keys/#defer-foreign-key-constraints).
 
 You need to update your migration file to use `PRAGMA defer_foreign_keys = on|off;` instead:
 
