@@ -94,8 +94,6 @@ const stmt = db
 // SELECT * FROM users WHERE name = 'Leo Chopin' AND age = 3 
 ```
 
-
-
 ### `all()`
 
 Returns all rows as an array of objects, with each result row represented as an object on the results property (see [Return Object](#return-object)).
@@ -350,7 +348,6 @@ CREATE TABLE `todos` (
 	`created_at` integer NOT NULL
 );
 ```
-
 
 ::note{to="/docs/recipes/drizzle#npm-run-dbgenerate"}
 With [Drizzle ORM](/docs/recipes/drizzle), migrations are automatically created when you run `npx drizzle-kit generate`.

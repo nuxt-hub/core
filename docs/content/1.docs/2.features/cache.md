@@ -89,20 +89,19 @@ You can enable route caching in your `nuxt.config.ts` file.
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
-  nitro: {
-    routeRules: {
-      '/blog/**': {
-        cache: {
-          maxAge: 60 * 60,
-          // other options like name, group, swr...
-        }
+  routeRules: {
+    '/blog/**': {
+      cache: {
+        maxAge: 60 * 60,
+        // other options like name, group, swr...
       }
+    }
   }
 })
 ```
 
 ::note
-Read more about [route rule caching in Nitro](https://nitro.build/guide/cache#caching-route-rules)
+Read more about [Nuxt's route rules](https://nuxt.com/docs/guide/concepts/rendering#hybrid-rendering).
 ::
 
 ## Cache Invalidation
@@ -144,13 +143,8 @@ await useStorage('cache').removeItem('nitro:functions:getAccessToken:default.jso
 You can use the `group` and `name` options to invalidate multiple cache entries based on their prefixes. 
 
 ```ts
-// Gets all keys that start with nitro:handlers:
-const keysToInvalidate = await useStorage('cache').getKeys('nitro:handlers:')
-
-// Delete keys from the cache storage
-await Promise.all(keysToInvalidate.map(async key => {
-  return useStorage('cache').removeItem(key)
-}))
+// Gets all keys that start with nitro:handlers
+await useStorage('cache').clear('nitro:handlers')
 ```
 
 
