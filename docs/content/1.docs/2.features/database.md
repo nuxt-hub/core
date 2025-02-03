@@ -4,6 +4,8 @@ navigation.title: Database
 description: Access a SQL database in your Nuxt application to store and retrieve relational data.
 ---
 
+NuxtHub Database uses [Cloudflare D1](https://developers.cloudflare.com/d1/), a managed, serverless database built on SQLite to store and retrieve relational data.
+
 ## Getting Started
 
 Enable the database in your NuxtHub project by adding the `database` property to the `hub` object in your `nuxt.config.ts` file.
@@ -23,6 +25,8 @@ This option will use Cloudflare platform proxy in development and automatically 
 ::tip
 Checkout our [Drizzle ORM recipe](/docs/recipes/drizzle) to get started with the database by providing a schema and migrations.
 ::
+
+During local development, you can view and edit your database in the Nuxt DevTools. Once your project is deployed, you can inspect the database in the NuxtHub Admin Dashboard. 
 
 ::tabs
 ::div{label="Nuxt DevTools"}
@@ -59,22 +63,35 @@ Best practice is to use prepared statements which are precompiled objects used b
 
 ### `bind()`
 
-Binds parameters to a prepared statement.
+Binds parameters to a prepared statement, allowing you to pass dynamic values to the query.
 
 ```ts
 const stmt = db.prepare('SELECT * FROM users WHERE name = ?1')
 
 stmt.bind('Evan You')
+
+// SELECT * FROM users WHERE name = 'Evan You'
 ```
 
-::note
-The `?` character followed by a number (1-999) represents an ordered parameter. The number represents the position of the parameter when calling `.bind(...params)`.
-::
+The `?` character followed by a number (1-999) represents an ordered parameter. The number represents the position of the parameter when calling `.bind(...params)`. 
 
 ```ts
 const stmt = db
   .prepare('SELECT * FROM users WHERE name = ?2 AND age = ?1')
   .bind(3, 'Leo Chopin')
+// SELECT * FROM users WHERE name = 'Leo Chopin' AND age = 3 
+```
+
+If you instead use anonymous parameters (without a number), the values passed to `bind` will be assigned in order to the `?` placeholders in the query.
+
+It's recommended to use ordered parameters to improve maintainable and ensure that removing or reordering parameters will not break your queries.
+
+```ts
+const stmt = db
+  .prepare('SELECT * FROM users WHERE name = ? AND age = ?')
+  .bind('Leo Chopin', 3)
+
+// SELECT * FROM users WHERE name = 'Leo Chopin' AND age = 3 
 ```
 
 ### `all()`
@@ -190,7 +207,9 @@ console.log(result)
 
 ### `batch()`
 
-Sends multiple SQL statements inside a single call to the database. This can have a huge performance impact as it reduces latency from network round trips to the database. Each statement in the list will execute and commit, sequentially, non-concurrently and return the results in the same order.
+Sends multiple SQL statements inside a single call to the database. This can have a huge performance impact by reducing latency caused by multiple network round trips to the database. Each statement in the list will execute/commit sequentially and non-concurrently before returning the results in the same order.
+
+`batch` acts as a SQL transaction, meaning that if any statement fails, the entire transaction is aborted and rolled back.
 
 ```ts
 const [info1, info2] = await db.batch([
@@ -222,7 +241,7 @@ The object returned is the same as the [`.all()`](#all) method.
 
 Executes one or more queries directly without prepared statements or parameters binding. The input can be one or multiple queries separated by \n.
 
-If an error occurs, an exception is thrown with the query and error messages, execution stops and further statements are not executed.
+If an error occurs, an exception is thrown with the query and error messages, execution stops, and further queries are not executed.
 
 ```ts
 const result = await hubDatabase().exec(`CREATE TABLE IF NOT EXISTS frameworks (id INTEGER PRIMARY KEY, name TEXT NOT NULL, year INTEGER NOT NULL DEFAULT 0)`)
@@ -236,8 +255,51 @@ console.log(result)
 ```
 
 ::callout
-This method can have poorer performance (prepared statements can be reused in some cases) and, more importantly, is less safe. Only use this method for maintenance and one-shot tasks (for example, migration jobs). The input can be one or multiple queries separated by \n.
+This method can have poorer performance (prepared statements can be reused in some cases) and, more importantly, is less safe. Only use this method for maintenance and one-shot tasks (for example, migration jobs).
 ::
+
+## Working with JSON
+
+Cloudflare D1 supports querying and parsing JSON data. This can improve performance by reducing the number of round trips to your database. Instead of querying a JSON column, extracting the data you need, and using that data to make another query, you can do all of this work in a single query by using JSON functions. 
+
+JSON columns are stored as `TEXT` columns in your database.
+
+```ts
+const framework = {
+  name: 'Nuxt',
+  year: 2016,
+  projects: [
+    'NuxtHub',
+    'Nuxt UI'
+  ]
+}
+
+await hubDatabase()
+  .prepare('INSERT INTO frameworks (info) VALUES (?1)')
+  .bind(JSON.stringify(framework))
+  .run()
+```
+
+Then, using D1's [JSON functions](https://developers.cloudflare.com/d1/sql-api/query-json/), which are built on the [SQLite JSON extension](https://www.sqlite.org/json1.html), you can make queries using the data in your JSON column.
+
+```ts
+const framework = await db.prepare('SELECT * FROM frameworks WHERE (json_extract(info, "$.name") = "Nuxt")').first()
+console.log(framework)
+/*
+{
+  "id": 1,
+  "info": "{\"name\":\"Nuxt\",\"year\":2016,\"projects\":[\"NuxtHub\",\"Nuxt UI\"]}"
+}
+*/
+```
+
+::callout
+For an in-depth guide on querying JSON and a list of all supported functions, see [Cloudlare's Query JSON documentation](https://developers.cloudflare.com/d1/sql-api/query-json/#generated-columns).
+::
+
+## Using an ORM
+
+Instead of using `hubDatabase()` to make interact with your database, you can use an ORM like [Drizzle ORM](/docs/recipes/drizzle). This can improve the developer experience by providing a type-safe API, migrations, and more.
 
 ## Database Migrations
 
@@ -318,14 +380,26 @@ npx nuxthub database migrations create <name>
 Migration names must only contain alphanumeric characters and `-` (spaces are converted to `-`).
 ::
 
-Migration files are created in `server/database/migrations/`.
+Migration files are created in `server/database/migrations/` and are prefixed by an auto-incrementing sequence number. This migration number is used to determine the order in which migrations are run.
 
 ```bash [Example]
 > npx nuxthub database migrations create create-todos
 ✔ Created ./server/database/migrations/0001_create-todos.sql
 ```
 
-After creation, add your SQL queries to modify the database schema.
+After creation, add your SQL queries to modify the database schema. For example, migrations should be used to create tables, add/delete/modify columns, and add/remove indexes.
+
+```sql [0001_create-todos.sql]
+-- Migration number: 0001 	 2025-01-30T17:17:37.252Z
+
+CREATE TABLE `todos` (
+  `id` integer PRIMARY KEY NOT NULL,
+  `user_id` integer NOT NULL,
+  `title` text NOT NULL,
+  `completed` integer DEFAULT 0 NOT NULL,
+  `created_at` integer NOT NULL
+);
+```
 
 ::note{to="/docs/recipes/drizzle#npm-run-dbgenerate"}
 With [Drizzle ORM](/docs/recipes/drizzle), migrations are automatically created when you run `npx drizzle-kit generate`.
@@ -417,7 +491,7 @@ These queries run after all migrations are applied but are not tracked in the `_
 
 ### Foreign Key Constraints
 
-If you are using [Drizzle ORM](/docs/recipes/drizzle) to generate your database migrations, note that is uses `PRAGMA foreign_keys = ON | OFF;` in the generated migration files. This is not supported by Cloudflare D1 as they support instead [defer foreign key constraints](https://developers.cloudflare.com/d1/sql-api/foreign-keys/#defer-foreign-key-constraints).
+If you are using [Drizzle ORM](/docs/recipes/drizzle) to generate your database migrations, your generated migration files will use `PRAGMA foreign_keys = ON | OFF;`. This is not supported by Cloudflare D1. Instead, they support [defer foreign key constraints](https://developers.cloudflare.com/d1/sql-api/foreign-keys/#defer-foreign-key-constraints).
 
 You need to update your migration file to use `PRAGMA defer_foreign_keys = on|off;` instead:
 
@@ -430,3 +504,14 @@ ALTER TABLE ...
 -PRAGMA foreign_keys = ON;
 +PRAGMA defer_foreign_keys = off;
 ```
+
+## Limits
+
+- The maximum database size is 10 GB
+- The maximum number of columns per table is 100
+
+See all of the [D1 Limits](https://developers.cloudflare.com/d1/platform/limits/)
+
+## Pricing
+
+:pricing-table{:tabs='["DB"]'}
