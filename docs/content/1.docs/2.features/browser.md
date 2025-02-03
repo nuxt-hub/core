@@ -56,8 +56,8 @@ Browser rendering is only available on the [Workers Paid](https://www.cloudflare
 To improve the performance in production, NuxtHub will reuse browser sessions. This means that the browser will stay open after each request (for 60 seconds), a new request will reuse the same browser session if available or open a new one.
 
 The Cloudflare limits are:
-- 2 new browsers per minute per Cloudflare account
-- 2 concurrent browser sessions per account
+- 10 new browsers per minute per Cloudflare account
+- 10 concurrent browser sessions per account
 - a browser instance gets killed if no activity is detected for 60 seconds (idle timeout)
 
 You can extend the idle timeout by giving the `keepAlive` option when creating the browser instance:
