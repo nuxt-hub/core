@@ -299,7 +299,7 @@ For an in-depth guide on querying JSON and a list of all supported functions, se
 
 ## Using an ORM
 
-Instead of using `hubDatabase()` to make interact with your database, you can use an ORM like [Drizzle ORM](/docs/features/database/drizzle). This can improve the developer experience by providing a type-safe API, migrations, and more.
+Instead of using `hubDatabase()` to make interact with your database, you can use an ORM like [Drizzle ORM](/docs/recipes/drizzle). This can improve the developer experience by providing a type-safe API, migrations, and more.
 
 ## Database Migrations
 
