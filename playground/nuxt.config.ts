@@ -8,7 +8,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
     '@nuxtjs/mdc',
-    '@kgierke/nuxt-basic-auth',
+    // '@kgierke/nuxt-basic-auth',
     '@vueuse/nuxt',
     'nuxt-auth-utils',
     module
@@ -23,7 +23,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-01-22',
 
   nitro: {
-    preset: 'cloudflare-durable',
+    // preset: 'cloudflare-durable',
     experimental: {
       openAPI: true,
       websocket: true
