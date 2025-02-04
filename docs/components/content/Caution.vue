@@ -1,7 +1,7 @@
 <template>
   <Alert
     title="Caution"
-    icon="i-ph-warning-octagon-duotone"
+    icon="i-lucide-octagon-alert"
     color="red"
     class="_caution"
     :class="$attrs.to ? 'dark:hover:!border-red-600/50 hover:!border-red-400/50' : ''"

@@ -1,7 +1,7 @@
 <template>
   <Alert
     title="Warning"
-    icon="i-ph-warning-duotone"
+    icon="i-lucide-triangle-alert"
     color="amber"
     class="_warning"
     :class="$attrs.to ? 'dark:hover:!border-amber-600/50 hover:!border-amber-400/50' : ''"

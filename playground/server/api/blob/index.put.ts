@@ -1,23 +1,13 @@
 export default eventHandler(async (event) => {
-  const form = await readFormData(event)
-  const files = form.getAll('files') as File[]
-  if (!files) {
-    throw createError({ statusCode: 400, message: 'Missing files' })
-  }
-
-  const { put } = hubBlob()
-  const objects: BlobObject[] = []
-  try {
-    for (const file of files) {
-      const object = await put(file.name, file, { addRandomSuffix: true })
-      objects.push(object)
+  const { prefix } = getQuery(event)
+  return hubBlob().handleUpload(event, {
+    formKey: 'files', // default
+    multiple: true, // default
+    put: {
+      prefix: String(prefix || ''),
+      customMetadata: {
+        hello: 'world'
+      }
     }
-  } catch (e: any) {
-    throw createError({
-      statusCode: 500,
-      message: `Storage error: ${e.message}`
-    })
-  }
-
-  return objects
+  })
 })

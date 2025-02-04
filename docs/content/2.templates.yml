@@ -1,0 +1,16 @@
+title: Templates
+description: 'Discover open source full-stack Nuxt templates to get up and running in a few seconds.'
+icon: i-lucide-panels-top-left
+hero:
+  title: 'Full-Stack <span class="text-primary">Nuxt</span> Templates'
+  description: 'Explore open source full-stack Nuxt templates to get up and running in a few seconds.'
+  align: center
+  links:
+    - label: Deploy a template
+      trailing-icon: i-lucide-arrow-right
+      color: black
+      to: https://hub.nuxt.com/new
+      external: true
+    - label: Read the documentation
+      color: white
+      to: /docs/getting-started

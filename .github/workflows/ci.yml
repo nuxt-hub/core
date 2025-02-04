@@ -31,10 +31,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - run: corepack enable
+      - run: npm i -g --force corepack && corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: "pnpm"
 
       - name: Install dependencies
@@ -44,11 +44,14 @@ jobs:
         run: pnpm lint
 
   test:
-    runs-on: ubuntu-latest
-
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        # os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
-      - run: corepack enable
+      - run: npm i -g --force corepack && corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -64,11 +67,25 @@ jobs:
       - name: Prepare environment
         run: pnpm dev:prepare
 
-      # - name: Run test suite
-      #   run: pnpm test
-
+      - name: Run test suite
+        run: pnpm test
+  release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm i -g --force corepack && corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org/"
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install
+      - name: Prepare environment
+        run: pnpm dev:prepare
       - name: Release Nightly
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: pnpm changelogen --bump --canary --publish --publishTag nightly
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}

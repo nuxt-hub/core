@@ -1,0 +1,379 @@
+title: 'Ship Nuxt apps that scale.'
+navigation: false
+description: 'Deploy and scale your Nuxt applications worldwide with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and with full-stack capabilities.'
+hero:
+  title: 'Ship Nuxt apps that scale.'
+  description: 'Deploy and scale your Nuxt applications worldwide with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and with full-stack capabilities.'
+  img:
+    width: '1439'
+    height: '681'
+    light: '/images/landing/hero-light.svg'
+    dark: '/images/landing/hero-dark.svg'
+  headline:
+    label: "NuxtHub Github App & Action"
+    to: /changelog/github-app-and-action
+    icon: i-lucide-arrow-right
+features:
+  - name: Cloud Hosting
+    description: Deploy your application with confidence on our Nuxt-optimized Cloud hosting platform.
+    icon: i-simple-icons-nuxtdotjs
+    to: /docs/getting-started/deploy
+  - name: SQL Database
+    description: Add SQL databases to your app and build any kind of full-stack applications.
+    icon: i-lucide-database
+    to: /docs/features/database
+  - name: Files Storage
+    description: Upload, store and serve images, videos and any kind of file.
+    icon: i-lucide-shapes
+    to: /docs/features/blob
+  - name: KV Storage
+    description: Leverage a Key-Value data store replicated globally for maximum performance.
+    icon: i-lucide-list
+    to: /docs/features/kv
+  - name: Caching
+    description: Cache Nuxt pages, API routes and server functions on the Edge.
+    icon: i-lucide-zap
+    to: /docs/features/cache
+  - name: AI & Vectorize
+    description: Run generative AI tasks on a global network and build full-stack AI applications.
+    icon: i-lucide-wand
+    to: /docs/features/ai
+  - name: Analytics Engine
+    description: Write data points & query with an SQL API with a unlimited-cardinality analytics service at scale.
+    icon: i-lucide-bar-chart-4
+    soon: true
+  - name: Real-time & sockets
+    description: Create collaborative applications, real-time chat, multiplayer games and more.
+    icon: i-lucide-mouse-pointer-click
+    soon: true
+  - name: Cron Triggers & Queues
+    description: Run periodic jobs with cron triggers & make sure to guarantee delivery with queues.
+    icon: i-lucide-timer
+    soon: true
+creator:
+  quote: "I created NuxtHub to give Nuxt developers the hosting solution I always wanted: blazing-fast performance on Cloudflare's edge network, a Nuxt-like developer experience and the freedom to own your infrastructure. With a generous free tier & predictable pricing, NuxtHub allows you to deploy your ideas without upfront costs or lock-in concerns. It's hosting that gets out of your way, so you can focus on building great applications."
+  author:
+    name: 'Sébastien Chopin'
+    description: 'Creator of Nuxt & NuxtHub'
+    to: 'https://x.com/Atinux'
+    avatar:
+      src: 'https://avatars.githubusercontent.com/u/904724?v=4'
+      loading: 'lazy'
+tool:
+  title: A tailored solution for faster Nuxt app management
+  description: NuxtHub offers a comprehensive suite of tools and features to let you build and deploy full-stack Nuxt applications worldwide.
+  links:
+    - label: Open the dashboard
+      trailing-icon: i-lucide-arrow-right
+      to: https://admin.hub.nuxt.com
+      external: true
+      color: black
+      size: md
+    - label: Watch a 3 min intro
+      trailing-icon: i-lucide-circle-play
+      color: gray
+      size: md
+      variant: ghost
+      id: intro-video
+      to: https://www.youtube.com/watch?v=hlmPqDkc3_s
+      target: _blank
+  features:
+    - title: 'Edge Rendering'
+      description: 'Your Nuxt apps render in milliseconds from 300+ locations around the world.'
+      icon: i-lucide-rocket
+    - title: 'Hybrid Rendering'
+      description: 'Render your Nuxt app with SSR, SPA or pre-rendering at the page level.'
+      icon: i-lucide-split
+    - title: 'Auto Scaling'
+      description: 'Your app handles traffic spikes without manual intervention.'
+      icon: i-lucide-move-diagonal
+    - title: 'Global CDN'
+      description: "Leverages Cloudflare's worldwide network to deliver blazing fast static assets."
+      icon: i-simple-icons-cloudflare
+    - title: 'Instant Rollbacks'
+      description: 'Quickly revert to previous deployments with one click if issues arise.'
+      icon: i-lucide-undo
+    - title: 'Preview Deployments'
+      description: 'Test pull requests and branches in isolated environments before going live.'
+      icon: i-lucide-toggle-right
+    - title: 'Custom Domains'
+      description: 'Easy setup for your own domains or use our free .nuxt.dev subdomains.'
+      icon: i-lucide-globe
+    - title: 'Highly affordable'
+      description: 'Pay only for what you use, no hidden fees. Start for free with a generous solo plan.'
+      icon: i-lucide-calculator
+    - title: 'Environment Variables'
+      description: 'Securely store secrets, API keys, tokens, and other environment variables.'
+      icon: i-lucide-lock
+    - title: 'Automatic HTTPS'
+      description: 'SSL certificates are provisioned and renewed automatically.'
+      icon: i-lucide-shield-check
+    - title: 'Real-time Logs'
+      description: 'Access to your Nuxt server logs in real-time for debugging purposes.'
+      icon: i-lucide-logs
+    - title: 'Import from Git'
+      description: 'Select a repository from your favourite Git provider and deploy it globally.'
+      icon: i-lucide-git-branch
+deploy:
+  title: Deploy a Nuxt application <span class="text-primary">in one minute</span>.
+  description: Once you've linked your Cloudflare account, deploy your Nuxt application all over the world with our CLI or from Git.<br>You also get a free <span class="font-semibold">.nuxt.dev</span> domain.
+  steps:
+    - title: Connect your Cloudflare account
+      description: Securely connect with one click using our pre-configured Cloudflare API permissions.
+      img:
+        srcLight: '/images/landing/steps/link-cloudflare-account-light.svg'
+        srcDark: '/images/landing/steps/link-cloudflare-account-dark.svg'
+        width: 460
+        height: 259
+    - title: Build your Nuxt app
+      description: Choose from our optimized templates or import your existing GitHub/GitLab project.
+      img:
+        srcLight: '/images/landing/steps/create-nuxt-app-light.svg'
+        srcDark: '/images/landing/steps/create-nuxt-app-dark.svg'
+        width: 460
+        height: 259
+    - title: Launch it worldwide
+      description: Deploy with 'npx nuxthub deploy' or leverage Cloudflare Pages CI/CD for automated deployments.
+      img:
+        srcLight: '/images/landing/steps/deploy-nuxt-app-light.svg'
+        srcDark: '/images/landing/steps/deploy-nuxt-app-dark.svg'
+        width: 460
+        height: 259
+    - title: Share it with the world
+      description: Instantly share your app globally. Monitor & manage resources through the NuxtHub dashboard.
+      img:
+        srcLight: '/images/landing/steps/share-nuxt-app-light.svg'
+        srcDark: '/images/landing/steps/share-nuxt-app-dark.svg'
+        width: 460
+        height: 259
+  links:
+    - label: Deploy now
+      trailing-icon: i-lucide-arrow-right
+      color: black
+      size: md
+      to: /docs/getting-started/deploy#nuxthub-cli
+    - label: Watch a 1 min demo
+      color: gray
+      variant: ghost
+      trailing-icon: i-lucide-circle-play
+      to: 'https://www.youtube.com/watch?v=NgmyCN4bIp0'
+      target: _blank
+      id: demo-video
+      size: md
+fullStack:
+  title: Your <span class="text-primary">full-stack</span> companion.
+  description: On top of hosting your Nuxt projects, you can add a database, key-value and file storage with nearly-zero configuration, locally and globally. <br> Making it too easy to build & ship full-stack Nuxt applications.
+database:
+  img:
+    srcDark: '/images/landing/nuxthub-admin-database-dark.svg'
+    srcLight: '/images/landing/nuxthub-admin-database-light.svg'
+    width: 581
+    height: 293
+  headline:
+    title: Database
+    icon: i-lucide-database
+  title: A Scalable SQL Database
+  description: >
+    NuxtHub Database unlocks the power of <a class="font-semibold text-gray-800 dark:text-gray-300 hover:underline underline-offset-4" href="https://developers.cloudflare.com/d1/" target="_blank">Cloudflare D1</a> to give you access to a serverless SQL database, with zero configuration. Scale and manage effortlessly, and pay only for what you use.
+  features:
+    - name: 'hubDatabase() server helper'
+      icon: i-lucide-square-function
+    - name: 'Database browser'
+      icon: i-lucide-table
+    - name: 'Automatic database migrations'
+      icon: i-lucide-circle-check
+blob:
+  img:
+    srcDark: '/images/landing/nuxthub-admin-blob-dark.svg'
+    srcLight: '/images/landing/nuxthub-admin-blob-light.svg'
+    width: 581
+    height: 317
+  headline:
+    title: Blob
+    icon: i-lucide-shapes
+  title: Add & Manage File Uploads
+  description: 'NuxtHub Blob lets you store and access media files on a global network thanks to <a class="font-semibold text-gray-800 dark:text-gray-200 hover:underline underline-offset-4" href="https://developers.cloudflare.com/r2/" target="_blank">Cloudflare R2</a>. Allow users to securely upload data-like images, videos and audio files with our server helpers.'
+  features:
+    - name: 'hubBlob() server helper'
+      icon: i-lucide-square-function
+    - name: 'Dashboard to upload and manage files'
+      icon: i-lucide-panel-left
+    - name: 'Manage blobs in the Nuxt DevTools'
+      icon: i-simple-icons-nuxtdotjs
+kv:
+  img:
+    srcDark: '/images/landing/nuxthub-admin-kv-dark.svg'
+    srcLight: '/images/landing/nuxthub-admin-kv-light.svg'
+    width: 582
+    height: 310
+  headline:
+    title: Key-Value
+    icon: i-lucide-list
+  title: A Global Key-Value Database
+  description: >
+    NuxtHub KV leverages <a href="https://developers.cloudflare.com/kv/" target="_blank" class="font-semibold text-gray-800 dark:text-gray-200 hover:underline underline-offset-4">Cloudflare Workers KV</a> to access a global, low-latency, key-value data storage across 300+ global locations. Access it in your Nuxt codebase, with zero-configuration.
+  features:
+    - name: 'hubKV() server helper'
+      icon: i-lucide-square-function
+    - name: 'Key-Value storage visual browser'
+      icon: i-lucide-panel-left
+    - name: 'Manage KV storage in the Nuxt DevTools'
+      icon: i-simple-icons-nuxtdotjs
+ai:
+  img:
+    srcDark: '/images/landing/nuxthub-ai-dark.svg'
+    srcLight: '/images/landing/nuxthub-ai-light.svg'
+    width: 580
+    height: 326
+  headline:
+    title: AI & Vectorize
+    icon: i-lucide-wand
+  title: Build Full-Stack AI Apps
+  description: 'Run generative AI tasks on a global network of NVIDIA GPUs with no extra setup and build full-stack Nuxt AI applications with our AI & Vectorize server helpers.'
+  features:
+    - name: 'hubAI() & hubVectorize() server helpers'
+      icon: i-lucide-square-function
+    - name: 'Run 60+ machine learning models'
+      icon: i-lucide-cpu
+    - name: 'Access a vector database to create RAG applications'
+      icon: i-lucide-move-3d
+cache:
+  img:
+    srcDark: '/images/landing/nuxthub-admin-cache-dark.svg'
+    srcLight: '/images/landing/nuxthub-admin-cache-light.svg'
+    width: 581
+    height: 310
+  headline:
+    title: Caching
+    icon: i-lucide-database-zap
+  title: Optimize your Nuxt app performance
+  description: "NuxtHub's Cache feature provides powerful tools to optimize your application's performance by caching pages, API routes, and server functions. This can significantly reduce load times and improve user experience."
+  features:
+    - name: 'API Routes Caching'
+      icon: i-lucide-signpost
+    - name: 'Server Functions Caching'
+      icon: i-lucide-square-function
+    - name: 'Cache storage browser management'
+      icon: i-lucide-panel-left
+browser:
+  img:
+    srcDark: '/images/landing/nuxthub-admin-browser-dark.svg'
+    srcLight: '/images/landing/nuxthub-admin-browser-light.svg'
+    width: 580
+    height: 326
+  headline:
+    title: Browser Rendering
+    icon: i-lucide-chrome
+  title: Access a headless browser on the edge
+  description: "Simplify your web workflows with headless browser capabilities. From basic image capture to complex data extraction, NuxtHub lets you automate tasks. Experience the power of web automation in a single click."
+  features:
+    - name: 'hubBrowser() server helpers'
+      icon: i-lucide-square-function
+    - name: 'Access a headless browser on the edge'
+      icon: i-lucide-globe
+    - name: 'Take screenshots of web pages'
+      icon: i-lucide-camera
+storage:
+  img:
+    srcDark: '/images/landing/nuxthub-remote-access-dark.svg'
+    srcLight: '/images/landing/nuxthub-remote-access-light.svg'
+    width: 576
+    height: 284
+  headline:
+    title: Remote Storage
+    icon: i-lucide-hard-drive-upload
+  title: Works locally as a team with shared data
+  description: NuxtHub grants the ability to access your remote storage from your local environment or from external Nuxt projects. This is made possible by our secured proxy system.
+  features:
+    - name: "Work as a team on the same database"
+      icon: i-lucide-users
+    - name: "Apply scripts to your remote storage"
+      icon: i-lucide-terminal
+    - name: "Lock/Unlock access to your production with one click"
+      icon: i-lucide-lock
+testimonials:
+  title: 'What people say about us'
+  description: 'NuxtHub empowers developers to ship full-stack Nuxt applications with zero configuration. Hear what they think about it.'
+  cloudflare:
+    title: 'Cloudflare’s Workers LaunchPad'
+    description: 'NuxtHub is part of the Cloudflare’s Workers Launchpad Cohort to make sure you get a first-class experience on top of Cloudflare’s network.'
+    img:
+      light: '/images/landing/cloudflare-light.svg'
+      dark: '/images/landing/cloudflare-dark.svg'
+  items:
+    - quote: "Nuxt on Cloudflare infra with minimal effort - this is huge!"
+      author:
+        name: 'Evan You'
+        description: 'Author of Vue.js and Vite.'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/499550?v=4'
+          loading: 'lazy'
+    - quote: "I love the polish and the batteries-included approach. NuxtHub takes web framework and hosting integration to a new level!"
+      author:
+        name: 'Igor Minar'
+        description: 'Software Engineer at Cloudflare'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/216296?v=4'
+          loading: 'lazy'
+    - quote: "NuxtHub is hands down the easiest way to get a project from zero to production on the Cloudflare stack!"
+      author:
+        name: 'Charlie Hield'
+        description: 'Senior Creative Technologist'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/527849?v=4'
+          loading: 'lazy'
+    - quote: "I can't find an excuse to not go full-stack with Nuxt from now on. Ship fast the Nuxt way, zero config. Just plug & deploy."
+      author:
+        name: 'Israel Ortuño'
+        description: 'Co-founder of VueJobs'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/1769417?v=4'
+          loading: 'lazy'
+    - quote: "Took me less than 90 seconds to deploy an app with DB, KV, File storage and Caching, all on the edge with just a single command."
+      author:
+        name: 'Fayaz Ahmed'
+        description: 'Indie Hacker'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/15716057?v=4'
+          loading: 'lazy'
+    - quote: "Nuxt is becoming the best framework for bootstrappers imo. NuxtHub is a layer on top of Cloudflare services for cheap & fast full-stack edge hosting."
+      author:
+        name: 'Tommy J. Vedvik'
+        description: 'UX Developer'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/48070?v=4'
+          loading: 'lazy'
+    - quote: "I love how NuxtHub combines, amplifies and simplifies the Cloudflare tooling with the wide and mature Nuxt ecosystem. I cannot wait to see how it will evolve and expand in the future!"
+      author:
+        name: 'Dario Piotrowicz'
+        description: 'Web Developer at Cloudflare'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/61631103?v=4'
+          loading: 'lazy'
+    - quote: "Just deployed my first site to Cloudflare using NuxtHub. Very sleek experience!"
+      author:
+        name: 'Markus Oberlehner'
+        description: 'Web Developer'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/6883314?v=4'
+    - quote: "It's amazing to be able to run a single command and get existing Nuxt project deployed on edge within minutes! It felt like unlocking the missing infrastructure and UI for Cloudflare, enhancing the developer experience in such an extraordinary way."
+      author:
+        name: 'Anthony Fu'
+        description: 'Core team Vue.js, Vite & Nuxt'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/11247099?v=4'
+          loading: 'lazy'
+    - quote: "NuxtHub and Cloudflare are my go to for full stack apps. The DX is joyous and far superior to any other platform I've used. My team is able to iterate quickly, and build beautiful, performant apps with ease."
+      author:
+        name: 'Jonathan Beckman'
+        description: 'Founder of GuaranTee Time'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/90707158?v=4'
+          loading: 'lazy'
+    - quote: "At YG, our team recently grew and that meant more seats on all the tools we use. Migrating our hosting workflow to NuxtHub not only took just a few minutes but saved us money from our previous provider. NuxtHub provides an excellent management layer on top of our infrastructure and we’re super happy about the move!"
+      author:
+        name: 'Eckhardt Dreyer'
+        description: 'Lead Developer at YG'
+        avatar:
+          src: 'https://avatars.githubusercontent.com/u/37825447?v=4'
+          loading: 'lazy'

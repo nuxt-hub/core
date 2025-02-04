@@ -33,7 +33,7 @@ export default <Partial<Config>>{
         }
       },
       fontFamily: {
-        sans: ['Inter var experimental', 'Inter var', 'Inter', ...defaultTheme.fontFamily.sans]
+        sans: ['Public Sans', ...defaultTheme.fontFamily.sans]
       }
     }
   }

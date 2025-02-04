@@ -86,7 +86,7 @@ export default defineNuxtSchema({
           icon: 'i-mdi-web',
           default: []
         })
-      },
+      }
     }),
     header: group({
       title: 'Header',
@@ -142,7 +142,7 @@ export default defineNuxtSchema({
           icon: 'i-mdi-link-variant',
           default: []
         })
-      },
+      }
     }),
     footer: group({
       title: 'Footer',

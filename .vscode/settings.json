@@ -1,0 +1,4 @@
+{
+  "eslint.useFlatConfig": true,
+  "prettier.enable": false,
+}

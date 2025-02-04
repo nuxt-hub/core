@@ -1,68 +1,35 @@
 export default defineAppConfig({
   ui: {
-    primary: 'emerald',
-    gray: 'cool',
-    footer: {
-      bottom: {
-        left: 'text-sm text-gray-500 dark:text-gray-400',
-        wrapper: 'border-t border-gray-200 dark:border-gray-800'
+    primary: 'green',
+    gray: 'slate',
+    variables: {
+      dark: {
+        background: 'var(--color-gray-950)'
       }
+    },
+    header: {
+      wrapper: 'lg:mb-0 border-0'
+    },
+    icons: {
+      dark: 'i-lucide-moon',
+      light: 'i-lucide-sun',
+      system: 'i-lucide-laptop',
+      search: 'i-lucide-search',
+      external: 'i-lucide-arrow-up-right',
+      chevron: 'i-lucide-chevron-down',
+      hash: 'i-lucide-hash',
+      menu: 'i-lucide-menu',
+      close: 'i-lucide-x',
+      check: 'i-lucide-circle-check'
     }
   },
   seo: {
-    siteName: 'NuxtHub',
-  },
-  header: {
-    logo: {
-      alt: '',
-      light: '',
-      dark: ''
-    },
-    search: true,
-    colorMode: true,
-    links: [{
-      icon: 'i-simple-icons-github',
-      to: 'https://github.com/nuxt-hub/core',
-      target: '_blank',
-      'aria-label': 'NuxtHub'
-    }]
-  },
-  footer: {
-    credits: 'Copyright NuxtLabs © 2024',
-    colorMode: false,
-    links: [{
-      icon: 'i-simple-icons-nuxtdotjs',
-      to: 'https://nuxt.com',
-      target: '_blank',
-      'aria-label': 'Nuxt Website'
-    }, {
-      icon: 'i-simple-icons-x',
-      to: 'https://x.com/nuxt_hub',
-      target: '_blank',
-      'aria-label': 'Nuxt on X'
-    }, {
-      icon: 'i-simple-icons-github',
-      to: 'https://github.com/nuxt-hub/core',
-      target: '_blank',
-      'aria-label': 'NuxtHub on GitHub'
-    }]
+    siteName: 'NuxtHub'
   },
   toc: {
-    title: 'Table of Contents',
+    title: 'On this page',
     bottom: {
-      title: 'Community',
-      edit: 'https://github.com/nuxt-hub/core/edit/main/docs/content',
-      links: [{
-        icon: 'i-heroicons-star',
-        label: 'Star on GitHub',
-        to: 'https://github.com/nuxt-hub/core',
-        target: '_blank',
-      }, {
-        icon: 'i-simple-icons-nuxtdotjs',
-        label: 'NuxtHub Console',
-        to: 'https://console.hub.nuxt.com',
-        target: '_blank',
-      }]
+      edit: 'https://github.com/nuxt-hub/core/edit/main/docs/content'
     }
   }
 })

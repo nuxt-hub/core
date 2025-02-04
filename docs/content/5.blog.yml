@@ -1,0 +1,27 @@
+title: The NuxtHub Blog
+navigation.title: Blog
+description: 'Read the latest news about NuxtHub or articles about fullstack development with Nuxt.'
+icon: i-lucide-newspaper
+hero:
+  title: 'Blog'
+  description: 'Read the latest news about NuxtHub.'
+  align: center
+  links:
+    - label: '@nuxt_hub'
+      icon: i-simple-icons-x
+      color: white
+      size: xs
+      to: https://x.com/nuxt_hub
+      target: _blank
+    - label: 'NuxtHub'
+      icon: i-simple-icons-linkedin
+      color: white
+      size: xs
+      to: https://www.linkedin.com/showcase/nuxthub/
+      target: _blank
+    - label: 'Blog RSS'
+      icon: 'i-simple-icons-rss'
+      to: '/blog/rss.xml'
+      color: white
+      size: xs
+      target: _blank
