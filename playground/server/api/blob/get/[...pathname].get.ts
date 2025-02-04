@@ -7,5 +7,12 @@ export default eventHandler(async (event) => {
 
   console.log('blob', blob)
 
+  if (!blob) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Blob not found'
+    })
+  }
+
   return blob
 })
