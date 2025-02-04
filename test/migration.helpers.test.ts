@@ -76,7 +76,7 @@ describe('splitSqlQueries', () => {
   it('Should respect -- within a string', () => {
     const sqlFileContent = `
       CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255));
-      INSERT INTO users (id, name) VALUES (1, 'John -- This is a comment'); 
+      INSERT INTO users (id, name) VALUES (1, 'John -- This is a comment');
     `
     const queries = splitSqlQueries(sqlFileContent)
     expect(queries).toHaveLength(2)
@@ -86,7 +86,7 @@ describe('splitSqlQueries', () => {
   it('Should respect /* */ within a string', () => {
     const sqlFileContent = `
       CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255));
-      INSERT INTO users (id, name) VALUES (1, 'John /* This is a comment */'); 
+      INSERT INTO users (id, name) VALUES (1, 'John /* This is a comment */');
     `
     const queries = splitSqlQueries(sqlFileContent)
     expect(queries).toHaveLength(2)
@@ -102,16 +102,16 @@ describe('splitSqlQueries', () => {
 
       -- 2. Empty Results
       SELECT * FROM users WHERE id = -1;
-      SELECT orders.id, users.name 
-      FROM orders 
-      LEFT JOIN users ON orders.user_id = users.id 
+      SELECT orders.id, users.name
+      FROM orders
+      LEFT JOIN users ON orders.user_id = users.id
       WHERE users.id IS NULL;
 
       -- 3. Duplicate Handling
       INSERT INTO products (id, name) VALUES (1, 'Widget'), (1, 'Widget');
-      SELECT name, COUNT(*) AS cnt 
-      FROM products 
-      GROUP BY name 
+      SELECT name, COUNT(*) AS cnt
+      FROM products
+      GROUP BY name
       HAVING cnt > 1;
 
       -- 4. Aggregation Edge Cases
@@ -152,8 +152,8 @@ describe('splitSqlQueries', () => {
       SELECT * FROM events WHERE event_date BETWEEN '2024-01-01' AND '2024-12-31';
 
       -- 13. Self-JOIN
-      SELECT a.id AS parent_id, b.id AS child_id 
-      FROM users a 
+      SELECT a.id AS parent_id, b.id AS child_id
+      FROM users a
       JOIN users b ON a.id = b.parent_id;
 
       -- 14. Triggers or Constraints
@@ -168,14 +168,14 @@ describe('splitSqlQueries', () => {
       'SELECT * FROM users WHERE email IS NULL;',
       'SELECT * FROM users WHERE email = \'\';',
       'SELECT * FROM users WHERE id = -1;',
-      'SELECT orders.id, users.name \n'
-      + '      FROM orders \n'
-      + '      LEFT JOIN users ON orders.user_id = users.id \n'
+      'SELECT orders.id, users.name\n'
+      + '      FROM orders\n'
+      + '      LEFT JOIN users ON orders.user_id = users.id\n'
       + '      WHERE users.id IS NULL;',
       'INSERT INTO products (id, name) VALUES (1, \'Widget\'), (1, \'Widget\');',
-      'SELECT name, COUNT(*) AS cnt \n'
-      + '      FROM products \n'
-      + '      GROUP BY name \n'
+      'SELECT name, COUNT(*) AS cnt\n'
+      + '      FROM products\n'
+      + '      GROUP BY name\n'
       + '      HAVING cnt > 1;',
       'SELECT AVG(price), SUM(price) FROM orders WHERE 1 = 0;',
       'SELECT user_id, COUNT(*) FROM orders WHERE user_id = 1 GROUP BY user_id;',
@@ -196,11 +196,33 @@ describe('splitSqlQueries', () => {
       'SELECT * FROM orders FORCE INDEX (order_date_index) WHERE order_date = \'2024-01-01\';',
       'INSERT INTO events (id, event_date) VALUES (1, \'2024-02-29\'), (2, \'0000-00-00\'), (3, \'9999-12-31\');',
       'SELECT * FROM events WHERE event_date BETWEEN \'2024-01-01\' AND \'2024-12-31\';',
-      'SELECT a.id AS parent_id, b.id AS child_id \n'
-      + '      FROM users a \n'
+      'SELECT a.id AS parent_id, b.id AS child_id\n'
+      + '      FROM users a\n'
       + '      JOIN users b ON a.id = b.parent_id;',
       'INSERT INTO users (id, name, email) VALUES (NULL, \'Test\', \'test@example.com\');',
       'INSERT INTO orders (id, status) VALUES (NULL, NULL);'
     ])
+  })
+
+  it('Should keep trigger sql queries as one query', () => {
+    const sqlFileContent = `
+      -- Create a table. And an external content fts5 table to index it.
+      CREATE TABLE t1(a INTEGER PRIMARY KEY, b, c);
+      CREATE VIRTUAL TABLE fts_idx USING fts5(b, c, content='t1', content_rowid='a');
+
+      -- Triggers to keep the FTS index up to date.
+      CREATE TRIGGER t1_ai AFTER INSERT ON t1 BEGIN
+        INSERT INTO fts_idx(rowid, b, c) VALUES (new.a, new.b, new.c);
+      END;
+      CREATE TRIGGER t1_ad AFTER DELETE ON t1 BEGIN
+        INSERT INTO fts_idx(fts_idx, rowid, b, c) VALUES('delete', old.a, old.b, old.c);
+      END;
+      CREATE TRIGGER t1_au AFTER UPDATE ON t1 BEGIN
+        INSERT INTO fts_idx(fts_idx, rowid, b, c) VALUES('delete', old.a, old.b, old.c);
+        INSERT INTO fts_idx(rowid, b, c) VALUES (new.a, new.b, new.c);
+      END;
+    `
+    const queries = splitSqlQueries(sqlFileContent)
+    expect(queries).toHaveLength(5)
   })
 })
