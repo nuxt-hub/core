@@ -408,10 +408,15 @@ export function proxyHubBlob(projectUrl: string, secretKey?: string, headers?: H
         method: 'GET'
       })
     },
-    async get(pathname: string): Promise<Blob> {
+    async get(pathname: string): Promise<Blob | null> {
       return await blobAPI(`/${encodeURIComponent(pathname)}`, {
         method: 'GET',
         responseType: 'blob'
+      }).catch((e) => {
+        if (e.status === 404) {
+          return null
+        }
+        throw e
       })
     },
     async del(pathnames: string | string[]) {
