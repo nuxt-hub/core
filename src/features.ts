@@ -216,6 +216,17 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
   // Add Server scanning
   addServerScanDir(resolve('./runtime/database/server'))
   addServerImportsDir(resolve('./runtime/database/server/utils'))
+  // Bind `useDatabase()` to `hubDatabase()` if experimental.database is true
+  if (nuxt.options.nitro.experimental?.database) {
+    // @ts-expect-error cannot respect the typed database configs
+    nuxt.options.nitro.database = defu(nuxt.options.nitro.database, {
+      default: {
+        connector: 'cloudflare-d1',
+        options: { bindingName: 'DB' }
+      }
+    })
+  }
+  // Handle migrations
   nuxt.hook('modules:done', async () => {
     // Call hub:database:migrations:dirs hook
     await nuxt.callHook('hub:database:migrations:dirs', hub.databaseMigrationsDirs!)
