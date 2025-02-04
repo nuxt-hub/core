@@ -1,6 +1,40 @@
 # Changelog
 
 
+## v0.8.16
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.15...v0.8.16)
+
+### 🚀 Enhancements
+
+- **db:** Support Nitro `useDatabase()` ([#15](https://github.com/nuxt-hub/core/pull/15))
+
+### 🩹 Fixes
+
+- Split sql trigger statements as a single query ([#451](https://github.com/nuxt-hub/core/pull/451))
+- **blob:** Return null for get() with remote enabled ([#455](https://github.com/nuxt-hub/core/pull/455))
+
+### 📖 Documentation
+
+- 10 browser sessions now! ([cba9099](https://github.com/nuxt-hub/core/commit/cba9099))
+- Kv, db, and cache updates ([#454](https://github.com/nuxt-hub/core/pull/454))
+
+### 🏡 Chore
+
+- **playground:** Add back basic auth ([915a180](https://github.com/nuxt-hub/core/commit/915a180))
+- Disable durable preset for now ([b566b53](https://github.com/nuxt-hub/core/commit/b566b53))
+- **playground:** Add websocket experimental flag ([1d5a8e0](https://github.com/nuxt-hub/core/commit/1d5a8e0))
+- **playground:** Remove basic auth ([08239d7](https://github.com/nuxt-hub/core/commit/08239d7))
+- **playground:** Use uncrypto instead ([03b6218](https://github.com/nuxt-hub/core/commit/03b6218))
+- Fix ci for corepack ([dcef1c8](https://github.com/nuxt-hub/core/commit/dcef1c8))
+- Add support for localhost on hub api routes ([824c998](https://github.com/nuxt-hub/core/commit/824c998))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Rihan ([@RihanArfan](http://github.com/RihanArfan))
+- Matt Maribojoc <matthewmaribojoc@gmail.com>
+
 ## v0.8.15
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.14...v0.8.15)
