@@ -5,7 +5,9 @@ export default eventHandler((event) => {
   handleCors(event, {
     methods: '*',
     origin: [
-      'https://admin.hub.nuxt.com'
+      'https://admin.hub.nuxt.com',
+      'https://hub.nuxt.dev',
+      /http:\/\/localhost:\d+/
     ]
   })
 })
