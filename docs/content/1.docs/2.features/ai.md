@@ -1,8 +1,32 @@
 ---
 title: Run AI Models
 navigation.title: AI
-description: Run machine learning models, such as LLMs in Nuxt. Making the usage of AI models in your Nuxt application easy.
+description: Run machine learning models, such as LLMs, in Nuxt.
 ---
+
+NuxtHub AI lets you integrate machine learning models into your Nuxt application. Built on top of [Workers AI](https://developers.cloudflare.com/workers-ai/), it provides a simple and intuitive API that supports models for text generation, image generation, embeddings, and more.
+
+::code-group
+
+```ts [text.ts]
+const response = await hubAI().run('@cf/meta/llama-3.1-8b-instruct', {
+  prompt: 'Who is the author of Nuxt?'
+})
+```
+
+```ts [image.ts]
+const response = await hubAI().run('@cf/runwayml/stable-diffusion-v1-5-img2img', {
+  prompt: 'A sunset over the ocean.',
+})
+```
+
+```ts [embeddings.ts]
+// returns embeddings that can be used for vector searches in tools like Vectorize
+const embeddings = await hubAI().run("@cf/baai/bge-base-en-v1.5", { 
+  text: "NuxtHub AI uses `hubAI()` to run models."  
+});
+```
+::
 
 ## Getting Started
 
@@ -20,17 +44,22 @@ export default defineNuxtConfig({
 This option will enable [Workers AI](https://developers.cloudflare.com/workers-ai) (LLM powered by serverless GPUs on Cloudflare’s global network) and automatically add the binding to your project when you [deploy it](/docs/getting-started/deploy).
 ::
 
-::important
-During development, `hubAI()` needs to call the Cloudflare API as it is not running inside a worker. Make sure to run `npx nuxthub link` to create/link a NuxtHub project (even if the project is empty).
-::
+### Local Development
 
-::warning{to="https://developers.cloudflare.com/workers-ai/platform/pricing/"}
-NuxtHub AI will run AI models on your Cloudflare account, including during local development. :br [See pricing and included free quotas on Cloudflare's documentation](https://developers.cloudflare.com/workers-ai/platform/pricing/).
-::
+During development, `hubAI()` will call the Cloudflare API. Make sure to run `npx nuxthub link` to create/link a NuxtHub project (even if the project is empty). This project is where your AI models will run.
+
+NuxtHub AI will always run AI models on your Cloudflare account, including during local development. [See pricing and included free quotas on Cloudflare's documentation](https://developers.cloudflare.com/workers-ai/platform/pricing/).
+
+
+## Models
+
+Workers AI comes with a curated set of popular open-source models that enable you to do tasks such as image classification, text generation, object detection, and more.
+
+:u-button{icon="i-lucide-arrow-up-right" trailing to="https://developers.cloudflare.com/workers-ai/models/" target="_blank" label="See all Workers AI models"}
 
 ## hubAI()
 
-Server composable that returns a [Workers AI client](https://developers.cloudflare.com/workers-ai/configuration/bindings/#methods).
+`hubAI()` is a server composable that returns a [Workers AI client](https://developers.cloudflare.com/workers-ai/configuration/bindings/#methods).
 
 ```ts
 const ai = hubAI()
@@ -64,49 +93,17 @@ export default defineEventHandler(async () => {
     The model options.
     ::collapsible
       ::field{name="...modelOptions" type="any"}
+      Options for the model you choose can be found in the [Worker AI's models documentation](https://developers.cloudflare.com/workers-ai/models/).
       ::field{name="stream" type="boolean"}
+      Whether results should be [streamed](#streaming-responses) as they are generated.
     ::
   ::
 
-  ::field{name="ai gateway" type="object"}
-    See [`AI Gateway`](#ai-gateway) for details.
+  ::field{name="AI Gateway" type="object"}
+    Options for configuring [`AI Gateway`](#ai-gateway) - `id`, `skipCache`, and `cacheTtl`. 
   ::
 ::
 
-
-## Models
-
-Workers AI comes with a curated set of popular open-source models that enable you to do tasks such as image classification, text generation, object detection and more.
-
-:u-button{icon="i-lucide-arrow-up-right" trailing to="https://developers.cloudflare.com/workers-ai/models/" target="_blank" label="See all Workers AI models"}
-
-## Streaming
-
-The recommended method to handle text generation responses is streaming.
-
-LLMs work internally by generating responses sequentially using a process of repeated inference — the full output of a LLM model is essentially a sequence of hundreds or thousands of individual prediction tasks. For this reason, while it only takes a few milliseconds to generate a single token, generating the full response takes longer, on the order of seconds.
-
-You can use streaming to start displaying the response as soon as the first tokens are generated, and append each additional token until the response is complete. This yields a much better experience for the end user. Displaying text incrementally as it’s generated not only provides instant responsiveness, but also gives the end-user time to read and interpret the text.
-
-To enable, set the `stream` parameter to `true`.
-
-You can check if the model you're using support streaming on [Cloudflare's models documentation](https://developers.cloudflare.com/workers-ai/models/#text-generation).
-
-```ts
-export default defineEventHandler(async (event) => {
-  const messages = [
-    { role: 'system', content: 'You are a friendly assistant' },
-    { role: 'user', content: 'What is the origin of the phrase Hello, World' }
-  ]
-
-  const ai = hubAI()
-  const stream = await ai.run('@cf/meta/llama-3.1-8b-instruct', {
-    stream: true,
-    messages
-  })
-  return sendStream(event, stream)
-})
-```
 
 ## AI Gateway
 
@@ -143,30 +140,81 @@ export default defineEventHandler(async () => {
   ::
 
   ::field{name="cacheTtl" type="number"}
-    Controls the [Cache TTL](https://developers.cloudflare.com/ai-gateway/configuration/caching/#cache-ttl-cf-cache-ttl).
+    Controls the [Cache TTL](https://developers.cloudflare.com/ai-gateway/configuration/caching/#cache-ttl-cf-cache-ttl), the duration (in seconds) that a cached request will be valid for. The minimum TTL is 60 seconds and maximum is one month. 
   ::
 ::
 
-## Templates
+## Streaming
 
-Explore open source templates made by the community:
+The recommended method to handle text generation responses is streaming.
 
-::card-group
-  ::card{title="Atidraw" to="https://github.com/atinux/atidraw"}
-  Generate the alt text of the user drawing and generate an alternative image with AI.
-  ::
-  ::card{title="Hub Chat" to="https://github.com/ra-jeev/hub-chat"}
-  A chat interface to interact with various text generation AI models.
-  ::
-::
+LLMs work internally by generating responses sequentially using a process of repeated inference — the full output of a LLM model is essentially a sequence of hundreds or thousands of individual prediction tasks. For this reason, while it only takes a few milliseconds to generate a single token, generating the full response takes longer.
+
+If your UI waits for the entire response to be generated, a user may see a loading spinner for several seconds before the response is displayed. 
+
+Streaming lets you start displaying the response as soon as the first tokens are generated, and append each additional token until the response is complete. This yields a much better experience for the end user. Displaying text incrementally as it’s generated not only provides instant responsiveness, but also gives the end-user time to read and interpret the text.
+
+To enable, set the `stream` parameter to `true`.
+
+You can check if the model you're using supports streaming on [Cloudflare's models documentation](https://developers.cloudflare.com/workers-ai/models/#text-generation).
+
+```ts
+export default defineEventHandler(async (event) => {
+  const messages = [
+    { role: 'system', content: 'You are a friendly assistant' },
+    { role: 'user', content: 'What is the origin of the phrase Hello, World?' }
+  ]
+
+  const ai = hubAI()
+  const stream = await ai.run('@cf/meta/llama-3.1-8b-instruct', {
+    stream: true,
+    messages
+  })
+  return stream
+})
+```
+
+### Handling Streaming Responses
+
+To manually handle streaming responses, you can use [`ReadableStream`](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream) and Nuxt's `$fetch` function to create a new `ReadableStream` from the response.
+
+Creating a reader allows you to process the stream in chunks as it's received.
+
+```ts
+const response = await $fetch<ReadableStream>('/api/chats/ask-ai', {
+  method: 'POST',
+  body: {
+    query: "Hello AI, how are you?",
+  },
+  responseType: 'stream',
+})
+
+// Create a new ReadableStream from the response with TextDecoderStream to get the data as text
+const reader = response.pipeThrough(new TextDecoderStream()).getReader()
+
+// Read the chunks of data as they're received
+while (true) {
+  const { value, done } = await reader.read()
+
+  if (done)
+    break
+
+  console.log('Received:', value)
+}
+```
+
 
 ## Vercel AI SDK
 
-It is possible to use the Vercel AI SDK with Cloudflare Workers AI.
+Another way to handle streaming responses is to use [Vercel's AI SDK](https://sdk.vercel.ai/) with `hubAI()`.
 
-NuxtHub AI is compatible with some functions of the  [Vercel AI SDK](https://sdk.vercel.ai), which enables streaming responses.
+This uses the [Workers AI Provider](https://sdk.vercel.ai/providers/community-providers/cloudflare-workers-ai), which supports a subset of Vercel AI features.
 
-Make sure to install the Vercel AI SDK in your project.
+::callout
+`tools` and `streamObject` are currently not supported.
+::
+
+To get started, install the Vercel AI SDK and the Cloudflare AI Provider in your project.
 
 ```[Terminal]
 npx nypm i ai @ai-sdk/vue workers-ai-provider
@@ -178,7 +226,9 @@ npx nypm i ai @ai-sdk/vue workers-ai-provider
 
 ### `useChat()`
 
-To leverage the `useChat()` Vue composable, you need to create a `POST /api/chat` endpoint that uses the `hubAI()` server composable and returns a compatible stream for the Vercel AI SDK.
+`useChat()` is a Vue composable provided by the Vercel AI SDK that handles streaming responses, API calls, state for your chat. 
+
+It requires a `POST /api/chat` endpoint that uses the `hubAI()` server composable and returns a compatible stream for the Vercel AI SDK.
 
 ```ts [server/api/chat.post.ts]
 import { streamText } from 'ai'
@@ -221,11 +271,26 @@ const { messages, input, handleSubmit, isLoading, stop, error, reload } = useCha
 </template>
 ```
 
-Learn more about the [`useChat()` Vue composable](https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat).
+Learn more about the [`useChat()` composable](https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat).
 
 ::callout
 Check out our [`pages/ai.vue` full example](https://github.com/nuxt-hub/core/blob/main/playground/app/pages/ai.vue) with Nuxt UI & [Nuxt MDC](https://github.com/nuxt-modules/mdc).
 ::
+
+
+## Templates
+
+Explore open source templates made by the community:
+
+::card-group
+  ::card{title="Atidraw" to="https://github.com/atinux/atidraw"}
+  Generate the alt text of the user drawing and generate an alternative image with AI.
+  ::
+  ::card{title="Hub Chat" to="https://github.com/ra-jeev/hub-chat"}
+  A chat interface to interact with various text generation AI models.
+  ::
+::
+
 
 ## Pricing 
 
