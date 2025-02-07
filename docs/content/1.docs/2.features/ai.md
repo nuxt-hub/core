@@ -93,7 +93,7 @@ export default defineEventHandler(async () => {
     The model options.
     ::collapsible
       ::field{name="...modelOptions" type="any"}
-      Options for the model you choose can be found in the [Worker AI's models documentation](https://developers.cloudflare.com/workers-ai/models/).
+      Options for the model you choose can be found in the [Worker AI models documentation](https://developers.cloudflare.com/workers-ai/models/).
       ::field{name="stream" type="boolean"}
       Whether results should be [streamed](#streaming-responses) as they are generated.
     ::
@@ -102,6 +102,162 @@ export default defineEventHandler(async () => {
   ::field{name="AI Gateway" type="object"}
     Options for configuring [`AI Gateway`](#ai-gateway) - `id`, `skipCache`, and `cacheTtl`. 
   ::
+::
+
+
+## Tools
+
+Tools are actions that your LLM can execute to run functions or interact with external APIs. The result of these tools will be used by the LLM to generate additional responses. 
+
+This can help you supply the LLM with real-time information, save data to a KV store, or provide it with external data from your database. 
+
+With Workers AI, tools have 4 properties:
+- `name`: The name of the tool
+- `description`: A description of the tool that will be used by the LLM to understand what the tool does. This allows it to determine when to use the tool
+- `parameters`: The parameters that the tool accepts.
+- `function`: The function that will be executed when the tool is called.
+
+```ts
+const tools = [
+  {
+    name: "get-weather",
+    description: "Get's the weather for a given city",
+    parameters: {
+      type: "object",
+      properties: {
+        city: { 
+          type: "number", 
+          description: "the city to retrieve weather information for" 
+        },
+      },
+      required: ["city"],
+    },
+    function: ({city} => {
+      // use an API to get the weather information
+      return '72'
+    }),
+  }
+]
+```
+
+#### Tool Fields
+::field-group
+  ::field{name="name" type="string" required}
+    The name of the tool
+  ::
+
+  ::field{name="description" type="string" required}
+    A description of the tool that will be used by the LLM to understand what the tool does. This allows it to determine when to use the tool
+  ::
+
+  ::field{name="parameters" type="JsonSchema7"}
+    The parameters and options for parameters that the model will use to run the tool.  
+    ::collapsible{default-open}
+      ::field{name="type" type="string"}
+      The type of your functions parameter. It's recommended to use an `object` so you can easily add additional properties in the future.
+      ::field{name="properties" type="Object"}
+      The properties that will be passed to your function. The keys of this object should match the keys in your function's parameter.
+        ::collapsible{default-open}
+          ::field{name="type" type="string"}
+          The type of the property (`string`, `number`, `boolean`, etc.)
+          ::field{name="description" type="string"}
+          A description of the property that the LLM will use to understand what the property is when trying to use the tool.
+        ::
+      ::field{name="required" type="string[]"}
+      All the properties that are required to be passed to the tool.
+    ::
+  ::
+
+  ::field{name="function" type="(args) => Promise<string>"}
+    The function that the LLM can execute.
+  ::
+::
+
+
+### `runWithTools()`
+
+The [`@cloudflare/ai-utils`](https://github.com/cloudflare/ai-utils) package provides a `runWithTools` function that will handle the recursive calls to the LLM with the result of the tools.
+
+```bash
+npx nypm i @cloudflare/ai-utils
+```
+
+`runWithTools` works with multi-tool calls, handles errors, and has the same return type as `hubAI().run()` so any code relying on the response from a model can remain the same.
+
+```ts
+import { runWithTools } from "@cloudflare/ai-utils";
+
+export default defineEventHandler(async (event) => {
+  return await runWithTools(hubAI(), '@cf/meta/llama-3.1-8b-instruct', 
+    {
+      messages: [
+        { role: 'user', content: 'What is the weather in New York?' },
+      ],
+      tools: [
+        name: "get-weather",
+        description: "Gets the weather for a given city",
+        parameters: {
+          type: "object",
+          properties: {
+            city: { 
+              type: "number", 
+              description: "The city to retrieve weather information for"
+            },
+          },
+          required: ["city"],
+        },
+        function: ({ city }) => {
+          // use an API to get the weather information
+          return '72'
+        },
+      ]
+    }, 
+    {
+      // options
+      streamFinalResponse: true,
+      maxRecursiveToolRuns: 1,
+    }
+  )
+})
+```
+
+#### Params
+::field-group
+  ::field{name="AI Binding" type="Ai" required}
+    Your AI Binding (`hubAI()`)
+  ::
+
+  ::field{name="model" type="string" required}
+    The model to run
+  ::
+
+  ::field{name="input" type="object"}
+    The messages and tools to use for the model
+    ::collapsible{default-open}
+      ::field{name="messages" type="{ role: 'user' | 'system' | 'assistant', content: string }[]"}
+      An array of messages to send to the model. Each message has a role and content.
+      ::field{name="tools" type="AiTextGenerationToolInputWithFunction[]"}
+      An array of the tools available to the model.
+    ::
+  ::
+
+  ::field{name="Options" type="object"}
+    An array of optional properties that can be passed to the model.
+    ::collapsible
+      ::field{name="streamFinalResponse" type="boolean"}
+      Whether to stream the final response or not.
+      ::field{name="maxRecursiveToolRuns" type="number"}
+      The maximum number of recursive tool runs to perform.
+      ::field{name="strictValidation" type="boolean"}
+      Whether to perform strict validation (using zod) of the arguments passed to the tools.
+      ::field{name="verbose" type="boolean"}
+      Whether to enable verbose logging.
+    ::
+  ::
+::
+
+::callout
+See the full [runWithTools() documentation](https://developers.cloudflare.com/workers-ai/function-calling/embedded/api-reference/).
 ::
 
 
@@ -276,7 +432,6 @@ Learn more about the [`useChat()` composable](https://sdk.vercel.ai/docs/referen
 ::callout
 Check out our [`pages/ai.vue` full example](https://github.com/nuxt-hub/core/blob/main/playground/app/pages/ai.vue) with Nuxt UI & [Nuxt MDC](https://github.com/nuxt-modules/mdc).
 ::
-
 
 ## Templates
 
