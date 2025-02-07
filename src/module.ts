@@ -98,6 +98,7 @@ export default defineNuxtModule<ModuleOptions>({
     runtimeConfig.public.hub = {}
     // Make sure to tell Nitro to not generate the .wrangler/deploy/config.json file
     nuxt.options.nitro.cloudflare ||= {}
+    // @ts-expect-error noWranglerDeployConfig is not typed here
     nuxt.options.nitro.cloudflare.noWranglerDeployConfig = true
     // For old versions of Nitro, disable generating the wrangler.toml file
     delete nuxt.options.nitro.cloudflare?.wrangler?.compatibility_flags
@@ -145,15 +146,15 @@ export default defineNuxtModule<ModuleOptions>({
     // Fix cloudflare:* externals in rollup
     nuxt.options.nitro.rollupConfig = nuxt.options.nitro.rollupConfig || {}
     nuxt.options.nitro.rollupConfig.plugins = ([] as any[]).concat(nuxt.options.nitro.rollupConfig.plugins || [])
-    nuxt.options.nitro.rollupConfig.plugins.push({
-      name: 'nuxthub-rollup-plugin',
-      resolveId(id: string) {
-        if (id.startsWith('cloudflare:')) {
-          return { id, external: true }
-        }
-        return null
-      }
-    })
+    // nuxt.options.nitro.rollupConfig.plugins.push({
+    //   name: 'nuxthub-rollup-plugin',
+    //   resolveId(id: string) {
+    //     if (id.startsWith('cloudflare:')) {
+    //       return { id, external: true }
+    //     }
+    //     return null
+    //   }
+    // })
     // Enable Async Local Storage
     nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}
     nuxt.options.nitro.experimental.asyncContext = true
