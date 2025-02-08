@@ -100,7 +100,7 @@ To use an existing index, add it as a binding to your Cloudflare project and con
 
 - The index name should match `<name>` used in the variable name, and must be lowercase. 
 - The `dimensions` and `metric` values should match the ones used when creating the index
-- If your index already includes values, the `metadataIndexes` must match the ones added before data was inserted. New `metadataIndexes` cannot be added.
+- If your index already includes values, the `metadataIndexes` should include any existing metadata indexes. New `metadataIndexes` added in your configuration will not include any existing vectors. You can upsert these vectors to have them included in new metadata indexes.
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
@@ -179,7 +179,7 @@ Returns [`VectorizeAsyncMutation`](#vectorizeasyncmutation).
 
 
 ::callout
-Actually mutating the Vectorize Index happens asynchronously. The `insert` operation returns a mutation identifier unique for that operation, and does not assert that the vector is available in the index. It typically takes a few seconds for inserted vectors to be available for querying in an index.
+Vectorize Index mutations are processed asynchronously in the background. The `insert` operation returns a mutation identifier unique for that operation, and does not assert that the vector is available in the index. It typically takes a few seconds for inserted vectors to be available for querying in an index.
 ::
 
 ::note
@@ -228,7 +228,7 @@ To merge existing metadata, you will have to first query the index for the exist
 ::
 
 ::callout
-Actually mutating the Vectorize Index happens asynchronously. The `upsert` operation returns a mutation identifier unique for that operation, and does not assert that the vector is updated in the index.  It typically takes a few seconds for upserted vectors to be available for querying in an index.
+Vectorize Index mutations are processed asynchronously in the background. The `upsert` operation returns a mutation identifier unique for that operation, and does not assert that the vector is updated in the index.  It typically takes a few seconds for upserted vectors to be available for querying in an index.
 ::
 
 
@@ -383,7 +383,7 @@ const deleted = await index.deleteByIds(idsToDelete);
 Returns [`VectorizeAsyncMutation`](#vectorizeasyncmutation).
 
 ::callout
-Actually mutating the Vectorize Index happens asynchronously. The `delete` operation returns a mutation identifier unique for that operation, and does not assert that the vector is removed in the index.  It typically takes a few seconds for vectors to be removed from the Vectorize index.
+Vectorize Index mutations are processed asynchronously in the background. The `delete` operation returns a mutation identifier unique for that operation, and does not assert that the vector is removed in the index.  It typically takes a few seconds for vectors to be removed from the Vectorize index.
 ::
 
 ### `describe()`
@@ -563,7 +563,7 @@ Metadata filtering allows you to query specific subsets of your data. You can fi
 
 ### Create metadata indexes
 
-In order to filter by a specific metadata property, it must be defined in the `metadataIndexes` object before any vectors are inserted. 
+In order to filter by a specific metadata property, it must be defined in the `metadataIndexes`. 
 
 Metadata indexes are configured within the `metadataIndexes` object within your index configuration in `nuxt.config.ts`.
 
@@ -584,6 +584,8 @@ export default defineNuxtConfig({
   }
 })
 ```
+
+Metadata indexes can be added at any time, but they will only contain vectors that have been inserted/upserted after the index has been created. Upserting vectors after an index is created will index it as expected.
 
 #### Metadata Index Tips
 
@@ -618,10 +620,16 @@ The `filter` property follows rules similar to those of the `metadata` property 
 
 The metadata filter supports the following operators:
 
-| Operator | Description |
-| -------- | ----------- |
-| `$eq`    | Equals      |
-| `$ne`    | Not equals  |
+| Operator | Description              |
+|----------|--------------------------|
+| `$eq`    | Equals                   |
+| `$ne`    | Not equals               |
+| '$in'    | In                       |
+| '$nin'   | Not in                   |
+| '$lt'    | Less than                |
+| '$lte'   | Less than or equal to    |
+| '$gt'    | Greater than             |
+| '$gte'   | Greater than or equal to |
 
 #### Valid `filter` examples
 
@@ -778,7 +786,7 @@ type VectorizeMatch = Pick<Partial<VectorizeVector>, "values"> &
 
 ### `VectorizeAsyncMutation`
 
-Result type indicating a mutation on the Vectorize Index. Actual mutations are processed async where the `mutationId` is the unique identifier for the operation.
+Result type indicating a mutation on the Vectorize Index. Mutations are processed asynchronously in the background and the `mutationId` is the unique identifier for the operation.
 
 ```ts
 interface VectorizeAsyncMutation {
