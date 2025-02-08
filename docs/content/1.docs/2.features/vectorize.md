@@ -443,7 +443,7 @@ The Vector Object contains the id, vector embedding value, and metadata for a gi
 const vectorExample = {
 	id: "12345",
 	values: [32.4, 6.55, 11.2, 10.3, 87.9],
-  namespace: "images",
+    namespace: "images",
 	metadata: {
 		key: "value",
 		hello: "world",
