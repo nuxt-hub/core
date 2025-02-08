@@ -603,10 +603,8 @@ You can use metadata filters with the `query()` method by passing a `filter` opt
 ```ts
 const matches = await index.query(queryVector, {
   filter: {
-    { 
-      "url": "https://hub.nuxt.com", 
-      "nested.property": { "$ne": true } 
-    }
+    "url": "https://hub.nuxt.com", 
+    "nested.property": { "$ne": true } 
   }
 });
 
@@ -664,10 +662,8 @@ const matches = await index.query(queryVector, {
 ```ts
 const matches = await index.query(queryVector, {
   filter: {
-    { 
-      "pandas.nice": 42, 
-      "someKey": { "$ne": true } 
-    }
+    "pandas.nice": 42, 
+    "someKey": { "$ne": true } 
   }
 });
 
