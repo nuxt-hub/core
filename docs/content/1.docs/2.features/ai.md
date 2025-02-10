@@ -55,7 +55,7 @@ NuxtHub AI will always run AI models on your Cloudflare account, including durin
 
 Workers AI comes with a curated set of popular open-source models that enable you to do tasks such as image classification, text generation, object detection, and more.
 
-:u-button{icon="i-lucide-arrow-up-right" trailing to="https://developers.cloudflare.com/workers-ai/models/" target="_blank" label="See all Workers AI models"}
+:u-button{icon="i-lucide-arrow-up-right" trailing to="https://developers.cloudflare.com/workers-ai/models/" target="_blank" label="See all Workers AI models" variant="outline"}
 
 ## hubAI()
 
@@ -120,17 +120,17 @@ With Workers AI, tools have 4 properties:
 ```ts
 const tools = [
   {
-    name: "get-weather",
-    description: "Get's the weather for a given city",
+    name: 'get-weather',
+    description: 'Gets the weather for a given city',
     parameters: {
-      type: "object",
+      type: 'object',
       properties: {
         city: { 
-          type: "number", 
-          description: "the city to retrieve weather information for" 
+          type: 'number',
+          description: 'The city to retrieve weather information for'
         },
       },
-      required: ["city"],
+      required: ['city'],
     },
     function: ({ city }) => {
       // use an API to get the weather information
@@ -153,12 +153,12 @@ const tools = [
 
   ::field{name="parameters" type="JsonSchema7"}
     The parameters and options for parameters that the model will use to run the tool.  
-    ::collapsible{default-open}
+    ::collapsible
       ::field{name="type" type="string"}
       The type of your functions parameter. It's recommended to use an `object` so you can easily add additional properties in the future.
       ::field{name="properties" type="Object"}
       The properties that will be passed to your function. The keys of this object should match the keys in your function's parameter.
-        ::collapsible{default-open}
+        ::collapsible
           ::field{name="type" type="string"}
           The type of the property (`string`, `number`, `boolean`, etc.)
           ::field{name="description" type="string"}
@@ -186,7 +186,7 @@ npx nypm i @cloudflare/ai-utils
 `runWithTools` works with multi-tool calls, handles errors, and has the same return type as `hubAI().run()` so any code relying on the response from a model can remain the same.
 
 ```ts
-import { runWithTools } from "@cloudflare/ai-utils";
+import { runWithTools } from '@cloudflare/ai-utils'
 
 export default defineEventHandler(async (event) => {
   return await runWithTools(hubAI(), '@cf/meta/llama-3.1-8b-instruct', 
@@ -195,21 +195,23 @@ export default defineEventHandler(async (event) => {
         { role: 'user', content: 'What is the weather in New York?' },
       ],
       tools: [
-        name: "get-weather",
-        description: "Gets the weather for a given city",
-        parameters: {
-          type: "object",
-          properties: {
-            city: { 
-              type: "number", 
-              description: "The city to retrieve weather information for"
+        {
+          name: 'get-weather',
+          description: 'Gets the weather for a given city',
+          parameters: {
+            type: 'object',
+            properties: {
+              city: { 
+                type: 'number', 
+                description: 'The city to retrieve weather information for'
+              },
             },
+            required: ['city'],
           },
-          required: ["city"],
-        },
-        function: ({ city }) => {
-          // use an API to get the weather information
-          return '72'
+          function: ({ city }) => {
+            // use an API to get the weather information
+            return '72'
+          },
         },
       ]
     }, 
@@ -235,7 +237,7 @@ export default defineEventHandler(async (event) => {
 
   ::field{name="input" type="object"}
     The messages and tools to use for the model
-    ::collapsible{default-open}
+    ::collapsible
       ::field{name="messages" type="{ role: 'user' | 'system' | 'assistant', content: string }[]"}
       An array of messages to send to the model. Each message has a role and content.
       ::field{name="tools" type="AiTextGenerationToolInputWithFunction[]"}
