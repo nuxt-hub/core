@@ -132,7 +132,7 @@ const tools = [
       },
       required: ["city"],
     },
-    function: ({city} => {
+    function: ({ city }) => {
       // use an API to get the weather information
       return '72'
     }),
@@ -141,6 +141,7 @@ const tools = [
 ```
 
 #### Tool Fields
+
 ::field-group
   ::field{name="name" type="string" required}
     The name of the tool
@@ -222,6 +223,7 @@ export default defineEventHandler(async (event) => {
 ```
 
 #### Params
+
 ::field-group
   ::field{name="AI Binding" type="Ai" required}
     Your AI Binding (`hubAI()`)
@@ -257,7 +259,7 @@ export default defineEventHandler(async (event) => {
 ::
 
 ::callout
-See the full [runWithTools() documentation](https://developers.cloudflare.com/workers-ai/function-calling/embedded/api-reference/).
+See the full [`runWithTools()` documentation](https://developers.cloudflare.com/workers-ai/function-calling/embedded/api-reference/).
 ::
 
 
@@ -443,6 +445,12 @@ Explore open source templates made by the community:
   ::
   ::card{title="Hub Chat" to="https://github.com/ra-jeev/hub-chat"}
   A chat interface to interact with various text generation AI models.
+  ::
+  ::card{title="Flux AI Image Generator" to="https://github.com/atinux/flux-ai-image-generator"}
+  Generate images with AI using Flux-1 Schnell with different presets.
+  ::
+  ::card{title="Chat with PDF" to="https://github.com/RihanArfan/chat-with-pdf"}
+  A full-stack AI-powered application that lets you to ask questions to PDF documents.
   ::
 ::
 
