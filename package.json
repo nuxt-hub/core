@@ -1,7 +1,7 @@
 {
   "name": "@nuxthub/core",
   "private": false,
-  "version": "0.8.16",
+  "version": "0.8.17",
   "description": "Build full-stack Nuxt applications on Cloudflare, with zero configuration.",
   "repository": {
     "type": "git",
@@ -38,15 +38,15 @@
     "test:watch": "vitest watch"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "^4.20250124.3",
-    "@nuxt/devtools-kit": "^1.7.0",
-    "@nuxt/kit": "^3.15.3",
+    "@cloudflare/workers-types": "^4.20250204.0",
+    "@nuxt/devtools-kit": "^2.0.0",
+    "@nuxt/kit": "^3.15.4",
     "@uploadthing/mime-types": "^0.3.4",
     "citty": "^0.1.6",
     "confbox": "^0.1.8",
     "defu": "^6.1.4",
     "destr": "^2.0.3",
-    "h3": "^1.14.0",
+    "h3": "^1.15.0",
     "mime": "^4.0.6",
     "nitro-cloudflare-dev": "^0.2.1",
     "ofetch": "^1.4.1",
@@ -59,22 +59,22 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^1.7.0",
-    "@nuxt/eslint-config": "^0.7.5",
+    "@nuxt/devtools": "^2.0.0",
+    "@nuxt/eslint-config": "^1.0.1",
     "@nuxt/module-builder": "^0.8.4",
-    "@nuxt/schema": "^3.15.3",
+    "@nuxt/schema": "^3.15.4",
     "@nuxt/test-utils": "^3.15.4",
     "@nuxthub/core": "link:",
-    "@types/node": "^22.10.10",
+    "@types/node": "^22.13.1",
     "changelogen": "^0.5.7",
     "eslint": "^9.19.0",
-    "nuxt": "^3.15.3",
+    "nuxt": "^3.15.4",
     "typescript": "5.6.3",
-    "vitest": "^3.0.4",
-    "wrangler": "^3.105.1"
+    "vitest": "^3.0.5",
+    "wrangler": "^3.107.3"
   },
   "resolutions": {
     "h3": "^1.14.0"
   },
-  "packageManager": "pnpm@9.15.4"
+  "packageManager": "pnpm@10.2.1"
 }

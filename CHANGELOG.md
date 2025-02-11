@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v0.8.17
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.16...v0.8.17)
+
+### 🩹 Fixes
+
+- Support upcoming nitro version ([c672f33](https://github.com/nuxt-hub/core/commit/c672f33))
+- Add back cloudflare: as externals ([3f2aabe](https://github.com/nuxt-hub/core/commit/3f2aabe))
+
+### 🏡 Chore
+
+- Update deps ([0314365](https://github.com/nuxt-hub/core/commit/0314365))
+- Move to pnpm 9 ([dff5b81](https://github.com/nuxt-hub/core/commit/dff5b81))
+- Use pnpm 10 ([ed18f15](https://github.com/nuxt-hub/core/commit/ed18f15))
+
+### ❤️ Contributors
+
+- Sébastien Chopin <atinux@gmail.com>
+
 ## v0.8.16
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.15...v0.8.16)
