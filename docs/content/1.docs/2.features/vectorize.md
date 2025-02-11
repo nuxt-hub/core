@@ -4,6 +4,10 @@ navigation.title: Vectorize
 description: Access a vector database to build full-stack AI-powered applications in Nuxt.
 ---
 
+NuxtHub Vectorize provides configuration, deployment, and management of [Vectorize](https://developers.cloudflare.com/vectorize/best-practices/create-indexes/), Cloudflare's vector database.
+
+A vector database stores numerical representations (embeddings) of data, allowing efficient similarity searches. Machine learning models generate these embeddings by converting text, images, or other data types into numerical arrays that can be compared with Vectorize to find similar vectors.
+
 ::note{to=https://developers.cloudflare.com/vectorize/reference/what-is-a-vector-database/}
 Learn what vector databases are on Cloudflare's documentation
 ::
@@ -12,16 +16,36 @@ Learn what vector databases are on Cloudflare's documentation
 Vectorize is only available in local development when using [remote storage](/docs/getting-started/remote-storage).
 ::
 
+## Use Cases
+
+Vectorize can be used for:
+
+- **Retrieval Augmented Generation (RAG)** - store embeddings for documents that can be used as context for LLMs 
+- **Semantic Search** - query vectors to find results similar to an input
+- **Recommendation Engines** - query vectors to find similar content
+
 ## Getting Started
 
 Vectorize indexes are managed in your NuxtHub project within the `hub.vectorize` object in your `nuxt.config.ts` file. Multiple indexes can be created using separate keys.
+
+### Create an index
+
+Creating an index can take up to four values:
+
+1. **An index name** (e.g. `prod-search-index` or `recommendations-idx-dev`) :br :br The name of your index must contain only lowercase characters and hyphens (`-`). The index name is limited to 51 characters. :br :br
+
+2. `dimension` - the [dimension size](#dimensions) of each vector (e.g. 384 or 1536) :br :br Dimensions define the size of each vector, which should match the output of the model generating the embeddings. :br :br
+
+3. `metric` - the [distance metric](#distance-metrics) to use for calculating vector similarity :br :br The distance metric is the function that determines how close vectors are to each other. Possible values are `cosine`, `euclidean`, and `dot-product`. :br :br
+
+4. `metadataIndexes` (optional) :br :br A [`metadataIndex`](#create-metadata-indexes) object specifying metadata properties that may be used to [filter queries](#metadata-filtering) :br :br
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   hub: {
     vectorize: {
       <index-name>: {
-        dimensions: <number>,
+        dimensions: <number>, // depends on the model used to generate the vectors
         metric: "dot-product" | "cosine" | "euclidean",
         metadataIndexes: {
           <property>: "string" | "number" | "boolean"
@@ -59,45 +83,55 @@ export default defineNuxtConfig({
 ```
 ::
 
-Then, make sure to [deploy your project](/docs/getting-started/deploy) to create the indexes.
-
-Once deployed, you can use the `hubVectorize()` server composable to interact with the vector databases using [remote storage](/docs/getting-started/remote-storage) with the `npx nuxt dev --remote` command.
-
-::important
-Cloudflare Vectorize index configurations are immutable after creation. Modifying an index's dimension size or distance metric will disconnect the modified existing index from your deployed project and create a new index. Existing data will not be migrated. Consider your index configuration carefully before creation to avoid data loss and reconnection issues.
-::
-
-### Create an index
-
-Creating an index requires three inputs:
-
-- A name, for example prod-search-index or recommendations-idx-dev.
-- The (fixed) [dimension size](#dimensions) of each vector, for example 384 or 1536.
-- The (fixed) [distance metric](#distance-metrics) to use for calculating vector similarity.
-
-::callout
-Index names can only contain lowercase characters, hyphens (-), and are limited to 51 characters. <!-- Cloudflare limit 64, - 13 for -abcd(-preview) index suffixes -->
-::
-
 ::note
 [Cloudflare Vectorize](https://developers.cloudflare.com/vectorize) indexes will be created for your project when you [deploy it](/docs/getting-started/deploy). Created Vectorize indexes contain a unique 4 character suffix.
 ::
 
 ### Use existing indexes
 
+To use an existing index, add it as a binding to your Cloudflare project and configure it in `nuxt.config.ts`.
+
 1. On the Cloudflare dashboard → Workers & Pages → Your Pages project
 2. Go to Settings → Bindings → Add
 3. Select Vectorize database
     - Set the variable name to `VECTORIZE_<NAME>`. The entire variable name should be capitalised.
     - Select the existing Vectorize index
-4. Add the index configuration to `hub.vectorize` in `nuxt.config.ts`. The name should match `<name>` used in the variable name, and be lowercase.
+4. Add the index configuration to `hub.vectorize` in `nuxt.config.ts`. 
 
-### Creating metadata indexes
+- The index name should match `<name>` used in the variable name, and must be lowercase. 
+- The `dimensions` and `metric` values should match the ones used when creating the index
+- If your index already includes values, the `metadataIndexes` should include any existing metadata indexes. New `metadataIndexes` added in your configuration will not include any existing vectors. You can upsert these vectors to have them included in new metadata indexes.
 
-Vectorize allows you to add up to 10KiB of metadata per vector into your index, and also provides the ability to filter on that metadata while querying vectors. To do so you would need to specify a metadata field as a "metadata index" for your Vectorize index.
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  hub: {
+    vectorize: {
+      <index-name>: {
+        dimensions: <number>, // depends on the model used to generate the vectors
+        metric: "dot-product" | "cosine" | "euclidean",
+        metadataIndexes: {
+          <property>: "string" | "number" | "boolean"
+        }
+      }
+    }
+  }
+})
+```
 
-::callout{to="#create-metadata-indexes"}
-Learn more about [creating metadata indexes](#metadata-filtering).
+### Deployment
+
+Vectorize only works in local development when using [remote storage](/docs/getting-started/remote-storage) with the `npx nuxt dev --remote` command.
+
+This means to begin using Vectorize, you need to [deploy your project](/docs/getting-started/deploy) to create the indexes before accessing them through remote storage. 
+
+Similar to the other NuxtHub offerings, indexes can be created in either preview or production environments.
+
+::important{title="Test"}
+**Cloudflare Vectorize index configurations, like the dimension size and distance metric, cannot be modified after creation.** :br :br
+
+Modifying an index's dimension size or distance metric will create a new empty index without migrating any data, disconnecting your existing index (and its data) from your project. :br :br
+
+Consider your index configuration carefully before creating it to avoid data loss and reconnection issues.
 ::
 
 ## `hubVectorize()`
@@ -112,69 +146,96 @@ IntelliSense will suggest `<index>` based on the indexes configured in [`hub.vec
 
 ### `insert()`
 
-Inserts vectors into the index.
+Inserts vectors with new IDs into the index. If a vector with the same vector ID already exists in the index, it will not be updated. If you need to update existing vectors, use the [upsert](#upsert) operation.
 
 ```ts
+// Mock Vectors
+// These will typically come from a machine-learning model
 const vectorsToInsert = [
   { id: "123", values: [32.4, 6.5, 11.2, 10.3, 87.9] },
-  { id: "456", values: [2.5, 7.8, 9.1, 76.9, 8.5] },
+  { 
+    id: "456", 
+    values: [2.5, 7.8, 9.1, 76.9, 8.5], 
+    metadata: { category: "product" }, 
+  },
 ];
 const inserted = await index.insert(vectorsToInsert);
 ```
 
 See all available properties on the [Vector object](#vector-object).
 
-If vectors with the same vector ID already exist in the index, only the vectors with new IDs will be inserted.
 
-::callout
-Vectorize inserts are asynchronous and the insert operation returns a mutation identifier unique for that operation. It typically takes a few seconds for inserted vectors to be available for querying in an index.
-::
+#### Params
 
-If you need to update existing vectors, use the [upsert](#upsert) operation.
-
-::note
-Insert vs Upsert
-- If the same vector id is inserted twice in a Vectorize index, the index would reflect the vector that was added first.
-- If the same vector id is upserted twice in a Vectorize index, the index would reflect the vector that was added second.
-- Use the upsert operation if you want to overwrite the vector value for a vector id that already exists in an index.
+::field-group
+  ::field{name="vectors" type="VectorObject[]" required}
+    An array of [Vector Objects](#vector-object) to insert into the index.
+  ::
 ::
 
 #### Return
 
 Returns [`VectorizeAsyncMutation`](#vectorizeasyncmutation).
 
+
+::callout
+Vectorize Index mutations are processed asynchronously in the background. The `insert` operation returns a mutation identifier unique for that operation, and does not assert that the vector is available in the index. It typically takes a few seconds for inserted vectors to be available for querying in an index.
+::
+
+::note
+Insert vs Upsert
+- If the same vector id is **inserted** twice in a Vectorize index, the index will contain the vector that was added **first**.
+- If the same vector id is **upserted** twice in a Vectorize index, the index will contain the vector that was added **second**.
+- Use the `upsert` operation if you want to overwrite the vector value for a vector id that already exists in an index.
+::
+
+
 ### `upsert()`
 
-Upserts vectors into an index.
+Upserts vectors into an index. An upsert operation will insert vectors into the index if vectors with the same ID do not exist, and overwrite vectors with the same ID.
 
 ```ts
 const vectorsToUpsert = [
   { id: "123", values: [32.4, 6.5, 11.2, 10.3, 87.9] },
-  { id: "456", values: [2.5, 7.8, 9.1, 76.9, 8.5] },
+  { 
+    id: "456", 
+    values: [2.5, 7.8, 9.1, 76.9, 8.5], 
+    metadata: { category: "product" }, 
+  },
   { id: "768", values: [29.1, 5.7, 12.9, 15.4, 1.1] },
 ];
 const upserted = await index.upsert(vectorsToUpsert);
 ```
-
-An upsert operation will insert vectors into the index if vectors with the same ID do not exist, and overwrite vectors with the same ID.
-
 See all available properties on the [Vector object](#vector-object).
 
-::note
-Upserting does not merge or combine the values or metadata of an existing vector with the upserted vector: the upserted vector replaces the existing vector in full.
-::
 
-::callout
-Vectorize upserts are asynchronous and the upsert operation returns a mutation identifier unique for that operation. It typically takes a few seconds for upserted vectors to be available for querying in an index.
+#### Params
+
+::field-group
+  ::field{name="vectors" type="VectorObject[]" required}
+    An array of [Vector Objects](#vector-object) to insert into the index.
+  ::
 ::
 
 #### Return
 
 Returns [`VectorizeAsyncMutation`](#vectorizeasyncmutation).
 
+::note
+Upserting does not merge or combine the values or metadata of an existing vector with the upserted vector: the upserted vector replaces the existing vector in full. :br :br
+
+To merge existing metadata, you will have to first query the index for the existing metadata, update the metadata with the new values, and upsert the vector with the merged metadata.
+::
+
+::callout
+Vectorize Index mutations are processed asynchronously in the background. The `upsert` operation returns a mutation identifier unique for that operation, and does not assert that the vector is updated in the index.  It typically takes a few seconds for upserted vectors to be available for querying in an index.
+::
+
+
+
 ### `query()`
 
-Query an index with the provided vector, returning the score(s) of the closest vectors based on the configured distance metric.
+Query an index with the provided vector, which performs a vector search and returns the score(s) of the closest vectors based on the [configured distance metric](#distance-metrics).
 
 ```ts
 const queryVector = [32.4, 6.55, 11.2, 10.3, 87.9];
@@ -195,15 +256,25 @@ console.log(matches)
 */
 ```
 
-Querying an index, or vector search, enables you to search an index by providing an input vector and returning the nearest vectors based on the [configured distance metric](#distance-metrics).
-
 Optionally, you can apply [metadata filters](#metadata-filtering) or a [namespace](#namespaces) to narrow the vector search space.
+
+```ts
+const queryVector = [32.4, 6.55, 11.2, 10.3, 87.9];
+const matches = await index.query(queryVector, {
+  namespace: "my-namespace",
+  filter: {
+      rating: {
+        $ne: 5,
+      },
+    },
+});
+```
 
 #### Params
 
 ::field-group
   ::field{name="vector" type="array" required}
-    Input vector that will be used to drive the similarity search.
+    Input vector that will be used to drive the similarity search. 
   ::
 
   ::field{name="options" type="object"}
@@ -217,7 +288,7 @@ Optionally, you can apply [metadata filters](#metadata-filtering) or a [namespac
         <br>
       ::
       ::field{name="returnValues" type="boolean"}
-        Return vector values. See [control over scoring precision and query accuracy](#control-over-scoring-precision-and-query-accuracy).
+        Return vector values. See [Precision Vs. Response Times](#precision-vs-response-time).
       ::
       ::field{name="returnMetadata" type="'all' | 'indexed' | 'none'"}
         Return vector metadata. Defaults to `'none'`.
@@ -242,9 +313,9 @@ Optionally, you can apply [metadata filters](#metadata-filtering) or a [namespac
 
 ```ts
 const matches = await index.query(queryVector, {
-  topK: 5,
-  returnValues: true,
-  returnMetadata: "all",
+  topK: 3,               // return 3 matches  
+  returnValues: true,    // return the vector values
+  returnMetadata: "all", // return all metadata associated with the matches
 });
 ```
 
@@ -252,12 +323,22 @@ const matches = await index.query(queryVector, {
 
 Returns [`VectorizeMatches`](#vectorizematches).
 
-#### Control over scoring precision and query accuracy
+#### Precision vs. Response Time
 
-When querying vectors, you can specify to either use high-precision scoring, thereby increasing the precision of the query matches scores as well as the accuracy of the query results, or use approximate scoring for faster response times.
-Using approximate scoring, returned scores will be an approximation of the real distance/similarity between your query and the returned vectors.
+When querying vectors, you can specify whether to use:
 
-High-precision scoring is enabled by setting `returnValues: true` on your query; this tells Vectorize to fetch and use the original vector values for your matches, which enables the computation of exact scores of matches, increasing the accuracy of the results.
+1. **High-precision scoring** for increased precision of the query matches scores and the accuracy of the query results
+2. **Approximate scoring** for faster response times (default).
+
+Using approximate scoring, the returned scores will be an approximation of the real distance (similarity) between your query and the returned vectors.
+
+You can enable high-precision scoring by setting `returnValues: true` on your query. This tells Vectorize to compute exact scores for matches, increasing the accuracy of the results.
+
+```ts
+const matches = await index.query(queryVector, {
+  returnValues: true,
+});
+```
 
 ### `getByIds()`
 
@@ -272,7 +353,7 @@ const vectors = await index.getByIds(ids);
 
 ::field-group
   ::field{name="ids" type="string[]" required}
-    List of vector ids that should be returned.
+    List of vector IDs that should be returned.
   ::
 ::
 
@@ -289,15 +370,11 @@ const idsToDelete = ["11", "22", "33", "44"];
 const deleted = await index.deleteByIds(idsToDelete);
 ```
 
-::callout
-Vectorize deletes are asynchronous and the delete operation returns a mutation identifier unique for that operation. It typically takes a few seconds for vectors to be removed from the Vectorize index.
-::
-
 #### Params
 
 ::field-group
   ::field{name="ids" type="string[]" required}
-    List of vector ids that should be deleted.
+    List of vector IDs that should be deleted.
   ::
 ::
 
@@ -305,12 +382,27 @@ Vectorize deletes are asynchronous and the delete operation returns a mutation i
 
 Returns [`VectorizeAsyncMutation`](#vectorizeasyncmutation).
 
+::callout
+Vectorize Index mutations are processed asynchronously in the background. The `delete` operation returns a mutation identifier unique for that operation, and does not assert that the vector is removed in the index.  It typically takes a few seconds for vectors to be removed from the Vectorize index.
+::
+
 ### `describe()`
 
 Retrieves the configuration of a given index directly, including its configured `dimensions` and distance `metric`.
 
 ```ts
 const details = await index.describe();
+
+console.log(details);
+
+/*
+{
+  dimensions: 768,
+  vectorCount: 104,
+  processedUpToDatetime: '2025-02-05T18:07:15.627Z',
+  processedUpToMutation: '7fd632ef-eb54-4788-b788-3cc003f7311a'
+}
+*/
 ```
 
 #### Return
@@ -319,26 +411,31 @@ Returns [`VectorizeIndexDetails`](#vectorizeindexdetails).
 
 ## Vectors
 
+A vector represents the vector embedding output from a machine learning model.
 
 ### Vector Object
 
-A vector represents the vector embedding output from a machine learning model.
+The Vector Object contains the id, vector embedding value, and metadata for a given vector.
 
 ::field-group
   ::field{name="id" type="string" required}
     A unique `string` identifying the vector in the index. This should map back to the ID of the document, object or database identifier that the vector values were generated from.
   ::
 
-  ::field{name="namespace" type="object"}
-    An optional partition key within a index. Operations are performed per-namespace, so this can be used to create isolated segments within a larger index.
-  ::
-
   ::field{name="values" type="number[] | Float32Array | Float64Array" required}
     An array of `number`, `Float32Array`, or `Float64Array` as the vector embedding itself. This must be a dense array, and the length of this array must match the `dimensions` configured on the index.
   ::
 
-  ::field{name="metadata" type="Record<string, 'string' | 'number' | 'boolean'>"}
-    An optional set of key-value pairs that can be used to store additional metadata alongside a vector.
+  ::collapsible{open-text="Show optional" close-text="Hide optional"}
+
+    ::field{name="namespace" type="object"}
+      A partition key within a index. Operations are performed per-namespace, so this can be used to create isolated segments within a larger index. (Optional)
+    ::
+
+    ::field{name="metadata" type="Record<string, 'string' | 'number' | 'boolean'>"}
+      An optional set of key-value pairs that can be used to store additional metadata alongside a vector.
+    ::
+
   ::
 ::
 
@@ -346,6 +443,7 @@ A vector represents the vector embedding output from a machine learning model.
 const vectorExample = {
 	id: "12345",
 	values: [32.4, 6.55, 11.2, 10.3, 87.9],
+    namespace: "images",
 	metadata: {
 		key: "value",
 		hello: "world",
@@ -358,9 +456,11 @@ const vectorExample = {
 
 Dimensions are determined from the output size of the machine learning (ML) model used to generate them, and are a function of how the model encodes and describes features into a vector embedding.
 
-The number of output dimensions can determine vector search accuracy, search performance (latency), and the overall size of the index. Smaller output dimensions can be faster to search across, which can be useful for user-facing applications. Larger output dimensions can provide more accurate search, especially over larger datasets and/or datasets with substantially similar inputs.
+The number of output dimensions can determine vector search accuracy, search performance (latency), and the overall size of the index. 
 
-The number of dimensions an index is created for cannot change. Indexes expect to receive dense vectors with the same number of dimensions.
+Smaller output dimensions can be faster to search across, which can be useful for user-facing applications. Larger output dimensions can provide more accurate search, especially over larger datasets and/or datasets with substantially similar inputs.
+
+The number of dimensions an index is created for cannot change after an index is created.
 
 The following table highlights some example embeddings models and their output dimensions:
 
@@ -375,24 +475,43 @@ The following table highlights some example embeddings models and their output d
 Refer to the [Workers AI documentation](https://developers.cloudflare.com/workers-ai/models/#text-embeddings) to learn about its built-in embedding models.
 ::
 
+If you are using [NuxtHub AI](/docs/features/ai) to generate vector embeddings, the text-embedding models currently available are:
+- [`@cf/baai/bge-base-en-v1.5`](https://developers.cloudflare.com/workers-ai/models/bge-base-en-v1.5) - 768 dimensions
+- [`@cf/baai/bge-large-en-v1.5`](https://developers.cloudflare.com/workers-ai/models/bge-large-en-v1.5) - 1024 dimensions
+- [`@cf/baai/bge-small-en-v1.5`](https://developers.cloudflare.com/workers-ai/models/bge-small-en-v1.5) - 384 dimensions
+
 ### Distance metrics
 
 Distance metrics are functions that determine how close vectors are from each other. Vectorize indexes support the following distance metrics:
 
-| Metric        | Details                                                                                                                                                                                            |
+| Metric        | Details                                                                                                                                                                                            | 
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `cosine`      | Distance is measured between `-1` (most dissimilar) to `1` (identical). `0` denotes an orthogonal vector.                                                                                          |
 | `euclidean`   | Euclidean (L2) distance. `0` denotes identical vectors. The larger the positive number, the further the vectors are apart.                                                                         |
 | `dot-product` | Negative dot product. Larger negative values _or_ smaller positive values denote more similar vectors. A score of `-1000` is more similar than `-500`, and a score of `15` more similar than `50`. |
 
-Determining the similarity between vectors can be subjective based on how the machine-learning model that represents features in the resulting vector embeddings. For example, a score of `0.8511` when using a `cosine` metric means that two vectors are close in distance, but whether data they represent is _similar_ is a function of how well the model is able to represent the original content.
+Determining the similarity between vectors can be subjective and is determined by how well the machine-learning model can represent features in the resulting vector embeddings. 
 
-When querying vectors, you can specify Vectorize to use either:
+For example, a score of `0.8511` when using a `cosine` metric means that two vectors are close in distance, but whether data they represent is _similar_ is a function of how well the model is able to represent the original content.
 
-- High-precision scoring, which increases the precision of the query matches scores as well as the accuracy of the query results.
-- Approximate scoring for faster response times. Using approximate scoring, returned scores will be an approximation of the real distance/similarity between your query and the returned vectors. Refer to [Control over scoring precision and query accuracy](#control-over-scoring-precision-and-query-accuracy).
+Distance metrics cannot be changed after an index is created.
 
-Distance metrics cannot be changed after index creation, and that each metric has a different scoring function.
+#### Choosing a distance metric
+
+Choosing a distance metric depends on the vector embedding model used to generate the vectors. If possible, it's best to use the same distance metric as the model generating the vectors. 
+
+While it's always good to test the results from different distance metrics, each metric uses different properties of the vectors to determine their similarity. If your embeddings contain data that is related to quantifiable values, such as prices, ratings, or other numerical values, you may want to use a metric that considers both magnitude and direction.
+
+| Metric        | Vector Properties Considered | 
+| ------------- | ---------------------------- |
+| `cosine`      | Only direction               |
+| `euclidean`   | Magnitude and direction      |
+| `dot-product` | Magnitude and direction      |
+
+::callout
+Learn more about [Vector Distance Metrics](https://www.pinecone.io/learn/vector-similarity/).
+::
+
 
 ### Supported vector formats
 
@@ -404,41 +523,49 @@ Vectorize supports vectors in three formats:
 
 In most cases, a `number[]` array is the easiest when dealing with other APIs, and is the return type of most machine-learning APIs.
 
-## Metadata & filtering
+## Metadata
 
-Metadata is an optional set of key-value pairs that can be attached to a vector on insert or upsert, and allows you to embed or co-locate data about the vector itself.
+Metadata is an optional set of key-value pairs that can be attached to a vector on [insert](#insert) or [upsert](#upsert), and allows you to embed or co-locate data about the vector itself.
+
+Vectorize allows you to add up to 10KiB of metadata per vector into your index.
 
 ::callout
 Metadata keys cannot be empty, contain the dot character (`.`), contain the double-quote character (`"`), or start with the dollar character (`$`).
 ::
 
-Metadata can be used to:
+Metadata can be used to store:
 
-- Include the object storage key, database UUID or other identifier to look up the content the vector embedding represents.
+- The object storage key, database UUID or other identifier to look up the content the vector embedding represents.
 - The raw content (up to the [metadata limits](https://developers.cloudflare.com/vectorize/platform/limits/)), which can allow you to skip additional lookups for smaller content.
 - Dates, timestamps, or other metadata that describes when the vector embedding was generated or how it was generated.
 
 For example, a vector embedding representing an image could include the path to the [blob](/docs/features/blob) it was generated from, the format, and a category lookup:
 
 ```ts
-{ id: '1', values: [32.4, 74.1, 3.2, ...], metadata: { path: 'r2://bucket-name/path/to/image.png', format: 'png', category: 'profile_image' } }
+{ 
+  id: '1',
+  values: [32.4, 74.1, 3.2, ...], 
+  metadata: { 
+    path: 'r2://bucket-name/path/to/image.png',
+    format: 'png',
+    category: 'profile_image' 
+  }
+}
 ```
 
 ### Metadata filtering
 
-In addition to providing an input vector to your query, you can also filter by [vector metadata](#metadata) associated with every vector. Query results only include vectors that match `filter` criteria, meaning that `filter` is applied first, and `topK` results are taken from the filtered set.
+When querying an index, you can filter using [metadata](#metadata).
 
-By using metadata filtering to limit the scope of a query, you can filter by specific customer IDs, tenant, product category or any other metadata you associate with your vectors.
+Query results will only include vectors that match the `filter` criteria, meaning that `filter` is applied first, and the `topK` results are taken from the filtered set.
 
-::warning
-Vectorize requires metadata indexes to be specified before vectors are inserted to support metadata filtering. `string`, `number` and `boolean` metadata indexes are supported. Please refer to [Create metadata indexes](#create-metadata-indexes) for details.<br><br>
-
-Vectorize supports [namespace](#namespaces) filtering by default.
-::
+Metadata filtering allows you to query specific subsets of your data. You can filter by specific customer IDs, tenant, product category or any other metadata index you have configured.
 
 ### Create metadata indexes
 
-Metadata indexes are all managed within the `metadataIndexes` object within your index configuration in `nuxt.config.ts`.
+In order to filter by a specific metadata property, it must be defined in the `metadataIndexes`. 
+
+Metadata indexes are configured within the `metadataIndexes` object within your index configuration in `nuxt.config.ts`.
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
@@ -458,61 +585,96 @@ export default defineNuxtConfig({
 })
 ```
 
-Supported metadata index property types are `string`, `number` and `boolean` types.
+Metadata indexes can be added at any time, but they will only contain vectors that have been inserted/upserted after the index has been created. Upserting vectors after an index is created will index it as expected.
 
-Define nested properties using `.` (dot).
+#### Metadata Index Tips
+
+- Supported metadata index property types are `string`, `number` and `boolean` types.
+- Nested properties can be defined using `.` (dot) like `nested.property`.
+- For metadata indexes of type `number`, the indexed number precision is that of float64.
+- For metadata indexes of type `string`, each vector indexes the first 64B of the string data truncated on UTF-8 character boundaries to the longest well-formed UTF-8 substring within that limit, so vectors are filterable on the first 64B of their value for each indexed property.
 
 ::callout
 Vectorize currently supports a maximum of 10 metadata indexes per Vectorize index. Learn more at https://developers.cloudflare.com/vectorize/platform/limits/.
 ::
 
-For metadata indexes of type number, the indexed number precision is that of float64.
-
-For metadata indexes of type string, each vector indexes the first 64B of the string data truncated on UTF-8 character boundaries to the longest well-formed UTF-8 substring within that limit, so vectors are filterable on the first 64B of their value for each indexed property.
-
-::note
-As of today, the metadata fields on which vectors can be filtered need to be specified before the vectors are inserted, and it is recommended that these metadata fields are specified right after the creation of a Vectorize index.
-::
-
 ### Supported operations
 
-Optional `filter` property on `query()` method specifies metadata filter:
+You can use metadata filters with the `query()` method by passing a `filter` option.
 
-| Operator | Description |
-| -------- | ----------- |
-| `$eq`    | Equals      |
-| `$ne`    | Not equals  |
+```ts
+const matches = await index.query(queryVector, {
+  filter: {
+    "url": "https://hub.nuxt.com", 
+    "nested.property": { "$ne": true } 
+  }
+});
+
+```
+
+The `filter` property follows rules similar to those of the `metadata` property used when inserting metadata.
 
 - `filter` must be non-empty object whose compact JSON representation must be less than 2048 bytes.
-- `filter` object keys cannot be empty, contain `" | .` (dot is reserved for nesting), start with `$`, or be longer than 512 characters.
+- `filter` object keys cannot be empty, contain `"` or `.` (dot is reserved for nesting), start with `$`, or be longer than 512 characters.
 - `filter` object non-nested values can be `string`, `number`, `boolean`, or `null` values.
+
+The metadata filter supports the following operators:
+
+| Operator | Description              |
+|----------|--------------------------|
+| `$eq`    | Equals                   |
+| `$ne`    | Not equals               |
+| '$in'    | In                       |
+| '$nin'   | Not in                   |
+| '$lt'    | Less than                |
+| '$lte'   | Less than or equal to    |
+| '$gt'    | Greater than             |
+| '$gte'   | Greater than or equal to |
 
 #### Valid `filter` examples
 
 ##### Implicit `$eq` operator
 
-```json
-{ "streaming_platform": "netflix" }
+```ts
+const matches = await index.query(queryVector, {
+  filter: {
+    { "streaming_platform": "netflix" }
+  }
+});
 ```
 
 ##### Explicit operator
 
-```json
-{ "someKey": { "$ne": true } }
+```ts
+const matches = await index.query(queryVector, {
+  filter: {
+    { "someKey": { "$ne": true } }
+  }
+});
+```
+
+##### Nested Properties
+
+```ts
+const matches = await index.query(queryVector, {
+  filter: {
+    { "pandas.nice": 42 }
+  }
+});
+
+// looks for { "pandas": { "nice": 42 } }
 ```
 
 ##### Implicit logical `AND` with multiple keys
 
-```json
-{ "pandas.nice": 42, "someKey": { "$ne": true } }
-```
+```ts
+const matches = await index.query(queryVector, {
+  filter: {
+    "pandas.nice": 42, 
+    "someKey": { "$ne": true } 
+  }
+});
 
-##### Keys define nesting with `.` (dot)
-
-```json
-{ "pandas.nice": 42 }
-
-// looks for { "pandas": { "nice": 42 } }
 ```
 
 ### Limits
@@ -524,154 +686,6 @@ For metadata indexes of type `number`, the indexed number precision is that of f
 For metadata indexes of type `string`, each vector indexes the first 64B of the string data truncated on UTF-8 character boundaries to the longest well-formed UTF-8 substring within that limit, so vectors are filterable on the first 64B of their value for each indexed property.
 
 See [Vectorize Limits](https://developers.cloudflare.com/vectorize/platform/limits/) for a complete list of limits.
-
-### Examples
-
-#### Add metadata
-
-With the following index definition:
-
-```ts [nuxt.config.ts]
-export default defineNuxtConfig({
-  hub: {
-    vectorize: {
-      tutorial: {
-        dimensions: 32,
-        metric: "cosine",
-        metadataIndexes: {
-          streaming_platform: "string",
-          "property.nested": "boolean"
-        }
-      }
-    }
-  }
-})
-```
-
-Metadata can be added when [inserting or upserting vectors](#insert).
-
-```ts
-const index = hubVectorize("tutorial")
-
-const newMetadataVectors: Array<VectorizeVector> = [
-	{
-		id: "1",
-		values: [32.4, 74.1, 3.2, ...],
-		metadata: { url: "/products/sku/13913913", streaming_platform: "netflix" },
-	},
-	{
-		id: "2",
-		values: [15.1, 19.2, 15.8, ...],
-		metadata: { url: "/products/sku/10148191", streaming_platform: "hbo" },
-	},
-	{
-		id: "3",
-		values: [0.16, 1.2, 3.8, ...],
-		metadata: { url: "/products/sku/97913813", streaming_platform: "amazon" },
-	},
-	{
-		id: "4",
-		values: [75.1, 67.1, 29.9, ...],
-		metadata: { url: "/products/sku/418313", streaming_platform: "netflix" },
-	},
-	{
-		id: "5",
-		values: [58.8, 6.7, 3.4, ...],
-		metadata: { url: "/products/sku/55519183", streaming_platform: "hbo" },
-	},
-];
-
-// Upsert vectors with added metadata, returning a count of the vectors upserted and their vector IDs
-const upserted = await index.upsert(newMetadataVectors);
-```
-
-#### Query examples
-
-Use the [`query()`](#query) method:
-
-```ts
-const queryVector: Array<number> = [54.8, 5.5, 3.1, ...];
-const originalMatches = await index.query(queryVector, {
-	topK: 3,
-	returnValues: true,
-	returnMetadata: 'all',
-});
-```
-
-Results without metadata filtering:
-
-```json
-{
-	"matches": [
-		{
-			"id": "5",
-			"score": 0.999909486,
-			"values": [58.79999923706055, 6.699999809265137, 3.4000000953674316],
-			"metadata": {
-				"url": "/products/sku/55519183",
-				"streaming_platform": "hbo"
-			}
-		},
-		{
-			"id": "4",
-			"score": 0.789848214,
-			"values": [75.0999984741211, 67.0999984741211, 29.899999618530273],
-			"metadata": {
-				"url": "/products/sku/418313",
-				"streaming_platform": "netflix"
-			}
-		},
-		{
-			"id": "2",
-			"score": 0.611976262,
-			"values": [15.100000381469727, 19.200000762939453, 15.800000190734863],
-			"metadata": {
-				"url": "/products/sku/10148191",
-				"streaming_platform": "hbo"
-			}
-		}
-	]
-}
-```
-
-The same [`query()`](#query) method with a `filter` property supports metadata filtering.
-
-```ts
-const queryVector: Array<number> = [54.8, 5.5, 3.1, ...];
-const metadataMatches = await index.query(queryVector, {
-	topK: 3,
-	filter: { streaming_platform: "netflix" },
-	returnValues: true,
-	returnMetadata: 'all',
-});
-```
-
-Results with metadata filtering:
-
-```json
-{
-	"matches": [
-		{
-			"id": "4",
-			"score": 0.789848214,
-			"values": [75.0999984741211, 67.0999984741211, 29.899999618530273],
-			"metadata": {
-				"url": "/products/sku/418313",
-				"streaming_platform": "netflix"
-			}
-		},
-		{
-			"id": "1",
-			"score": 0.491185264,
-			"values": [32.400001525878906, 74.0999984741211, 3.200000047683716],
-			"metadata": {
-				"url": "/products/sku/13913913",
-				"streaming_platform": "netflix"
-			}
-		}
-	]
-}
-```
 
 ## Namespaces
 
@@ -724,29 +738,9 @@ const matches = await index.query(queryVector, {
 
 Both [namespaces](https://developers.cloudflare.com/vectorize/best-practices/insert-vectors/#namespaces) and metadata filtering narrow the vector search space for a query. Consider the following when evaluating both filter types:
 
-- A namespace filter is applied before metadata filter(s).
-- A vector can only be part of a single namespace with the documented [limits](https://developers.cloudflare.com/vectorize/platform/limits/). Vector metadata can contain multiple key-value pairs up to [metadata per vector limits](https://developers.cloudflare.com/vectorize/platform/limits/). Metadata values support different types (`string`, `boolean`, and others), therefore offering more flexibility.
-
-## Limits
-
-| Feature                                                       | Current Limit                                                    |
-| ------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Indexes per account                                           | 100 indexes                                                      |
-| Maximum dimensions per vector                                 | 1536 dimensions                                                  |
-| Maximum vector ID length                                      | 51 bytes                                                         | <!-- Cloudflare limit 64, - 13 for -abcd(-preview) index suffixes -->
-| Metadata per vector                                           | 10KiB                                                            |
-| Maximum returned results (`topK`) with values or metadata     | 20                                                               |
-| Maximum returned results (`topK`) without values and metadata | 100                                                              |
-| Maximum upsert batch size (per batch)                         | 1000                                                             |
-| Maximum index name length                                     | 64 bytes                                                         |
-| Maximum vectors per index                                     | 5,000,000                                                        |
-| Maximum namespaces per index                                  | 1000 namespaces                                                  |
-| Maximum namespace name length                                 | 64 bytes                                                         |
-| Maximum vectors upload size                                   | 100 MB                                                           |
-| Maximum metadata indexes per Vectorize index                  | 10                                                               |
-| Maximum indexed data per metadata index per vector            | 64 bytes                                                         |
-
-Learn more about [Cloudflare Vectorize limits](https://developers.cloudflare.com/vectorize/platform/limits/).
+- A namespace filter is applied before metadata filter(s)
+- A vector can only be part of a single namespace, while vector metadata can contain multiple key-value pairs
+- A namespace must be a string, while metadata values support different types (`string`, `boolean`, or `number`)
 
 ## Types
 
@@ -792,7 +786,7 @@ type VectorizeMatch = Pick<Partial<VectorizeVector>, "values"> &
 
 ### `VectorizeAsyncMutation`
 
-Result type indicating a mutation on the Vectorize Index. Actual mutations are processed async where the `mutationId` is the unique identifier for the operation.
+Result type indicating a mutation on the Vectorize Index. Mutations are processed asynchronously in the background and the `mutationId` is the unique identifier for the operation.
 
 ```ts
 interface VectorizeAsyncMutation {
@@ -935,6 +929,27 @@ export default defineTask({
 ```
 
 <!-- TODO: Recipe for Retrieval Augmented Generation (RAG) -->
+
+## Limits
+
+| Feature                                                       | Current Limit                                                    |
+| ------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Indexes per account                                           | 100 indexes                                                      |
+| Maximum dimensions per vector                                 | 1536 dimensions                                                  |
+| Maximum vector ID length                                      | 51 bytes                                                         | <!-- Cloudflare limit 64, - 13 for -abcd(-preview) index suffixes -->
+| Metadata per vector                                           | 10KiB                                                            |
+| Maximum returned results (`topK`) with values or metadata     | 20                                                               |
+| Maximum returned results (`topK`) without values and metadata | 100                                                              |
+| Maximum upsert batch size (per batch)                         | 1000                                                             |
+| Maximum index name length                                     | 64 bytes                                                         |
+| Maximum vectors per index                                     | 5,000,000                                                        |
+| Maximum namespaces per index                                  | 1000 namespaces                                                  |
+| Maximum namespace name length                                 | 64 bytes                                                         |
+| Maximum vectors upload size                                   | 100 MB                                                           |
+| Maximum metadata indexes per Vectorize index                  | 10                                                               |
+| Maximum indexed data per metadata index per vector            | 64 bytes                                                         |
+
+Learn more about [Cloudflare Vectorize limits](https://developers.cloudflare.com/vectorize/platform/limits/).
 
 ## Pricing
 
