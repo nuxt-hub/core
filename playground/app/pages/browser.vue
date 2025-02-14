@@ -31,7 +31,7 @@ const capture = async () => {
 </script>
 
 <template>
-  <UCard @submit.prevent="capture">
+  <UCard as="form" @submit.prevent="capture">
     <template #header>
       <div class="flex lg:flex-row flex-col items-center gap-2">
         <UInput v-model="url" type="url" class="w-full flex-1" placeholder="https://hub.nuxt.com" />
