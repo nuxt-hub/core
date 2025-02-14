@@ -1,7 +1,9 @@
 export default defineAppConfig({
   ui: {
-    primary: 'green',
-    gray: 'slate'
+    colors: {
+      primary: 'green',
+      neutral: 'slate'
+    }
   },
   seo: {
     siteName: 'NuxtHub'

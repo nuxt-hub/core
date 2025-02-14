@@ -90,7 +90,7 @@ onMounted(async () => {
       <!-- <UNavigationTree :links="navLinks" default-open :multiple="false" :ui="{ accordion: { button: { label: 'font-normal' } } }" /> -->
 
       <div class="flex flex-col gap-y-2 mt-4">
-        <UDivider class="mb-4" />
+        <USeparator class="mb-4" />
         <UButton v-if="ready && !authenticated" label="Log in" color="neutral" variant="outline" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" class="flex justify-center sm:hidden" external />
         <UButton v-if="ready && !authenticated" label="Sign up" color="neutral" variant="solid" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
         <UButton v-if="ready && authenticated" color="primary" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />

@@ -95,7 +95,7 @@ onMounted(() => {
               Used and loved by <span class="font-medium text-(--ui-text-highlighted)">8K+ developers and teams</span>.
             </span>
           </div>
-          <UDivider type="dashed" class="w-24" />
+          <USeparator type="dashed" class="w-24" />
           <div class="flex flex-col gap-y-2">
             <p class="text-sm text-(--ui-text-highlighted)">
               “Nuxt on Cloudflare infra with minimal effort - this is huge!”

@@ -57,7 +57,7 @@ onMounted(() => {
       <ContentRenderer v-if="page.body" :value="page" />
     </UPageBody>
     <div class="pb-24">
-      <UDivider class="my-10">
+      <USeparator class="my-10">
         <div class="flex items-center gap-2 text-sm dark:text-gray-400">
           <UButton size="sm" variant="link" color="gray" to="https://github.com/nuxt-hub/core/issues/new/choose" target="_blank">
             Report an issue
@@ -67,7 +67,7 @@ onMounted(() => {
             Edit this page on GitHub
           </UButton>
         </div>
-      </UDivider>
+      </USeparator>
       <UContentSurround :surround="surround" />
     </div>
 

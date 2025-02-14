@@ -95,7 +95,7 @@ onMounted(() => {
               Used and loved by <span class="font-medium dark:text-white text-gray-900">8K+ developers and teams</span>.
             </span>
           </div>
-          <UDivider type="dashed" class="w-24" />
+          <USeparator type="dashed" class="w-24" />
           <div class="flex flex-col gap-y-2">
             <p class="text-sm text-gray-700 dark:text-gray-300">
               “Nuxt on Cloudflare infra with minimal effort - this is huge!”
@@ -284,7 +284,7 @@ onMounted(() => {
       </template>
       <template #description>
         <span v-html="page?.database.description" />
-        <UDivider class="w-1/4 mt-6" type="dashed" />
+        <USeparator class="w-1/4 mt-6" type="dashed" />
         <div class="flex flex-col gap-y-3 mt-6 dark:text-gray-300">
           <span class="text-xs uppercase dark:text-gray-400">Major Features</span>
           <div v-for="feature in page?.database.features" :key="feature.title" class="flex items-center gap-2">
@@ -328,7 +328,7 @@ onMounted(() => {
       </template>
       <template #description>
         <span v-html="page?.blob.description" />
-        <UDivider class="w-1/4 mt-6" type="dashed" />
+        <USeparator class="w-1/4 mt-6" type="dashed" />
         <div class="flex flex-col gap-y-3 mt-6 dark:text-gray-300">
           <span class="text-xs uppercase dark:text-gray-400">Major Features</span>
           <div v-for="feature in page?.blob.features" :key="feature.title" class="flex items-center gap-2">
@@ -372,7 +372,7 @@ onMounted(() => {
       </template>
       <template #description>
         <span v-html="page?.kv.description" />
-        <UDivider class="w-1/4 mt-6" type="dashed" />
+        <USeparator class="w-1/4 mt-6" type="dashed" />
         <div class="flex flex-col gap-y-3 mt-6 dark:text-gray-300">
           <span class="text-xs uppercase dark:text-gray-400">Major Features</span>
           <div v-for="feature in page?.kv.features" :key="feature.title" class="flex items-center gap-2">
@@ -415,7 +415,7 @@ onMounted(() => {
       </template>
       <template #description>
         <span v-html="page?.ai.description" />
-        <UDivider class="w-1/4 mt-6" type="dashed" />
+        <USeparator class="w-1/4 mt-6" type="dashed" />
         <div class="flex flex-col gap-y-3 mt-6 dark:text-gray-300">
           <span class="text-xs uppercase dark:text-gray-400">Major Features</span>
           <div v-for="feature in page?.ai.features" :key="feature.title" class="flex items-center gap-2">
@@ -461,7 +461,7 @@ onMounted(() => {
       </template>
       <template #description>
         <span v-html="page?.cache.description" />
-        <UDivider class="w-1/4 mt-6" type="dashed" />
+        <USeparator class="w-1/4 mt-6" type="dashed" />
         <div class="flex flex-col gap-y-3 mt-6 dark:text-gray-300">
           <span class="text-xs uppercase dark:text-gray-400">Major Features</span>
           <div v-for="feature in page?.cache.features" :key="feature.title" class="flex items-center gap-2">
@@ -505,7 +505,7 @@ onMounted(() => {
       </template>
       <template #description>
         <span v-html="page?.browser.description" />
-        <UDivider class="w-1/4 mt-6" type="dashed" />
+        <USeparator class="w-1/4 mt-6" type="dashed" />
         <div class="flex flex-col gap-y-3 mt-6 dark:text-gray-300">
           <span class="text-xs uppercase dark:text-gray-400">Major Features</span>
           <div v-for="feature in page?.browser.features" :key="feature.title" class="flex items-center gap-2">
@@ -549,7 +549,7 @@ onMounted(() => {
       </template>
       <template #description>
         <span v-html="page?.storage.description" />
-        <UDivider class="w-1/4 mt-6" type="dashed" />
+        <USeparator class="w-1/4 mt-6" type="dashed" />
         <div class="flex flex-col gap-y-3 mt-6 dark:text-gray-300">
           <span class="text-xs uppercase dark:text-gray-400">Major Features</span>
           <div v-for="feature in page?.storage.features" :key="feature.title" class="flex items-center gap-2">

@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true
   },
-  css: ['assets/main.css'],
+  css: ['~/assets/main.css'],
   content: {
     build: {
       markdown: {
@@ -40,6 +40,9 @@ export default defineNuxtConfig({
     '/docs/server/api': { redirect: { statusCode: 301, to: '/docs/features/open-api' } },
     '/docs/server/cache': { redirect: { statusCode: 301, to: '/docs/features/cache' } },
     '/docs/server/logs': { redirect: { statusCode: 301, to: '/docs/getting-started/server-logs' } }
+  },
+  future: {
+    compatibilityVersion: 4
   },
   compatibilityDate: '2025-02-11',
   nitro: {
