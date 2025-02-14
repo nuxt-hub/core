@@ -14,14 +14,15 @@ const { copy, copied } = useClipboard()
 
 <template>
   <label>
-    <UInput :model-value="value" :size="size" disabled :ui="{ icon: { trailing: { pointer: '' } } }">
+    <UInput :model-value="value" :size="size" disabled :ui="{ trailing: 'pe-1' }">
       <div class="absolute inset-0" :class="[copied ? 'cursor-default' : 'cursor-copy']" @click="copy(value)" />
       <template #trailing>
         <UButton
           :icon="copied ? 'i-lucide-check' : 'i-lucide-copy'"
-          color="gray"
+          color="neutral"
           variant="link"
           :padded="false"
+          :ui="{ leadingIcon: 'size-4' }"
           :class="{ 'text-green-500 hover:text-green-500 dark:text-green-400 hover:dark:text-green-400': copied }"
           aria-label="copy button"
           @click="copy(value)"

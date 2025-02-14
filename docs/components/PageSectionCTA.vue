@@ -8,10 +8,9 @@ defineProps({
 </script>
 
 <template>
-  <ULandingSection
+  <UPageSection
     :ui="{
-      wrapper: 'mt-10 not-prose relative' + (!loose ? ' py-12 sm:py-12' : ''),
-      container: 'gap-8 sm:gap-y-8',
+      container: 'gap-8 sm:gap-y-8' + (!loose ? ' py-12 sm:py-12' : ''),
       title: 'lg:text-4xl font-semibold'
     }"
     :links="[
@@ -24,7 +23,7 @@ defineProps({
         label: 'Read the docs',
         to: '/docs/getting-started',
         variant: 'ghost',
-        color: 'gray'
+        color: 'neutral'
       }
     ]"
   >
@@ -56,7 +55,7 @@ defineProps({
     </ClientOnly>
 
     <template #title>
-      <span>Start with NuxtHub <span class="text-primary">today</span></span>
+      <span>Start with NuxtHub <span class="text-(--ui-primary)">today</span></span>
     </template>
-  </ULandingSection>
+  </UPageSection>
 </template>

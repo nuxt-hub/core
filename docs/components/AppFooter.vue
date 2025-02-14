@@ -17,16 +17,18 @@ const links = [
 </script>
 
 <template>
-  <UFooter :links="links">
+  <UFooter>
     <template #left>
       <span class="inline text-sm">© {{ new Date().getFullYear() }} <a href="https://nuxtlabs.com" target="_blank" class="text-gray-900 dark:text-gray-50 hover:underline underline-offset-4">NuxtLabs</a></span>
     </template>
 
+    <UNavigationMenu :items="links" variant="link" />
+
     <template #right>
-      <ColorScheme><UColorModeSelect /></ColorScheme>
+      <ColorScheme><UColorModeSelect size="sm" variant="ghost" /></ColorScheme>
       <UButton
         icon="i-simple-icons-discord"
-        color="gray"
+        color="neutral"
         variant="ghost"
         to="https://discord.gg/vW89dsVqBF"
         target="_blank"
@@ -34,7 +36,7 @@ const links = [
       />
       <UButton
         icon="i-simple-icons-x"
-        color="gray"
+        color="neutral"
         variant="ghost"
         to="https://x.com/nuxt_hub"
         target="_blank"
@@ -42,7 +44,7 @@ const links = [
       />
       <UButton
         icon="i-simple-icons-linkedin"
-        color="gray"
+        color="neutral"
         variant="ghost"
         to="https://www.linkedin.com/showcase/nuxthub/"
         target="_blank"
@@ -50,7 +52,7 @@ const links = [
       />
       <UButton
         icon="i-simple-icons-github"
-        color="gray"
+        color="neutral"
         variant="ghost"
         to="https://github.com/nuxt-hub/core"
         target="_blank"

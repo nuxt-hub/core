@@ -1,13 +1,12 @@
+import yaml from '@rollup/plugin-yaml'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  // experimental: { buildCache: true },
-  extends: ['@nuxt/ui-pro'],
   modules: [
+    '@nuxt/ui-pro',
     '@nuxt/fonts',
     '@nuxt/content',
     '@vueuse/nuxt',
-    '@nuxt/ui',
-    '@nuxthq/studio',
     'nuxt-og-image',
     'nuxt-cloudflare-analytics',
     '@nuxtjs/plausible',
@@ -17,9 +16,14 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true
   },
+  css: ['assets/main.css'],
   content: {
-    highlight: {
-      langs: ['sql']
+    build: {
+      markdown: {
+        highlight: {
+          langs: ['sql']
+        }
+      }
     }
   },
   routeRules: {
@@ -37,7 +41,7 @@ export default defineNuxtConfig({
     '/docs/server/cache': { redirect: { statusCode: 301, to: '/docs/features/cache' } },
     '/docs/server/logs': { redirect: { statusCode: 301, to: '/docs/getting-started/server-logs' } }
   },
-  compatibilityDate: '2024-08-06',
+  compatibilityDate: '2025-02-11',
   nitro: {
     prerender: {
       crawlLinks: true,
@@ -46,24 +50,16 @@ export default defineNuxtConfig({
       autoSubfolderIndex: false
     }
   },
+  vite: {
+    plugins: [
+      yaml()
+    ]
+  },
   typescript: {
     strict: false
-  },
-  hooks: {
-    // Define `@nuxt/ui` components as global to use them in `.md` (feel free to add those you need)
-    'components:extend': (components) => {
-      const globals = components.filter(c => ['UButton', 'UIcon'].includes(c.pascalName))
-
-      globals.forEach(c => c.global = true)
-    }
   },
   cloudflareAnalytics: {
     token: '469b1f7049f14941acef0d0262a07ab3',
     scriptPath: false
-  },
-  icon: {
-    clientBundle: {
-      scan: true
-    }
   }
 })

@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import type { BlogPost } from '~/types'
+import page from '.blog.yml'
 
-const { data: page } = await useAsyncData('blog', () => queryContent('/blog').findOne())
 const { data: posts } = await useAsyncData('posts', async () => {
-  const posts = await queryContent<BlogPost>('/blog')
-    .where({ _extension: 'md', draft: { $ne: true } })
-    .without(['body', 'excerpt'])
-    .sort({ date: -1 })
-    .find()
-
-  return posts.filter(article => article._path !== '/blog')
+  return queryCollection('blog')
+    .select('title', 'date', 'image', 'description', 'path', 'authors', 'category')
+    .order('date', 'DESC')
+    .all()
 })
 
 const title = page.value.head?.title || page.value.title
@@ -44,14 +40,14 @@ defineOgImageComponent('Docs', {
         <UBlogList orientation="vertical">
           <UBlogPost
             v-for="post in posts"
-            :key="post._path"
-            :to="post._path"
+            :key="post.path"
+            :to="post.path"
             :title="post.title"
             :description="post.description"
             :image="{ src: post.image, width: 592, height: 333, placeholder: [59, 33, 50, 4], format: 'webp' }"
             :date="formatDateByLocale('en', post.date)"
             :authors="post.authors"
-            :badge="{ label: post.category, color: 'gray', variant: 'solid' }"
+            :badge="{ label: post.category, color: 'neutral', variant: 'solid' }"
             orientation="horizontal"
           />
         </UBlogList>

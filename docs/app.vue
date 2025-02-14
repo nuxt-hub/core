@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { ParsedContent } from '@nuxt/content/dist/runtime/types'
-
 const appConfig = useAppConfig()
 const route = useRoute()
 const { seo } = useAppConfig()
@@ -17,13 +15,13 @@ const heroBackgroundClass = computed(() => route.meta?.heroBackground || '')
 
 const appear = ref(false)
 const appeared = ref(false)
-const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation(), {
-  default: () => []
-})
-const { data: files } = useLazyFetch<ParsedContent[]>('/api/search.json', {
-  default: () => [],
-  server: false
-})
+// const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation(), {
+//   default: () => []
+// })
+// const { data: files } = useLazyFetch<ParsedContent[]>('/api/search.json', {
+//   default: () => [],
+//   server: false
+// })
 
 useHead({
   meta: [
@@ -41,11 +39,11 @@ useSeoMeta({
   ogSiteName: seo?.siteName,
   twitterCard: 'summary_large_image',
   titleTemplate(title) {
-    return title.includes('NuxtHub') ? title : `${title} · NuxtHub`
+    return title?.includes('NuxtHub') ? title : `${title} · NuxtHub`
   }
 })
 
-provide('navigation', navigation)
+// provide('navigation', navigation)
 
 onMounted(() => {
   setTimeout(() => {
@@ -56,16 +54,12 @@ onMounted(() => {
   }, 0)
 })
 
-useScriptClarity({
-  id: 'o4ovofrg5c'
-})
-
 const links = computed(() => [
-  ...navigation.value.map(item => ({
-    label: item.title,
-    icon: item.icon,
-    to: item._path === '/docs' ? '/docs/getting-started' : item._path
-  })),
+  // ...navigation.value.map(item => ({
+  //   label: item.title,
+  //   icon: item.icon,
+  //   to: item._path === '/docs' ? '/docs/getting-started' : item._path
+  // })),
   {
     label: 'NuxtHub Admin',
     to: 'https://admin.hub.nuxt.com',
@@ -91,11 +85,11 @@ const links = computed(() => [
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-950">
+  <UApp>
     <AppHeader />
     <UMain class="relative">
       <HeroBackground
-        class="absolute w-full top-[1px] transition-all text-primary flex-shrink-0"
+        class="absolute w-full top-[1px] transition-all text-(--ui-primary) flex-shrink-0"
         :class="[
           isLoading ? 'animate-pulse' : (appear ? 'opacity-100' : 'opacity-0'),
           appeared ? 'duration-[400ms]': 'duration-1000',
@@ -109,10 +103,8 @@ const links = computed(() => [
 
     <AppFooter />
 
-    <ClientOnly>
+    <!-- <ClientOnly>
       <LazyUContentSearch :files="files" :navigation="navigation" :links="links" />
-    </ClientOnly>
-
-    <UNotifications />
-  </div>
+    </ClientOnly> -->
+  </UApp>
 </template>

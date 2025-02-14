@@ -1,6 +1,5 @@
 import { Feed } from 'feed'
 import { joinURL } from 'ufo'
-import { serverQueryContent } from '#content/server'
 
 export default defineEventHandler(async (event) => {
   const baseUrl = 'https://hub.nuxt.com'
@@ -19,20 +18,18 @@ export default defineEventHandler(async (event) => {
     }
   })
 
-  const changelogItems = await serverQueryContent(event, '/changelog')
-    .sort({ date: -1 })
-    .where({ _partial: false, _type: 'markdown' })
-    .find()
+  const changelogItems = await queryCollection(event, 'changelog')
+    .order('date', 'DESC')
+    .all()
 
   for (const item of changelogItems) {
     feed.addItem({
-      link: joinURL(baseUrl, item._path!),
+      link: joinURL(baseUrl, item.path),
       image: joinURL(baseUrl, item.image),
-      title: item.title!,
+      title: item.title,
       date: new Date(item.date),
       description: item.description,
-      author: item.authors,
-      category: item.category
+      author: item.authors
     })
   }
 
