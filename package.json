@@ -76,5 +76,16 @@
   "resolutions": {
     "h3": "^1.14.0"
   },
-  "packageManager": "pnpm@10.2.1"
+  "packageManager": "pnpm@10.2.1",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@tsparticles/engine",
+      "esbuild",
+      "puppeteer",
+      "sharp",
+      "vue-demi",
+      "workerd"
+    ]
+  }
 }
