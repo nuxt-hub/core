@@ -76,7 +76,7 @@ async function deleteEntry(entry) {
 </script>
 
 <template>
-  <UCard @submit.prevent="addEntry">
+  <UCard as="form" @submit.prevent="addEntry">
     <div class="flex items-center gap-2">
       <UInput
         ref="newEntryKeyInput"
@@ -120,41 +120,43 @@ async function deleteEntry(entry) {
             variant="none"
             size="xl"
             autofocus
-            :padded="false"
             class="flex-1"
+            :ui="{ base: 'p-0' }"
             @keydown.enter="updateEntry(entry)"
             @keydown.esc="editedEntryKey = null"
           />
 
           <UButton
             v-if="editedEntryKey !== entry.key"
+            color="neutral"
             variant="ghost"
-            size="2xs"
-            icon="i-heroicons-pencil"
+            size="sm"
+            icon="i-lucide-pencil"
             class="flex-shrink-0"
             @click="editEntry(entry)"
           />
           <div v-else class="flex-shrink-0 flex gap-1">
             <UButton
               variant="ghost"
-              size="2xs"
-              icon="i-heroicons-check"
+              size="sm"
+              icon="i-lucide-check"
               @click="updateEntry(entry)"
             />
             <UButton
               variant="ghost"
-              size="2xs"
-              icon="i-heroicons-x-mark"
+              size="sm"
+              icon="i-lucide-x"
+              color="error"
               @click="editedEntryKey = null"
             />
           </div>
         </div>
 
         <UButton
-          color="red"
-          variant="soft"
-          size="2xs"
-          icon="i-heroicons-x-mark-20-solid"
+          color="neutral"
+          variant="ghost"
+          size="xs"
+          icon="i-lucide-trash"
           class="flex-shrink-0"
           @click="deleteEntry(entry)"
         />

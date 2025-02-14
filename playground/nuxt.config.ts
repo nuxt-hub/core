@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     module
   ],
   devtools: { enabled: true },
+  css: ['assets/main.css'],
 
   routeRules: {
     '/cached': { prerender: true }

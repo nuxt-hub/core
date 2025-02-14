@@ -27,7 +27,6 @@ const message = ref('')
 
 onMounted(() => {
   if (user.value?.username) {
-    console.log('open')
     open()
   }
 })
@@ -61,13 +60,13 @@ function sendMessage() {
     </div>
     <form class="flex items-center w-full pt-4 gap-2" @submit.prevent="sendMessage">
       <UInput v-model="message" placeholder="Send a message..." class="w-full" />
-      <UButton icon="i-heroicons-paper-airplane" type="submit" color="black" />
+      <UButton icon="i-heroicons-paper-airplane" type="submit" color="neutral" />
     </form>
   </UCard>
   <UCard v-else>
     <form class="flex items-center gap-2" @submit.prevent="enterChat">
       <UInput v-model="username" placeholder="Enter your username" name="username" />
-      <UButton color="black" :disabled="!username.trim()" :loading="status === 'CONNECTING'" type="submit">
+      <UButton color="neutral" :disabled="!username.trim()" :loading="status === 'CONNECTING'" type="submit">
         Enter Chat
       </UButton>
     </form>
