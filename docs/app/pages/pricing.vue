@@ -2,7 +2,7 @@
 definePageMeta({
   primary: 'green'
 })
-const { data: page } = await useAsyncData('pricing', () => queryContent('/pricing').findOne())
+const { data: page } = await useAsyncData('pricing', () => queryCollection('pricing').first())
 const { data: home } = await useAsyncData('index', () => queryContent('/').findOne())
 
 const isYearly = ref(true)

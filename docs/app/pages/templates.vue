@@ -2,7 +2,20 @@
 definePageMeta({
   primary: 'green'
 })
-const { data: templates } = await useFetch('/api/templates.json')
+
+interface Template {
+  title: string
+  description: string
+  imageUrl: string
+  owner: string
+  repo: string
+  features: string[]
+  demoUrl: string
+  workersPaid: boolean
+  slug: string
+}
+
+const { data: templates } = await useFetch<Template[]>('/api/templates.json')
 const route = useRoute()
 const { data: page } = await useAsyncData(route.path, () => {
   return queryCollection('templates').first()
@@ -20,7 +33,11 @@ defineOgImageComponent('Docs')
 
 <template>
   <UContainer>
-    <UPageHero v-bind="page?.hero" class="z-10">
+    <UPageHero
+      :title="page?.hero.title"
+      :description="page?.hero.description"
+      class="z-10"
+    >
       <template #title>
         <MDC :value="page?.hero.title" />
       </template>

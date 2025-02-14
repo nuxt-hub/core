@@ -1,4 +1,4 @@
-import { defineContentConfig, defineCollection, z, defineCollectionSource } from '@nuxt/content'
+import { defineContentConfig, defineCollection, z } from '@nuxt/content'
 
 const authorSchema = z.object({
   name: z.string(),
@@ -52,6 +52,89 @@ export default defineContentConfig({
             color: z.string(),
             to: z.string(),
             external: z.boolean()
+          }))
+        })
+      })
+    }),
+    pricing: defineCollection({
+      type: 'data',
+      source: 'pricing.yml',
+      schema: z.object({
+        title: z.string(),
+        description: z.string(),
+        icon: z.string(),
+        hero: z.object({
+          headline: z.string(),
+          title: z.string(),
+          description: z.string(),
+          orientation: z.string(),
+          img: z.object({
+            width: z.string(),
+            height: z.string(),
+            light: z.string(),
+            dark: z.string()
+          })
+        }),
+        pricing: z.object({
+          plans: z.array(z.object({
+            title: z.string(),
+            description: z.string(),
+            price: z.union([z.string(), z.object({
+              monthly: z.string(),
+              yearly: z.string()
+            })]),
+            cycle: z.union([z.string(), z.object({
+              monthly: z.string(),
+              yearly: z.string()
+            })]),
+            highlight: z.boolean().optional(),
+            scale: z.boolean().optional(),
+            features: z.array(z.object({
+              title: z.string(),
+              icon: z.string()
+            })),
+            button: z.object({
+              label: z.string(),
+              color: z.string().optional(),
+              to: z.string()
+            }),
+            ui: z.object({
+              inner: z.string(),
+              body: z.object({
+                background: z.string()
+              })
+            }).optional()
+          })),
+          info: z.string(),
+          contact: z.object({
+            title: z.string(),
+            description: z.string(),
+            button: z.object({
+              label: z.string(),
+              color: z.string(),
+              to: z.string()
+            })
+          })
+        }),
+        cloudflare: z.object({
+          title: z.string(),
+          description: z.string(),
+          button: z.object({
+            label: z.string(),
+            external: z.boolean(),
+            variant: z.string(),
+            padded: z.boolean(),
+            trailingIcon: z.string(),
+            color: z.string(),
+            to: z.string()
+          })
+        }),
+        faq: z.object({
+          title: z.string(),
+          description: z.string(),
+          items: z.array(z.object({
+            label: z.string(),
+            content: z.string()
           }))
         })
       })
