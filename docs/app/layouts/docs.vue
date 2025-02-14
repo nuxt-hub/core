@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import type { NavItem } from '@nuxt/content/dist/runtime/types'
+import type { ContentNavigationItem } from '@nuxt/content'
+import { mapContentNavigation } from '#ui-pro/utils'
 
-const navigation = inject<Ref<NavItem[]>>('navigation')
+const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
 
 const links = mapContentNavigation(navigation.value).find(link => link.label === 'Docs').children
 </script>
@@ -10,9 +11,9 @@ const links = mapContentNavigation(navigation.value).find(link => link.label ===
   <UContainer>
     <UPage>
       <template #left>
-        <UAside>
-          <UNavigationTree :links="links" />
-        </UAside>
+        <UPageAside>
+          <UContentNavigation :links="links" />
+        </UPageAside>
       </template>
       <slot />
     </UPage>

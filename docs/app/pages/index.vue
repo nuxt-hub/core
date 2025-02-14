@@ -153,7 +153,7 @@ onMounted(() => {
           </div>
           <div class="flex flex-col">
             <h2 class="font-medium text-(--ui-text-highlighted) inline-flex items-center gap-x-1">
-              {{ feature.name }} <UBadge v-if="feature.soon" color="neutral" variant="subtle" size="xs" class="rounded-full">
+              {{ feature.name }} <UBadge v-if="feature.soon" color="neutral" variant="subtle" size="sm" class="rounded-full">
                 Soon
               </UBadge>
               <UIcon v-if="feature.to" name="i-lucide-arrow-right" class="size-4 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all duration-200 -translate-x-1 group-hover:translate-x-0" />
@@ -186,7 +186,7 @@ onMounted(() => {
           :key="index"
           v-bind="feature"
           orientation="vertical"
-          :ui="{ leadingIcon: 'text-(--ui-text-highlighted)' }"
+          :ui="{ icon: 'text-(--ui-text-highlighted)' }"
         />
       </template>
     </UPageSection>
@@ -201,20 +201,12 @@ onMounted(() => {
       </template>
       <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 items-start justify-center">
         <li v-for="step in page?.deploy.steps" :key="step.title" class="flex flex-col gap-y-8 justify-center group">
-          <NuxtImg
-            :src="step.img.srcDark"
+          <UColorModeImage
+            :light="step.img.srcLight"
+            :dark="step.img.srcDark"
             :width="step.img.width"
             :height="step.img.height"
             :alt="step.title"
-            class="hidden dark:block"
-            lazy
-          />
-          <NuxtImg
-            :src="step.img.srcLight"
-            :width="step.img.width"
-            :height="step.img.height"
-            :alt="step.title"
-            class="block dark:hidden"
             lazy
           />
           <div>

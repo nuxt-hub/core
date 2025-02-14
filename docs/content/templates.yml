@@ -8,9 +8,10 @@ hero:
   links:
     - label: Deploy a template
       trailing-icon: i-lucide-arrow-right
-      color: black
+      color: neutral
       to: https://hub.nuxt.com/new
       external: true
     - label: Read the documentation
-      color: white
+      color: neutral
+      variant: subtle
       to: /docs/getting-started

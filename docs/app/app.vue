@@ -5,23 +5,21 @@ const { seo } = useAppConfig()
 const { isLoading } = useLoadingIndicator()
 
 const primary = (route.meta?.primary as string) || 'green'
-appConfig.ui.primary = primary
+appConfig.ui.colors.primary = primary
 watch(() => route.meta?.primary, (primary: string) => {
   setTimeout(() => {
-    appConfig.ui.primary = primary || 'green'
+    appConfig.ui.colors.primary = primary || 'green'
   }, 40)
 })
 const heroBackgroundClass = computed(() => route.meta?.heroBackground || '')
 
 const appear = ref(false)
 const appeared = ref(false)
-// const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation(), {
-//   default: () => []
-// })
-// const { data: files } = useLazyFetch<ParsedContent[]>('/api/search.json', {
-//   default: () => [],
-//   server: false
-// })
+
+const { data: navigation } = await useAsyncData('navigation', () => queryCollectionNavigation('docs'))
+const { data: files } = useLazyAsyncData('search', () => queryCollectionSearchSections('docs'), {
+  server: false
+})
 
 useHead({
   meta: [
@@ -43,7 +41,7 @@ useSeoMeta({
   }
 })
 
-// provide('navigation', navigation)
+provide('navigation', navigation)
 
 onMounted(() => {
   setTimeout(() => {
@@ -55,11 +53,11 @@ onMounted(() => {
 })
 
 const links = computed(() => [
-  // ...navigation.value.map(item => ({
-  //   label: item.title,
-  //   icon: item.icon,
-  //   to: item._path === '/docs' ? '/docs/getting-started' : item._path
-  // })),
+  ...navigation.value.map(item => ({
+    label: item.title,
+    icon: item.icon,
+    to: item.path === '/docs' ? '/docs/getting-started' : item.path
+  })),
   {
     label: 'NuxtHub Admin',
     to: 'https://admin.hub.nuxt.com',
@@ -103,8 +101,8 @@ const links = computed(() => [
 
     <AppFooter />
 
-    <!-- <ClientOnly>
+    <ClientOnly>
       <LazyUContentSearch :files="files" :navigation="navigation" :links="links" />
-    </ClientOnly> -->
+    </ClientOnly>
   </UApp>
 </template>
