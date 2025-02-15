@@ -14,7 +14,18 @@ export default defineContentConfig({
   collections: {
     docs: defineCollection({
       type: 'page',
-      source: 'docs/**/*'
+      source: 'docs/**/*',
+      schema: z.object({
+        title: z.string(),
+        description: z.string(),
+        links: z.array(z.object({
+          label: z.string(),
+          trailingIcon: z.string(),
+          color: z.string(),
+          to: z.string(),
+          external: z.boolean()
+        }))
+      })
     }),
     changelog: defineCollection({
       type: 'page',

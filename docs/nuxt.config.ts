@@ -21,7 +21,7 @@ export default defineNuxtConfig({
     build: {
       markdown: {
         highlight: {
-          langs: ['sql']
+          langs: ['sql', 'diff']
         }
       }
     }

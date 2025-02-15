@@ -6,7 +6,7 @@
     class="_tip"
     :class="$attrs.to ? 'dark:hover:!border-green-600/50 hover:!border-green-400/50' : ''"
   >
-    <ContentSlot :use="$slots.default" unwrap="p" />
+    <slot mdc-unwrap="p" />
   </Alert>
 </template>
 

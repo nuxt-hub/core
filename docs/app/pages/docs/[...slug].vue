@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import mediumZoom from 'medium-zoom'
-import { withoutTrailingSlash } from 'ufo'
 
 definePageMeta({
   layout: 'docs',
@@ -10,18 +9,17 @@ definePageMeta({
 
 const route = useRoute()
 const { toc, seo } = useAppConfig()
-const slug = route.params.slug.join('-')
 
-const { data: page } = await useAsyncData(`docs-${slug}`, () => queryContent(route.path).findOne())
+const { data: page } = await useAsyncData(route.path, () => queryCollection('docs').path(route.path).first())
 if (!page.value) {
   throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
 }
 
-const { data: surround } = await useAsyncData(`docs-${slug}-surround`, () => queryContent()
-  .where({ _extension: 'md', navigation: { $ne: false }, _path: { $regex: /^\/docs/ } })
-  .only(['title', 'description', '_path'])
-  .findSurround(withoutTrailingSlash(route.path))
-)
+const { data: surround } = await useAsyncData(`${route.path}-surround`, () => {
+  return queryCollectionItemSurroundings('docs', route.path, {
+    fields: ['description']
+  })
+})
 
 useSeoMeta({
   titleTemplate: `%s · ${seo?.siteName}`,
@@ -35,8 +33,6 @@ defineOgImageComponent('Docs', {
   category: 'Docs'
 })
 
-// const headline = computed(() => findPageHeadline(page.value))
-
 onMounted(() => {
   mediumZoom('[data-zoom-src]', {
     margin: 5
@@ -45,7 +41,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <UPage>
+  <UPage v-if="page">
     <UPageHeader
       :ui="{ wrapper: 'lg:mr-10' }"
       :title="page.title"
@@ -59,11 +55,11 @@ onMounted(() => {
     <div class="pb-24">
       <USeparator class="my-10">
         <div class="flex items-center gap-2 text-sm dark:text-gray-400">
-          <UButton size="sm" variant="link" color="gray" to="https://github.com/nuxt-hub/core/issues/new/choose" target="_blank">
+          <UButton size="sm" variant="link" color="neutral" to="https://github.com/nuxt-hub/core/issues/new/choose" target="_blank">
             Report an issue
           </UButton>
           or
-          <UButton size="sm" variant="link" color="gray" :to="`${toc.bottom.edit}/${page?._file}`" target="_blank">
+          <UButton size="sm" variant="link" color="neutral" :to="`${toc.bottom.edit}/${page?.stem}`" target="_blank">
             Edit this page on GitHub
           </UButton>
         </div>
@@ -71,7 +67,7 @@ onMounted(() => {
       <UContentSurround :surround="surround" />
     </div>
 
-    <template v-if="page.toc !== false" #right>
+    <template v-if="page.body?.toc" #right>
       <UContentToc :title="toc?.title" :links="page.body?.toc?.links" class="bg-transparent dark:bg-transparent backdrop-blur-none" />
     </template>
   </UPage>

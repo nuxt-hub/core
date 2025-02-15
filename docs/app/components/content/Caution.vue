@@ -6,7 +6,7 @@
     class="_caution"
     :class="$attrs.to ? 'dark:hover:!border-red-600/50 hover:!border-red-400/50' : ''"
   >
-    <ContentSlot :use="$slots.default" unwrap="p" />
+    <slot mdc-unwrap="p" />
   </Alert>
 </template>
 

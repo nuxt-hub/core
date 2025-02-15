@@ -6,7 +6,7 @@
     class="_warning"
     :class="$attrs.to ? 'dark:hover:!border-amber-600/50 hover:!border-amber-400/50' : ''"
   >
-    <ContentSlot :use="$slots.default" unwrap="p" />
+    <slot mdc-unwrap="p" />
   </Alert>
 </template>
 

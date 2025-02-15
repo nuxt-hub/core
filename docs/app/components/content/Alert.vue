@@ -12,7 +12,7 @@ const target = computed(() => (props.to?.startsWith('https://') ? '_blank' : '')
 </script>
 
 <template>
-  <Callout :icon="icon" :color="color" :to="to" :target="target">
-    <ContentSlot :use="$slots.default" unwrap="p" />
-  </Callout>
+  <ProseCallout :icon="icon" :color="color" :to="to" :target="target">
+    <slot mdc-unwrap="p" />
+  </ProseCallout>
 </template>
