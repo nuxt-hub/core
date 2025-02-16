@@ -18,13 +18,41 @@ useHead({
   }
 })
 
-// const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())
-// const { data: files } = useLazyFetch<ParsedContent[]>('/api/search.json', {
-//   default: () => [],
-//   server: false
-// })
+const { data: navigation } = await useAsyncData('navigation', () => queryCollectionNavigation('docs'), {
+  transform: data => data.find(item => item.path === '/docs')?.children || []
+})
+const { data: files } = useLazyAsyncData('search', () => queryCollectionSearchSections('docs'), {
+  server: false
+})
 
-// provide('navigation', navigation.value?.[0]?.children || [])
+const links = computed(() => [
+  ...navigation.value.map(item => ({
+    label: item.title,
+    icon: item.icon,
+    to: item.path === '/docs' ? '/docs/getting-started' : item.path
+  })),
+  {
+    label: 'NuxtHub Admin',
+    to: 'https://admin.hub.nuxt.com',
+    target: '_blank',
+    icon: 'i-simple-icons-nuxtdotjs'
+  }, {
+    label: 'nuxt-hub/core',
+    to: 'https://github.com/nuxt-hub/core',
+    target: '_blank',
+    icon: 'i-simple-icons-github'
+  }, {
+    label: '@nuxt_hub',
+    to: 'https://x.com/nuxt_hub',
+    target: '_blank',
+    icon: 'i-simple-icons-x'
+  }, {
+    label: 'NuxtHub',
+    to: 'https://www.linkedin.com/showcase/nuxthub/',
+    target: '_blank',
+    icon: 'i-simple-icons-linkedin'
+  }]
+)
 </script>
 
 <template>
@@ -34,8 +62,8 @@ useHead({
 
     <!-- <AppFooter /> -->
 
-    <!-- <ClientOnly>
-      <LazyUContentSearch :files="files" :navigation="navigation" />
-    </ClientOnly> -->
+    <ClientOnly>
+      <LazyUContentSearch :files="files" :navigation="navigation" :links="links" />
+    </ClientOnly>
   </UApp>
 </template>

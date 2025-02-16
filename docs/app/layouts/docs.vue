@@ -9,7 +9,7 @@ const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
     <UPage>
       <template #left>
         <UPageAside>
-          <UContentNavigation :navigation="navigation" />
+          <UContentNavigation :navigation="navigation" variant="link" highlight />
         </UPageAside>
       </template>
       <slot />

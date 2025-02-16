@@ -41,7 +41,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative">
+  <UPage class="relative">
     <UPageHero
       :title="page?.hero.title"
       :description="page?.hero.description"
@@ -290,7 +290,7 @@ onMounted(() => {
       </UContainer>
     </UPageSection>
     <PageSectionCTA loose />
-  </div>
+  </UPage>
 </template>
 
 <style lang="postcss">

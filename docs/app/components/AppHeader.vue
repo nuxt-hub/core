@@ -1,27 +1,24 @@
 <script setup lang="ts">
-// const navigation = inject('navigation')
+import type { ContentNavigationItem } from '@nuxt/content'
+
+const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
 
 const links = [
   {
     label: 'Docs',
-    to: '/docs/getting-started',
-    icon: 'i-lucide-book'
+    to: '/docs/getting-started'
   }, {
     label: 'Templates',
-    to: '/templates',
-    icon: 'i-lucide-panels-top-left'
+    to: '/templates'
   }, {
     label: 'Pricing',
-    to: '/pricing',
-    icon: 'i-lucide-credit-card'
+    to: '/pricing'
   }, {
     label: 'Changelog',
-    to: '/changelog',
-    icon: 'i-lucide-megaphone'
+    to: '/changelog'
   }, {
     label: 'Blog',
-    to: '/blog',
-    icon: 'i-lucide-newspaper'
+    to: '/blog'
   }
 ]
 // const navLinks = links.map((link) => {
@@ -56,7 +53,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <UHeader :ui="{}" :links="links">
+  <UHeader :links="links">
     <template #left>
       <div class="inline-flex items-end gap-2">
         <NuxtLink to="/" aria-label="NuxtHub"><HubLogo class="h-6" /></NuxtLink>
@@ -67,10 +64,7 @@ onMounted(async () => {
     </template>
 
     <UNavigationMenu
-      :items="links.map(link => ({
-        ...link,
-        icon: undefined
-      }))" variant="link"
+      :items="links" variant="link"
     />
 
     <template #right>
@@ -81,19 +75,19 @@ onMounted(async () => {
         </UTooltip>
         <UColorModeButton />
         <UButton v-if="ready && !authenticated" size="sm" label="Log in" color="neutral" variant="outline" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" class="hidden sm:inline-flex" external />
-        <UButton v-if="ready && !authenticated" size="sm" label="Sign up" color="neutral" variant="solid" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="hidden sm:inline-flex" external />
-        <UButton v-if="ready && authenticated" size="sm" color="primary" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" class="hidden sm:inline-flex" external />
+        <UButton v-if="ready && !authenticated" size="sm" label="Sign up" color="neutral" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="hidden sm:inline-flex" external />
+        <UButton v-if="ready && authenticated" size="sm" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" class="hidden sm:inline-flex" external />
       </div>
     </template>
 
     <template #content>
-      <!-- <UNavigationTree :links="navLinks" default-open :multiple="false" :ui="{ accordion: { button: { label: 'font-normal' } } }" /> -->
+      <UContentNavigation :navigation="navigation" highlight />
 
       <div class="flex flex-col gap-y-2 mt-4">
         <USeparator class="mb-4" />
         <UButton v-if="ready && !authenticated" label="Log in" color="neutral" variant="outline" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" class="flex justify-center sm:hidden" external />
-        <UButton v-if="ready && !authenticated" label="Sign up" color="neutral" variant="solid" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
-        <UButton v-if="ready && authenticated" color="primary" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
+        <UButton v-if="ready && !authenticated" label="Sign up" color="neutral" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="flex justify-center text-gray-900 bg-(--ui-primary) sm:hidden" external />
+        <UButton v-if="ready && authenticated" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" class="flex justify-center text-gray-900 bg-(--ui-primary) sm:hidden" external />
       </div>
     </template>
   </UHeader>

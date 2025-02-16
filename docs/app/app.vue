@@ -16,7 +16,9 @@ const heroBackgroundClass = computed(() => route.meta?.heroBackground || '')
 const appear = ref(false)
 const appeared = ref(false)
 
-const { data: navigation } = await useAsyncData('navigation', () => queryCollectionNavigation('docs'))
+const { data: navigation } = await useAsyncData('navigation', () => queryCollectionNavigation('docs'), {
+  transform: data => data.find(item => item.path === '/docs')?.children || []
+})
 const { data: files } = useLazyAsyncData('search', () => queryCollectionSearchSections('docs'), {
   server: false
 })
@@ -87,11 +89,10 @@ const links = computed(() => [
     <AppHeader />
     <UMain class="relative">
       <HeroBackground
-        class="absolute w-full top-[1px] transition-all text-(--ui-primary) flex-shrink-0"
+        class="absolute w-full -top-px transition-all text-(--ui-primary) shrink-0"
         :class="[
-          isLoading ? 'animate-pulse' : (appear ? 'opacity-100' : 'opacity-0'),
-          appeared ? 'duration-[400ms]': 'duration-1000',
-          heroBackgroundClass
+          isLoading ? 'animate-pulse' : (appear ? heroBackgroundClass : 'opacity-0'),
+          appeared ? 'duration-[400ms]': 'duration-1000'
         ]"
       />
       <NuxtLayout>
