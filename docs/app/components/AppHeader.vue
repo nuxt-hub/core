@@ -3,10 +3,12 @@ import type { ContentNavigationItem } from '@nuxt/content'
 
 const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
 
-const links = [
+const route = useRoute()
+const links = computed(() => [
   {
     label: 'Docs',
-    to: '/docs/getting-started'
+    to: '/docs/getting-started',
+    active: route.path.startsWith('/docs')
   }, {
     label: 'Templates',
     to: '/templates'
@@ -20,7 +22,7 @@ const links = [
     label: 'Blog',
     to: '/blog'
   }
-]
+])
 // const navLinks = links.map((link) => {
 //   if (link.label === 'Docs') {
 //     return {
@@ -53,7 +55,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <UHeader :links="links">
+  <UHeader>
     <template #left>
       <div class="inline-flex items-end gap-2">
         <NuxtLink to="/" aria-label="NuxtHub"><HubLogo class="h-6" /></NuxtLink>
@@ -63,9 +65,7 @@ onMounted(async () => {
       </div>
     </template>
 
-    <UNavigationMenu
-      :items="links" variant="link"
-    />
+    <UNavigationMenu :items="links" variant="link" :ui="{ link: 'text-(--ui-text-highlighted) hover:text-(--ui-primary) data-active:text-(--ui-primary)' }" />
 
     <template #right>
       <div class="flex items-center gap-1.5 transition-opacity duration-300" :class="[ready ? 'opacity-100' : 'opacity-0']">
