@@ -3,12 +3,14 @@ defineProps<{
   tabs?: string[]
 }>()
 
-const { data: table } = await useAsyncData('pricing-table', () => queryContent('/_partials/pricing').findOne())
+const { data: table } = await useAsyncData('pricing-table', () => queryCollection('cloudflarePricing').first())
 </script>
 
 <template>
   <UTabs
     class="pt-8 sm:pt-0 pb-20 sm:pb-0 sm:w-full w-[calc(100vw-32px)] not-prose"
+    color="neutral"
+    variant="link"
     :items="table?.plans.filter(plan => !tabs || tabs.includes(plan.label))"
     :ui="{
       list: {

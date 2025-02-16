@@ -149,6 +149,29 @@ export default defineContentConfig({
           }))
         })
       })
+    }),
+    cloudflarePricing: defineCollection({
+      type: 'data',
+      source: 'cloudflare-pricing.yml',
+      schema: z.object({
+        plans: z.array(z.object({
+          label: z.string(),
+          icon: z.string(),
+          buttons: z.array(z.object({
+            label: z.string(),
+            to: z.string().url()
+          })),
+          columns: z.array(z.object({
+            key: z.string(),
+            label: z.string()
+          })),
+          rows: z.array(z.object({
+            title: z.string(),
+            free: z.string(),
+            paid: z.string()
+          }))
+        }))
+      })
     })
   }
 })

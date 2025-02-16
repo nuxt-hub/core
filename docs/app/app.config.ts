@@ -2,7 +2,9 @@ export default defineAppConfig({
   ui: {
     colors: {
       primary: 'green',
-      neutral: 'slate'
+      neutral: 'slate',
+      warning: 'amber',
+      violet: 'violet'
     }
   },
   seo: {

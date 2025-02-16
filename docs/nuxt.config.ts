@@ -26,6 +26,11 @@ export default defineNuxtConfig({
       }
     }
   },
+  ui: {
+    theme: {
+      colors: ['violet']
+    }
+  },
   routeRules: {
     '/': { prerender: true },
     '/api/search.json': { prerender: true },
