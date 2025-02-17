@@ -16,29 +16,33 @@ useSeoMeta({
   ogDescription: page.value.description,
   ogImage: joinURL(url, '/social-card.png')
 })
-const introVideoLink = page.value.tool?.links?.find(link => link.id === 'intro-video') || {}
-const demoVideoLink = page.value.deploy?.links?.find(link => link.id === 'demo-video') || {}
+const introVideoLink = page.value.tool?.links?.find(link => link.id === 'intro-video')
+const demoVideoLink = page.value.deploy?.links?.find(link => link.id === 'demo-video')
 const videoLink = ref('')
 
 onMounted(() => {
   mediumZoom('[data-zoom-src]', {
     margin: 5
   })
-  introVideoLink.click = (e) => {
-    if (e.ctrlKey || e.metaKey) {
-      return
-    }
-    e?.preventDefault()
-    videoLink.value = introVideoLink.to
-    videoModalOpen.value = true
+  if (introVideoLink) {
+    document.body.querySelector(`#${introVideoLink.id}`)?.addEventListener('click', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        return
+      }
+      e?.preventDefault()
+      videoLink.value = introVideoLink.to
+      videoModalOpen.value = true
+    })
   }
-  demoVideoLink.click = (e) => {
-    if (e.ctrlKey || e.metaKey) {
-      return
-    }
-    e?.preventDefault()
-    videoLink.value = demoVideoLink.to
-    videoModalOpen.value = true
+  if (demoVideoLink) {
+    document.body.querySelector(`#${demoVideoLink.id}`)?.addEventListener('click', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        return
+      }
+      e?.preventDefault()
+      videoLink.value = demoVideoLink.to
+      videoModalOpen.value = true
+    })
   }
 })
 </script>

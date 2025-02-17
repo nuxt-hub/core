@@ -27,26 +27,29 @@ const filteredPlans = computed(() => {
     :ui="{
       list: tabs?.length === 1 ? 'hidden' : 'bg-transparent border border-(--ui-border)',
       indicator: 'bg-(--ui-bg-muted)',
-      trigger: 'data-[state=active]:text-(--ui-text-highlighted))'
+      trigger: 'data-[state=active]:text-(--ui-text-highlighted))',
+      leadingIcon: 'size-4'
     }"
   >
     <template v-for="(plan, index) of table?.plans" :key="index" #[plan.slot]="{ item }">
       <ProseTable>
         <ProseThead class="bg-transparent">
-          <ProseTh v-for="(column, colIndex) of item.columns" :key="colIndex">
-            {{ column.label }}
-          </ProseTh>
+          <ProseTr>
+            <ProseTh v-for="(column, colIndex) of item.columns" :key="colIndex" class="border-(--ui-border) first:rounded-tl-(--ui-radius) last:rounded-tr-(--ui-radius)">
+              {{ column.label }}
+            </ProseTh>
+          </ProseTr>
         </ProseThead>
         <ProseTbody>
           <ProseTr v-for="(row, rowIndex) of item.rows" :key="rowIndex">
-            <ProseTd>
-              <MDC :value="row.title" />
+            <ProseTd class="border-(--ui-border)">
+              <MDC :value="row.title" unwrap="p" />
             </ProseTd>
-            <ProseTd>
-              <MDC :value="row.free" />
+            <ProseTd class="border-(--ui-border)">
+              <MDC :value="row.free" unwrap="p" />
             </ProseTd>
-            <ProseTd>
-              <MDC :value="row.paid" />
+            <ProseTd class="border-(--ui-border)">
+              <MDC :value="row.paid" unwrap="p" />
             </ProseTd>
           </ProseTr>
         </ProseTbody>

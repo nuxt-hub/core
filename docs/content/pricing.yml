@@ -15,8 +15,12 @@ pricing:
   plans:
     - title: 'Solo'
       description: 'Great for personal projects, freelancers & indie hackers.'
-      price: '$0'
-      billingCycle: ''
+      price:
+        monthly: '$0'
+        yearly: '$0'
+      billingCycle:
+        monthly: ''
+        yearly: ''
       features:
         - title: 'One member'
           icon: i-lucide-user
@@ -62,11 +66,15 @@ pricing:
         label: 'Get started as a team'
         to: https://admin.hub.nuxt.com
       ui:
-        root: 'bg-gradient-to-t from-(--ui-primary)/10 via-white to-white dark:from-(--ui-primary)/20 dark:via-gray-900 dark:to-gray-900 rounded-xl'
+        root: 'bg-gradient-to-t from-(--ui-primary)/10 dark:from-(--ui-primary)/20 via-(--ui-bg) to-(--ui-bg) rounded-xl'
     - title: 'Enterprise'
       description: 'For large teams with advanced usage and needs.'
-      cycle: ''
-      price: 'Custom'
+      billingCycle:
+        monthly: ''
+        yearly: ''
+      price:
+        monthly: 'Custom'
+        yearly: 'Custom'
       features:
         - title: 'Unlimited members'
           icon: i-lucide-users
@@ -85,24 +93,24 @@ pricing:
         color: neutral
         variant: subtle
         to: 'mailto:hub@nuxt.com?subject=Enterprise%20Offer&body=Hi%20NuxtHub%20Team%2C%0A%0AI%20am%20interested%20in%20the%20Enterprise%20offer.%0A%0AKind%20regards%2C'
-  info: 'Prices does not include your <a href="https://www.cloudflare.com/plans/developer-platform/" target="_blank" class="underline underline-offset-4 dark:hover:text-white hover:text-gray-900">Cloudflare costs</a>.'
+  info: 'Prices does not include your <a href="https://www.cloudflare.com/plans/developer-platform/" target="_blank" class="underline underline-offset-4 hover:text-(--ui-text-highlighted)">Cloudflare costs</a>.'
   contact:
     title: 'Are you an open source or non-profit organization?'
     description: "If you want to use NuxtHub to manage open source projects or if you are a non-profit organization, we have a special offer for you!"
     button:
       label: 'Contact us'
-      color: gray
+      color: neutral
       to: 'mailto:hub@nuxt.com?subject=Open%20Source%20Organization%20Offer&body=Hi%20NuxtHub%20Team%2C%0A%0AI%20am%20interested%20in%20the%20special%20offer%20for%20Open%20Source%20Organizations.%0A%0AKind%20regards%2C'
 cloudflare:
-  title: 'Cloudflare pricing'
+  title: 'Cloudflare Pricing'
   description: 'You can start for free with Cloudflare and seamlessly upgrade to Workers Paid plan when needed for $5/month.'
   button:
     label: 'Discover Cloudflare pricing'
     external: true
-    variant: 'link'
+    variant: 'subtle'
     padded: false
     trailingIcon: 'i-lucide-arrow-up-right'
-    color: black
+    color: neutral
     to: 'https://www.cloudflare.com/plans/developer-platform/'
 faq:
   title: 'Frequently Asked Questions'

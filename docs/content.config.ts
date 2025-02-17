@@ -238,7 +238,7 @@ export default defineContentConfig({
             })),
             button: z.object({
               label: z.string(),
-              color: z.string().optional(),
+              color: z.enum(['primary', 'neutral']).optional(),
               to: z.string()
             }),
             ui: z.object({
@@ -265,7 +265,7 @@ export default defineContentConfig({
             variant: z.string(),
             padded: z.boolean(),
             trailingIcon: z.string(),
-            color: z.string(),
+            color: z.enum(['primary', 'neutral']).optional(),
             to: z.string()
           })
         }),
