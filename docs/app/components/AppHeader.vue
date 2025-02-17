@@ -8,35 +8,42 @@ const links = computed(() => [
   {
     label: 'Docs',
     to: '/docs/getting-started',
-    active: route.path.startsWith('/docs')
+    active: route.path.startsWith('/docs'),
+    icon: 'i-lucide-book-open'
   }, {
     label: 'Templates',
-    to: '/templates'
+    to: '/templates',
+    icon: 'i-lucide-panels-top-left'
   }, {
     label: 'Pricing',
-    to: '/pricing'
+    to: '/pricing',
+    icon: 'i-lucide-credit-card'
   }, {
     label: 'Changelog',
-    to: '/changelog'
+    to: '/changelog',
+    icon: 'i-lucide-megaphone'
   }, {
     label: 'Blog',
-    to: '/blog'
+    to: '/blog',
+    icon: 'i-lucide-newspaper'
   }
 ])
-// const navLinks = links.map((link) => {
-//   if (link.label === 'Docs') {
-//     return {
-//       ...link,
-//       children: mapContentNavigation(navigation.value)
-//         .find(link => link.label === 'Docs')
-//         .children
-//         .map(({ icon, ...link }) => link) // eslint-disable-line @typescript-eslint/no-unused-vars
-//     }
-//   }
-//   return {
-//     ...link
-//   }
-// })
+
+const navLinks = computed(() => links.value.map((link) => {
+  if (link.label === 'Docs') {
+    return {
+      icon: link.icon,
+      title: link.label,
+      path: link.to,
+      children: navigation.value
+    }
+  }
+  return {
+    title: link.label,
+    path: link.to,
+    icon: link.icon
+  }
+}))
 const ready = ref(false)
 const authenticated = ref(false)
 onMounted(async () => {
@@ -65,27 +72,25 @@ onMounted(async () => {
       </div>
     </template>
 
-    <UNavigationMenu :items="links" variant="link" :ui="{ link: 'text-(--ui-text-highlighted) hover:text-(--ui-primary) data-active:text-(--ui-primary)' }" />
+    <UNavigationMenu :items="links.map(({ icon, ...link }) => link)" variant="link" :ui="{ link: 'text-(--ui-text-highlighted) hover:text-(--ui-primary) data-active:text-(--ui-primary)' }" />
 
     <template #right>
-      <div class="flex items-center gap-1.5 transition-opacity duration-300" :class="[ready ? 'opacity-100' : 'opacity-0']">
-        <UButton color="neutral" variant="ghost" icon="i-simple-icons-github" to="https://github.com/nuxt-hub/core" target="_blank" />
+      <div class="flex items-center gap-2 transition-opacity duration-300" :class="[ready ? 'opacity-100' : 'opacity-0']">
         <UTooltip text="Search" :kbds="['meta', 'K']" :popper="{ strategy: 'absolute' }">
-          <UContentSearchButton :label="null" />
+          <UContentSearchButton :label="null" size="sm" />
         </UTooltip>
-        <UColorModeButton />
-        <UButton v-if="ready && !authenticated" size="sm" label="Log in" color="neutral" variant="outline" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" class="hidden sm:inline-flex" external />
+        <UButton v-if="ready && !authenticated" size="sm" label="Log in" color="neutral" variant="subtle" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" class="hidden sm:inline-flex" external />
         <UButton v-if="ready && !authenticated" size="sm" label="Sign up" color="neutral" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="hidden sm:inline-flex" external />
         <UButton v-if="ready && authenticated" size="sm" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" class="hidden sm:inline-flex" external />
       </div>
     </template>
 
-    <template #content>
-      <UContentNavigation :navigation="navigation" highlight />
+    <template #body>
+      <UContentNavigation :navigation="navLinks" highlight type="single" :default-open="$route.path.startsWith('/docs')" :ui="{ itemWithChildren: 'ps-1.5' }" />
 
       <div class="flex flex-col gap-y-2 mt-4">
         <USeparator class="mb-4" />
-        <UButton v-if="ready && !authenticated" label="Log in" color="neutral" variant="outline" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" class="flex justify-center sm:hidden" external />
+        <UButton v-if="ready && !authenticated" label="Log in" color="neutral" variant="subtle" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" class="flex justify-center sm:hidden" external />
         <UButton v-if="ready && !authenticated" label="Sign up" color="neutral" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="flex justify-center text-gray-900 bg-(--ui-primary) sm:hidden" external />
         <UButton v-if="ready && authenticated" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" class="flex justify-center text-gray-900 bg-(--ui-primary) sm:hidden" external />
       </div>

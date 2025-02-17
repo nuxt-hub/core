@@ -33,6 +33,7 @@ const links = [
         to="https://discord.gg/vW89dsVqBF"
         target="_blank"
         aria-label="Go to NuxtHub Discord server"
+        size="sm"
       />
       <UButton
         icon="i-simple-icons-x"
@@ -41,6 +42,7 @@ const links = [
         to="https://x.com/nuxt_hub"
         target="_blank"
         aria-label="Go to NuxtHub X account"
+        size="sm"
       />
       <UButton
         icon="i-simple-icons-linkedin"
@@ -49,6 +51,7 @@ const links = [
         to="https://www.linkedin.com/showcase/nuxthub/"
         target="_blank"
         aria-label="Go to NuxtHub LinkedIn page"
+        size="sm"
       />
       <UButton
         icon="i-simple-icons-github"
@@ -57,6 +60,7 @@ const links = [
         to="https://github.com/nuxt-hub/core"
         target="_blank"
         aria-label="Go to NuxtHub GitHub repository"
+        size="sm"
       />
     </template>
   </UFooter>

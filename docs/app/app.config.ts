@@ -5,6 +5,19 @@ export default defineAppConfig({
       neutral: 'slate',
       warning: 'amber',
       important: 'violet'
+    },
+    commandPalette: {
+      slots: {
+        itemLeadingIcon: 'size-4'
+      }
+    }
+  },
+  uiPro: {
+    contentNavigation: {
+      slots: {
+        linkLeadingIcon: 'size-4',
+        listWithChildren: 'ms-4.5'
+      }
     }
   },
   seo: {
