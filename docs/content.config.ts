@@ -157,6 +157,7 @@ export default defineContentConfig({
         plans: z.array(z.object({
           label: z.string(),
           icon: z.string(),
+          slot: z.string(),
           buttons: z.array(z.object({
             label: z.string(),
             to: z.string().url()

@@ -1,6 +1,7 @@
 plans:
   - label: 'App'
     icon: i-lucide-panels-top-left
+    slot: 'app'
     buttons:
       - label: 'Cloudflare Workers pricing'
         to: 'https://developers.cloudflare.com/workers/platform/pricing/'
@@ -29,6 +30,7 @@ plans:
         paid: '500'
   - label: 'DB'
     icon: i-lucide-database
+    slot: 'db'
     buttons:
       - label: 'Cloudflare D1 pricing'
         to: 'https://developers.cloudflare.com/d1/platform/pricing/'
@@ -57,6 +59,7 @@ plans:
         paid: '10 GB (<a href="https://developers.cloudflare.com/d1/platform/limits/" target="_blank" class="underline underline-offset-2 dark:hover:text-gray-200 hover:text-gray-900">learn more</a>)'
   - label: 'KV'
     icon: i-lucide-list
+    slot: 'kv'
     buttons:
       - label: 'Cloudflare KV pricing'
         to: 'https://developers.cloudflare.com/kv/platform/pricing/'
@@ -85,6 +88,7 @@ plans:
         paid: '1 GB + $0.50/GB-month'
   - label: 'Blob'
     icon: i-lucide-shapes
+    slot: 'blob'
     buttons:
       - label: 'Cloudflare R2 pricing'
         to: 'https://developers.cloudflare.com/r2/pricing/'
@@ -110,6 +114,7 @@ plans:
         paid: 'Unlimited'
   - label: 'AI'
     icon: i-lucide-wand
+    slot: 'ai'
     buttons:
       - label: 'Cloudflare AI pricing'
         to: 'https://developers.cloudflare.com/workers-ai/platform/pricing/'
@@ -135,6 +140,7 @@ plans:
         paid: '10 minutes of audio / day + $0.0039 per minute of audio input'
   - label: 'Vectorize'
     icon: i-lucide-move-3d
+    slot: 'vectorize'
     buttons:
       - label: 'Cloudflare Vectorize pricing'
         to: 'https://developers.cloudflare.com/vectorize/platform/pricing/'
