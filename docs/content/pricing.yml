@@ -16,7 +16,7 @@ pricing:
     - title: 'Solo'
       description: 'Great for personal projects, freelancers & indie hackers.'
       price: '$0'
-      cycle: ''
+      billingCycle: ''
       features:
         - title: 'One member'
           icon: i-lucide-user
@@ -32,14 +32,15 @@ pricing:
           icon: i-lucide-message-circle-question
       button:
         label: 'Get started for free'
-        color: 'gray'
+        color: neutral
+        variant: subtle
         to: https://admin.hub.nuxt.com
     - title: 'Team'
       description: 'Everything in Solo, plus higher limits and team features.'
       price:
         monthly: '$12'
         yearly: '$10'
-      cycle:
+      billingCycle:
         monthly: '/member/month'
         yearly: '/member/month'
       highlight: true
@@ -61,9 +62,7 @@ pricing:
         label: 'Get started as a team'
         to: https://admin.hub.nuxt.com
       ui:
-        inner: 'justify-between'
-        body:
-          background: 'bg-gradient-to-t from-primary/10 via-white to-white dark:from-primary/20 dark:via-gray-900 dark:to-gray-900 rounded-xl'
+        root: 'bg-gradient-to-t from-(--ui-primary)/10 via-white to-white dark:from-(--ui-primary)/20 dark:via-gray-900 dark:to-gray-900 rounded-xl'
     - title: 'Enterprise'
       description: 'For large teams with advanced usage and needs.'
       cycle: ''
@@ -83,7 +82,8 @@ pricing:
           icon: i-lucide-shield-question
       button:
         label: 'Contact us'
-        color: gray
+        color: neutral
+        variant: subtle
         to: 'mailto:hub@nuxt.com?subject=Enterprise%20Offer&body=Hi%20NuxtHub%20Team%2C%0A%0AI%20am%20interested%20in%20the%20Enterprise%20offer.%0A%0AKind%20regards%2C'
   info: 'Prices does not include your <a href="https://www.cloudflare.com/plans/developer-platform/" target="_blank" class="underline underline-offset-4 dark:hover:text-white hover:text-gray-900">Cloudflare costs</a>.'
   contact:

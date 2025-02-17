@@ -5,7 +5,20 @@ definePageMeta({
 const { data: page } = await useAsyncData('pricing', () => queryCollection('pricing').first())
 const { data: home } = await useAsyncData('index', () => queryCollection('index').first())
 
-const isYearly = ref(true)
+const yearly = ref('0')
+
+const isYearly = computed(() => yearly.value === '1')
+
+const items = ref([
+  {
+    label: 'Monthly',
+    value: '0'
+  },
+  {
+    label: 'Yearly (2 months off)',
+    value: '1'
+  }
+])
 
 useSeoMeta({
   title: page.value.title,
@@ -55,38 +68,37 @@ onMounted(() => {
 
       <div class="py-12">
         <div class="w-full flex justify-center">
-          <UPricingToggle
-            v-model="isYearly"
-            class="max-w-xs mb-8 sm:mb-16"
-            right="Yearly (2 months off)"
-            :ui="{
-              marker: 'bg-primary-500 dark:bg-green-400'
-            }"
+          <UTabs
+            v-model="yearly"
+            :items="items"
+            size="sm"
+            class="max-w-xs mb-8 sm:mb-16 w-full max-w-sm"
+            :ui="{ list: 'rounded-full bg-(--ui-bg) border border-(--ui-border-accented)', indicator: 'rounded-full' }"
           />
         </div>
 
-        <UPricingGrid class="gap-12">
-          <UPricingCard
+        <UPricingPlans class="gap-12">
+          <UPricingPlan
             v-for="pricing in page?.pricing.plans"
             :key="pricing.title"
             v-bind="pricing"
             :price="pricing.price.monthly ? isYearly ? pricing.price.yearly : pricing.price.monthly : pricing.price"
-            :cycle="pricing.cycle.monthly ? isYearly ? pricing.cycle.yearly : pricing.cycle.monthly : pricing.cycle"
+            :billing-cycle="pricing.billingCycle?.monthly ? isYearly ? pricing.billingCycle.yearly : pricing.billingCycle.monthly : pricing.billingCycle"
           >
             <template #features>
               <ul class="space-y-3 text-sm">
                 <li v-for="(feature, index) of pricing.features" :key="index" class="flex items-center gap-x-3 min-w-0">
-                  <UIcon :name="feature.icon" class="w-5 h-5 flex-shrink-0" :class="[pricing.highlight ? 'text-primary' : 'text-gray-500 dark:text-gray-400']" />
+                  <UIcon :name="feature.icon" class="w-5 h-5 flex-shrink-0" :class="[pricing.highlight ? 'text-(--ui-primary)' : 'text-gray-500 dark:text-gray-400']" />
                   <span class="text-gray-600 dark:text-gray-400 truncate">{{ feature.title }}</span>
                 </li>
               </ul>
             </template>
-          </UPricingCard>
-        </UPricingGrid>
+          </UPricingPlan>
+        </UPricingPlans>
 
         <div class="w-full text-center pt-8 sm:pt-12 italic text-gray-500 dark:text-gray-400 text-sm" v-html="page?.pricing.info" />
 
-        <UCard class="mt-8" :ui="{ body: 'md:p-[40px]' }">
+        <UPageCard variant="subtle" class="mt-8" :ui="{ body: 'md:p-[40px]' }">
           <div class="flex flex-col gap-y-4 text-center sm:text-left sm:flex-row sm:gap-y-0 justify-between items-center gap-x-8">
             <div class="flex flex-col gap-y-2">
               <h2 class="text-base sm:text-2xl font-semibold text-gray-950 dark:text-white">
@@ -96,7 +108,7 @@ onMounted(() => {
             </div>
             <UButton v-bind="page?.pricing.contact.button" />
           </div>
-        </UCard>
+        </UPageCard>
       </div>
     </UContainer>
 

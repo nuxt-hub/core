@@ -222,14 +222,14 @@ export default defineContentConfig({
           plans: z.array(z.object({
             title: z.string(),
             description: z.string(),
-            price: z.union([z.string(), z.object({
+            price: z.object({
               monthly: z.string(),
               yearly: z.string()
-            })]),
-            cycle: z.union([z.string(), z.object({
+            }),
+            billingCycle: z.object({
               monthly: z.string(),
               yearly: z.string()
-            })]),
+            }).optional(),
             highlight: z.boolean().optional(),
             scale: z.boolean().optional(),
             features: z.array(z.object({
@@ -242,10 +242,7 @@ export default defineContentConfig({
               to: z.string()
             }),
             ui: z.object({
-              inner: z.string(),
-              body: z.object({
-                background: z.string()
-              })
+              root: z.string().optional()
             }).optional()
           })),
           info: z.string(),
