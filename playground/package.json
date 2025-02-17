@@ -12,7 +12,7 @@
     "@cloudflare/puppeteer": "^0.0.14",
     "@iconify-json/simple-icons": "^1.2.24",
     "@kgierke/nuxt-basic-auth": "^1.7.0",
-    "@nuxt/ui": "3.0.0-alpha.12",
+    "@nuxt/ui": "3.0.0-alpha.13",
     "@nuxthub/core": "latest",
     "@nuxtjs/mdc": "^0.13.5",
     "@vueuse/core": "^12.6.1",
