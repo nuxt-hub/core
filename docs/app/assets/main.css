@@ -1,10 +1,6 @@
 @import "tailwindcss";
 @import "@nuxt/ui-pro";
 
-@theme {
-  --font-sans: 'Public Sans', sans-serif;
-}
-
 .dark {
   /* --ui-bg: var(--ui-color-neutral-950); */
   --ui-bg: rgb(2, 4, 32);
