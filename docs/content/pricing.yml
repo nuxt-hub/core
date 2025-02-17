@@ -3,7 +3,7 @@ description: 'Get started with NuxtHub for free and upgrade as you grow.'
 icon: i-lucide-credit-card
 hero:
   headline: '2 months off with yearly plan'
-  title: 'Start for free, upgrade <span class="text-primary">as you grow</span>'
+  title: 'Start for free, upgrade [as you grow]{.text-(--ui-primary)}'
   description: 'NuxtHub is built on Cloudflare for optimal performance. While separate subscriptions are required, you get the combined power of both, with plans to suit your specific needs.'
   orientation: horizontal
   img:

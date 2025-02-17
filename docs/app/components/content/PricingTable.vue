@@ -1,31 +1,44 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   tabs?: string[]
 }>()
 
-const { data: table } = await useAsyncData('pricing-table', () => queryCollection('cloudflarePricing').first())
 // TODO: Fix hydration issue
+const { data: table } = await useAsyncData('pricing-table', () => {
+  return queryCollection('cloudflarePricing').first()
+})
+
+const filteredPlans = computed(() => {
+  if (!table.value?.plans) return []
+
+  if (!props.tabs || !props.tabs.length) {
+    return table.value.plans
+  }
+
+  return table.value.plans.filter(plan => props.tabs!.includes(plan.label))
+})
 </script>
 
 <template>
   <UTabs
     class="pt-8 sm:pt-0 pb-20 sm:pb-0 sm:w-full w-[calc(100vw-32px)]"
     color="neutral"
-    variant="link"
-    :items="table?.plans.filter(plan => !tabs || tabs.includes(plan.label))"
+    :items="filteredPlans"
     :ui="{
-      list: tabs?.length === 1 ? 'hidden' : ''
+      list: tabs?.length === 1 ? 'hidden' : 'bg-transparent border border-(--ui-border)',
+      indicator: 'bg-(--ui-bg-muted)',
+      trigger: 'data-[state=active]:text-(--ui-text-highlighted))'
     }"
   >
-    <template v-for="plan of table?.plans" :key="plan.label" #[plan.slot]="{ item }">
+    <template v-for="(plan, index) of table?.plans" :key="index" #[plan.slot]="{ item }">
       <ProseTable>
         <ProseThead class="bg-transparent">
-          <ProseTh v-for="(column, index) of item.columns" :key="index">
+          <ProseTh v-for="(column, colIndex) of item.columns" :key="colIndex">
             {{ column.label }}
           </ProseTh>
         </ProseThead>
         <ProseTbody>
-          <ProseTr v-for="(row, index) of item.rows" :key="index">
+          <ProseTr v-for="(row, rowIndex) of item.rows" :key="rowIndex">
             <ProseTd>
               <MDC :value="row.title" />
             </ProseTd>

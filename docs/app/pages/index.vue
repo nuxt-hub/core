@@ -1,20 +1,23 @@
 <script setup lang="ts">
 import mediumZoom from 'medium-zoom'
 import { joinURL } from 'ufo'
-import page from '.index.yml'
+
+const { data: page } = await useAsyncData('index', () => {
+  return queryCollection('index').first()
+})
 
 const { url } = useSiteConfig()
 const videoModalOpen = ref(false)
 
 useSeoMeta({
-  title: page.title,
-  ogTitle: `${page.title} · NuxtHub`,
-  description: page.description,
-  ogDescription: page.description,
+  title: page.value.title,
+  ogTitle: `${page.value.title} · NuxtHub`,
+  description: page.value.description,
+  ogDescription: page.value.description,
   ogImage: joinURL(url, '/social-card.png')
 })
-const introVideoLink = page.tool?.links?.find(link => link.id === 'intro-video') || {}
-const demoVideoLink = page.deploy?.links?.find(link => link.id === 'demo-video') || {}
+const introVideoLink = page.value.tool?.links?.find(link => link.id === 'intro-video') || {}
+const demoVideoLink = page.value.deploy?.links?.find(link => link.id === 'demo-video') || {}
 const videoLink = ref('')
 
 onMounted(() => {
@@ -51,7 +54,7 @@ onMounted(() => {
       }"
     >
       <template v-if="page?.hero.headline" #headline>
-        <NuxtLink :to="page.hero.headline.to">
+        <NuxtLink :to="page?.hero.headline.to">
           <UBadge color="neutral" variant="outline" size="md" class="relative px-3 rounded-full font-semibold dark:hover:bg-neutral-400/15 dark:hover:ring-neutral-700">
             {{ page?.hero.headline.label }}
             <UIcon

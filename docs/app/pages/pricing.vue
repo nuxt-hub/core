@@ -3,7 +3,7 @@ definePageMeta({
   primary: 'green'
 })
 const { data: page } = await useAsyncData('pricing', () => queryCollection('pricing').first())
-const { data: home } = await useAsyncData('index', () => queryContent('/').findOne())
+const { data: home } = await useAsyncData('index', () => queryCollection('index').first())
 
 const isYearly = ref(true)
 
@@ -39,13 +39,13 @@ onMounted(() => {
 <template>
   <div>
     <UContainer>
-      <UPageHero align="center" :ui="{ base: 'z-10', wrapper: 'py-12 pb-0 sm:py-24 sm:pb-0' }">
+      <UPageHero :ui="{ root: 'z-10', container: 'py-12 pb-0 sm:py-24 sm:pb-0' }">
         <!-- <template #icon>
           <UBadge :label="page?.hero.headline" icon="" variant="outline" :ui="{ rounded: 'rounded-full' }" class="badge dark:border border-primary" />
         </template> -->
 
         <template #title>
-          <span v-html="page?.hero.title" />
+          <MDC :value="page?.hero.title" />
         </template>
 
         <template #description>
@@ -86,7 +86,7 @@ onMounted(() => {
 
         <div class="w-full text-center pt-8 sm:pt-12 italic text-gray-500 dark:text-gray-400 text-sm" v-html="page?.pricing.info" />
 
-        <UCard class="mt-8" :ui="{ body: { padding: 'md:p-[40px]' } }">
+        <UCard class="mt-8" :ui="{ body: 'md:p-[40px]' }">
           <div class="flex flex-col gap-y-4 text-center sm:text-left sm:flex-row sm:gap-y-0 justify-between items-center gap-x-8">
             <div class="flex flex-col gap-y-2">
               <h2 class="text-base sm:text-2xl font-semibold text-gray-950 dark:text-white">
@@ -100,12 +100,11 @@ onMounted(() => {
       </div>
     </UContainer>
 
-    <ULandingSection
+    <UPageSection
       id="cloudflare-pricing"
       :title="page?.cloudflare.title"
-      align="center"
       :ui="{
-        base: 'text-left items-start',
+        root: 'text-left items-start',
         wrapper: 'py-12 sm:py-24',
         container: 'gap-y-8 sm:gap-y-12 lg:items-start',
         title: 'text-2xl sm:text-3xl lg:text-3xl font-semibold',
@@ -119,18 +118,23 @@ onMounted(() => {
         </div>
       </template>
       <PricingTable />
+      <UPageCard v-if="evanTestimonial" variant="naked" :description="evanTestimonial.quote" :ui="{ description: 'before:content-[open-quote] after:content-[close-quote] text-(--ui-text-highlighted)' }">
+        <template #footer>
+          <UUser v-bind="evanTestimonial.author" />
+        </template>
+      </UPageCard>
       <ULandingTestimonial v-if="evanTestimonial" v-bind="evanTestimonial" :card="false" />
-    </ULandingSection>
+    </UPageSection>
     <!-- Deploy -->
-    <ULandingSection :title="home?.deploy.title" :links="home?.deploy.buttons" class="relative">
+    <UPageSection :title="home?.deploy.title" :links="home?.deploy.buttons" class="relative">
       <HeroBackground
         class="absolute w-full top-[1px] transition-all text-primary flex-shrink-0 left-0 right-0"
       />
       <template #title>
-        <span v-html="home?.deploy.title" />
+        <MDC :value="home?.deploy.title" />
       </template>
       <template #description>
-        <span v-html="home?.deploy.description" />
+        <MDC :value="home?.deploy.description" />
       </template>
       <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 items-start justify-center">
         <li v-for="step in home?.deploy.steps" :key="step.title" class="flex flex-col gap-y-8 justify-center group">
@@ -170,13 +174,13 @@ onMounted(() => {
           />
         </div>
       </UModal>
-    </ULandingSection>
-    <ULandingSection :title="page.faq.title" :description="page.faq.description" :ui="{ container: 'max-w-5xl' }">
-      <ULandingFAQ :items="page?.faq.items" multiple>
-        <template #item="{ item }">
-          <div class="prose prose-primary dark:prose-invert max-w-none text-gray-500 dark:text-gray-400" v-html="item.content" />
+    </UPageSection>
+    <UPageSection :title="page.faq.title" :description="page.faq.description" :ui="{ container: 'max-w-5xl' }">
+      <UPageAccordion :items="page?.faq.items" multiple>
+        <template #body="{ item }">
+          <MDC :value="item.content" unwrap="p" />
         </template>
-      </ULandingFAQ>
-    </ULandingSection>
+      </UPageAccordion>
+    </UPageSection>
   </div>
 </template>
