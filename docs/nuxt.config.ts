@@ -4,7 +4,6 @@ import yaml from '@rollup/plugin-yaml'
 export default defineNuxtConfig({
   modules: [
     '@nuxt/ui-pro',
-    '@nuxt/fonts',
     '@nuxt/content',
     '@vueuse/nuxt',
     'nuxt-og-image',
