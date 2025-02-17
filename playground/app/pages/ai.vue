@@ -20,7 +20,7 @@ const { messages, input, handleSubmit, isLoading, stop, error, reload } = useCha
         <div class="text-red-500">
           {{ 'An error occurred' }}
         </div>
-        <UButton color="gray" size="xs" @click="reload">
+        <UButton color="neutral" variant="subtle" size="xs" @click="reload()">
           retry
         </UButton>
       </div>

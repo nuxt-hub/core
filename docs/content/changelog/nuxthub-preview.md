@@ -46,6 +46,6 @@ At the moment, the `nuxthub preview` command has the following limitations:
 
 The CLI is full open source on GitHub, feel free to contribute and improve it.
 
-::callout{to="https://github.com/nuxt-hub/cli" target="_blank" icon="i-simple-icons-github" color="gray"}
+::callout{to="https://github.com/nuxt-hub/cli" target="_blank" icon="i-simple-icons-github"}
 Checkout the `nuxthub` CLI on GitHub.
 ::

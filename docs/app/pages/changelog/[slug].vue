@@ -66,7 +66,7 @@ function copyLink() {
             :key="index"
             :to="author.to"
             target="_blank"
-            color="white"
+            color="neutral"
             variant="ghost"
             class="-my-1.5 -mx-2.5"
           >
