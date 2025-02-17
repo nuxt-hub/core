@@ -10,8 +10,10 @@ hero:
       trailing-icon: i-lucide-arrow-right
       color: neutral
       to: https://hub.nuxt.com/new
+      size: lg
       external: true
     - label: Read the documentation
       color: neutral
       variant: subtle
       to: /docs/getting-started
+      size: lg
