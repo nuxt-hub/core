@@ -1,8 +1,7 @@
 <template>
   <ProseCallout
-    title="Important"
     icon="i-lucide-badge-alert"
-    color="violet"
+    color="important"
   >
     <slot mdc-unwrap="p" />
   </ProseCallout>

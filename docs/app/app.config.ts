@@ -4,7 +4,7 @@ export default defineAppConfig({
       primary: 'green',
       neutral: 'slate',
       warning: 'amber',
-      violet: 'violet'
+      important: 'violet'
     }
   },
   seo: {

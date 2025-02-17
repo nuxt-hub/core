@@ -36,10 +36,10 @@ defineOgImageComponent('Docs')
     <UPageHero
       :title="page?.hero.title"
       :description="page?.hero.description"
-      class="z-10"
+      :links="page?.hero.links"
     >
       <template #title>
-        <MDC :value="page?.hero.title" />
+        <MDC :value="page?.hero.title" unwrap="p" />
       </template>
     </UPageHero>
     <UBlogPosts class="lg:grid-cols-3 xl:grid-cols-4 pb-10">
@@ -49,8 +49,13 @@ defineOgImageComponent('Docs')
         :title="template.title"
         :description="template.description"
         :image="template.imageUrl"
-        variant="soft"
-        :ui="{ body: '!p-4 flex-1', description: 'space-y-2', footer: 'p-4' }"
+        variant="subtle"
+        :ui="{
+          body: '!p-4 flex-1',
+          image: 'border-b border-(--ui-border)',
+          description: 'space-y-2',
+          footer: 'p-4 pt-0'
+        }"
       >
         <template #title>
           <div class="flex flex-1 items-center justify-between">

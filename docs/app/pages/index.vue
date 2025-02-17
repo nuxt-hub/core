@@ -47,8 +47,7 @@ onMounted(() => {
       :description="page?.hero.description"
       orientation="horizontal"
       :ui="{
-        container: 'py-20 sm:py-28 md:py-30 2xl:py-36',
-        title: 'font-medium'
+        container: 'py-20 sm:py-28 md:py-30 2xl:py-36'
       }"
     >
       <template v-if="page?.hero.headline" #headline>

@@ -27,7 +27,7 @@ export default defineNuxtConfig({
   },
   ui: {
     theme: {
-      colors: ['violet']
+      colors: ['primary', 'secondary', 'info', 'success', 'warning', 'error', 'important']
     }
   },
   routeRules: {
