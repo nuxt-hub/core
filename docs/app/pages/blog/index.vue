@@ -8,9 +8,6 @@ const { data: posts } = await useAsyncData('posts', async () => {
     .all()
 })
 
-const title = page.value.head?.title || page.value.title
-const description = page.value.head?.description || page.value.description
-
 useHead({
   link: [
     { rel: 'alternate', type: 'application/rss+xml', title: 'NuxtHub Blog', href: '/blog/feed.xml' }
@@ -18,10 +15,10 @@ useHead({
 })
 useSeoMeta({
   titleTemplate: '%s',
-  title,
-  description,
-  ogDescription: description,
-  ogTitle: `${title} · NuxtHub`
+  title: page.title,
+  description: page.description,
+  ogDescription: page.description,
+  ogTitle: `${page.title} · NuxtHub`
 })
 defineOgImageComponent('Docs', {
   title: 'Blog'
@@ -35,23 +32,19 @@ defineOgImageComponent('Docs', {
         {{ page.description }}
       </template>
     </UPageHero>
-    <UPage>
-      <UPageBody>
-        <UBlogList orientation="vertical">
-          <UBlogPost
-            v-for="post in posts"
-            :key="post.path"
-            :to="post.path"
-            :title="post.title"
-            :description="post.description"
-            :image="{ src: post.image, width: 592, height: 333, placeholder: [59, 33, 50, 4], format: 'webp' }"
-            :date="formatDateByLocale('en', post.date)"
-            :authors="post.authors"
-            :badge="{ label: post.category, color: 'neutral', variant: 'solid' }"
-            orientation="horizontal"
-          />
-        </UBlogList>
-      </upagebody>
-    </UPage>
+    <UBlogPosts orientation="vertical" class="mb-12">
+      <UBlogPost
+        v-for="post in posts"
+        :key="post.path"
+        :to="post.path"
+        :title="post.title"
+        :description="post.description"
+        :image="{ src: post.image, width: 592, height: 333, placeholder: [59, 33, 50, 4], format: 'webp' }"
+        :date="formatDateByLocale('en', post.date)"
+        :authors="post.authors"
+        :badge="{ label: post.category, color: 'neutral', variant: 'subtle' }"
+        orientation="horizontal"
+      />
+    </UBlogPosts>
   </UContainer>
 </template>
