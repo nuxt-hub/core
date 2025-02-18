@@ -28,7 +28,7 @@ const filteredPlans = computed(() => {
       list: tabs?.length === 1 ? 'hidden' : 'bg-transparent border border-(--ui-border)',
       indicator: 'bg-(--ui-bg-muted)',
       trigger: 'data-[state=active]:text-(--ui-text-highlighted))',
-      leadingIcon: 'size-4'
+      leadingIcon: 'size-4 sm:inline-flex hidden'
     }"
   >
     <template v-for="(plan, index) of table?.plans" :key="index" #[plan.slot]="{ item }">

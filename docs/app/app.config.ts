@@ -10,6 +10,11 @@ export default defineAppConfig({
       slots: {
         itemLeadingIcon: 'size-4'
       }
+    },
+    tabs: {
+      slots: {
+        list: 'overflow-x-auto'
+      }
     }
   },
   uiPro: {

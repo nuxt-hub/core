@@ -9,7 +9,7 @@ const links = computed(() => [
     label: 'Docs',
     to: '/docs/getting-started',
     active: route.path.startsWith('/docs'),
-    icon: 'i-lucide-book-open'
+    icon: 'i-lucide-book'
   }, {
     label: 'Templates',
     to: '/templates',

@@ -87,6 +87,7 @@ onMounted(() => {
           v-bind="pricing"
           :price="isYearly ? pricing.price.yearly : pricing.price.monthly"
           :billing-cycle="isYearly ? pricing.billingCycle.yearly : pricing.billingCycle.monthly"
+          :ui="{ description: 'text-left' }"
         >
           <template #features>
             <ul class="space-y-3 text-sm">
