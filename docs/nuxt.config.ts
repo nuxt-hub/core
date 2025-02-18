@@ -37,6 +37,8 @@ export default defineNuxtConfig({
     '/blog/rss.xml': { prerender: true },
     '/changelog/rss.xml': { prerender: true },
     // Redirects
+    '/docs/features': { redirect: { statusCode: 301, to: '/docs/features/ai' } },
+    '/docs/recipes': { redirect: { statusCode: 301, to: '/docs/recipes/hooks' } },
     '/docs/storage/blob': { redirect: { statusCode: 301, to: '/docs/features/blob' } },
     '/docs/storage/database': { redirect: { statusCode: 301, to: '/docs/features/database' } },
     '/docs/storage/kv': { redirect: { statusCode: 301, to: '/docs/features/kv' } },
