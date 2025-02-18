@@ -145,8 +145,8 @@ onMounted(() => {
       </UModal>
     </UPageHero>
     <!-- features section -->
-    <UPageSection :ui="{ container: 'py-6 sm:py-12 lg:py-12' }">
-      <ul class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-8">
+    <UPageSection :ui="{ container: 'py-6 pb-12 sm:py-12 lg:py-12' }">
+      <ul class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 lg:gap-x-8 lg:gap-y-8 xl:gap-y-10">
         <li
           v-for="feature in page?.features"
           :key="feature.name"
