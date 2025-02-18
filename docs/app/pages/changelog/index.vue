@@ -1,19 +1,15 @@
 <script setup lang="ts">
-import type { ChangelogPost } from '~/types'
+// @ts-expect-error yaml is not typed
+import page from '.changelog.yml'
 
 definePageMeta({
   primary: 'green'
 })
-const { data: page } = await useAsyncData('changelog', () => queryContent('/changelog').findOne())
-const { data: changelogs } = await useAsyncData('changelog-items', async () => {
-  let items = await queryContent<ChangelogPost>('/changelog')
-    .where({ _extension: 'md' })
-    .without(['body', 'excerpt'])
-    .sort({ date: -1 })
-    .find()
-
-  items = (items as ChangelogPost[]).filter(changelog => changelog._path !== '/changelog')
-  return items
+const { data: posts } = await useAsyncData('changelogs', async () => {
+  return queryCollection('changelog')
+    .select('title', 'date', 'image', 'description', 'path', 'authors')
+    .order('date', 'DESC')
+    .all()
 })
 
 const dot = ref<HTMLElement>()
@@ -31,10 +27,10 @@ useHead({
   ]
 })
 useSeoMeta({
-  title: page.value.title,
-  ogTitle: `${page.value.title} · NuxtHub`,
-  description: page.value.description,
-  ogDescription: page.value.description
+  title: page.title,
+  ogTitle: `${page.title} · NuxtHub`,
+  description: page.description,
+  ogDescription: page.description
 })
 
 defineOgImageComponent('Docs')
@@ -80,8 +76,8 @@ watch(() => arrivedState.bottom, () => {
 </script>
 
 <template>
-  <UContainer v-if="page">
-    <UPageHero v-bind="page?.hero" :ui="{ base: 'z-10' }" />
+  <UContainer>
+    <UPageHero v-bind="page.hero" :ui="{ root: 'z-10' }" />
     <div class="relative">
       <div
         ref="dot" class="hidden lg:block absolute w-[2px] rounded-full bg-gray-500 dark:bg-gray-400 z-10 neon dot"
@@ -89,12 +85,12 @@ watch(() => arrivedState.bottom, () => {
       />
       <ul class="flex flex-col">
         <li
-          v-for="(changelog, index) in changelogs" :key="changelog.title"
+          v-for="(changelog, index) in posts" :key="changelog.title"
           class="relative flex w-full flex-col lg:flex-row last:mb-[2px] group"
         >
           <div class="flex w-full pb-4 lg:w-[200px] lg:pb-0 -mt-1">
             <div>
-              <NuxtLink :to="changelog._path" class="text-sm text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100">
+              <NuxtLink :to="changelog.path" class="text-sm text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100">
                 <time class="top-24">{{ formatDateByLocale('en', changelog.date) }}</time>
               </NuxtLink>
             </div>
@@ -109,7 +105,7 @@ watch(() => arrivedState.bottom, () => {
           </div>
           <div class="w-full mb-32 relative">
             <div class="space-y-4 -mt-1">
-              <NuxtLink :to="changelog._path" :aria-label="changelog.titke" class="inline-block overflow-hidden rounded-md border dark:border-gray-800 border-gray-200">
+              <NuxtLink :to="changelog.path" :aria-label="changelog.title" class="inline-block overflow-hidden rounded-md border dark:border-gray-800 border-gray-200">
                 <NuxtImg
                   :alt="changelog.title || ''"
                   loading="lazy"
@@ -124,7 +120,7 @@ watch(() => arrivedState.bottom, () => {
 
               <div class="flex flex-col">
                 <h2 class="text-3xl font-semibold">
-                  <NuxtLink :to="changelog._path" class="hover:underline underline-offset-4 decoration-1">
+                  <NuxtLink :to="changelog.path" class="hover:underline underline-offset-4 decoration-1">
                     {{ changelog.title }}
                   </NuxtLink>
                 </h2>
@@ -135,7 +131,7 @@ watch(() => arrivedState.bottom, () => {
                 <div class="mt-4 flex flex-wrap items-center gap-6">
                   <UButton
                     v-for="author in changelog.authors" :key="author.username" :to="author.to" target="_blank"
-                    color="white" variant="ghost" class="-my-1.5 -mx-2.5"
+                    color="neutral" variant="ghost" class="-my-1.5 -mx-2.5"
                   >
                     <UAvatar :src="author.avatar?.src" :alt="author.name" />
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// @ts-expect-error yaml is not typed
 import page from '.blog.yml'
 
 const { data: posts } = await useAsyncData('posts', async () => {
@@ -27,7 +28,7 @@ defineOgImageComponent('Docs', {
 
 <template>
   <UContainer>
-    <UPageHero v-bind="page?.hero" :ui="{ base: 'z-10' }">
+    <UPageHero v-bind="page?.hero" :ui="{ root: 'z-10' }">
       <template #description>
         {{ page.description }}
       </template>

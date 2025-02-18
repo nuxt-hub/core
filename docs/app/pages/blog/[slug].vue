@@ -26,8 +26,8 @@ const { data: surround } = await useAsyncData(`blog-${route.params.slug}-surroun
   })
 })
 
-const title = post.value.head?.title || post.value.title
-const description = post.value.head?.description || post.value.description
+const title = post.value.seo?.title || post.value.title
+const description = post.value.seo?.description || post.value.description
 
 useSeoMeta({
   titleTemplate: '%s · NuxtHub Blog',
@@ -61,7 +61,7 @@ onMounted(() => {
     <UPage>
       <UPageHeader :title="post.title" :description="post.description" :ui="{ headline: 'flex flex-col gap-y-8 items-start' }">
         <template #headline>
-          <UBreadcrumb :items="[{ label: 'Blog', to: '/blog' }, { label: post.title }]" :ui="{ wrapper: 'max-w-full' }" />
+          <UBreadcrumb :items="[{ label: 'Blog', to: '/blog' }, { label: post.title }]" :ui="{ root: 'max-w-full' }" />
           <div class="flex items-center space-x-2">
             <UBadge :label="post?.category || 'Article'" color="neutral" variant="subtle" />
             <span class="text-(--ui-text-muted)">&middot;&nbsp;&nbsp;<time>{{ formatDateByLocale('en', post.date) }}</time></span>
@@ -93,7 +93,7 @@ onMounted(() => {
           <ContentRenderer v-if="post && post.body" :value="post" />
           <PageSectionCTA />
           <div class="flex items-center justify-between mt-12 not-prose">
-            <UButton to="/blog" variant="link" :padded="false" color="gray" icon="i-lucide-arrow-left">
+            <UButton to="/blog" variant="link" :padded="false" color="neutral" icon="i-lucide-arrow-left">
               Back to blog
             </UButton>
             <div class="flex justify-end items-center gap-1.5">

@@ -1,118 +1,119 @@
 <script setup lang="ts">
-import { withoutTrailingSlash, joinURL } from 'ufo'
-import type { ChangelogPost } from '~/types'
+import mediumZoom from 'medium-zoom'
+import { joinURL } from 'ufo'
 
 definePageMeta({
   primary: 'green',
-  heroBackground: 'opacity-20'
+  heroBackground: 'opacity-30'
 })
 
 const route = useRoute()
-const { copy } = useCopyToClipboard()
+const { toc } = useAppConfig()
 const { url } = useSiteConfig()
 
-const { data: changelog } = await useAsyncData(`changelog-${route.params.slug}`, () => queryContent<ChangelogPost>(route.path).findOne())
-if (!changelog.value) {
+const { data: post } = await useAsyncData(`changelog-${route.params.slug}`, () => {
+  return queryCollection('changelog').path(route.path).first()
+})
+if (!post.value) {
   throw createError({ statusCode: 404, statusMessage: 'Post not found', fatal: true })
 }
 
-const { data: surround } = await useAsyncData(`changelog-${route.params.slug}-surround`, () => queryContent('/changelog')
-  .where({ _extension: 'md', navigation: { $ne: false }, _path: { $regex: /^\/changelog/ } })
-  .without(['body', 'excerpt'])
-  .sort({ date: -1 })
-  .findSurround(withoutTrailingSlash(route.path))
-)
+const { copy, copied } = useClipboard({ source: `https://hub.nuxt.com${post.value.path}` })
 
-const title = changelog.value.head?.title || changelog.value.title
-const description = changelog.value.head?.description || changelog.value.description
+const { data: surround } = await useAsyncData(`changelog-${route.params.slug}-surround`, () => {
+  return queryCollectionItemSurroundings('changelog', route.path, {
+    fields: ['description']
+  })
+})
+
+const title = post.value.seo?.title || post.value.title
+const description = post.value.seo?.description || post.value.description
 
 useSeoMeta({
-  titleTemplate: '%s · NuxtHub Changelog',
+  titleTemplate: '%s · NuxtHub Blog',
   title,
   description,
   ogDescription: description,
-  ogTitle: `${title} · NuxtHub Changelog`
+  ogTitle: `${title} · NuxtHub Blog`
 })
 
-if (changelog.value.image) {
-  defineOgImage({ url: joinURL(url, changelog.value.image) })
+if (post.value.image) {
+  defineOgImage({ url: joinURL(url, post.value.image) })
 }
+
 const socialLinks = computed(() => [{
   icon: 'i-simple-icons-linkedin',
-  to: `https://www.linkedin.com/sharing/share-offsite/?url=https://hub.nuxt.com${changelog.value._path}`
+  to: `https://www.linkedin.com/sharing/share-offsite/?url=https://hub.nuxt.com${post.value._path}`
 }, {
   icon: 'i-simple-icons-x',
-  to: `https://x.com/intent/tweet?text=${encodeURIComponent(`NuxtHub: ${changelog.value.title}\n\n`)}https://hub.nuxt.com${changelog.value._path}`
+  to: `https://x.com/intent/tweet?text=${encodeURIComponent(`${post.value.title}\n\n`)}https://hub.nuxt.com${post.value._path}`
 }])
 
-function copyLink() {
-  copy(`https://hub.nuxt.com${changelog.value._path}`, { title: 'URL copied to clipboard' })
-}
+onMounted(() => {
+  mediumZoom('[data-zoom-src]', {
+    margin: 5
+  })
+})
 </script>
 
 <template>
   <UContainer>
     <UPage>
-      <UPageHeader :title="changelog.title" :description="changelog.description" :ui="{ headline: 'flex flex-col gap-y-8 items-start' }">
+      <UPageHeader :title="post.title" :description="post.description" :ui="{ headline: 'flex flex-col gap-y-8 items-start' }">
         <template #headline>
-          <UBreadcrumb :links="[{ label: 'Changelog', to: '/changelog' }, { label: changelog.title }]" />
-
-          <time class="text-gray-500 dark:text-gray-400">{{ formatDateByLocale('en', changelog.date) }}</time>
+          <UBreadcrumb :items="[{ label: 'Changelog', to: '/changelog' }, { label: post.title }]" :ui="{ root: 'max-w-full' }" />
+          <time class="text-(--ui-text-muted)">{{ formatDateByLocale('en', post.date) }}</time>
         </template>
+        <div class="flex flex-wrap items-center gap-3 mt-4">
+          <div class="mt-4 flex flex-wrap items-center gap-6">
+            <UButton
+              v-for="author in post.authors" :key="author.username" :to="author.to" target="_blank"
+              color="neutral" variant="ghost" class="-my-1.5 -mx-2.5"
+            >
+              <UAvatar :src="author.avatar?.src" :alt="author.name" />
 
-        <div class="mt-4 flex flex-wrap items-center gap-6">
-          <UButton
-            v-for="(author, index) in changelog.authors"
-            :key="index"
-            :to="author.to"
-            target="_blank"
-            color="neutral"
-            variant="ghost"
-            class="-my-1.5 -mx-2.5"
-          >
-            <UAvatar :src="author.avatar?.src" :alt="author.name" />
-
-            <div class="text-left">
-              <p class="font-medium">
-                {{ author.name }}
-              </p>
-              <p class="text-gray-500 dark:text-gray-400 leading-4">
-                {{ `@${author.username}` }}
-              </p>
-            </div>
-          </UButton>
+              <div class="text-left">
+                <p class="font-medium">
+                  {{ author.name }}
+                </p>
+                <p class="text-(--ui-text-muted) leading-4">
+                  {{ `@${author.username}` }}
+                </p>
+              </div>
+            </UButton>
+          </div>
         </div>
       </UPageHeader>
 
       <UPage>
-        <UPageBody prose class="dark:text-gray-300 dark:prose-pre:!bg-gray-800/60 lg:pr-10">
-          <ContentRenderer v-if="changelog && changelog.body" :value="changelog" />
+        <UPageBody class="lg:pr-10">
+          <ContentRenderer v-if="post && post.body" :value="post" />
           <PageSectionCTA />
           <div class="flex items-center justify-between mt-12 not-prose">
-            <UButton to="/changelog" variant="link" :padded="false" color="gray" icon="i-lucide-arrow-left">
+            <UButton to="/changelog" variant="link" :padded="false" color="neutral" icon="i-lucide-arrow-left">
               Back to changelog
             </UButton>
             <div class="flex justify-end items-center gap-1.5">
               Share:
-              <UButton icon="i-lucide-link" color="gray" variant="ghost" @click="copyLink" />
+              <UButton :icon="copied ? 'i-lucide-check' : 'i-lucide-link'" :color="copied ? 'success' : 'neutral'" variant="ghost" @click="copy()" />
               <UButton
                 v-for="(link, index) in socialLinks"
                 :key="index"
                 v-bind="link"
                 variant="ghost"
-                color="gray"
+                color="neutral"
                 target="_blank"
               />
             </div>
           </div>
 
-          <hr v-if="surround?.length">
+          <USeparator v-if="surround?.length" />
 
           <UContentSurround :surround="surround" />
         </UPageBody>
 
         <template #right>
-          <UContentToc v-if="changelog.body && changelog.body.toc" :links="changelog.body.toc.links" title="On this page" />
+          <UContentToc v-if="post.body && post.body.toc" :links="post.body.toc.links" :title="toc.title" />
         </template>
       </UPage>
     </UPage>
