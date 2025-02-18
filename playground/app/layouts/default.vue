@@ -27,16 +27,18 @@ const links = [
 </script>
 
 <template>
-  <UContainer class="min-h-screen flex flex-col md:pt-12">
+  <UContainer class="min-h-screen md:pt-12 max-w-screen-md">
     <div class="flex justify-between">
-      <UHorizontalNavigation :links="links" />
-      <UButton
-        square
-        variant="ghost"
-        color="black"
-        :icon="$colorMode.preference === 'dark' ? 'i-heroicons-moon' : 'i-heroicons-sun'"
-        @click="toggleColorMode"
-      />
+      <UNavigationMenu :items="links" />
+      <ColorScheme>
+        <UButton
+          square
+          variant="ghost"
+          color="neutral"
+          :icon="$colorMode.preference === 'dark' ? 'i-heroicons-moon' : 'i-heroicons-sun'"
+          @click="toggleColorMode"
+        />
+      </ColorScheme>
     </div>
     <slot />
 
@@ -58,11 +60,4 @@ const links = [
       </NuxtLink>
     </footer>
   </UContainer>
-  <UNotifications />
 </template>
-
-<style lang="postcss">
-body {
-  @apply font-sans text-gray-950 bg-gray-50 dark:bg-gray-950 dark:text-gray-50;
-}
-</style>

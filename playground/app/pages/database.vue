@@ -36,7 +36,7 @@ async function addTodo() {
 
 async function toggleTodo(todo) {
   todo.completed = Number(!todo.completed)
-  await useFetch(`/api/todos/${todo.id}`, {
+  await $fetch(`/api/todos/${todo.id}`, {
     method: 'PATCH',
     body: {
       completed: todo.completed
@@ -52,9 +52,9 @@ async function deleteTodo(todo) {
 </script>
 
 <template>
-  <UCard @submit.prevent="addTodo">
+  <UCard>
     <div class="flex items-center gap-2">
-      <UButtonGroup class="flex-1">
+      <UButtonGroup class="flex-1" as="form" @submit.prevent="addTodo">
         <UInput
           ref="newTodoInput"
           v-model="newTodo"
@@ -63,10 +63,10 @@ async function deleteTodo(todo) {
           placeholder="Make a Nuxt demo"
           autocomplete="off"
           autofocus
-          :ui="{ wrapper: 'flex-1' }"
+          :ui="{ root: 'flex-1' }"
         />
 
-        <UButton type="submit" icon="i-heroicons-plus-20-solid" :loading="loading" :disabled="newTodo.trim().length === 0" />
+        <UButton type="submit" icon="i-lucide-plus" label="Add" :loading="loading" :disabled="newTodo.trim().length === 0" />
       </UButtonGroup>
     </div>
 
@@ -78,13 +78,13 @@ async function deleteTodo(todo) {
       >
         <span class="flex-1 font-medium" :class="[todo.completed ? 'line-through text-gray-500' : '']">{{ todo.title }}</span>
 
-        <UToggle :model-value="Boolean(todo.completed)" @update:model-value="toggleTodo(todo)" />
+        <USwitch size="sm" color="neutral" :model-value="Boolean(todo.completed)" @update:model-value="toggleTodo(todo)" />
 
         <UButton
-          color="red"
-          variant="soft"
-          size="2xs"
-          icon="i-heroicons-x-mark-20-solid"
+          color="neutral"
+          variant="ghost"
+          size="xs"
+          icon="i-lucide-trash"
           @click="deleteTodo(todo)"
         />
       </li>

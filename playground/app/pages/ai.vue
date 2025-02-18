@@ -20,15 +20,15 @@ const { messages, input, handleSubmit, isLoading, stop, error, reload } = useCha
         <div class="text-red-500">
           {{ 'An error occurred' }}
         </div>
-        <UButton color="gray" size="xs" @click="reload">
+        <UButton color="neutral" variant="subtle" size="xs" @click="reload()">
           retry
         </UButton>
       </div>
     </div>
     <form class="flex items-center w-full p-2 gap-2" @submit.prevent="handleSubmit">
       <UInput v-model="input" placeholder="Type here..." class="w-full" :disabled="Boolean(error)" />
-      <UButton v-if="isLoading" icon="i-heroicons-stop" color="black" @click="stop" />
-      <UButton v-else icon="i-heroicons-paper-airplane" type="submit" color="black" />
+      <UButton v-if="isLoading" icon="i-heroicons-stop" color="neutral" @click="stop" />
+      <UButton v-else icon="i-heroicons-paper-airplane" type="submit" color="neutral" />
     </form>
   </UCard>
 </template>

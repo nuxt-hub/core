@@ -113,15 +113,16 @@ async function uploadFiles(files: File[]) {
     const uploadingToast = toast.add({
       title: `Uploading ${file.name}...`,
       description: file.name,
-      color: 'sky',
-      timeout: 0,
-      closeButton: {
-        color: 'red',
-        variant: 'solid'
-      },
-      callback: () => {
-        if (progress.value !== 100) {
-          abort()
+      color: 'info',
+      duration: 0,
+      close: {
+        color: 'error',
+        variant: 'solid',
+        onClick() {
+          console.log('clicked')
+          if (progress.value !== 100) {
+            abort()
+          }
         }
       }
     })
@@ -197,7 +198,8 @@ async function deleteFile(pathname: string) {
 
         <UButton
           label="Select file(s)"
-          color="gray"
+          color="neutral"
+          variant="subtle"
           @click="uploadRef?.click()"
         />
       </UButtonGroup>
@@ -210,36 +212,30 @@ async function deleteFile(pathname: string) {
 
     <UProgress v-if="loading" :value="loadingProgress" :max="1" class="mt-2" />
 
-    <div v-if="folders?.length || prefixes?.length" class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4">
+    <div v-if="folders?.length || prefixes?.length" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-4">
       <UButton
         v-if="prefixes?.length"
         class="cursor-pointer font-mono text-sm"
         label="Back"
-        color="gray"
+        color="neutral"
+        variant="subtle"
         @click="prefixes.pop()"
       />
       <UCard
         v-for="folder of folders"
         :key="folder"
         class="cursor-pointer font-mono text-xs"
-        :ui="{ body: { padding: '!p-2' } }"
         @click="prefixes.push(folder)"
       >
         {{ folder }}
       </UCard>
     </div>
 
-    <div v-if="files?.length" class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4">
+    <div v-if="files?.length" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-4">
       <UCard
         v-for="file of files"
         :key="file.pathname"
-        :ui="{
-          body: {
-            base: 'space-y-0',
-            padding: ''
-          }
-        }"
-        class="overflow-hidden relative"
+        class="overflow-hidden relative group"
       >
         <img v-if="file.contentType?.startsWith('image/')" :src="`/api/blob/${file.pathname}`" class="h-36 w-full object-cover">
         <div v-else class="h-36 w-full flex items-center justify-center p-2 text-center">
@@ -257,10 +253,10 @@ async function deleteFile(pathname: string) {
           </div> -->
         </div>
 
-        <UButton icon="i-heroicons-x-mark" variant="link" color="primary" class="absolute top-0 right-0" @click="deleteFile(file.pathname)" />
+        <UButton icon="i-lucide-trash" size="sm" variant="subtle" color="error" class="hidden group-hover:block absolute top-2 right-2" @click="deleteFile(file.pathname)" />
       </UCard>
     </div>
-    <UButton v-if="blobData?.hasMore" block color="black" variant="outline" class="mt-2" @click="loadMore">
+    <UButton v-if="blobData?.hasMore" block color="neutral" variant="subtle" class="mt-2" @click="loadMore">
       Load more
     </UButton>
   </UCard>

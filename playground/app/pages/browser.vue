@@ -31,26 +31,26 @@ const capture = async () => {
 </script>
 
 <template>
-  <UCard @submit.prevent="capture">
+  <UCard as="form" @submit.prevent="capture">
     <template #header>
       <div class="flex lg:flex-row flex-col items-center gap-2">
         <UInput v-model="url" type="url" class="w-full flex-1" placeholder="https://hub.nuxt.com" />
-        <USelect v-model="theme" :options="['light', 'dark']" />
+        <USelect v-model="theme" :items="['light', 'dark']" />
         <UButton type="submit" icon="i-lucide-camera" size="sm" :loading="loading">
           Capture
         </UButton>
       </div>
     </template>
-    <UAlert v-if="!image" :title="loading ? 'Capturing...' : 'No screenshot captured'" color="white" icon="i-lucide-info" />
+    <UAlert v-if="!image" :title="loading ? 'Capturing...' : 'No screenshot captured'" color="neutral" variant="outline" icon="i-lucide-info" />
     <img v-if="image" :src="image" class="rounded border dark:border-gray-800" style="aspect-ratio: 16/9;" :class="{ 'animate-pulse': loading }">
-    <UAlert v-if="framework" class="mt-4" :class="{ 'animate-pulse': loading }" :title="`This website is made with ${framework}`" color="white" icon="i-lucide-code-xml" />
-    <p class="mt-4">
+    <UAlert v-if="framework" class="mt-4" :class="{ 'animate-pulse': loading }" :title="`This website is made with ${framework}`" color="neutral" variant="outline" icon="i-lucide-code-xml" />
+    <div class="mt-4">
       Or open our <UButtonGroup>
-        <UButton to="/invoice.pdf" external color="gray">
+        <UButton to="/invoice.pdf" external color="neutral" variant="subtle">
           PDF invoice
         </UButton>
-        <UButton to="/invoice.pdf" external download color="gray" icon="i-lucide-download" />
+        <UButton to="/invoice.pdf" external download color="neutral" variant="subtle" icon="i-lucide-download" />
       </UButtonGroup>
-    </p>
+    </div>
   </UCard>
 </template>
