@@ -57,8 +57,8 @@ creator:
     description: 'Creator of Nuxt & NuxtHub'
     to: 'https://x.com/Atinux'
     avatar:
-      src: 'https://avatars.githubusercontent.com/u/904724?v=4'
-      loading: 'lazy'
+      src: 'https://ipx.nuxt.com/f_auto,s_40x40/gh_avatar/atinux'
+      srcset: 'https://ipx.nuxt.com/f_auto,s_80x80/gh_avatar/atinux 2x'
 tool:
   title: A tailored solution for faster Nuxt app management
   description: NuxtHub offers a comprehensive suite of tools and features to let you build and deploy full-stack Nuxt applications worldwide.
