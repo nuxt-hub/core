@@ -50,16 +50,18 @@ onMounted(() => {
 <template>
   <UPage class="relative">
     <UPageHero
-      :title="page?.hero.title"
       :description="page?.hero.description"
       orientation="horizontal"
       :ui="{
         container: 'py-20 sm:py-28 md:py-30 2xl:py-36'
       }"
     >
+      <template #title>
+        <MDC :value="page?.hero.title" unwrap="p" />
+      </template>
       <template v-if="page?.hero.headline" #headline>
         <NuxtLink :to="page?.hero.headline.to">
-          <UBadge color="neutral" variant="outline" size="md" class="relative px-3 rounded-full font-semibold dark:hover:bg-neutral-400/15 dark:hover:ring-neutral-700">
+          <UBadge color="neutral" variant="outline" size="lg" class="relative px-3 rounded-full font-semibold dark:hover:bg-neutral-400/15 dark:hover:ring-neutral-700">
             {{ page?.hero.headline.label }}
             <UIcon
               v-if="page?.hero.headline.icon"
@@ -73,10 +75,10 @@ onMounted(() => {
       <template #links>
         <div class="flex flex-col gap-y-6">
           <div class="flex flex-wrap gap-x-6 gap-y-3">
-            <UButton to="/docs/getting-started/installation" size="md" trailing-icon="i-lucide-arrow-right">
+            <UButton to="/docs/getting-started/installation" size="lg" trailing-icon="i-lucide-arrow-right">
               Get started
             </UButton>
-            <UInputCopy value="npx nuxthub deploy" size="md" />
+            <UInputCopy value="npx nuxthub deploy" size="lg" />
           </div>
           <div>
             <UAvatarGroup

@@ -2,7 +2,7 @@ title: 'Ship Nuxt apps that scale.'
 navigation: false
 description: 'Deploy and scale your Nuxt applications worldwide with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and with full-stack capabilities.'
 hero:
-  title: 'Ship Nuxt apps that scale.'
+  title: 'Ship [Nuxt]{.text-(--ui-primary)} apps that scale.'
   description: 'Deploy and scale your Nuxt applications worldwide with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and with full-stack capabilities.'
   img:
     width: '1439'
