@@ -23,6 +23,9 @@ export default defineNuxtConfig({
           langs: ['sql', 'diff']
         }
       }
+    },
+    preview: {
+      api: 'https://api.nuxt.studio'
     }
   },
   ui: {
