@@ -14,12 +14,12 @@
     "@iconify-json/logos": "^1.2.4",
     "@iconify-json/lucide": "^1.2.26",
     "@iconify-json/ph": "^1.2.2",
-    "@iconify-json/simple-icons": "^1.2.24",
-    "@iconify-json/vscode-icons": "^1.2.14",
-    "@nuxt/content": "^3.1.1",
+    "@iconify-json/simple-icons": "^1.2.25",
+    "@iconify-json/vscode-icons": "^1.2.15",
+    "@nuxt/content": "https://pkg.pr.new/@nuxt/content@52659d0",
     "@nuxt/fonts": "^0.10.3",
     "@nuxt/image": "^1.9.0",
-    "@nuxt/scripts": "^0.10.3",
+    "@nuxt/scripts": "^0.10.4",
     "@nuxt/ui": "3.0.0-alpha.13",
     "@nuxt/ui-pro": "3.0.0-alpha.13",
     "@nuxtjs/plausible": "^1.2.0",
@@ -32,6 +32,7 @@
     "medium-zoom": "^1.1.0",
     "nuxt": "^3.15.4",
     "nuxt-cloudflare-analytics": "^1.0.8",
-    "nuxt-og-image": "4.1.2"
+    "nuxt-llms": "^0.0.2",
+    "nuxt-og-image": "^4.1.4"
   }
 }
