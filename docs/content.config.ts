@@ -31,7 +31,7 @@ const Testimonial = z.object({
 const PageFeature = z.object({
   title: z.string(),
   description: z.string(),
-  icon: z.string(),
+  icon: z.string().editor({ input: 'icon' }),
   to: z.string().optional(),
   target: z.enum(['_blank', '_self']).optional(),
   soon: z.boolean().optional()
@@ -43,10 +43,10 @@ const PageSection = z.object({
   links: z.array(Button),
   features: z.array(PageFeature),
   image: z.object({
-    light: z.string(),
-    dark: z.string(),
-    width: z.number(),
-    height: z.number()
+    light: z.string().editor({ input: 'media' }),
+    dark: z.string().editor({ input: 'media' }),
+    width: z.number().optional(),
+    height: z.number().optional()
   })
 })
 
@@ -54,15 +54,15 @@ const PageHero = z.object({
   title: z.string(),
   description: z.string(),
   image: z.object({
-    width: z.string().optional(),
-    height: z.string().optional(),
-    light: z.string(),
-    dark: z.string()
+    width: z.number().optional(),
+    height: z.number().optional(),
+    light: z.string().editor({ input: 'media' }),
+    dark: z.string().editor({ input: 'media' })
   }).optional(),
   headline: z.object({
     label: z.string(),
     to: z.string(),
-    icon: z.string().optional()
+    icon: z.string().optional().editor({ input: 'icon' })
   }).optional(),
   links: z.array(Button).optional()
 })
@@ -85,10 +85,10 @@ export default defineContentConfig({
             title: z.string(),
             description: z.string(),
             image: z.object({
-              light: z.string(),
-              dark: z.string(),
-              width: z.number(),
-              height: z.number()
+              light: z.string().editor({ input: 'media' }),
+              dark: z.string().editor({ input: 'media' }),
+              width: z.number().optional(),
+              height: z.number().optional()
             })
           }))
         }),
@@ -110,7 +110,7 @@ export default defineContentConfig({
       type: 'page',
       source: 'changelog/*.md',
       schema: z.object({
-        image: z.string(),
+        image: z.string().editor({ input: 'media' }),
         authors: z.array(Author),
         date: z.string().date()
       })
@@ -119,7 +119,7 @@ export default defineContentConfig({
       type: 'page',
       source: 'blog/**/*.md',
       schema: z.object({
-        image: z.string(),
+        image: z.string().editor({ input: 'media' }),
         authors: z.array(Author),
         date: z.string().date(),
         category: z.enum(['Release', 'Tutorial'])
@@ -131,7 +131,7 @@ export default defineContentConfig({
       schema: z.object({
         title: z.string(),
         description: z.string(),
-        icon: z.string(),
+        icon: z.string().editor({ input: 'icon' }),
         hero: PageHero
       })
     }),
@@ -141,7 +141,7 @@ export default defineContentConfig({
       schema: z.object({
         title: z.string(),
         description: z.string(),
-        icon: z.string(),
+        icon: z.string().editor({ input: 'icon' }),
         hero: PageHero,
         pricing: z.object({
           plans: z.array(z.object({
@@ -191,7 +191,7 @@ export default defineContentConfig({
       schema: z.object({
         plans: z.array(z.object({
           label: z.string(),
-          icon: z.string(),
+          icon: z.string().editor({ input: 'icon' }),
           slot: z.string(),
           buttons: z.array(Button),
           columns: z.array(z.object({
