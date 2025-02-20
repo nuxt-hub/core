@@ -18,11 +18,26 @@ useHead({
   }
 })
 
-const { data: navigation } = await useAsyncData('navigation', () => queryCollectionNavigation('docs'), {
-  transform: data => data.find(item => item.path === '/docs')?.children || []
+const { data: navigation } = await useAsyncData('navigation', () => {
+  return Promise.all([
+    queryCollectionNavigation('docs'),
+    queryCollectionNavigation('blog'),
+    queryCollectionNavigation('changelog')
+  ])
+}, {
+  transform: data => data.flat()
 })
-const { data: files } = useLazyAsyncData('search', () => queryCollectionSearchSections('docs'), {
-  server: false
+provide('navigation', navigation)
+
+const { data: files } = useLazyAsyncData('search', () => {
+  return Promise.all([
+    queryCollectionSearchSections('docs'),
+    queryCollectionSearchSections('blog'),
+    queryCollectionSearchSections('changelog')
+  ])
+}, {
+  server: false,
+  transform: data => data.flat()
 })
 
 const links = computed(() => [
@@ -57,10 +72,10 @@ const links = computed(() => [
 
 <template>
   <UApp>
-    <!-- <AppHeader /> -->
+    <AppHeader />
     <UError :error="error" />
 
-    <!-- <AppFooter /> -->
+    <AppFooter />
 
     <ClientOnly>
       <LazyUContentSearch :files="files" :navigation="navigation" :links="links" />

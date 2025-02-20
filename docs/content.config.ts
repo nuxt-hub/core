@@ -108,7 +108,7 @@ export default defineContentConfig({
     }),
     changelog: defineCollection({
       type: 'page',
-      source: 'changelog/*.md',
+      source: 'changelog/**/*',
       schema: z.object({
         image: z.string().editor({ input: 'media' }),
         authors: z.array(Author),
@@ -117,7 +117,7 @@ export default defineContentConfig({
     }),
     blog: defineCollection({
       type: 'page',
-      source: 'blog/**/*.md',
+      source: 'blog/**/*',
       schema: z.object({
         image: z.string().editor({ input: 'media' }),
         authors: z.array(Author),
