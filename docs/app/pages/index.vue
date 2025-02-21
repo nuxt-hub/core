@@ -145,11 +145,11 @@ onMounted(() => {
       </UModal>
     </UPageHero>
     <!-- features section -->
-    <UPageSection :ui="{ container: 'py-6 pb-12 sm:py-12 lg:py-12' }">
+    <UPageSection :ui="{ container: 'py-6 pb-12 sm:py-12 lg:py-12 xl:pb-24' }">
       <ul class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 lg:gap-x-8 lg:gap-y-8 xl:gap-y-10">
         <li
           v-for="feature in page?.features"
-          :key="feature.name"
+          :key="feature.title"
           class="flex items-start gap-x-3 relative group"
           :class="{ 'opacity-75': feature.soon }"
         >
@@ -161,7 +161,7 @@ onMounted(() => {
           </div>
           <div class="flex flex-col">
             <h2 class="font-medium text-(--ui-text-highlighted) inline-flex items-center gap-x-1">
-              {{ feature.name }} <UBadge v-if="feature.soon" color="neutral" variant="subtle" size="sm" class="rounded-full">
+              {{ feature.title }} <UBadge v-if="feature.soon" color="neutral" variant="subtle" size="sm" class="rounded-full">
                 Soon
               </UBadge>
               <UIcon v-if="feature.to" name="i-lucide-arrow-right" class="size-4 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all duration-200 -translate-x-1 group-hover:translate-x-0" />
@@ -175,13 +175,13 @@ onMounted(() => {
     </UPageSection>
 
     <UPageCTA
-      :description="page.creator.quote"
+      :description="page.testimonial.quote"
       variant="subtle"
       class="rounded-none"
       :ui="{ container: 'sm:py-12 lg:py-12 sm:gap-8', description: 'before:content-[open-quote] after:content-[close-quote] !text-base' }"
     >
       <UUser
-        v-bind="page.creator.author"
+        v-bind="page.testimonial.author"
         size="xl"
         class="justify-center"
       />
@@ -194,7 +194,7 @@ onMounted(() => {
           :key="index"
           v-bind="feature"
           orientation="vertical"
-          :ui="{ icon: 'text-(--ui-text-highlighted)' }"
+          :ui="{ leadingIcon: 'text-(--ui-text-highlighted)' }"
         />
       </template>
     </UPageSection>
@@ -210,10 +210,10 @@ onMounted(() => {
       <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 items-start justify-center">
         <li v-for="step in page?.deploy.steps" :key="step.title" class="flex flex-col gap-y-8 justify-center group">
           <UColorModeImage
-            :light="step.img.srcLight"
-            :dark="step.img.srcDark"
-            :width="step.img.width"
-            :height="step.img.height"
+            :light="step.image.light"
+            :dark="step.image.dark"
+            :width="step.image.width"
+            :height="step.image.height"
             :alt="step.title"
             lazy
           />
@@ -267,10 +267,10 @@ onMounted(() => {
         />
       </template>
       <UColorModeImage
-        :light="section.img.srcLight"
-        :dark="section.img.srcDark"
-        :width="section.img.width"
-        :height="section.img.height"
+        :light="section.image.light"
+        :dark="section.image.dark"
+        :width="section.image.width"
+        :height="section.image.height"
         :alt="section.title"
       />
     </UPageSection>

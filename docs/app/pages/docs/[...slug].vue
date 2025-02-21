@@ -68,7 +68,7 @@ onMounted(() => {
     </div>
 
     <template v-if="page.body?.toc" #right>
-      <UContentToc :title="toc?.title" :links="page.body?.toc?.links" />
+      <UContentToc :title="toc?.title" :links="page.body?.toc?.links" highlight />
     </template>
   </UPage>
 </template>

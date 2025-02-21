@@ -35,7 +35,7 @@ const navLinks = computed(() => links.value.map((link) => {
       icon: link.icon,
       title: link.label,
       path: link.to,
-      children: navigation.value
+      children: navigation.value.find(item => item.path === '/docs')?.children || []
     }
   }
   return {

@@ -5,12 +5,13 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/ui-pro',
     '@nuxt/content',
+    '@nuxt/image',
+    '@nuxt/scripts',
+    '@nuxtjs/plausible',
     '@vueuse/nuxt',
     'nuxt-og-image',
     'nuxt-cloudflare-analytics',
-    '@nuxtjs/plausible',
-    '@nuxt/image',
-    '@nuxt/scripts'
+    'nuxt-llms'
   ],
   devtools: {
     enabled: true
@@ -23,6 +24,9 @@ export default defineNuxtConfig({
           langs: ['sql', 'diff']
         }
       }
+    },
+    preview: {
+      api: 'https://api.nuxt.studio'
     }
   },
   ui: {
@@ -69,5 +73,14 @@ export default defineNuxtConfig({
   cloudflareAnalytics: {
     token: '469b1f7049f14941acef0d0262a07ab3',
     scriptPath: false
+  },
+  llms: {
+    domain: 'https://hub.nuxt.com',
+    title: 'NuxtHub Documentation for LLMs',
+    description: 'NuxtHub helps you build and deploy full-stack Nuxt applications globally on your Cloudflare account.',
+    full: {
+      title: 'NuxtHub Complete Documentation',
+      description: 'The complete NuxtHub documentation, blog posts and changelog written in Markdown (MDC syntax).'
+    }
   }
 })
