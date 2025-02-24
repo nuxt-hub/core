@@ -4,6 +4,7 @@ import page from '.blog.yml'
 
 const { data: posts } = await useAsyncData('posts', async () => {
   return queryCollection('blog')
+    .where('extension', '=', 'md')
     .select('title', 'date', 'image', 'description', 'path', 'authors', 'category')
     .order('date', 'DESC')
     .all()

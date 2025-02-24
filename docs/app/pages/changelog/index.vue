@@ -7,6 +7,7 @@ definePageMeta({
 })
 const { data: posts } = await useAsyncData('changelogs', async () => {
   return queryCollection('changelog')
+    .where('extension', '=', 'md')
     .select('title', 'date', 'image', 'description', 'path', 'authors')
     .order('date', 'DESC')
     .all()

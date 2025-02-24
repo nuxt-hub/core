@@ -19,6 +19,7 @@ export default defineEventHandler(async (event) => {
   })
 
   const changelogItems = await queryCollection(event, 'changelog')
+    .where('extension', '=', 'md')
     .order('date', 'DESC')
     .all()
 

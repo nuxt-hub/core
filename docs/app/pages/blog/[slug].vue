@@ -23,7 +23,7 @@ const { copy, copied } = useClipboard({ source: `https://hub.nuxt.com${post.valu
 const { data: surround } = await useAsyncData(`blog-${route.params.slug}-surround`, () => {
   return queryCollectionItemSurroundings('blog', route.path, {
     fields: ['description']
-  })
+  }).order('date', 'DESC')
 })
 
 const title = post.value.seo?.title || post.value.title

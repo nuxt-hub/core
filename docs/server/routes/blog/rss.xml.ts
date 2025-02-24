@@ -19,6 +19,7 @@ export default defineEventHandler(async (event) => {
   })
 
   const articles = await queryCollection(event, 'blog')
+    .where('extension', '=', 'md')
     .order('date', 'DESC')
     .all()
 
