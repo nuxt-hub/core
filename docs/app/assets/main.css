@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" theme(static);
 @import "@nuxt/ui-pro";
 
 @source "../../content/**/*";
@@ -8,7 +8,7 @@
   --ui-bg: rgb(2, 4, 32);
 }
 
-@theme {
+@theme static {
   --font-sans: 'Public Sans', sans-serif;
 
   --breakpoint-3xl: 1920px;

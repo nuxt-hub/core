@@ -3,7 +3,6 @@ const props = defineProps<{
   tabs?: string[]
 }>()
 
-// TODO: Fix hydration issue
 const { data: table } = await useAsyncData('pricing-table', () => {
   return queryCollection('cloudflarePricing').first()
 })
