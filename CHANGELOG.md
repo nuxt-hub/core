@@ -1,6 +1,41 @@
 # Changelog
 
 
+## v0.8.18
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.17...v0.8.18)
+
+### 📖 Documentation
+
+- Update ai docs ([#461](https://github.com/nuxt-hub/core/pull/461))
+- Update vectorize docs ([#458](https://github.com/nuxt-hub/core/pull/458))
+- Add section for nuxthub deploy in ci/cd ([67fb252](https://github.com/nuxt-hub/core/commit/67fb252))
+- Fix command palette navigation ([#476](https://github.com/nuxt-hub/core/pull/476))
+- Tidy up content collections ([099c91b](https://github.com/nuxt-hub/core/commit/099c91b))
+- Enable studio editing ([f056e7b](https://github.com/nuxt-hub/core/commit/f056e7b))
+- Add LLMS routes ([f59c078](https://github.com/nuxt-hub/core/commit/f59c078))
+- Add support for Nuxt Studio form customisation ([b5b1e54](https://github.com/nuxt-hub/core/commit/b5b1e54))
+- Add blog & changelog on search ([ac962a9](https://github.com/nuxt-hub/core/commit/ac962a9))
+- Improve environment variables part ([#478](https://github.com/nuxt-hub/core/pull/478))
+- **gitlab-ci:** Adding gitlab-ci documentation ([#479](https://github.com/nuxt-hub/core/pull/479))
+- Improvements on blog & changelog ([24e0efb](https://github.com/nuxt-hub/core/commit/24e0efb))
+- Fix header gradient shows above all the content ([#483](https://github.com/nuxt-hub/core/pull/483), [#484](https://github.com/nuxt-hub/core/pull/484))
+- 9K ([5fab003](https://github.com/nuxt-hub/core/commit/5fab003))
+
+### 🏡 Chore
+
+- Migrate to Nuxt UI v3 & Content v3 ([#471](https://github.com/nuxt-hub/core/pull/471))
+- Add support for Nitro `nodeCompat` ([0c9eb8b](https://github.com/nuxt-hub/core/commit/0c9eb8b))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](http://github.com/atinux))
+- Mohamed <mohamedbenhamzaa@gmail.com>
+- Skoenfaelt ([@skoenfaelt](http://github.com/skoenfaelt))
+- Olivier Belaud ([@OlivierBelaud](http://github.com/OlivierBelaud))
+- Hugo Richard ([@HugoRCD](http://github.com/HugoRCD))
+- Matt Maribojoc <matthewmaribojoc@gmail.com>
+
 ## v0.8.17
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.16...v0.8.17)
