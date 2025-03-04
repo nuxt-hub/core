@@ -100,6 +100,8 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.nitro.cloudflare ||= {}
     // @ts-expect-error noWranglerDeployConfig is not typed here
     nuxt.options.nitro.cloudflare.noWranglerDeployConfig = true
+    // @ts-expect-error nodeCompat is not typed here
+    nuxt.options.nitro.cloudflare.nodeCompat = true
     // For old versions of Nitro, disable generating the wrangler.toml file
     delete nuxt.options.nitro.cloudflare?.wrangler?.compatibility_flags
     if (nuxt.options.nitro.cloudflare?.wrangler && Object.keys(nuxt.options.nitro.cloudflare.wrangler).length) {
