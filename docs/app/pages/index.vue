@@ -100,7 +100,7 @@ onMounted(() => {
               <UAvatar text="..." />
             </UAvatarGroup>
             <span class="text-sm text-(--ui-text-elevated)">
-              Used and loved by <span class="font-medium text-(--ui-text-highlighted)">8K+ developers and teams</span>.
+              Used and loved by <span class="font-medium text-(--ui-text-highlighted)">9K+ developers and teams</span>.
             </span>
           </div>
           <USeparator type="dashed" class="w-24" />
