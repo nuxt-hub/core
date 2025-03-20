@@ -59,7 +59,7 @@ onMounted(() => {
             Report an issue
           </UButton>
           or
-          <UButton size="sm" variant="link" color="neutral" :to="`${toc.bottom.edit}/${page?.stem}`" target="_blank">
+          <UButton size="sm" variant="link" color="neutral" :to="`${toc.bottom.edit}/${page?.stem}.${page?.extension}`" target="_blank">
             Edit this page on GitHub
           </UButton>
         </div>
