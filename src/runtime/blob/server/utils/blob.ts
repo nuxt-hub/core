@@ -645,7 +645,7 @@ function getContentType(pathOrExtension?: string) {
 function mapR2ObjectToBlob(object: R2Object): BlobObject {
   return {
     pathname: object.key,
-    contentType: object.httpMetadata?.contentType,
+    contentType: object.httpMetadata?.contentType || getContentType(object.key),
     size: object.size,
     httpEtag: object.httpEtag,
     uploadedAt: object.uploaded,
