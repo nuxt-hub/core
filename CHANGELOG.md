@@ -1,6 +1,31 @@
 # Changelog
 
 
+## v0.8.19
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.18...v0.8.19)
+
+### 🩹 Fixes
+
+- **blob:** Missing content type on complete for multipart upload ([#517](https://github.com/nuxt-hub/core/pull/517))
+- **ai:** Properly handle error data on streams ([e97ee16](https://github.com/nuxt-hub/core/commit/e97ee16))
+
+### 📖 Documentation
+
+- Update `@nuxt/content` and remove custom content components ([#490](https://github.com/nuxt-hub/core/pull/490))
+- Fix syntax highlight ([c966784](https://github.com/nuxt-hub/core/commit/c966784))
+- Add missing extension ([c666b9c](https://github.com/nuxt-hub/core/commit/c666b9c))
+
+### 🏡 Chore
+
+- Set `cloudflare.deployConfig` to false in nitro ([617f23d](https://github.com/nuxt-hub/core/commit/617f23d))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+- Farnabaz <farnabaz@gmail.com>
+- Hugo Richard ([@HugoRCD](https://github.com/HugoRCD))
+
 ## v0.8.18
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.17...v0.8.18)
