@@ -508,6 +508,11 @@ function createMultipartUploadHandler(
       pathname: z.string().min(1)
     }).parse)
 
+    options ||= {}
+    if (getHeader(event, 'x-nuxthub-file-content-type')) {
+      options.contentType ||= getHeader(event, 'x-nuxthub-file-content-type')
+    }
+
     try {
       const object = await createMultipartUpload(pathname, options)
       return {

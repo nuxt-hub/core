@@ -30,7 +30,10 @@ export function useMultipartUpload(
     pathname: string
     uploadId: string
   }>(prefix ? joinURL('/create', prefix, file.name) : joinURL('/create', file.name), {
-    method: 'POST'
+    method: 'POST',
+    headers: {
+      'x-nuxthub-file-content-type': file.type
+    }
   })
 
   const upload = (
