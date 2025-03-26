@@ -204,10 +204,10 @@ export default defineNuxtModule<ModuleOptions>({
       if (!nuxt.options.nitro.unenv.external.includes('node:process')) {
         nuxt.options.nitro.unenv.external.push('node:process')
       }
-      // Add safe-buffer as alias to node:buffer
+      // Add safer-buffer as alias to node:buffer
       nuxt.options.nitro.unenv.alias ||= {}
-      if (!nuxt.options.nitro.unenv.alias['safe-buffer']) {
-        nuxt.options.nitro.unenv.alias['safe-buffer'] = 'node:buffer'
+      if (!nuxt.options.nitro.unenv.alias['safer-buffer']) {
+        nuxt.options.nitro.unenv.alias['safer-buffer'] = 'node:buffer'
       }
 
       // Add the env middleware
