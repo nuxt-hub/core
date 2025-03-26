@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.8.20
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.19...v0.8.20)
+
+### 🚀 Enhancements
+
+- Send file mime to multi-part upload ([#518](https://github.com/nuxt-hub/core/pull/518))
+
+### 🏡 Chore
+
+- Add alias for safe-buffer to node:buffer ([39bc7ec](https://github.com/nuxt-hub/core/commit/39bc7ec))
+
+### ❤️ Contributors
+
+- Farnabaz <farnabaz@gmail.com>
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+
 ## v0.8.19
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.18...v0.8.19)
