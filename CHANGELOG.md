@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.8.21
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.20...v0.8.21)
+
+### 🩹 Fixes
+
+- Typo `safe-buffer` -> `safer-buffer` ([e09663b](https://github.com/nuxt-hub/core/commit/e09663b))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+
 ## v0.8.20
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.19...v0.8.20)
