@@ -77,10 +77,10 @@ export default defineNuxtConfig({
   llms: {
     domain: 'https://hub.nuxt.com',
     title: 'NuxtHub Documentation for LLMs',
-    description: 'NuxtHub helps you build and deploy full-stack Nuxt applications globally on your Cloudflare account.',
-    full: {
-      title: 'NuxtHub Complete Documentation',
-      description: 'The complete NuxtHub documentation, blog posts and changelog written in Markdown (MDC syntax).'
-    }
+    description: 'NuxtHub helps you build and deploy full-stack Nuxt applications globally on your Cloudflare account.'
+    // full: {
+    //   title: 'NuxtHub Complete Documentation',
+    //   description: 'The complete NuxtHub documentation, blog posts and changelog written in Markdown (MDC syntax).'
+    // }
   }
 })
