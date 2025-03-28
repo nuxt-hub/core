@@ -13,6 +13,7 @@ const { messages, input, handleSubmit, isLoading, stop, error, reload } = useCha
             class="p-2 mt-1 text-sm rounded-lg text-smp-2 whitespace-pre-line"
             :class="message.role === 'assistant' ? 'text-white bg-blue-400' : 'text-gray-700 bg-gray-200'"
             :value="message.content"
+            :cache-key="message.id"
           />
         </div>
       </div>
