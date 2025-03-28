@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.8.22
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.21...v0.8.22)
+
+### 📖 Documentation
+
+- Disable llms-full.txt for now ([30a521e](https://github.com/nuxt-hub/core/commit/30a521e))
+
+### 🏡 Chore
+
+- Update deps ([9bff98d](https://github.com/nuxt-hub/core/commit/9bff98d))
+- Add postinstall script on playground ([3622d09](https://github.com/nuxt-hub/core/commit/3622d09))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+
 ## v0.8.21
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.20...v0.8.21)
