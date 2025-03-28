@@ -1,4 +1,4 @@
-import { eventHandler, getValidatedRouterParams, readValidatedBody, createError } from 'h3'
+import { eventHandler, getValidatedRouterParams, readValidatedBody } from 'h3'
 import { z } from 'zod'
 import { hubAI } from '../../../utils/ai'
 import { requireNuxtHubAuthorization } from '../../../../../utils/auth'
