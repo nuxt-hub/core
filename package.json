@@ -35,12 +35,13 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest run --test-timeout=60000",
-    "test:watch": "vitest watch"
+    "test:watch": "vitest watch",
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "^4.20250303.0",
-    "@nuxt/devtools-kit": "^2.1.3",
-    "@nuxt/kit": "^3.15.4",
+    "@cloudflare/workers-types": "^4.20250327.0",
+    "@nuxt/devtools-kit": "^2.3.2",
+    "@nuxt/kit": "^3.16.1",
     "@uploadthing/mime-types": "^0.3.4",
     "citty": "^0.1.6",
     "confbox": "^0.2.1",
@@ -48,7 +49,7 @@
     "destr": "^2.0.3",
     "h3": "^1.15.1",
     "mime": "^4.0.6",
-    "nitro-cloudflare-dev": "^0.2.1",
+    "nitro-cloudflare-dev": "^0.2.2",
     "ofetch": "^1.4.1",
     "pathe": "^2.0.3",
     "pkg-types": "^2.1.0",
@@ -59,24 +60,24 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^2.1.3",
-    "@nuxt/eslint-config": "^1.1.0",
+    "@nuxt/devtools": "^2.3.2",
+    "@nuxt/eslint-config": "^1.2.0",
     "@nuxt/module-builder": "^0.8.4",
-    "@nuxt/schema": "^3.15.4",
-    "@nuxt/test-utils": "^3.17.1",
+    "@nuxt/schema": "^3.16.1",
+    "@nuxt/test-utils": "^3.17.2",
     "@nuxthub/core": "link:",
-    "@types/node": "^22.13.9",
+    "@types/node": "^22.13.14",
     "changelogen": "^0.6.1",
-    "eslint": "^9.21.0",
-    "nuxt": "^3.15.4",
+    "eslint": "^9.23.0",
+    "nuxt": "^3.16.1",
     "typescript": "5.6.3",
-    "vitest": "^3.0.7",
-    "wrangler": "^3.112.0"
+    "vitest": "^3.0.9",
+    "wrangler": "^4.6.0"
   },
   "resolutions": {
     "h3": "^1.14.0"
   },
-  "packageManager": "pnpm@10.5.2",
+  "packageManager": "pnpm@10.7.0+sha512.6b865ad4b62a1d9842b61d674a393903b871d9244954f652b8842c2b553c72176b278f64c463e52d40fff8aba385c235c8c9ecf5cc7de4fd78b8bb6d49633ab6",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@parcel/watcher",
