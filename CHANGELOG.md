@@ -1,6 +1,81 @@
 # Changelog
 
 
+## v0.8.22
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.21...v0.8.22)
+
+### 🚀 Enhancements
+
+- **ai:** Support AI gateway in development too ([#522](https://github.com/nuxt-hub/core/pull/522))
+
+### 📖 Documentation
+
+- Disable llms-full.txt for now ([30a521e](https://github.com/nuxt-hub/core/commit/30a521e))
+
+### 🏡 Chore
+
+- Update deps ([9bff98d](https://github.com/nuxt-hub/core/commit/9bff98d))
+- Add postinstall script on playground ([3622d09](https://github.com/nuxt-hub/core/commit/3622d09))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+
+## v0.8.21
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.20...v0.8.21)
+
+### 🩹 Fixes
+
+- Typo `safe-buffer` -> `safer-buffer` ([e09663b](https://github.com/nuxt-hub/core/commit/e09663b))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+
+## v0.8.20
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.19...v0.8.20)
+
+### 🚀 Enhancements
+
+- Send file mime to multi-part upload ([#518](https://github.com/nuxt-hub/core/pull/518))
+
+### 🏡 Chore
+
+- Add alias for safe-buffer to node:buffer ([39bc7ec](https://github.com/nuxt-hub/core/commit/39bc7ec))
+
+### ❤️ Contributors
+
+- Farnabaz <farnabaz@gmail.com>
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+
+## v0.8.19
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.18...v0.8.19)
+
+### 🩹 Fixes
+
+- **blob:** Missing content type on complete for multipart upload ([#517](https://github.com/nuxt-hub/core/pull/517))
+- **ai:** Properly handle error data on streams ([e97ee16](https://github.com/nuxt-hub/core/commit/e97ee16))
+
+### 📖 Documentation
+
+- Update `@nuxt/content` and remove custom content components ([#490](https://github.com/nuxt-hub/core/pull/490))
+- Fix syntax highlight ([c966784](https://github.com/nuxt-hub/core/commit/c966784))
+- Add missing extension ([c666b9c](https://github.com/nuxt-hub/core/commit/c666b9c))
+
+### 🏡 Chore
+
+- Set `cloudflare.deployConfig` to false in nitro ([617f23d](https://github.com/nuxt-hub/core/commit/617f23d))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+- Farnabaz <farnabaz@gmail.com>
+- Hugo Richard ([@HugoRCD](https://github.com/HugoRCD))
+
 ## v0.8.18
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.17...v0.8.18)

@@ -2,7 +2,7 @@ import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import type { H3Error } from 'h3'
-import type { Ai } from '@cloudflare/workers-types/experimental'
+import type { Ai, AiOptions } from '@cloudflare/workers-types/experimental'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
 import { useRuntimeConfig } from '#imports'
@@ -36,7 +36,7 @@ export function hubAI(): Ai {
   } else if (import.meta.dev) {
     // Mock _ai to call NuxtHub Admin API to proxy CF account & API token
     _ai = {
-      async run(model: string, params?: Record<string, unknown>) {
+      async run(model: string, params?: Record<string, unknown>, options?: AiOptions) {
         if (!hub.projectKey) {
           throw createError({
             statusCode: 500,
@@ -55,7 +55,7 @@ export function hubAI(): Ai {
           headers: {
             authorization: `Bearer ${hub.userToken}`
           },
-          body: { model, params },
+          body: { model, params, options },
           responseType: params?.stream ? 'stream' : undefined
         }).catch(handleProxyError)
       }
@@ -97,9 +97,9 @@ export function proxyHubAI(projectUrl: string, secretKey?: string, headers?: Hea
     }
   })
   return {
-    async run(model: string, params?: Record<string, unknown>) {
+    async run(model: string, params?: Record<string, unknown>, options?: AiOptions) {
       return aiAPI('/run', {
-        body: { model, params },
+        body: { model, params, options },
         responseType: params?.stream ? 'stream' : undefined
       }).catch(handleProxyError)
     }
@@ -111,9 +111,15 @@ async function handleProxyError(err: H3Error) {
   if (import.meta.dev && err.statusCode === 403) {
     console.warn('It seems that your Cloudflare API token does not have the `Worker AI` permission.\nOpen `https://dash.cloudflare.com/profile/api-tokens` and edit your NuxtHub token.\nAdd the `Account > Worker AI > Read` permission to your token and save it.')
   }
+  let data = err.data
+  if (!err.data && typeof (err as any).response?.json === 'function') {
+    data = (await (err as any).response.json())?.data || {}
+  }
   throw createError({
-    statusCode: err.statusCode,
+    statusCode: data?.statusCode || err.statusCode,
+    statusMessage: data?.statusMessage || err.statusMessage,
     // @ts-expect-error not aware of data property
-    message: err.data?.message || err.message
+    message: data?.message || err.message,
+    data
   })
 }

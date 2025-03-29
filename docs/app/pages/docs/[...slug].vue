@@ -59,7 +59,7 @@ onMounted(() => {
             Report an issue
           </UButton>
           or
-          <UButton size="sm" variant="link" color="neutral" :to="`${toc.bottom.edit}/${page?.stem}`" target="_blank">
+          <UButton size="sm" variant="link" color="neutral" :to="`${toc.bottom.edit}/${page?.stem}.${page?.extension}`" target="_blank">
             Edit this page on GitHub
           </UButton>
         </div>
@@ -68,7 +68,7 @@ onMounted(() => {
     </div>
 
     <template v-if="page.body?.toc" #right>
-      <UContentToc :title="toc?.title" :links="page.body?.toc?.links" highlight />
+      <UContentToc :title="toc?.title" :links="page.body?.toc?.links" highlight class="backdrop-blur-none" />
     </template>
   </UPage>
 </template>

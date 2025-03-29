@@ -11,20 +11,29 @@ defineRouteMeta({
 export default defineEventHandler(async (event) => {
   const { messages } = await readBody(event)
 
-  const workersAI = createWorkersAI({ binding: hubAI() })
+  const workersAI = createWorkersAI({
+    binding: hubAI(),
+    gateway: {
+      id: 'playground',
+      cacheTtl: 60 * 60 // 1 hour
+    }
+  })
+
+  // return hubAI().run('@cf/meta/llama-3.1-8b-instruct', {
+  //   messages
+  // }, {
+  //   gateway: {
+  //     id: 'playground'
+  //   }
+  // })
 
   return streamText({
     model: workersAI('@cf/meta/llama-3.1-8b-instruct'),
-    messages
-  }).toDataStreamResponse({
-    // headers: {
-    //   // add these headers to ensure that the
-    //   // response is chunked and streamed
-    //   'content-type': 'text/x-unknown',
-    //   'content-encoding': 'identity',
-    //   'transfer-encoding': 'chunked'
-    // }
-  })
+    messages,
+    onError(res) {
+      console.error(res.error)
+    }
+  }).toDataStreamResponse()
 
   // For testing purposes, we'll randomly throw an error
   // if (Math.round(Math.random()) === 1) {

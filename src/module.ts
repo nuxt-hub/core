@@ -98,8 +98,8 @@ export default defineNuxtModule<ModuleOptions>({
     runtimeConfig.public.hub = {}
     // Make sure to tell Nitro to not generate the .wrangler/deploy/config.json file
     nuxt.options.nitro.cloudflare ||= {}
-    // @ts-expect-error noWranglerDeployConfig is not typed here
-    nuxt.options.nitro.cloudflare.noWranglerDeployConfig = true
+    // @ts-expect-error deployConfig is not typed here
+    nuxt.options.nitro.cloudflare.deployConfig = false
     // @ts-expect-error nodeCompat is not typed here
     nuxt.options.nitro.cloudflare.nodeCompat = true
     // For old versions of Nitro, disable generating the wrangler.toml file
@@ -203,6 +203,11 @@ export default defineNuxtModule<ModuleOptions>({
       }
       if (!nuxt.options.nitro.unenv.external.includes('node:process')) {
         nuxt.options.nitro.unenv.external.push('node:process')
+      }
+      // Add safer-buffer as alias to node:buffer
+      nuxt.options.nitro.unenv.alias ||= {}
+      if (!nuxt.options.nitro.unenv.alias['safer-buffer']) {
+        nuxt.options.nitro.unenv.alias['safer-buffer'] = 'node:buffer'
       }
 
       // Add the env middleware
