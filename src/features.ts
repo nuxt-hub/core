@@ -329,6 +329,7 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
         authorization: `Bearer ${hub.userToken}`
       }
     }).catch((err) => {
+      log.debug(err)
       if (!err.status) {
         log.error('It seems that you are offline.')
       } else if (err.status === 401) {
@@ -390,11 +391,16 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
     }
   })
     .catch(async (err) => {
+      log.debug(err)
       let message = 'Project not found.\nMake sure to deploy the project using `npx nuxthub deploy` or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable.'
       if (err.status >= 500) {
         message = 'Internal server error'
       } else if (err.status === 401) {
         message = 'Authorization failed.\nMake sure to provide a valid NUXT_HUB_PROJECT_SECRET_KEY or being logged in with `npx nuxthub login`'
+
+        if (hub.cloudflareAccess.clientId && hub.cloudflareAccess.clientSecret) {
+          message += ', and ensure the provided NUXT_HUB_CLOUDFLARE_ACCESS_CLIENT_ID and NUXT_HUB_CLOUDFLARE_ACCESS_CLIENT_SECRET are valid.'
+        }
       }
       log.error(`Failed to fetch remote storage: ${message}`)
       process.exit(1)
