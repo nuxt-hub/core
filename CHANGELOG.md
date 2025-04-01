@@ -1,6 +1,34 @@
 # Changelog
 
 
+## v0.8.23
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.21...v0.8.23)
+
+### 🚀 Enhancements
+
+- **ai:** Support AI gateway in development too ([#522](https://github.com/nuxt-hub/core/pull/522))
+- Improve error logging in setup remote ([#492](https://github.com/nuxt-hub/core/pull/492))
+
+### 🩹 Fixes
+
+- **types:** Add exports in package.json ([#527](https://github.com/nuxt-hub/core/pull/527))
+
+### 📖 Documentation
+
+- Disable llms-full.txt for now ([30a521e](https://github.com/nuxt-hub/core/commit/30a521e))
+
+### 🏡 Chore
+
+- Update deps ([9bff98d](https://github.com/nuxt-hub/core/commit/9bff98d))
+- Add postinstall script on playground ([3622d09](https://github.com/nuxt-hub/core/commit/3622d09))
+- **release:** V0.8.22 ([3217c05](https://github.com/nuxt-hub/core/commit/3217c05))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+- Rihan ([@RihanArfan](https://github.com/RihanArfan))
+
 ## v0.8.22
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.21...v0.8.22)
