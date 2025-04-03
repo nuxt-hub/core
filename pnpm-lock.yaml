@@ -6,6 +6,7 @@ settings:
 
 overrides:
   h3: ^1.14.0
+  '@nuxtjs/mdc': https://pkg.pr.new/@nuxtjs/mdc@cd1c4fd
 
 importers:
 
@@ -205,8 +206,8 @@ importers:
         specifier: latest
         version: 0.8.21(aws4fetch@1.0.20)(db0@0.3.1(better-sqlite3@11.9.1)(drizzle-orm@0.41.0(@cloudflare/workers-types@4.20250327.0)(@opentelemetry/api@1.9.0)(better-sqlite3@11.9.1)(postgres@3.4.5)))(ioredis@5.6.0)(magicast@0.3.5)(vite@6.2.3(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0))
       '@nuxtjs/mdc':
-        specifier: ^0.16.1
-        version: 0.16.1(magicast@0.3.5)
+        specifier: https://pkg.pr.new/@nuxtjs/mdc@cd1c4fd
+        version: https://pkg.pr.new/@nuxtjs/mdc@cd1c4fd(magicast@0.3.5)
       '@vueuse/core':
         specifier: ^13.0.0
         version: 13.0.0(vue@3.5.13(typescript@5.8.2))
@@ -1445,8 +1446,9 @@ packages:
   '@nuxtjs/color-mode@3.5.2':
     resolution: {integrity: sha512-cC6RfgZh3guHBMLLjrBB2Uti5eUoGM9KyauOaYS9ETmxNWBMTvpgjvSiSJp1OFljIXPIqVTJ3xtJpSNZiO3ZaA==}
 
-  '@nuxtjs/mdc@0.16.1':
-    resolution: {integrity: sha512-di9Ox9QY5pO2eIkQPyKFe9O8L3RvIrGbmjI3rJQRj1xGYRFj2S9RvBPCFbvfaqQGOTjOfxHLg8KtQIGj1Iw/lg==}
+  '@nuxtjs/mdc@https://pkg.pr.new/@nuxtjs/mdc@cd1c4fd':
+    resolution: {tarball: https://pkg.pr.new/@nuxtjs/mdc@cd1c4fd}
+    version: 0.16.1
 
   '@nuxtjs/plausible@1.2.0':
     resolution: {integrity: sha512-pjfps32fFN77BhjqHmq2Jx4XCNso9TcYnB+S4IR2qH/c26WDfYB5mQxN5pOEiWRlMkiKq+Y45mBBFtSOVKClCA==}
@@ -7709,7 +7711,7 @@ snapshots:
   '@nuxt/content@3.4.0(drizzle-orm@0.41.0(@cloudflare/workers-types@4.20250327.0)(@opentelemetry/api@1.9.0)(better-sqlite3@11.9.1)(postgres@3.4.5))(magicast@0.3.5)(typescript@5.8.2)':
     dependencies:
       '@nuxt/kit': 3.16.1(magicast@0.3.5)
-      '@nuxtjs/mdc': 0.16.1(magicast@0.3.5)
+      '@nuxtjs/mdc': https://pkg.pr.new/@nuxtjs/mdc@cd1c4fd(magicast@0.3.5)
       '@shikijs/langs': 3.2.1
       '@sqlite.org/sqlite-wasm': 3.49.1-build2
       '@webcontainer/env': 1.1.1
@@ -8486,9 +8488,11 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  '@nuxtjs/mdc@0.16.1(magicast@0.3.5)':
+  '@nuxtjs/mdc@https://pkg.pr.new/@nuxtjs/mdc@cd1c4fd(magicast@0.3.5)':
     dependencies:
       '@nuxt/kit': 3.16.1(magicast@0.3.5)
+      '@shikijs/langs': 3.2.1
+      '@shikijs/themes': 3.2.1
       '@shikijs/transformers': 3.2.1
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
