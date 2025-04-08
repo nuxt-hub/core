@@ -23,7 +23,7 @@ authors:
 
 We are excited to announce that we have added a new page to NuxtHub: **Deployment Details**!
 
-:nuxt-img{src="/images/changelog/deployment-details.png" alt="NuxtHub Deployment Details" width="915" height="515"}
+:img{src="/images/changelog/deployment-details.png" alt="NuxtHub Deployment Details" width="915" height="515"}
 
 You can now access more information about each deployment such as:
 - **Details:** Status, Branch, Commit and more

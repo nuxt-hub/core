@@ -23,7 +23,7 @@ This feature is available on both [free and pro plans](/pricing) starting with [
 
 We're excited to introduce automatic [database migrations](/docs/features/database#database-migrations) in NuxtHub.
 
-:nuxt-img{src="/images/changelog/database-migrations.png" alt="Automatic Database Migrations" width="915" height="515"}
+:img{src="/images/changelog/database-migrations.png" alt="Automatic Database Migrations" width="915" height="515"}
 
 ## Automatic Migration Application
 
@@ -36,7 +36,7 @@ Starting now, when you clone any of [our templates](/templates) with a database,
 
 [→ Deploy the Todo App template](https://admin.hub.nuxt.com/new?template=atidone)
 
-:nuxt-img{src="/images/changelog/database-migration-on-deploy.png" alt="Database Migrations applied during deployment" width="915" height="515"}
+:img{src="/images/changelog/database-migration-on-deploy.png" alt="Database Migrations applied during deployment" width="915" height="515"}
 
 ::note{to="/docs/features/database#database-migrations"}
 Learn more about database migrations in our **full documentation**.

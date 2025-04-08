@@ -24,7 +24,7 @@ This option will configure [Nitro's cache storage](https://nitro.unjs.io/guide/c
 
 Once your Nuxt project is deployed, you can manage your cache entries in the `Cache` section of your project in the [NuxtHub admin](https://admin.hub.nuxt.com/).
 
-:nuxt-img{src="/images/landing/nuxthub-admin-cache.png" alt="NuxtHub Admin Cache" width="915" height="515" data-zoom-src="/images/landing/nuxthub-admin-cache.png"}
+:img{src="/images/landing/nuxthub-admin-cache.png" alt="NuxtHub Admin Cache" width="915" height="515" data-zoom-src="/images/landing/nuxthub-admin-cache.png"}
 
 In development, checkout the Hub Cache section in the Nuxt Devtools.
 

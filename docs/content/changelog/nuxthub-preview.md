@@ -32,7 +32,7 @@ This command will:
 1. read the `dist/hub.config.json` file and generate a local `dist/wrangler.toml` file
 2. start the server using the `wrangler pages dev` command within the `dist/` director
 
-:nuxt-img{src="/images/changelog/nuxthub-preview.png" alt="NuxtHub Preview command" width="915" height="515"}
+:img{src="/images/changelog/nuxthub-preview.png" alt="NuxtHub Preview command" width="915" height="515"}
 
 ## Limitations
 

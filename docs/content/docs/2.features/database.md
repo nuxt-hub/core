@@ -30,10 +30,10 @@ During local development, you can view and edit your database in the Nuxt DevToo
 
 ::tabs
 ::div{label="Nuxt DevTools"}
-:nuxt-img{src="/images/landing/nuxt-devtools-database.png" alt="Nuxt DevTools Database" width="915" height="515" data-zoom-src="/images/landing/nuxt-devtools-database.png"}
+:img{src="/images/landing/nuxt-devtools-database.png" alt="Nuxt DevTools Database" width="915" height="515" data-zoom-src="/images/landing/nuxt-devtools-database.png"}
 ::
 ::div{label="NuxtHub Admin"}
-:nuxt-img{src="/images/landing/nuxthub-admin-database.png" alt="NuxtHub Admin Database" width="915" height="515" data-zoom-src="/images/landing/nuxthub-admin-database.png"}
+:img{src="/images/landing/nuxthub-admin-database.png" alt="NuxtHub Admin Database" width="915" height="515" data-zoom-src="/images/landing/nuxthub-admin-database.png"}
 ::
 ::
 

@@ -40,7 +40,7 @@ Learn more about Blob Storage.
 
 When viewing your blobs in the [NuxtHub admin](https://admin.hub.nuxt.com), you will now see a folder structure:
 
-:nuxt-img{src="/images/changelog/server-cache.png" alt="NuxtHub Deployment Details" width="915" height="515"}
+:img{src="/images/changelog/server-cache.png" alt="NuxtHub Deployment Details" width="915" height="515"}
 
 ::callout{icon="i-lucide-heart"}
 Thank you to [Gerben Mulder](https://github.com/Gerbuuun) for suggesting this feature on [nuxt-hub/core#101](https://github.com/nuxt-hub/core/issues/101).

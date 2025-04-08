@@ -23,17 +23,17 @@ We're thrilled to release our brand new [GitHub Application](https://github.com/
 
 Once setup, NuxtHub will automatically comment on pull requests with branch URLs, permalinks and QR codes for easy preview access.
 
-:nuxt-img{src="/images/changelog/nuxthub-github-app-action.png" alt="GitHub Action" width="926" height="520"}
+:img{src="/images/changelog/nuxthub-github-app-action.png" alt="GitHub Action" width="926" height="520"}
 
 ## GitHub Deployments
 
 NuxtHub also integrates with GitHub's deployment system, including status updates and environment tracking.
 
-:nuxt-img{src="/images/changelog/nuxthub-github-action-deployment.png" alt="NuxtHub GitHub Action deployments" width="926" height="521"}
+:img{src="/images/changelog/nuxthub-github-action-deployment.png" alt="NuxtHub GitHub Action deployments" width="926" height="521"}
 
 This includes GitHub Deployments support in pull requests.
 
-:nuxt-img{src="/images/changelog/nuxthub-github-action-deployment-pr.png" alt="NuxtHub GitHub Action deployments" width="926" height="219"}
+:img{src="/images/changelog/nuxthub-github-action-deployment-pr.png" alt="NuxtHub GitHub Action deployments" width="926" height="219"}
 
 And many more:
 - **Deployment Protection**: Support for GitHub's deployment protection rules which enable approval workflows and environment restrictions ([learn more on GitHub's documentation](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-deployments/managing-environments-for-deployment#deployment-protection-rules))
@@ -44,7 +44,7 @@ And many more:
 
 Thanks to the new GitHub App, you can now clone a template from NuxtHub Admin and deploy it with a single click.
 
-:nuxt-img{src="/images/changelog/nuxthub-github-app-clone-template.png" alt="NuxtHub GitHub App clone template" width="2596" height="1460"}
+:img{src="/images/changelog/nuxthub-github-app-clone-template.png" alt="NuxtHub GitHub App clone template" width="2596" height="1460"}
 
 ::note
 The repository will be created in your GitHub account with the GitHub Actions workflow already configured.

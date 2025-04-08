@@ -26,7 +26,7 @@ You can select to be notified about all environments, only the production or pre
 
 We also added the possibility to add a name to the webhook for better identification.
 
-:nuxt-img{src="/images/changelog/team-webhooks-env.png" alt="Team Webhooks Env selection" width="915" height="515" class="rounded"}
+:img{src="/images/changelog/team-webhooks-env.png" alt="Team Webhooks Env selection" width="915" height="515" class="rounded"}
 
 ::callout{icon="i-lucide-webhooks" to="/changelog/team-webhooks"}
 Learn more about team webhooks.

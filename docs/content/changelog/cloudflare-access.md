@@ -19,7 +19,7 @@ We now fully support Cloudflare Access across admin, module and CLI.
 
 ## What is Cloudflare Access
 
-:nuxt-img{src="/images/changelog/cloudflare-access.png" alt="Cloudflare Access" width="915" height="515"}
+:img{src="/images/changelog/cloudflare-access.png" alt="Cloudflare Access" width="915" height="515"}
 
 [Cloudflare Access](https://www.cloudflare.com/zero-trust/products/access/) allows you to secure your web applications by restricting who can reach your application by applying configured identity-aware Access policies. Cloudflare Access is part of [Cloudflare's Zero Trust](https://www.cloudflare.com/plans/zero-trust-services/) offerings.
 

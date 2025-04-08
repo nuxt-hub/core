@@ -18,7 +18,7 @@ authors:
 
 We are excited to announce that we have added a new page to your NuxtHub project: **Server Cache**!
 
-:nuxt-img{src="/images/changelog/server-cache.png" alt="NuxtHub Deployment Details" width="915" height="515"}
+:img{src="/images/changelog/server-cache.png" alt="NuxtHub Deployment Details" width="915" height="515"}
 
 It works with:
 - [`cachedEventHandler`](https://nitro.unjs.io/guide/cache#cached-event-handlers)

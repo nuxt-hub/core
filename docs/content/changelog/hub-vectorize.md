@@ -18,7 +18,7 @@ This feature is available on both [free and pro plans](/pricing) and in [`@nuxth
 
 We are excited to introduce [`hubVectorize()`](/docs/features/vectorize), which gives you access to a globally distributed vector database from Nuxt. Paired with [`hubAI()`](/docs/features/ai), it makes Nuxt a perfect framework for easily building full-stack AI-powered applications.
 
-:nuxt-img{src="/images/changelog/nuxthub-vectorize.png" alt="NuxtHub Vectorize command" width="915" height="515"}
+:img{src="/images/changelog/nuxthub-vectorize.png" alt="NuxtHub Vectorize command" width="915" height="515"}
 
 ## What is a vector database?
 

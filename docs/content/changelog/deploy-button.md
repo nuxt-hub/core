@@ -18,7 +18,7 @@ authors:
 
 The button is designed to be used in the README of a GitHub repository, documentations or any other place where you want to allow users to deploy your project with one click.
 
-:nuxt-img{src="/images/changelog/deploy-button.png" alt="NuxtHub Deploy Button" width="915" height="515"}
+:img{src="/images/changelog/deploy-button.png" alt="NuxtHub Deploy Button" width="915" height="515"}
 
 ## Deploy Button
 
