@@ -100,9 +100,7 @@ export default defineNuxtModule<ModuleOptions>({
     runtimeConfig.public.hub = {}
     // Make sure to tell Nitro to not generate the .wrangler/deploy/config.json file
     nuxt.options.nitro.cloudflare ||= {}
-    // @ts-expect-error deployConfig is not typed here
     nuxt.options.nitro.cloudflare.deployConfig = false
-    // @ts-expect-error nodeCompat is not typed here
     nuxt.options.nitro.cloudflare.nodeCompat = true
     // For old versions of Nitro, disable generating the wrangler.toml file
     delete nuxt.options.nitro.cloudflare?.wrangler?.compatibility_flags
