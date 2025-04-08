@@ -17,7 +17,7 @@ export interface ModuleOptions {
   /**
    * Set `true` if the project type is Workers.
    *
-   * If `nitro.experimental.websocket` is enabled, the preset will be set to `cloudflare_durable`, otherwise the preset will be `cloudflare-module`.
+   * If `nitro.experimental.websocket` is enabled, the preset will be set to `cloudflare_durable`, otherwise the preset will be `cloudflare_module`.
    *
    * @default false
    */
