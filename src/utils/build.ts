@@ -3,8 +3,10 @@ import { logger } from '@nuxt/kit'
 import { join, resolve } from 'pathe'
 import { $fetch } from 'ofetch'
 import type { Nuxt } from '@nuxt/schema'
+import type { NitroConfig } from 'nitropack'
 import type { HubConfig } from '../features'
 import { applyRemoteDatabaseMigrations, applyRemoteDatabaseQueries } from '../runtime/database/server/utils/migrations/remote'
+import type { ModuleOptions } from '../types'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -140,4 +142,16 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
       }
     })
   }
+}
+
+export function getNitroPreset(hub: ModuleOptions, nitroOption: NitroConfig) {
+  if (nitroOption.preset) return nitroOption.preset.replace('-', '_')
+  if (hub.workers) {
+    if (nitroOption?.experimental?.websocket) {
+      return 'cloudflare_durable'
+    }
+    return 'cloudflare_module'
+  }
+
+  return 'cloudflare_pages'
 }

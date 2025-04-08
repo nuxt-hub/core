@@ -10,7 +10,7 @@ import { version } from '../package.json'
 import { generateWrangler } from './utils/wrangler'
 import { setupAI, setupCache, setupAnalytics, setupBlob, setupBrowser, setupOpenAPI, setupDatabase, setupKV, setupVectorize, setupBase, setupRemote, vectorizeRemoteCheck, type HubConfig } from './features'
 import type { ModuleOptions } from './types/module'
-import { addBuildHooks } from './utils/build'
+import { addBuildHooks, getNitroPreset } from './utils/build'
 
 export * from './types'
 
@@ -55,6 +55,8 @@ export default defineNuxtModule<ModuleOptions>({
       remoteManifest: undefined,
       // Local storage
       dir: '.data/hub',
+      // Workers support
+      workers: false,
       // NuxtHub features
       ai: false,
       analytics: false,
@@ -173,8 +175,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Production mode without remote storage
     if (!hub.remote && !nuxt.options.dev) {
-      // Make sure to fallback to cloudflare_pages preset
-      nuxt.options.nitro.preset = (nuxt.options.nitro.preset || 'cloudflare_pages').replace('-', '_')
+      nuxt.options.nitro.preset = getNitroPreset(hub, nuxt.options.nitro)
 
       if (!['cloudflare_pages', 'cloudflare_module', 'cloudflare_durable'].includes(nuxt.options.nitro.preset)) {
         log.error('NuxtHub is only compatible with the `cloudflare_pages`, `cloudflare_module` or `cloudflare_durable` presets.')

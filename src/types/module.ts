@@ -15,6 +15,14 @@ export interface ModuleHooks {
 
 export interface ModuleOptions {
   /**
+   * Set `true` if the project type is Workers.
+   *
+   * If `nitro.experimental.websocket` is enabled, the preset will be set to `cloudflare_durable`, otherwise the preset will be `cloudflare-module`.
+   *
+   * @default false
+   */
+  workers?: boolean
+  /**
    * Set `true` to enable AI for the project.
    *
    * Requires running `npx nuxthub link` for local development.
