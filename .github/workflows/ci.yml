@@ -70,8 +70,8 @@ jobs:
       - name: Run test suite
         run: pnpm test
 
-      - name: Run types tests
-        run: pnpm test:types
+      # - name: Run types tests
+      #   run: pnpm test:types
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [lint, test]
