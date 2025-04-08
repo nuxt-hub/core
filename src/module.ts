@@ -161,8 +161,11 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}
     nuxt.options.nitro.experimental.asyncContext = true
     nuxt.options.nitro.unenv = nuxt.options.nitro.unenv || {}
+    // @ts-expect-error unenv is not typed here
     nuxt.options.nitro.unenv.external = nuxt.options.nitro.unenv.external || []
+    // @ts-expect-error unenv is not typed here
     if (!nuxt.options.nitro.unenv.external.includes('node:async_hooks')) {
+      // @ts-expect-error unenv is not typed here
       nuxt.options.nitro.unenv.external.push('node:async_hooks')
     }
 
@@ -197,15 +200,22 @@ export default defineNuxtModule<ModuleOptions>({
       nuxt.options.nitro.commands.deploy = 'npx nuxthub deploy'
 
       // Add node:stream to unenv external (only for Cloudflare Pages/Workers)
+      // @ts-expect-error unenv is not typed here
       if (!nuxt.options.nitro.unenv.external.includes('node:stream')) {
+        // @ts-expect-error unenv is not typed here
         nuxt.options.nitro.unenv.external.push('node:stream')
       }
+      // @ts-expect-error unenv is not typed here
       if (!nuxt.options.nitro.unenv.external.includes('node:process')) {
+        // @ts-expect-error unenv is not typed here
         nuxt.options.nitro.unenv.external.push('node:process')
       }
       // Add safer-buffer as alias to node:buffer
+      // @ts-expect-error unenv is not typed here
       nuxt.options.nitro.unenv.alias ||= {}
+      // @ts-expect-error unenv is not typed here
       if (!nuxt.options.nitro.unenv.alias['safer-buffer']) {
+        // @ts-expect-error unenv is not typed here
         nuxt.options.nitro.unenv.alias['safer-buffer'] = 'node:buffer'
       }
 

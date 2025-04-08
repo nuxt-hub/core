@@ -24,7 +24,7 @@ export default eventHandler(async (event) => {
         metadata: z.record(z.string(), z.any()).optional()
       }))
     }).parse)
-    return vectorize[command](vectors)
+    return vectorize?.[command](vectors)
   }
 
   if (command === 'query') {
@@ -38,17 +38,17 @@ export default eventHandler(async (event) => {
         filter: z.record(z.string(), z.any()).optional()
       }).optional()
     }).parse)
-    return vectorize.query(query, params)
+    return vectorize?.query(query, params)
   }
 
   if (command === 'getByIds' || command === 'deleteByIds') {
     const { ids } = await readValidatedBody(event, z.object({
       ids: z.array(z.string().min(1).max(256))
     }).parse)
-    return vectorize[command](ids)
+    return vectorize?.[command](ids)
   }
 
   if (command === 'describe') {
-    return vectorize.describe()
+    return vectorize?.describe()
   }
 })

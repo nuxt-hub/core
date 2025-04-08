@@ -13,5 +13,5 @@ export default eventHandler(async (event: H3Event) => {
     })
   }
 
-  return $fetch(hub.openAPIRoute).catch(() => ({}))
+  return $fetch((hub as any).openAPIRoute).catch(() => ({}))
 })

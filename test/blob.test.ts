@@ -295,8 +295,8 @@ describe('Blob', async () => {
     it('Get single file', async () => {
       const image = images[0]
       const result = await $fetch<Blob>(`/api/_hub/blob/${image.pathname}`)
-      expect(result.size).toMatchObject(image.size)
-      expect(result.type).toMatchObject(image.contentType)
+      expect(result.size).toBe(image.size)
+      expect(result.type).toBe(image.contentType)
     })
   })
 

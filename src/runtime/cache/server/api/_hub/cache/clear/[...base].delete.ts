@@ -31,9 +31,9 @@ export default eventHandler(async (event) => {
       body: {
         keys: keys.map(key => `${base}:${key}`)
       },
-      headers: {
-        authorization: getHeader(event, 'authorization')
-      }
+      headers: new Headers({
+        authorization: getHeader(event, 'authorization') || ''
+      })
     })
   }
 

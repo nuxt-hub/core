@@ -5,6 +5,7 @@ import type { KVNamespace } from '@cloudflare/workers-types'
 import { requireNuxtHubFeature } from '../../../utils/features'
 
 export function hubCacheBinding(name: string = 'CACHE'): KVNamespace {
+  // @ts-expect-error globalThis is not typed here
   const binding = process.env[name] || globalThis.__env__?.[name] || globalThis[name]
   if (!binding) {
     throw createError(`Missing Cloudflare KV binding (${name})`)

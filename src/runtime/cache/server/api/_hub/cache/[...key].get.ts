@@ -1,5 +1,6 @@
 import ms from 'ms'
 import { eventHandler, getRouterParam } from 'h3'
+import type { KVNamespaceListResult } from '@cloudflare/workers-types'
 import { requireNuxtHubAuthorization } from '../../../../../utils/auth'
 import { requireNuxtHubFeature } from '../../../../../utils/features'
 import { hubCacheBinding } from '../../../utils/cache'
@@ -23,7 +24,7 @@ export default eventHandler(async (event) => {
   const keys = []
   let cursor = undefined
   do {
-    const res = await binding.list({ prefix, cursor })
+    const res: KVNamespaceListResult<any, string> = await binding.list({ prefix, cursor })
 
     keys.push(...res.keys)
     cursor = (res.list_complete ? undefined : res.cursor)

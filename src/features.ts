@@ -398,7 +398,7 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
       } else if (err.status === 401) {
         message = 'Authorization failed.\nMake sure to provide a valid NUXT_HUB_PROJECT_SECRET_KEY or being logged in with `npx nuxthub login`'
 
-        if (hub.cloudflareAccess.clientId && hub.cloudflareAccess.clientSecret) {
+        if (hub.cloudflareAccess?.clientId && hub.cloudflareAccess?.clientSecret) {
           message += ', and ensure the provided NUXT_HUB_CLOUDFLARE_ACCESS_CLIENT_ID and NUXT_HUB_CLOUDFLARE_ACCESS_CLIENT_SECRET are valid.'
         }
       }
