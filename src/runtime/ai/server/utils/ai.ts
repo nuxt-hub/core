@@ -111,14 +111,13 @@ async function handleProxyError(err: H3Error) {
   if (import.meta.dev && err.statusCode === 403) {
     console.warn('It seems that your Cloudflare API token does not have the `Worker AI` permission.\nOpen `https://dash.cloudflare.com/profile/api-tokens` and edit your NuxtHub token.\nAdd the `Account > Worker AI > Read` permission to your token and save it.')
   }
-  let data = err.data
+  let data = err.data as any
   if (!err.data && typeof (err as any).response?.json === 'function') {
     data = (await (err as any).response.json())?.data || {}
   }
   throw createError({
     statusCode: data?.statusCode || err.statusCode,
     statusMessage: data?.statusMessage || err.statusMessage,
-    // @ts-expect-error not aware of data property
     message: data?.message || err.message,
     data
   })

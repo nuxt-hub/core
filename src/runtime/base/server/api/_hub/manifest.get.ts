@@ -16,7 +16,7 @@ export default eventHandler(async (event) => {
     // vectorize check should verify all indexes. return the index name
     Promise.all(Object.keys(vectorize).map(async (index) => {
       const vectorizeIndex = hubVectorize(index)
-      const describe = await falseIfFail(() => vectorizeIndex.describe())
+      const describe = await falseIfFail(() => vectorizeIndex?.describe())
       return [index, Boolean(describe)]
     }))
   ])

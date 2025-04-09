@@ -56,7 +56,7 @@ export function useUpload(apiBase: string, options: UploadOptions = {}) {
       ...fetchOptions,
       method: (method || 'POST') as any,
       body: formData
-    }).then(result => (multiple === false || data instanceof File) ? result[0] : result)
+    }).then(result => (multiple === false || data instanceof File) ? (result as any)[0] : result)
   }
 
   return upload

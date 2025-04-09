@@ -1,6 +1,6 @@
-import { cachedEventHandler } from '#imports'
+import { defineCachedEventHandler } from '#imports'
 
-export default cachedEventHandler(async () => {
+export default defineCachedEventHandler(async () => {
   return { hello: 'world' }
 }, {
   maxAge: 1000

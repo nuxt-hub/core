@@ -1,4 +1,4 @@
-import log from 'consola'
+import { consola } from 'consola'
 import { $fetch } from 'ofetch'
 import type { HubConfig } from '../../../../../features'
 import { AppliedDatabaseMigrationsQuery, CreateDatabaseMigrationsTableQuery, getDatabaseMigrationFiles, getDatabaseQueryFiles, useDatabaseMigrationsStorage, useDatabaseQueriesStorage } from './helpers'
@@ -32,14 +32,14 @@ export async function applyRemoteDatabaseMigrations(hub: HubConfig) {
   try {
     appliedMigrations = await fetchRemoteDatabaseMigrations(hub)
   } catch (error: any) {
-    log.error(`Could not fetch applied migrations: ${error.response?._data?.message}`)
+    consola.error(`Could not fetch applied migrations: ${error.response?._data?.message}`)
     return false
   }
   const localMigrations = (await getDatabaseMigrationFiles(hub)).map(fileName => fileName.replace('.sql', ''))
   const pendingMigrations = localMigrations.filter(localName => !appliedMigrations.find(({ name }) => name === localName))
 
   if (!pendingMigrations.length) {
-    log.success('Database migrations up to date')
+    consola.success('Database migrations up to date')
     return true
   }
 
@@ -55,16 +55,16 @@ export async function applyRemoteDatabaseMigrations(hub: HubConfig) {
     try {
       await queryRemoteDatabase(hub, query)
     } catch (error: any) {
-      log.error(`Failed to apply migration \`${migration}.sql\`: ${error.response?._data?.message}`)
+      consola.error(`Failed to apply migration \`${migration}.sql\`: ${error.response?._data?.message}`)
       if (error.response?._data?.message?.includes('already exists')) {
-        log.info(`To mark all migrations as already applied, run: \`npx nuxthub database migrations mark-all-applied --${hub.env}\``)
+        consola.info(`To mark all migrations as already applied, run: \`npx nuxthub database migrations mark-all-applied --${hub.env}\``)
       }
       return false
     }
 
-    log.success(`Database migration \`${migration}.sql\` applied`)
+    consola.success(`Database migration \`${migration}.sql\` applied`)
   }
-  log.success('Database migrations up to date')
+  consola.success('Database migrations up to date')
   return true
 }
 
@@ -86,11 +86,11 @@ export async function applyRemoteDatabaseQueries(hub: HubConfig) {
     try {
       await queryRemoteDatabase(hub, query)
     } catch (error: any) {
-      log.error(`Failed to apply query \`${queryPath}\`: ${error.response?._data?.message}`)
+      consola.error(`Failed to apply query \`${queryPath}\`: ${error.response?._data?.message}`)
       return false
     }
 
-    log.success(`Database query \`${queryPath}\` applied`)
+    consola.success(`Database query \`${queryPath}\` applied`)
     return true
   }
 }

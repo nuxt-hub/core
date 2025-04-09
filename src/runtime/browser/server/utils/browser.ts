@@ -93,7 +93,7 @@ export async function hubBrowser(options: HubBrowserOptions = {}): Promise<HubBr
   if (!_browser) {
     _browser = (await _browserPromise) as Browser
     // Make disconnect a no-op
-    _browser.disconnect = () => {}
+    _browser.disconnect = () => Promise.resolve()
   }
   const page = await _browser.newPage()
   const unregister = nitroApp.hooks.hook('afterResponse', async (closingEvent: H3Event) => {

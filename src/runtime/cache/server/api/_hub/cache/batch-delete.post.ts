@@ -18,16 +18,16 @@ export default eventHandler(async (event) => {
     // delete with batch of 100 keys
     do {
       const keysToDelete = keys.splice(0, 100)
-      await Promise.all(keysToDelete.map(storage.removeItem))
+      await Promise.all(keysToDelete.map(key => storage.removeItem(key)))
     } while (keys.length)
   } else {
     await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY || hub.projectKey}/cache/${process.env.NUXT_HUB_ENV || hub.env}/batch-delete`, {
       baseURL: process.env.NUXT_HUB_URL || hub.url,
       method: 'POST',
       body: { keys },
-      headers: {
-        authorization: getHeader(event, 'authorization')
-      }
+      headers: new Headers({
+        authorization: getHeader(event, 'authorization') || ''
+      })
     })
   }
   return sendNoContent(event)

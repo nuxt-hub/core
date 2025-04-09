@@ -11,7 +11,7 @@ export default eventHandler(async (event) => {
   const query = getQuery(event)
 
   return hubBlob().handleUpload(event, {
-    formKey: query.formKey || 'files',
+    formKey: query.formKey as string || 'files',
     multiple: query.multiple !== 'false',
     put: destr(query.put),
     ensure: destr(query.ensure)

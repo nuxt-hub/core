@@ -31,16 +31,17 @@ export function hubKV(): HubKV {
   const binding = process.env.KV || globalThis.__env__?.KV || globalThis.KV
   if (hub.remote && hub.projectUrl && !binding) {
     const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
-    return proxyHubKV(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
+    _kv = proxyHubKV(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
+    return _kv
   }
   if (binding) {
-    const storage = createStorage({
+    _kv = createStorage({
       driver: cloudflareKVBindingDriver({
         binding
       })
     })
 
-    return storage
+    return _kv
   }
   throw createError('Missing Cloudflare KV binding (KV)')
 }
