@@ -1,6 +1,33 @@
 # Changelog
 
 
+## v0.8.24
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.23...v0.8.24)
+
+### 🚀 Enhancements
+
+- Support hub.workers option ([#535](https://github.com/nuxt-hub/core/pull/535))
+
+### 📖 Documentation
+
+- LLMS Full generation ([#530](https://github.com/nuxt-hub/core/pull/530))
+- Update deps ([866080d](https://github.com/nuxt-hub/core/commit/866080d))
+- Use img tag ([6cfa14c](https://github.com/nuxt-hub/core/commit/6cfa14c))
+
+### 🏡 Chore
+
+- Small update ([147f1d5](https://github.com/nuxt-hub/core/commit/147f1d5))
+- Update deps ([2a0f013](https://github.com/nuxt-hub/core/commit/2a0f013))
+- Upgrade nuxt module builder to v1 ([#536](https://github.com/nuxt-hub/core/pull/536))
+- Update deps ([6d0711f](https://github.com/nuxt-hub/core/commit/6d0711f))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+- Rihan ([@RihanArfan](https://github.com/RihanArfan))
+- Farnabaz <farnabaz@gmail.com>
+
 ## v0.8.23
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.21...v0.8.23)
