@@ -73,7 +73,6 @@ jobs:
       # - name: Run types tests
       #   run: pnpm test:types
   release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [lint, test]
     runs-on: ubuntu-latest
     steps:
@@ -88,8 +87,7 @@ jobs:
         run: pnpm install
       - name: Prepare environment
         run: pnpm dev:prepare
-      - name: Release Nightly
-        run: pnpm changelogen --bump --canary --publish --publishTag nightly
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
+      - name: Build package
+        run: pnpm prepack
+      - name: Publish
+        run: pnpx pkg-pr-new publish --compact --no-template --pnpm
