@@ -49,16 +49,16 @@ Here are some use cases for using a headless browser like Puppeteer in your Nuxt
 
 ## Limits
 
-::important
-Browser rendering is only available on the [Workers Paid](https://www.cloudflare.com/plans/developer-platform/) plan for now.
-::
-
-To improve the performance in production, NuxtHub will reuse browser sessions. This means that the browser will stay open after each request (for 60 seconds), a new request will reuse the same browser session if available or open a new one.
-
 The Cloudflare limits are:
-- 10 new browsers per minute per Cloudflare account
-- 10 concurrent browser sessions per account
+- 3 concurrent browsers per Cloudflare account
+- 3 new browser instancess per minute
 - a browser instance gets killed if no activity is detected for 60 seconds (idle timeout)
+
+On a Workers Paid plan, you can create up to 10 concurrent browser per account and 10 new browser instances per minute.
+
+::note
+To improve the performance in production, NuxtHub will reuse browser sessions. This means that the browser will stay open after each request (for 60 seconds), a new request will reuse the same browser session if available or open a new one.
+::
 
 You can extend the idle timeout by giving the `keepAlive` option when creating the browser instance:
 
