@@ -48,7 +48,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <UPage class="relative">
+  <UPage class="relative overflow-hidden">
     <UPageHero
       :description="page?.hero.description"
       orientation="horizontal"
@@ -118,16 +118,24 @@ onMounted(() => {
         </div>
       </template>
 
-      <img
-        src="/images/landing/hero-screenshot-dark.svg"
-        class="hidden dark:lg:block absolute right-0 h-[300px] lg:h-[380px] xl:h-[440px] 2xl:h-[540px]"
-        alt="NuxtHub Deploy page"
+      <UCard
+        variant="soft"
+        class="hidden lg:block max-2xl:absolute border border-(--ui-border-accented) bg-(--ui-bg-accented)/40 max-2xl:-right-30 [--padding-card:--spacing(3)] rounded-[calc(theme(borderRadius.lg)+theme(spacing.3))] 2xl:scale-110 2xl:origin-right"
+        :ui="{
+          body: 'lg:pl-(--padding-card) lg:pt-(--padding-card) lg:pb-(--padding-card) lg:pr-0 2xl:pr-(--padding-card) rounded-(--padding-card)'
+        }"
       >
-      <img
-        src="/images/landing/hero-screenshot-light.svg"
-        class="hidden dark:hidden lg:block absolute right-0 h-[300px] lg:h-[380px] xl:h-[440px] 2xl:h-[540px]"
-        alt="NuxtHub Deploy page"
-      >
+        <img
+          src="/images/landing/hero-screenshot-dark.svg"
+          class="hidden dark:lg:block size-full object-cover object-left h-[300px] lg:h-[380px] xl:h-[440px] 2xl:h-full"
+          alt="NuxtHub Deploy page"
+        >
+        <img
+          src="/images/landing/hero-screenshot-light.svg"
+          class="hidden dark:hidden lg:block size-full object-cover object-left h-[300px] lg:h-[380px] xl:h-[440px] 2xl:h-full"
+          alt="NuxtHub Deploy page"
+        >
+      </UCard>
 
       <UModal v-model:open="videoModalOpen" :ui="{ content: 'sm:max-w-4xl lg:max-w-5xl aspect-[16/9]' }">
         <template #content>
