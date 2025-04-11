@@ -120,7 +120,7 @@ onMounted(() => {
 
       <UCard
         variant="soft"
-        class="hidden lg:block max-2xl:absolute border border-(--ui-border-accented) bg-(--ui-bg-accented)/40 max-2xl:-right-30 [--padding-card:--spacing(3)] rounded-[calc(theme(borderRadius.lg)+theme(spacing.3))] 2xl:scale-110 2xl:origin-right"
+        class="hidden lg:block max-2xl:absolute border border-(--ui-border-accented) bg-(--ui-bg-accented)/40 max-2xl:-right-30 [--padding-card:--spacing(3)] rounded-[calc(theme(borderRadius.lg)+var(--padding-card))] 2xl:scale-110 2xl:origin-right"
         :ui="{
           body: 'lg:pl-(--padding-card) lg:pt-(--padding-card) lg:pb-(--padding-card) lg:pr-0 2xl:pr-(--padding-card) rounded-(--padding-card)'
         }"
