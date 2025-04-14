@@ -2,7 +2,7 @@ import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import type { H3Error } from 'h3'
-import type { Ai, AiOptions } from '@cloudflare/workers-types/experimental'
+import type { Ai, AiOptions, ConversionResponse } from '@cloudflare/workers-types/experimental'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
 import { useRuntimeConfig } from '#imports'
@@ -48,6 +48,23 @@ export function hubAI(): Omit<Ai, 'autorag'> {
           body: { model, params, options },
           responseType: params?.stream ? 'stream' : undefined
         }).catch(handleProxyError)
+      },
+      async models(params?: Record<string, unknown>) {
+        requireNuxtHubLinkedProject(hub, 'hubAI')
+        return $fetch(`/api/projects/${hub.projectKey}/ai/models`, {
+          baseURL: hub.url,
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${hub.userToken}`
+          },
+          body: { params }
+        }).catch(handleProxyError)
+      },
+      async toMarkdown(_files: unknown, _options: unknown): Promise<ConversionResponse[]> {
+        throw createError({
+          statusCode: 501,
+          message: 'hubAI().toMarkdown() is only supported with remote storage in development mode.'
+        })
       }
     } as Ai
   } else if (binding) {
@@ -91,6 +108,16 @@ export function proxyHubAI(projectUrl: string, secretKey?: string, headers?: Hea
       return aiAPI('/run', {
         body: { model, params, options },
         responseType: params?.stream ? 'stream' : undefined
+      }).catch(handleProxyError)
+    },
+    async models(params?: Record<string, unknown>) {
+      return aiAPI('/models', {
+        body: { params }
+      }).catch(handleProxyError)
+    },
+    async toMarkdown(files: unknown, options: unknown): Promise<ConversionResponse[]> {
+      return aiAPI('/to-markdown', {
+        body: { files, options }
       }).catch(handleProxyError)
     }
   } as Ai
