@@ -1,6 +1,7 @@
 import type { H3Event } from 'h3'
 import { getHeader, createError } from 'h3'
 import { $fetch } from 'ofetch'
+import type { HubConfig } from '~/src/features'
 
 const localCache: Map<string, boolean> = new Map()
 
@@ -60,4 +61,19 @@ export async function requireNuxtHubAuthorization(event: H3Event) {
     statusCode: 401,
     message: 'Missing NUXT_HUB_PROJECT_SECRET_KEY environment variable or NUXT_HUB_PROJECT_KEY environment variable'
   })
+}
+
+export function requireNuxtHubLinkedProject(hub: HubConfig, featureName: string) {
+  if (!hub.projectKey) {
+    throw createError({
+      statusCode: 500,
+      message: `Missing hub.projectKey variable to use ${featureName}`
+    })
+  }
+  if (!hub.userToken) {
+    throw createError({
+      statusCode: 500,
+      message: `Missing hub.userToken variable to use ${featureName}`
+    })
+  }
 }

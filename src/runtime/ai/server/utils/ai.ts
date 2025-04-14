@@ -6,6 +6,7 @@ import type { Ai, AiOptions } from '@cloudflare/workers-types/experimental'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
 import { useRuntimeConfig } from '#imports'
+import { requireNuxtHubLinkedProject } from '~/src/runtime/utils/auth'
 
 let _ai: Ai
 
@@ -21,7 +22,7 @@ let _ai: Ai
  *
  * @see https://hub.nuxt.com/docs/features/ai
  */
-export function hubAI(): Ai {
+export function hubAI(): Omit<Ai, 'autorag'> {
   requireNuxtHubFeature('ai')
 
   if (_ai) {
@@ -37,18 +38,7 @@ export function hubAI(): Ai {
     // Mock _ai to call NuxtHub Admin API to proxy CF account & API token
     _ai = {
       async run(model: string, params?: Record<string, unknown>, options?: AiOptions) {
-        if (!hub.projectKey) {
-          throw createError({
-            statusCode: 500,
-            message: 'Missing hub.projectKey variable to use hubAI()'
-          })
-        }
-        if (!hub.userToken) {
-          throw createError({
-            statusCode: 500,
-            message: 'Missing hub.userToken variable to use hubAI()'
-          })
-        }
+        requireNuxtHubLinkedProject(hub, 'hubAI')
         return $fetch(`/api/projects/${hub.projectKey}/ai/run`, {
           baseURL: hub.url,
           method: 'POST',
