@@ -5,8 +5,8 @@ import type { H3Error } from 'h3'
 import type { Ai, AiOptions, ConversionResponse } from '@cloudflare/workers-types/experimental'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
+import { requireNuxtHubLinkedProject } from '../../../utils/auth'
 import { useRuntimeConfig } from '#imports'
-import { requireNuxtHubLinkedProject } from '~/src/runtime/utils/auth'
 
 let _ai: Ai
 
