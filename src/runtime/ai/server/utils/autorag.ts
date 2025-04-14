@@ -113,7 +113,7 @@ export function proxyHubAutoRAG(instance: string, projectUrl: string, secretKey?
 async function handleProxyError(err: H3Error) {
   // If the error is a 403, it means the user token does not have the permission to run the model
   if (import.meta.dev && err.statusCode === 403) {
-    console.warn('It seems that your Cloudflare API token does not have the `AutoRAG` permission.\nOpen `https://dash.cloudflare.com/profile/api-tokens` and edit your NuxtHub token.\nAdd the `Account > AutoRAG > Read` permission to your token and save it.')
+    console.warn('It seems that your Cloudflare API token does not have the `AutoRAG` permission.\nOpen `https://dash.cloudflare.com/profile/api-tokens` and edit your NuxtHub token.\nAdd the `Account > AutoRAG > Edit` permission to your token and save it.')
   }
   let data = err.data as any
   if (!err.data && typeof (err as any).response?.json === 'function') {
