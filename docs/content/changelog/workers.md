@@ -1,7 +1,7 @@
 ---
 title: NuxtHub on Workers
 description: "Deploy your Nuxt apps to Cloudflare Workers and build real-time experiences."
-date: 2025-04-10
+date: 2025-04-14
 image: '/images/changelog/workers.png'
 authors:
   - name: Sebastien Chopin
@@ -39,12 +39,11 @@ Projects deployed to NuxtHub on Workers also fully support [Nitro WebSocket](htt
 
 Under the hood this is powered by Cloudflare Durable Objects. Nitro and NuxtHub magically takes care of everything related to the Durable Object, from building to deploying.
 
+Check out our [multiplayer-globe](https://github.com/nuxt-hub/multiplayer-globe) template for an example of using websockets ([live demo](https://multiplayer-globe.nuxthub.workers.dev/)).
+
 ::note{to=https://nitro.build/guide/websocket icon="i-lucide-book"}
 Learn more about Nitro WebSocket on the Nitro documentation
 ::
-
-Check out our [multiplayer-globe](https://github.com/nuxt-hub/multiplayer-globe) template for an example of using websockets ([live demo](https://multiplayer-globe.nuxthub.workers.dev/)).
-)
 
 ## Deploying to Workers
 
