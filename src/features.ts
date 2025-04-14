@@ -108,7 +108,7 @@ export async function setupBase(nuxt: Nuxt, hub: HubConfig) {
 export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
   // If we are in dev mode and the project is not linked, disable it
   if (nuxt.options.dev && !hub.remote && !hub.projectKey) {
-    return log.warn('`hubAI()` is disabled: link a project with `npx nuxthub link` to run AI models in development mode.')
+    return log.warn('`hubAI() & hubAutoRAG()` is disabled: link a project with `npx nuxthub link` to run AI models in development mode.')
   }
 
   // Register auto-imports first so types are correct even when not running remotely
@@ -125,11 +125,11 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
       })
     } catch (err: any) {
       if (!err.status) {
-        log.warn ('`hubAI()` is disabled: it seems that you are offline.')
+        log.warn ('`hubAI() & hubAutoRAG()` is disabled: it seems that you are offline.')
       } else if (err.status === 401) {
-        log.warn ('`hubAI()` is disabled: you are not logged in, make sure to run `npx nuxthub login`.')
+        log.warn ('`hubAI() & hubAutoRAG()` is disabled: you are not logged in, make sure to run `npx nuxthub login`.')
       } else {
-        log.error('`hubAI()` is disabled: failed to fetch linked project `' + hub.projectKey + '` on NuxtHub, make sure to run `npx nuxthub link` again.')
+        log.error('`hubAI() & hubAutoRAG()` is disabled: failed to fetch linked project `' + hub.projectKey + '` on NuxtHub, make sure to run `npx nuxthub link` again.')
       }
       return
     }
