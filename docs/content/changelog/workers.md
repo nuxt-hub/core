@@ -25,7 +25,7 @@ authors:
 This feature is available on both [free and pro plans](/pricing) and in [`@nuxthub/core >= v0.8.24`](https://github.com/nuxt-hub/core/releases/tag/v0.8.24).
 ::
 
-After much development (and many teasers), we're thrilled to announce that NuxtHub now supports deploying to Cloudflare Workers!
+After much development (and [many](https://x.com/Atinux/status/1907552625559744865/photo/1) [teasers](https://x.com/Atinux/status/1884315020982657452/video/1)), we're thrilled to announce that NuxtHub now supports deploying to Cloudflare Workers!
 
 ## Why Workers
 
@@ -43,16 +43,16 @@ Under the hood this is powered by Cloudflare Durable Objects. Nitro and NuxtHub 
 Learn more about Nitro WebSocket on the Nitro documentation
 ::
 
-Check out our [multiplayer-globe](https://github.com/nuxt-hub/multiplayer-globe) template for an example of using websockets. [github.com/nuxt-hub/multiplayer-globe](https://github.com/nuxt-hub/multiplayer-globe
+Check out our [multiplayer-globe](https://github.com/nuxt-hub/multiplayer-globe) template for an example of using websockets ([live demo](https://multiplayer-globe.nuxthub.workers.dev/)).
 )
 
 ## Deploying to Workers
 
-Get started by creating a new project and selecting the Cloudflare Workers type via NuxtHub Admin or the latest version of the `nuxthub` CLI ([v0.9.0](https://github.com/nuxt-hub/cli/releases)). All our templates are fully compatible with NuxtHub
+Get started by creating a new project and selecting the Cloudflare Workers type on the [NuxtHub Admin](https://admin.hub.nuxt.com) or with the latest version of the `nuxthub` CLI ([v0.9.0](https://github.com/nuxt-hub/cli/releases)). All our templates are fully compatible with NuxtHub on Workers.
 
-We're working on a migration path to help simplify the switch from Cloudflare Pages to Workers. Until then, you can deploy your existing Nuxt apps to Cloudflare Workers by setting `hub.workers` to `true`, and linking them to a separate new Cloudflare Workers project type, then manually moving any data stored in your database, KV or blob.
+We're working on a migration path to help simplify the switch from Cloudflare Pages to Workers. Until then, you can deploy your existing Nuxt apps to Cloudflare Workers by setting `hub.workers` to `true`, and linking them to a separate new project with the Workers type, then manually moving any data stored in your database, KV or blob.
 
-::note
+::important
 While NuxtHub on Workers is in beta, preview environments aren't unavailable. Stay tuned for updates.
 ::
 
@@ -60,9 +60,9 @@ While NuxtHub on Workers is in beta, preview environments aren't unavailable. St
 
 Throughout the next few weeks, we'll be enhancing NuxtHub on Workers with new features and integration with more Cloudflare Workers-specific services, including:
 
-- Observability: Automatically ingest, filter, and analyse logs
-- Queues: Process background tasks effectively at scale
-- Cron Tasks: Run Nitro tasks automatically on a schedule
-- Environments: Bringing the preview environment to NuxtHub on Workers
+- **Observability**: Automatically ingest, filter, and analyse logs
+- **Queues**: Process background tasks effectively at scale
+- **Cron Tasks**: Run Nitro tasks automatically on a schedule
+- **Environments**: Bringing the preview environment to NuxtHub on Workers
 
-Let us know your feedback by joining our [Discord](https://discord.gg/vW89dsVqBF), or emailing us at hub@nuxt.com.
+Let us know your feedback by joining our [Discord](https://discord.gg/vW89dsVqBF), following us on [X](https://x.com/nuxt_hub), or emailing us at hub@nuxt.com.
