@@ -1,6 +1,6 @@
 ---
 title: NuxtHub on Workers
-description: "Deploy your Nuxt apps to Cloudflare Workers and build real-time experiences."
+description: "Deploy your Nuxt apps to Cloudflare Workers and build real-time experiences with zero configuration."
 date: 2025-04-14
 image: '/images/changelog/workers-support.png'
 authors:
