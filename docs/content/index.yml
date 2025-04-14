@@ -38,13 +38,13 @@ features:
     description: Run generative AI tasks on a global network and build full-stack AI applications.
     icon: i-lucide-wand
     to: /docs/features/ai
-  - title: Analytics Engine
-    description: Write data points & query with an SQL API with a unlimited-cardinality analytics service at scale.
-    icon: i-lucide-bar-chart-4
-    soon: true
   - title: Real-time & sockets
     description: Create collaborative applications, real-time chat, multiplayer games and more.
     icon: i-lucide-mouse-pointer-click
+    to: /docs/features/realtime
+  - title: Analytics Engine
+    description: Write data points & query with an SQL API with a unlimited-cardinality analytics service at scale.
+    icon: i-lucide-bar-chart-4
     soon: true
   - title: Cron Triggers & Queues
     description: Run periodic jobs with cron triggers & make sure to guarantee delivery with queues.
