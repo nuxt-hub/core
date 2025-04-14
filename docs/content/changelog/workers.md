@@ -51,8 +51,19 @@ Get started by creating a new project and selecting the Cloudflare Workers type 
 
 We're working on a migration path to help simplify the switch from Cloudflare Pages to Workers. Until then, you can deploy your existing Nuxt apps to Cloudflare Workers by setting `hub.workers` to `true`, and linking them to a separate new project with the Workers type, then manually moving any data stored in your database, KV or blob.
 
-::important
+::note
 While NuxtHub on Workers is in beta, preview environments aren't unavailable. Stay tuned for updates.
+::
+
+::important
+**If you already have a NuxtHub account**, make sure to add the `Workers Scripts` permission on your Cloudflare API token.
+
+- Open [Cloudflare User API Tokens](https://dash.cloudflare.com/profile/api-tokens)
+- Find your NuxtHub token(s)
+- Add the `Workers Scripts > Edit` permission
+- Save the changes
+
+Another solution is to link again your Cloudflare account from your NuxtHub team settings by clicking on `Connect a different Cloudflare account` > `Create a token`.
 ::
 
 ## What's next
