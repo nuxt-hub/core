@@ -6,7 +6,7 @@ description: Build realtime experiences with NuxtHub using Cloudflare Workers & 
 
 ## Getting Started
 
-Enable [Niro's experimental WebSocket](https://nitro.build/guide/websocket) support by adding the following to your `nuxt.config.ts` file:
+Enable [Nitro's experimental WebSocket](https://nitro.build/guide/websocket) support by adding the following to your `nuxt.config.ts` file:
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
