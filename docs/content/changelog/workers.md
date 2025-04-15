@@ -41,8 +41,8 @@ Under the hood this is powered by Cloudflare Durable Objects. Nitro and NuxtHub 
 
 Check out our [multiplayer-globe](https://github.com/nuxt-hub/multiplayer-globe) template for an example of using websockets ([live demo](https://multiplayer-globe.nuxthub.workers.dev/)).
 
-::note{to=https://nitro.build/guide/websocket icon="i-lucide-book"}
-Learn more about Nitro WebSocket on the Nitro documentation
+::note{to="/docs/features/realtime" icon="i-lucide-mouse-pointer-click"}
+Learn more about using websockets in NuxtHub.
 ::
 
 ## Deploying to Workers
