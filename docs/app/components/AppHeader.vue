@@ -59,17 +59,38 @@ onMounted(async () => {
     ready.value = true
   })
 })
+
+const { copy } = useClipboard()
+const toast = useToast()
+const logo = useTemplateRef('logo')
+const logoContextMenuItems = [
+  [{
+    label: 'Copy logo as SVG',
+    icon: 'i-simple-icons-nuxtdotjs',
+    onSelect() {
+      if (logo.value) {
+        copy(logo.value.$el.outerHTML)
+        toast.add({
+          title: 'NuxtHub logo copied as SVG',
+          description: 'You can now paste it into your project',
+          icon: 'i-lucide-circle-check',
+          color: 'success'
+        })
+      }
+    }
+  }]
+]
 </script>
 
 <template>
   <UHeader>
     <template #left>
-      <div class="inline-flex items-end gap-2">
-        <NuxtLink to="/" aria-label="NuxtHub"><HubLogo class="h-6" /></NuxtLink>
-        <UBadge variant="subtle" size="sm" class="relative top-[2px]">
-          beta
-        </UBadge>
-      </div>
+      <UContextMenu :items="logoContextMenuItems" size="xs">
+        <NuxtLink to="/" class="inline-flex items-end gap-2" aria-label="Back to home">
+          <HubLogo ref="logo" class="h-6" />
+          <UBadge label="beta" variant="subtle" size="sm" class="-mb-[2px] font-semibold text-[12px]/3" />
+        </NuxtLink>
+      </UContextMenu>
     </template>
 
     <UNavigationMenu :items="links.map(({ icon, ...link }) => link)" variant="link" :ui="{ link: 'text-(--ui-text-highlighted) hover:text-(--ui-primary) data-active:text-(--ui-primary)' }" />
