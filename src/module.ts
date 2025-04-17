@@ -42,7 +42,10 @@ export default defineNuxtModule<ModuleOptions>({
     const remoteArg = cliArgs.remote === '' ? 'true' : cliArgs.remote
     const runtimeConfig = nuxt.options.runtimeConfig
     const databaseMigrationsDirs = nuxt.options._layers?.map(layer => join(layer.config.serverDir!, 'database/migrations')).filter(Boolean)
-    const hub = defu(runtimeConfig.hub || {}, options, {
+    const hub = defu({
+      url: process.env.NUXT_HUB_URL,
+      userToken: process.env.NUXT_HUB_USER_TOKEN
+    }, runtimeConfig.hub || {}, options, {
       // Self-hosted project
       projectUrl: process.env.NUXT_HUB_PROJECT_URL || '',
       projectSecretKey: process.env.NUXT_HUB_PROJECT_SECRET_KEY || '',

@@ -16,7 +16,7 @@ export default eventHandler(async (event) => {
 
   // https://developers.cloudflare.com/workers-ai/configuration/bindings/#methods
   const { command } = await getValidatedRouterParams(event, z.object({
-    command: z.enum(['run'])
+    command: z.enum(['run', 'models', 'to-markdown'])
   }).parse)
   const ai = hubAI()
 
@@ -34,5 +34,32 @@ export default eventHandler(async (event) => {
       })
     }
     return res
+  }
+
+  if (command === 'models') {
+    const { params } = await readValidatedBody(event, z.object({
+      params: z.record(z.string(), z.any()).optional()
+    }).parse)
+
+    return ai.models(params)
+  }
+
+  if (command === 'to-markdown') {
+    const { files, options } = await readValidatedBody(event, z.object({
+      files: z.union([
+        z.array(z.object({
+          name: z.string(),
+          blob: z.instanceof(Blob)
+        })),
+        z.object({
+          name: z.string(),
+          blob: z.instanceof(Blob)
+        })
+      ]),
+      options: z.record(z.string(), z.any()).optional()
+    }).parse)
+
+    // @ts-expect-error toMarkdown supports both array and single file
+    return ai.toMarkdown(files, options)
   }
 })
