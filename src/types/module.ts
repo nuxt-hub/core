@@ -229,7 +229,7 @@ export interface ModuleOptions {
     [K in Exclude<Extract<AdditionalCloudflareBindings, { type: string }>['type'], ProhibitedBindingTypes>]?: Record<string, Omit<Extract<AdditionalCloudflareBindings, { type: K }>, 'name' | 'type'>>
   }
   // Additional custom/undocumented bindings
-  & Record<string, Record<string, Record<string, any> & { name?: never, type?: never }>>
+  | Record<string, Record<string, Record<string, any> & { name?: never, type?: never }>>
   // Prevent certain binding types
   & {
     [K in ProhibitedBindingTypes]?: never
