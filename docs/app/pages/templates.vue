@@ -15,10 +15,26 @@ interface Template {
   slug: string
 }
 
-const { data: templates } = await useFetch<Template[]>('/api/templates.json')
+const { data } = await useFetch<Template[]>('/api/templates.json')
 const route = useRoute()
 const { data: page } = await useAsyncData(route.path, () => {
   return queryCollection('templates').first()
+})
+
+const { data: featurePaths } = await useAsyncData('featurePaths', () =>
+  queryCollection('docs').where('path', 'LIKE', '/docs/features/%').select('path').all()
+)
+
+const templates = computed(() => {
+  if (!data.value) return []
+
+  return data.value.map(template => ({
+    ...template,
+    features: template.features.map(feature => ({
+      name: feature,
+      hasPage: featurePaths.value?.some(item => item.path === `/docs/features/${feature}`) || false
+    }))
+  }))
 })
 
 useSeoMeta({
@@ -85,14 +101,23 @@ defineOgImageComponent('Docs')
               size="sm"
               class="rounded-full"
             />
-            <NuxtLink v-for="feature of template.features" :key="feature" :to="`/docs/features/${feature}`">
+            <template v-for="feature of template.features" :key="feature.name">
+              <NuxtLink v-if="feature.hasPage" :to="`/docs/features/${feature.name}`">
+                <UBadge
+                  :label="feature.name"
+                  color="neutral"
+                  variant="subtle"
+                  class="rounded-full hover:text-black dark:hover:text-white"
+                />
+              </NuxtLink>
               <UBadge
-                :label="feature"
+                v-else
+                :label="feature.name"
                 color="neutral"
                 variant="subtle"
-                class="rounded-full hover:text-black dark:hover:text-white"
+                class="rounded-full"
               />
-            </NuxtLink>
+            </template>
           </div>
         </template>
         <template #footer>
