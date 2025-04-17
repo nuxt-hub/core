@@ -96,7 +96,7 @@ export interface ModuleOptions {
    * }
    * ```
    */
-  vectorize: {
+  vectorize?: {
     [key: string]: {
       metric: 'cosine' | 'euclidean' | 'dot-product'
       dimensions: number
@@ -141,9 +141,50 @@ export interface ModuleOptions {
    * @default '.data/hub'
    */
   dir?: string
+
   /**
    * The extra bindings for the project.
-   * @default {}
+   *
+   * Only `compatibilityDate`, `compatibilityFlags` and `hyperdrive` are applied if `hub.workers` is set to `false`.
+   *
+   * ## Usage
+   * Additional bindings are added in the following format:
+   * ```ts
+   * bindings: {
+   *   compatibilityDate: '2025-01-15',
+   *   compatibilityFlags: ['enable-feature'],
+   *   hyperdrive: {
+   *     POSTGRES: '<your-hyperdrive-id>'
+   *   },
+   *   <binding type>: {
+   *     <BINDING NAME>: {
+   *       // binding specific options
+   *     },
+   *   }
+   * }
+   * ```
+   *
+   * @example
+   * ```ts
+   * bindings: {
+   *  compatibilityDate: '2025-01-15',
+   *  compatibilityFlags: ['enable-feature'],
+   *  hyperdrive: {
+   *    POSTGRES: '<your-hyperdrive-id>'
+   *  },
+   *  analytics_engine: {
+   *    DATASET: { dataset: 'my_dataset' },
+   *  }
+   * }
+   * ```
+   *
+   * ### Prohibited top-level keys
+   * These features are already handled by NuxtHub.
+   * - `ai` -> `hub.ai`
+   * - `assets` -> `hub.workers`
+   * - `browser_rendering` -> `hub.browser`
+   * - `vectorize` -> `hub.vectorize`
+   *
    */
   bindings?: {
     /**
@@ -177,7 +218,23 @@ export interface ModuleOptions {
        */
       [key: string]: string
     }
+    /**
+     * The observability settings for the project.
+     * @see https://developers.cloudflare.com/workers/observability/logs/workers-logs/#enable-workers-logs
+     */
+    observability: boolean | { head_sampling_rate: number }
   }
+  // Known additional bindings based on AdditionalCloudflareBindings, excluding prohibited types
+  | {
+    [K in Exclude<Extract<AdditionalCloudflareBindings, { type: string }>['type'], ProhibitedBindingTypes>]?: Record<string, Omit<Extract<AdditionalCloudflareBindings, { type: K }>, 'name' | 'type'>>
+  }
+  // Additional custom/undocumented bindings
+  & Record<string, Record<string, Record<string, any> & { name?: never, type?: never }>>
+  // Prevent certain binding types
+  & {
+    [K in ProhibitedBindingTypes]?: never
+  }
+
   /**
    * Cloudflare Access authentication for remote storage.
    * @see https://hub.nuxt.com/recipes/cloudflare-access
@@ -194,4 +251,74 @@ export interface ModuleOptions {
      */
     clientSecret?: string
   }
+}
+
+/**
+ * Additional bindings for Cloudflare Workers that aren't already integrated into NuxtHub.
+ * @see https://developers.cloudflare.com/api/resources/workers/subresources/scripts/methods/update/
+ */
+
+type ProhibitedBindingTypes = 'ai' | 'assets' | 'browser_rendering' | 'vectorize'
+
+export type AdditionalCloudflareBindings = WorkersBindingKindAnalyticsEngine | WorkersBindingKindDispatchNamespace | WorkersBindingKindJson | WorkersBindingKindMTLSCERT | WorkersBindingKindPlainText | WorkersBindingKindQueue | WorkersBindingKindService | WorkersBindingKindTailConsumer | WorkersBindingKindVersionMetadata
+
+export interface WorkersBindingKindAnalyticsEngine {
+  dataset: string
+  name: string
+  type: 'analytics_engine'
+}
+
+export interface WorkersBindingKindDispatchNamespace {
+  name: string
+  namespace: string
+  type: 'dispatch_namespace'
+  outbound?: {
+    params?: string[]
+    worker?: {
+      environment?: string
+      service?: string
+    }
+  }
+}
+
+export interface WorkersBindingKindJson {
+  json: string
+  name: string
+  type: 'json'
+}
+
+export interface WorkersBindingKindMTLSCERT {
+  certificate_id: string
+  name: string
+  type: 'mtls_certificate'
+}
+
+export interface WorkersBindingKindPlainText {
+  name: string
+  text: string
+  type: 'plain_text'
+}
+
+export interface WorkersBindingKindQueue {
+  name: string
+  queue_name: string
+  type: 'queue'
+}
+
+export interface WorkersBindingKindService {
+  environment: string
+  name: string
+  service: string
+  type: 'service'
+}
+
+export interface WorkersBindingKindTailConsumer {
+  name: string
+  service: string
+  type: 'tail_consumer'
+}
+
+export interface WorkersBindingKindVersionMetadata {
+  name: string
+  type: 'version_metadata'
 }
