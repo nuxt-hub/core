@@ -227,7 +227,7 @@ export interface ModuleOptions {
        * @see https://developers.cloudflare.com/workers/observability/logs/workers-logs/
        */
       logs?: boolean | {
-        invocation_logs: boolean
+        invocation_logs?: boolean
         head_sampling_rate: number
       }
     }
