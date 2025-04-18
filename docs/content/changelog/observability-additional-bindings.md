@@ -1,6 +1,6 @@
 ---
 title: Worker Logs & Additional Bindings
-description: "Add additional bindings "
+description: "Support for Worker Logs and adding additional bindings for Worker projects."
 date: 2025-04-18
 image: '/images/changelog/observability-additional-bindings.png'
 category: Core
