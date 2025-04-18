@@ -145,9 +145,6 @@ export interface ModuleOptions {
   /**
    * The extra bindings for the project.
    *
-   * Only `compatibilityDate`, `compatibilityFlags` and `hyperdrive` are applied if `hub.workers` is set to `false`.
-   *
-   * ## Usage
    * Additional bindings are added in the following format:
    * ```ts
    * bindings: {
@@ -185,6 +182,8 @@ export interface ModuleOptions {
    * - `browser_rendering` -> `hub.browser`
    * - `vectorize` -> `hub.vectorize`
    *
+   * ### Workers vs Pages
+   * Only `compatibilityDate`, `compatibilityFlags` and `hyperdrive` are applied on Pages projects.
    */
   bindings?: {
     /**
@@ -222,14 +221,21 @@ export interface ModuleOptions {
      * The observability settings for the project.
      * @see https://developers.cloudflare.com/workers/observability/logs/workers-logs/#enable-workers-logs
      */
-    observability: boolean | { head_sampling_rate: number }
+    observability?: {
+      /**
+       * Enable and manage Worker Logs settings.
+       * @see https://developers.cloudflare.com/workers/observability/logs/workers-logs/
+       */
+      logs?: boolean | {
+        invocation_logs: boolean
+        head_sampling_rate: number
+      }
+    }
   }
   // Known additional bindings based on AdditionalCloudflareBindings, excluding prohibited types
-  | {
+  & {
     [K in Exclude<Extract<AdditionalCloudflareBindings, { type: string }>['type'], ProhibitedBindingTypes>]?: Record<string, Omit<Extract<AdditionalCloudflareBindings, { type: K }>, 'name' | 'type'>>
   }
-  // Additional custom/undocumented bindings
-  | Record<string, Record<string, Record<string, any> & { name?: never, type?: never }>>
   // Prevent certain binding types
   & {
     [K in ProhibitedBindingTypes]?: never
