@@ -21,7 +21,7 @@ export default defineNuxtConfig({
   },
   future: { compatibilityVersion: 4 },
 
-  compatibilityDate: '2025-01-22',
+  compatibilityDate: '2025-05-18',
 
   nitro: {
     // preset: 'cloudflare-durable',
@@ -47,11 +47,23 @@ export default defineNuxtConfig({
       }
     },
     bindings: {
-      compatibilityDate: '2024-11-18'
+      compatibilityDate: '2025-05-18',
+      observability: {
+        logs: true
+      }
       // compatibilityFlags: ['nodejs_compat']
       // Used for /api/hyperdrive
       // hyperdrive: {
       //   POSTGRES: '8bb2913857b84c939cd908740fa5a5d5'
+      // }
+      // Custom bindings example
+      // version_metadata: {
+      //   VERSION: {}
+      // },
+      // analytics_engine: {
+      //   ANALYTICS2: {
+      //     dataset: 'testing'
+      //   }
       // }
     }
     // projectUrl: ({ branch }) => branch === 'main' ? 'https://playground.nuxt.dev' : `https://${encodeHost(branch).replace(/\//g, '-')}.playground-to39.pages.dev`
