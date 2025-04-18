@@ -227,7 +227,14 @@ export interface ModuleOptions {
        * @see https://developers.cloudflare.com/workers/observability/logs/workers-logs/
        */
       logs?: boolean | {
+        /**
+         * @default true
+         * @see https://developers.cloudflare.com/workers/observability/logs/workers-logs/#invocation-logs
+         */
         invocation_logs?: boolean
+        /**
+         * @see https://developers.cloudflare.com/workers/observability/logs/workers-logs/#head-based-sampling
+         */
         head_sampling_rate: number
       }
     }
