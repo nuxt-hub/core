@@ -175,15 +175,17 @@ export interface ModuleOptions {
    * }
    * ```
    *
-   * ### Prohibited top-level keys
+   * ### Prohibited binding types
    * These features are already handled by NuxtHub.
-   * - `ai` -> `hub.ai`
-   * - `assets` -> `hub.workers`
-   * - `browser_rendering` -> `hub.browser`
-   * - `vectorize` -> `hub.vectorize`
+   * - `ai` → `hub.ai`
+   * - `assets` → `hub.workers`
+   * - `browser_rendering` → `hub.browser`
+   * - `vectorize` → `hub.vectorize`
    *
    * ### Workers vs Pages
    * Only `compatibilityDate`, `compatibilityFlags` and `hyperdrive` are applied on Pages projects.
+   *
+   * @see https://hub.nuxt.com/changelog/observability-additional-bindings
    */
   bindings?: {
     /**
