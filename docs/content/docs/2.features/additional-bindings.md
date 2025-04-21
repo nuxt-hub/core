@@ -6,7 +6,7 @@ description: Add additional Cloudflare resource bindings to deployments
 
 Cloudflare offer additional resources that aren't directly supported in NuxtHub yet. You can add bindings to associate these resources to your NuxtHub project. Custom bindings can be configured within `hub.bindings` in your `nuxt.config.ts`.
 
-Additional bindings are not provisioned automatically like they are with NuxtHub features such as [`hub.database`](/features/database). You will need to create the resources manually from the Cloudflare dashboard or [wrangler](https://developers.cloudflare.com/workers/wrangler/commands/).
+Additional bindings are not provisioned automatically like they are with NuxtHub features such as [`hub.database`](/docs/features/database). You will need to create the resources manually from the Cloudflare dashboard or [wrangler](https://developers.cloudflare.com/workers/wrangler/commands/).
 
 You can add additional bindings to:
 - Add additional [D1 databases](https://developers.cloudflare.com/d1/worker-api/), [R2 buckets](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) (blob), [KV namespaces](https://developers.cloudflare.com/kv/api/) & [analytics datasets](https://developers.cloudflare.com/analytics/analytics-engine/get-started/#2-write-data-points-from-your-worker)
