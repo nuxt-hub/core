@@ -107,7 +107,7 @@ const logoContextMenuItems = [
     </template>
 
     <template #body>
-      <UContentNavigation :navigation="navLinks" highlight type="single" :default-open="$route.path.startsWith('/docs')" :ui="{ itemWithChildren: 'ps-1.5' }" />
+      <UContentNavigation :navigation="navLinks" highlight type="single" :default-open="$route.path.startsWith('/docs')" />
 
       <div class="flex flex-col gap-y-2 mt-4">
         <USeparator class="mb-4" />
