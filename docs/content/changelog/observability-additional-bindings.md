@@ -13,7 +13,7 @@ authors:
 ---
 
 ::tip
-This feature is available from [`@nuxthub/core >= v0.10.0`](https://github.com/nuxt-hub/core/releases/tag/v0.10.0)
+This feature is available from [`@nuxthub/core >= v0.8.25`](https://github.com/nuxt-hub/core/releases/tag/v0.8.25)
 ::
 
 Worker projects on NuxtHub can now enable Worker Logs, and associate additional bindings to deployments all from within the NuxtHub config. This opens the possibility of adding additional [databases](https://developers.cloudflare.com/d1/worker-api/), [R2 buckets](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/), [service bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/), [rate limiting](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/), [queues](https://developers.cloudflare.com/queues/configuration/javascript-apis/) and [more](https://developers.cloudflare.com/workers/runtime-apis/bindings/) to projects.
