@@ -38,7 +38,7 @@ Properties on `hub.bindings`
   ::
 
   ::field{name="hyperdrive" type="object"}
-    Hyperdrive configuration.
+    Hyperdrive configuration. Learn more about Hyperdrive on the [PostgreSQL docs](/docs/recipes/postgres#hyperdrive).
 
     > ::field{name="<BINDING NAME>" type="string"}
     >   Binding name and Hyperdrive ID.
