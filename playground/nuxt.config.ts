@@ -21,7 +21,7 @@ export default defineNuxtConfig({
   },
   future: { compatibilityVersion: 4 },
 
-  compatibilityDate: '2025-04-18',
+  compatibilityDate: '2025-04-02',
 
   nitro: {
     // preset: 'cloudflare-durable',
