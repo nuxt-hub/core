@@ -1,6 +1,33 @@
 # Changelog
 
 
+## v0.8.25
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.24...v0.8.25)
+
+### 🚀 Enhancements
+
+- Support observability and additional bindings ([#549](https://github.com/nuxt-hub/core/pull/549))
+
+### 📖 Documentation
+
+- Browser rendering is now free ([bd54215](https://github.com/nuxt-hub/core/commit/bd54215))
+- Fix hero image responsive ([#540](https://github.com/nuxt-hub/core/pull/540))
+- Add workers changelog ([#542](https://github.com/nuxt-hub/core/pull/542))
+- Update link ([8c8aa8c](https://github.com/nuxt-hub/core/commit/8c8aa8c))
+- Fix nitro typo ([#544](https://github.com/nuxt-hub/core/pull/544))
+- Update workers changelog image ([#547](https://github.com/nuxt-hub/core/pull/547))
+- Fix mobile menu styling ([344855d](https://github.com/nuxt-hub/core/commit/344855d))
+- Add observability changelog image ([#550](https://github.com/nuxt-hub/core/pull/550))
+- Only link to feature if docs exist ([#543](https://github.com/nuxt-hub/core/pull/543))
+
+### ❤️ Contributors
+
+- Rihan ([@RihanArfan](https://github.com/RihanArfan))
+- Hugo Richard ([@HugoRCD](https://github.com/HugoRCD))
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+- Leonardo Matos <leomp120894@gmail.com>
+
 ## v0.8.24
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.23...v0.8.24)
