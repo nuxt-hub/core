@@ -20,7 +20,7 @@
     "@vueuse/nuxt": "^13.1.0",
     "ai": "^4.3.4",
     "aws4fetch": "^1.0.20",
-    "drizzle-orm": "^0.41.0",
+    "drizzle-orm": "^0.42.0",
     "nuxt": "^3.16.2",
     "nuxt-auth-utils": "^0.5.19",
     "postgres": "^3.4.5",
