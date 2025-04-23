@@ -104,7 +104,7 @@ export default defineEventHandler(async () => {
 
 This is the response structure without `stream` enabled.
 
-```json
+```ts
 {
   "object": "vector_store.search_results.page",
   "search_query": "How do I train a llama to deliver coffee?",
@@ -187,7 +187,7 @@ export default defineEventHandler(async () => {
 
 #### Response
 
-```json
+```ts
 {
   "object": "vector_store.search_results.page",
   "search_query": "How do I train a llama to deliver coffee?",
