@@ -22,7 +22,7 @@ let _ai: Ai
  *
  * @see https://hub.nuxt.com/docs/features/ai
  */
-export function hubAI(): Omit<Ai, 'autorag'> {
+export function hubAI(): Omit<Ai, 'autorag' | 'gateway'> {
   requireNuxtHubFeature('ai')
 
   if (_ai) {
