@@ -54,7 +54,7 @@ This method searches for relevant results from your data source and generates a 
 
 ```ts [server/api/autorag-test.ts]
 export default defineEventHandler(async () => {
-  const autorag = hubAutoRAG("my-autorag") // access AutoRAG bindings
+  const autorag = hubAutoRAG("my-autorag") // access AutoRAG instance
   return await autorag.aiSearch({
     query: "How do I create a modal with Nuxt UI?",
     model: "@cf/meta/llama-3.3-70b-instruct-sd",
@@ -148,7 +148,7 @@ Runs a model. Takes a model as the first parameter, and an object as the second 
 
 ```ts [server/api/autorag-test.ts]
 export default defineEventHandler(async () => {
-  const autorag = hubAutoRAG("my-autorag") // access AutoRAG bindings
+  const autorag = hubAutoRAG("my-autorag") // access AutoRAG instance
   return await autorag.aiSearch({
     query: "How do I create a modal with Nuxt UI?",
     rewrite_query: true,
