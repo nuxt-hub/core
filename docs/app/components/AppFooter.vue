@@ -19,7 +19,7 @@ const links = [
 <template>
   <UFooter>
     <template #left>
-      <span class="inline text-sm">© {{ new Date().getFullYear() }} <a href="https://nuxtlabs.com" target="_blank" class="text-gray-900 dark:text-gray-50 hover:underline underline-offset-4">NuxtLabs</a></span>
+      <span class="inline text-sm">© {{ new Date().getFullYear() }} <a href="https://nuxtlabs.com" target="_blank" class="text-highlighted hover:underline underline-offset-4">NuxtLabs</a></span>
     </template>
 
     <UNavigationMenu :items="links" variant="link" />
