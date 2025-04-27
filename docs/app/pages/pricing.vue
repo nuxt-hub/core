@@ -73,7 +73,7 @@ onMounted(() => {
           size="xs"
           class="max-w-xs mb-8 sm:mb-16 w-full max-w-sm"
           :ui="{
-            list: 'rounded-full bg-(--ui-bg) border border-(--ui-border-accented)',
+            list: 'rounded-full bg-default border border-accented',
             indicator: 'rounded-full',
             trigger: 'text-sm'
           }"
@@ -92,7 +92,7 @@ onMounted(() => {
           <template #features>
             <ul class="space-y-3 text-sm">
               <li v-for="(feature, index) of pricing.features" :key="index" class="flex items-center gap-x-2 min-w-0">
-                <UIcon :name="feature.icon" class="size-4 flex-shrink-0" :class="[pricing.highlight ? 'text-(--ui-primary)' : 'text-gray-500 dark:text-gray-400']" />
+                <UIcon :name="feature.icon" class="size-4 flex-shrink-0" :class="[pricing.highlight ? 'text-primary' : 'text-gray-500 dark:text-gray-400']" />
                 <span class="text-gray-600 dark:text-gray-400 truncate">{{ feature.title }}</span>
               </li>
             </ul>
@@ -132,7 +132,7 @@ onMounted(() => {
       </div>
     </template>
     <PricingTable />
-    <UPageCard v-if="evanTestimonial" variant="naked" :description="evanTestimonial.quote" :ui="{ description: 'before:content-[open-quote] after:content-[close-quote] text-(--ui-text-highlighted)' }">
+    <UPageCard v-if="evanTestimonial" variant="naked" :description="evanTestimonial.quote" :ui="{ description: 'before:content-[open-quote] after:content-[close-quote] text-highlighted' }">
       <template #footer>
         <UUser v-bind="evanTestimonial.author" />
       </template>

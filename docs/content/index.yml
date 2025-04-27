@@ -2,7 +2,7 @@ title: 'Ship Nuxt apps that scale.'
 navigation: false
 description: 'Deploy and scale your Nuxt applications worldwide with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and with full-stack capabilities.'
 hero:
-  title: 'Ship [Nuxt]{.text-(--ui-primary)} apps that scale.'
+  title: 'Ship [Nuxt]{.text-primary} apps that scale.'
   description: 'Deploy and scale your Nuxt applications worldwide with NuxtHub, the Cloudflare-powered platform that ensures lightning-fast performance at low cost and with full-stack capabilities.'
   img:
     width: '1439'
@@ -115,7 +115,7 @@ tool:
       description: 'Select a repository from your favourite Git provider and deploy it globally.'
       icon: i-lucide-git-branch
 deploy:
-  title: Deploy a Nuxt application [in one minute]{.text-(--ui-primary)}.
+  title: Deploy a Nuxt application [in one minute]{.text-primary}.
   description: Once you've linked your Cloudflare account, deploy your Nuxt application all over the world with our CLI or from Git.<br>You also get a free <span class="font-semibold">.nuxt.dev</span> domain.
   steps:
     - title: Connect your Cloudflare account
@@ -161,12 +161,12 @@ deploy:
       id: demo-video
       size: md
 fullStack:
-  title: Your [full-stack]{.text-(--ui-primary)} companion.
+  title: Your [full-stack]{.text-primary} companion.
   description: On top of hosting your Nuxt projects, you can add a database, key-value and file storage with nearly-zero configuration, locally and globally. <br> Making it too easy to build & ship full-stack Nuxt applications.
 sections:
   - title: A Scalable SQL Database
     description: >
-      NuxtHub Database unlocks the power of <a class="font-semibold text-(--ui-text-highlighted) hover:underline underline-offset-4" href="https://developers.cloudflare.com/d1/" target="_blank">Cloudflare D1</a> to give you access to a serverless SQL database, with zero configuration. Scale and manage effortlessly, and pay only for what you use.
+      NuxtHub Database unlocks the power of <a class="font-semibold text-highlighted hover:underline underline-offset-4" href="https://developers.cloudflare.com/d1/" target="_blank">Cloudflare D1</a> to give you access to a serverless SQL database, with zero configuration. Scale and manage effortlessly, and pay only for what you use.
     image:
       dark: '/images/landing/nuxthub-admin-database-dark.svg'
       light: '/images/landing/nuxthub-admin-database-light.svg'

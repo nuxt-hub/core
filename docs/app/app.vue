@@ -102,7 +102,7 @@ const links = computed(() => [
     <AppHeader />
     <UMain class="relative">
       <HeroBackground
-        class="absolute w-full -top-px transition-all text-(--ui-primary) shrink-0 -z-10"
+        class="absolute w-full -top-px transition-all text-primary shrink-0 -z-10"
         :class="[
           isLoading ? 'animate-pulse' : (appear ? heroBackgroundClass : 'opacity-0'),
           appeared ? 'duration-[400ms]' : 'duration-1000'

@@ -68,7 +68,7 @@ defineOgImageComponent('Docs')
         variant="subtle"
         :ui="{
           body: '!p-4 flex-1',
-          image: 'border-b border-(--ui-border)',
+          image: 'border-b border-default',
           description: 'space-y-2',
           footer: 'p-4 pt-0'
         }"

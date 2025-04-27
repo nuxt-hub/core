@@ -93,7 +93,7 @@ const logoContextMenuItems = [
       </UContextMenu>
     </template>
 
-    <UNavigationMenu :items="links.map(({ icon, ...link }) => link)" variant="link" :ui="{ link: 'text-(--ui-text-highlighted) hover:text-(--ui-primary) data-active:text-(--ui-primary)' }" />
+    <UNavigationMenu :items="links.map(({ icon, ...link }) => link)" variant="link" :ui="{ link: 'text-highlighted hover:text-primary data-active:text-primary' }" />
 
     <template #right>
       <div class="flex items-center gap-2 transition-opacity duration-300" :class="[ready ? 'opacity-100' : 'opacity-0']">
@@ -112,8 +112,8 @@ const logoContextMenuItems = [
       <div class="flex flex-col gap-y-2 mt-4">
         <USeparator class="mb-4" />
         <UButton v-if="ready && !authenticated" label="Log in" color="neutral" variant="subtle" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" class="flex justify-center sm:hidden" external />
-        <UButton v-if="ready && !authenticated" label="Sign up" color="neutral" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="flex justify-center text-gray-900 bg-(--ui-primary) sm:hidden" external />
-        <UButton v-if="ready && authenticated" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" class="flex justify-center text-gray-900 bg-(--ui-primary) sm:hidden" external />
+        <UButton v-if="ready && !authenticated" label="Sign up" color="neutral" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
+        <UButton v-if="ready && authenticated" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
       </div>
     </template>
   </UHeader>

@@ -1,4 +1,4 @@
-@import "tailwindcss" theme(static);
+@import "tailwindcss";
 @import "@nuxt/ui-pro";
 
 @source "../../content/**/*";

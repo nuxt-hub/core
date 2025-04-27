@@ -55,7 +55,7 @@ defineProps({
     </ClientOnly>
 
     <template #title>
-      <span>Start with NuxtHub <span class="text-(--ui-primary)">today</span></span>
+      <span>Start with NuxtHub <span class="text-primary">today</span></span>
     </template>
   </UPageSection>
 </template>
