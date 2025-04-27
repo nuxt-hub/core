@@ -44,7 +44,7 @@ AutoRAG will always run on your Cloudflare account, including during local devel
 const autorag = hubAutoRAG("my-autorag")
 ```
 
-::callout
+::callout{to="https://developers.cloudflare.com/autorag/usage/workers-binding/"}
 This documentation is a small reflection of the [Cloudflare AutoRAG documentation](https://developers.cloudflare.com/autorag/usage/workers-binding/). We recommend reading it to understand the full potential of AutoRAG.
 ::
 
@@ -95,8 +95,12 @@ export default defineEventHandler(async () => {
     ::
   ::
 
-  ::field{name="streaming" type="boolean"}
+  ::field{name="stream" type="boolean"}
     Returns a stream of results as they are available. Defaults to `false`.
+  ::
+
+  ::field{name="filters" type="object"}
+    Narrow down search results based on metadata, like folder and date, so only relevant content is retrieved. For more details, refer to [Metadata filtering](https://developers.cloudflare.com/autorag/configuration/metadata-filtering/).
   ::
 ::
 
@@ -149,12 +153,17 @@ Runs a model. Takes a model as the first parameter, and an object as the second 
 ```ts [server/api/autorag-test.ts]
 export default defineEventHandler(async () => {
   const autorag = hubAutoRAG("my-autorag") // access AutoRAG instance
-  return await autorag.aiSearch({
-    query: "How do I create a modal with Nuxt UI?",
+  return await autorag.search({
+    query: "When did I sign my agreement contract?",
     rewrite_query: true,
     max_num_results: 2,
     ranking_options: {
       score_threshold: 0.7,
+    },
+    filters: {
+      type: "eq",
+      key: "folder",
+      value: "customer-a/contracts/",
     },
   })
 })
@@ -182,6 +191,10 @@ export default defineEventHandler(async () => {
         The minimum match score required for a result to be considered a match. Defaults to `0`. Must be between `0` and `1`.
       ::
     ::
+  ::
+
+  ::field{name="filters" type="object"}
+    Narrow down search results based on metadata, like folder and date, so only relevant content is retrieved. For more details, refer to [Metadata filtering](https://developers.cloudflare.com/autorag/configuration/metadata-filtering/).
   ::
 ::
 
@@ -237,7 +250,6 @@ You can use AutoRAG with the following data sources:
 ::callout{to="https://developers.cloudflare.com/autorag/configuration/data-source/"}
 Learn more about supported data sources and file types in the [AutoRAG documentation](https://developers.cloudflare.com/autorag/configuration/data-source/).
 ::
-
 
 ## Pricing
 

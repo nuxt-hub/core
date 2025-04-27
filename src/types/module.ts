@@ -29,6 +29,7 @@ export interface ModuleOptions {
    *
    * @default false
    * @see https://hub.nuxt.com/docs/features/ai
+   * @see https://hub.nuxt.com/docs/features/autorag
    */
   ai?: boolean
   /**
