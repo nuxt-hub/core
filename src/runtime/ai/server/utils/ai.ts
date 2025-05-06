@@ -2,9 +2,10 @@ import { ofetch } from 'ofetch'
 import { joinURL } from 'ufo'
 import { createError } from 'h3'
 import type { H3Error } from 'h3'
-import type { Ai, AiOptions } from '@cloudflare/workers-types/experimental'
+import type { Ai, AiOptions, ConversionResponse } from '@cloudflare/workers-types/experimental'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
+import { requireNuxtHubLinkedProject } from '../../../utils/auth'
 import { useRuntimeConfig } from '#imports'
 
 let _ai: Ai
@@ -21,7 +22,7 @@ let _ai: Ai
  *
  * @see https://hub.nuxt.com/docs/features/ai
  */
-export function hubAI(): Ai {
+export function hubAI(): Omit<Ai, 'autorag' | 'gateway'> {
   requireNuxtHubFeature('ai')
 
   if (_ai) {
@@ -37,18 +38,7 @@ export function hubAI(): Ai {
     // Mock _ai to call NuxtHub Admin API to proxy CF account & API token
     _ai = {
       async run(model: string, params?: Record<string, unknown>, options?: AiOptions) {
-        if (!hub.projectKey) {
-          throw createError({
-            statusCode: 500,
-            message: 'Missing hub.projectKey variable to use hubAI()'
-          })
-        }
-        if (!hub.userToken) {
-          throw createError({
-            statusCode: 500,
-            message: 'Missing hub.userToken variable to use hubAI()'
-          })
-        }
+        requireNuxtHubLinkedProject(hub, 'hubAI')
         return $fetch(`/api/projects/${hub.projectKey}/ai/run`, {
           baseURL: hub.url,
           method: 'POST',
@@ -58,6 +48,23 @@ export function hubAI(): Ai {
           body: { model, params, options },
           responseType: params?.stream ? 'stream' : undefined
         }).catch(handleProxyError)
+      },
+      async models(params?: Record<string, unknown>) {
+        requireNuxtHubLinkedProject(hub, 'hubAI')
+        return $fetch(`/api/projects/${hub.projectKey}/ai/models`, {
+          baseURL: hub.url,
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${hub.userToken}`
+          },
+          body: { params }
+        }).catch(handleProxyError)
+      },
+      async toMarkdown(_files: unknown, _options: unknown): Promise<ConversionResponse[]> {
+        throw createError({
+          statusCode: 501,
+          message: 'hubAI().toMarkdown() is only supported with remote storage in development mode.'
+        })
       }
     } as Ai
   } else if (binding) {
@@ -101,6 +108,16 @@ export function proxyHubAI(projectUrl: string, secretKey?: string, headers?: Hea
       return aiAPI('/run', {
         body: { model, params, options },
         responseType: params?.stream ? 'stream' : undefined
+      }).catch(handleProxyError)
+    },
+    async models(params?: Record<string, unknown>) {
+      return aiAPI('/models', {
+        body: { params }
+      }).catch(handleProxyError)
+    },
+    async toMarkdown(files: unknown, options: unknown): Promise<ConversionResponse[]> {
+      return aiAPI('/to-markdown', {
+        body: { files, options }
       }).catch(handleProxyError)
     }
   } as Ai

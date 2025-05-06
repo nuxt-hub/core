@@ -22,8 +22,8 @@ const response = await hubAI().run('@cf/runwayml/stable-diffusion-v1-5-img2img',
 
 ```ts [embeddings.ts]
 // returns embeddings that can be used for vector searches in tools like Vectorize
-const embeddings = await hubAI().run("@cf/baai/bge-base-en-v1.5", { 
-  text: "NuxtHub AI uses `hubAI()` to run models."  
+const embeddings = await hubAI().run("@cf/baai/bge-base-en-v1.5", {
+  text: "NuxtHub AI uses `hubAI()` to run models."
 });
 ```
 ::
@@ -100,16 +100,55 @@ export default defineEventHandler(async () => {
   ::
 
   ::field{name="AI Gateway" type="object"}
-    Options for configuring [`AI Gateway`](#ai-gateway) - `id`, `skipCache`, and `cacheTtl`. 
+    Options for configuring [`AI Gateway`](#ai-gateway) - `id`, `skipCache`, and `cacheTtl`.
   ::
 ::
 
+### `models()`
+
+List all available models programatically.
+
+```ts [server/api/models-test.ts]
+export default defineEventHandler(async () => {
+  const ai = hubAI() // access AI bindings
+  return await ai.models({ page: 2 })
+})
+```
+
+#### Options
+
+::field-group
+  ::field{name="params" type="object"}
+    ::collapsible
+      ::field{name="author" type="string"}
+      The author of the model to filter by.
+
+      ::field{name="hide_experimental" type="boolean"}
+      Whether to hide experimental models.
+
+      ::field{name="page" type="number"}
+      The page of results to return.
+
+      ::field{name="per_page" type="number"}
+      The number of results to return per page.
+
+      ::field{name="search" type="string"}
+      A search term to filter models by.
+
+      ::field{name="source" type="number"}
+      The source ID to filter by.
+
+      ::field{name="task" type="string"}
+      The task name to filter by.
+    ::
+  ::
+::
 
 ## Tools
 
-Tools are actions that your LLM can execute to run functions or interact with external APIs. The result of these tools will be used by the LLM to generate additional responses. 
+Tools are actions that your LLM can execute to run functions or interact with external APIs. The result of these tools will be used by the LLM to generate additional responses.
 
-This can help you supply the LLM with real-time information, save data to a KV store, or provide it with external data from your database. 
+This can help you supply the LLM with real-time information, save data to a KV store, or provide it with external data from your database.
 
 With Workers AI, tools have 4 properties:
 - `name`: The name of the tool
@@ -125,7 +164,7 @@ const tools = [
     parameters: {
       type: 'object',
       properties: {
-        city: { 
+        city: {
           type: 'number',
           description: 'The city to retrieve weather information for'
         },
@@ -152,7 +191,7 @@ const tools = [
   ::
 
   ::field{name="parameters" type="JsonSchema7"}
-    The parameters and options for parameters that the model will use to run the tool.  
+    The parameters and options for parameters that the model will use to run the tool.
     ::collapsible
       ::field{name="type" type="string"}
       The type of your functions parameter. It's recommended to use an `object` so you can easily add additional properties in the future.
@@ -189,7 +228,7 @@ npx nypm i @cloudflare/ai-utils
 import { runWithTools } from '@cloudflare/ai-utils'
 
 export default defineEventHandler(async (event) => {
-  return await runWithTools(hubAI(), '@cf/meta/llama-3.1-8b-instruct', 
+  return await runWithTools(hubAI(), '@cf/meta/llama-3.1-8b-instruct',
     {
       messages: [
         { role: 'user', content: 'What is the weather in New York?' },
@@ -201,8 +240,8 @@ export default defineEventHandler(async (event) => {
           parameters: {
             type: 'object',
             properties: {
-              city: { 
-                type: 'number', 
+              city: {
+                type: 'number',
                 description: 'The city to retrieve weather information for'
               },
             },
@@ -214,7 +253,7 @@ export default defineEventHandler(async (event) => {
           },
         },
       ]
-    }, 
+    },
     {
       // options
       streamFinalResponse: true,
@@ -300,7 +339,7 @@ export default defineEventHandler(async () => {
   ::
 
   ::field{name="cacheTtl" type="number"}
-    Controls the [Cache TTL](https://developers.cloudflare.com/ai-gateway/configuration/caching/#cache-ttl-cf-cache-ttl), the duration (in seconds) that a cached request will be valid for. The minimum TTL is 60 seconds and maximum is one month. 
+    Controls the [Cache TTL](https://developers.cloudflare.com/ai-gateway/configuration/caching/#cache-ttl-cf-cache-ttl), the duration (in seconds) that a cached request will be valid for. The minimum TTL is 60 seconds and maximum is one month.
   ::
 ::
 
@@ -310,7 +349,7 @@ The recommended method to handle text generation responses is streaming.
 
 LLMs work internally by generating responses sequentially using a process of repeated inference — the full output of a LLM model is essentially a sequence of hundreds or thousands of individual prediction tasks. For this reason, while it only takes a few milliseconds to generate a single token, generating the full response takes longer.
 
-If your UI waits for the entire response to be generated, a user may see a loading spinner for several seconds before the response is displayed. 
+If your UI waits for the entire response to be generated, a user may see a loading spinner for several seconds before the response is displayed.
 
 Streaming lets you start displaying the response as soon as the first tokens are generated, and append each additional token until the response is complete. This yields a much better experience for the end user. Displaying text incrementally as it’s generated not only provides instant responsiveness, but also gives the end-user time to read and interpret the text.
 
@@ -386,7 +425,7 @@ npx nypm i ai @ai-sdk/vue workers-ai-provider
 
 ### `useChat()`
 
-`useChat()` is a Vue composable provided by the Vercel AI SDK that handles streaming responses, API calls, state for your chat. 
+`useChat()` is a Vue composable provided by the Vercel AI SDK that handles streaming responses, API calls, state for your chat.
 
 It requires a `POST /api/chat` endpoint that uses the `hubAI()` server composable and returns a compatible stream for the Vercel AI SDK.
 
@@ -457,6 +496,6 @@ Explore open source templates made by the community:
 ::
 
 
-## Pricing 
+## Pricing
 
 :pricing-table{:tabs='["AI"]'}

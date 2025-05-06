@@ -20,13 +20,17 @@ Vectorize is only available in local development when using [remote storage](/do
 
 Vectorize can be used for:
 
-- **Retrieval Augmented Generation (RAG)** - store embeddings for documents that can be used as context for LLMs 
+- **Retrieval Augmented Generation (RAG)** - store embeddings for documents that can be used as context for LLMs
 - **Semantic Search** - query vectors to find results similar to an input
 - **Recommendation Engines** - query vectors to find similar content
 
 ## Getting Started
 
 Vectorize indexes are managed in your NuxtHub project within the `hub.vectorize` object in your `nuxt.config.ts` file. Multiple indexes can be created using separate keys.
+
+::tip{to="/docs/features/autorag"}
+If you are building RAG experiences, consider using [AutoRAG] instead to automatically index data into vector embeddings optimized for semantic search.
+::
 
 ### Create an index
 
@@ -96,9 +100,9 @@ To use an existing index, add it as a binding to your Cloudflare project and con
 3. Select Vectorize database
     - Set the variable name to `VECTORIZE_<NAME>`. The entire variable name should be capitalised.
     - Select the existing Vectorize index
-4. Add the index configuration to `hub.vectorize` in `nuxt.config.ts`. 
+4. Add the index configuration to `hub.vectorize` in `nuxt.config.ts`.
 
-- The index name should match `<name>` used in the variable name, and must be lowercase. 
+- The index name should match `<name>` used in the variable name, and must be lowercase.
 - The `dimensions` and `metric` values should match the ones used when creating the index
 - If your index already includes values, the `metadataIndexes` should include any existing metadata indexes. New `metadataIndexes` added in your configuration will not include any existing vectors. You can upsert these vectors to have them included in new metadata indexes.
 
@@ -122,7 +126,7 @@ export default defineNuxtConfig({
 
 Vectorize only works in local development when using [remote storage](/docs/getting-started/remote-storage) with the `npx nuxt dev --remote` command.
 
-This means to begin using Vectorize, you need to [deploy your project](/docs/getting-started/deploy) to create the indexes before accessing them through remote storage. 
+This means to begin using Vectorize, you need to [deploy your project](/docs/getting-started/deploy) to create the indexes before accessing them through remote storage.
 
 Similar to the other NuxtHub offerings, indexes can be created in either preview or production environments.
 
@@ -153,10 +157,10 @@ Inserts vectors with new IDs into the index. If a vector with the same vector ID
 // These will typically come from a machine-learning model
 const vectorsToInsert = [
   { id: "123", values: [32.4, 6.5, 11.2, 10.3, 87.9] },
-  { 
-    id: "456", 
-    values: [2.5, 7.8, 9.1, 76.9, 8.5], 
-    metadata: { category: "product" }, 
+  {
+    id: "456",
+    values: [2.5, 7.8, 9.1, 76.9, 8.5],
+    metadata: { category: "product" },
   },
 ];
 const inserted = await index.insert(vectorsToInsert);
@@ -197,10 +201,10 @@ Upserts vectors into an index. An upsert operation will insert vectors into the 
 ```ts
 const vectorsToUpsert = [
   { id: "123", values: [32.4, 6.5, 11.2, 10.3, 87.9] },
-  { 
-    id: "456", 
-    values: [2.5, 7.8, 9.1, 76.9, 8.5], 
-    metadata: { category: "product" }, 
+  {
+    id: "456",
+    values: [2.5, 7.8, 9.1, 76.9, 8.5],
+    metadata: { category: "product" },
   },
   { id: "768", values: [29.1, 5.7, 12.9, 15.4, 1.1] },
 ];
@@ -274,7 +278,7 @@ const matches = await index.query(queryVector, {
 
 ::field-group
   ::field{name="vector" type="array" required}
-    Input vector that will be used to drive the similarity search. 
+    Input vector that will be used to drive the similarity search.
   ::
 
   ::field{name="options" type="object"}
@@ -313,7 +317,7 @@ const matches = await index.query(queryVector, {
 
 ```ts
 const matches = await index.query(queryVector, {
-  topK: 3,               // return 3 matches  
+  topK: 3,               // return 3 matches
   returnValues: true,    // return the vector values
   returnMetadata: "all", // return all metadata associated with the matches
 });
@@ -456,7 +460,7 @@ const vectorExample = {
 
 Dimensions are determined from the output size of the machine learning (ML) model used to generate them, and are a function of how the model encodes and describes features into a vector embedding.
 
-The number of output dimensions can determine vector search accuracy, search performance (latency), and the overall size of the index. 
+The number of output dimensions can determine vector search accuracy, search performance (latency), and the overall size of the index.
 
 Smaller output dimensions can be faster to search across, which can be useful for user-facing applications. Larger output dimensions can provide more accurate search, especially over larger datasets and/or datasets with substantially similar inputs.
 
@@ -484,13 +488,13 @@ If you are using [NuxtHub AI](/docs/features/ai) to generate vector embeddings, 
 
 Distance metrics are functions that determine how close vectors are from each other. Vectorize indexes support the following distance metrics:
 
-| Metric        | Details                                                                                                                                                                                            | 
+| Metric        | Details                                                                                                                                                                                            |
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `cosine`      | Distance is measured between `-1` (most dissimilar) to `1` (identical). `0` denotes an orthogonal vector.                                                                                          |
 | `euclidean`   | Euclidean (L2) distance. `0` denotes identical vectors. The larger the positive number, the further the vectors are apart.                                                                         |
 | `dot-product` | Negative dot product. Larger negative values _or_ smaller positive values denote more similar vectors. A score of `-1000` is more similar than `-500`, and a score of `15` more similar than `50`. |
 
-Determining the similarity between vectors can be subjective and is determined by how well the machine-learning model can represent features in the resulting vector embeddings. 
+Determining the similarity between vectors can be subjective and is determined by how well the machine-learning model can represent features in the resulting vector embeddings.
 
 For example, a score of `0.8511` when using a `cosine` metric means that two vectors are close in distance, but whether data they represent is _similar_ is a function of how well the model is able to represent the original content.
 
@@ -498,11 +502,11 @@ Distance metrics cannot be changed after an index is created.
 
 #### Choosing a distance metric
 
-Choosing a distance metric depends on the vector embedding model used to generate the vectors. If possible, it's best to use the same distance metric as the model generating the vectors. 
+Choosing a distance metric depends on the vector embedding model used to generate the vectors. If possible, it's best to use the same distance metric as the model generating the vectors.
 
 While it's always good to test the results from different distance metrics, each metric uses different properties of the vectors to determine their similarity. If your embeddings contain data that is related to quantifiable values, such as prices, ratings, or other numerical values, you may want to use a metric that considers both magnitude and direction.
 
-| Metric        | Vector Properties Considered | 
+| Metric        | Vector Properties Considered |
 | ------------- | ---------------------------- |
 | `cosine`      | Only direction               |
 | `euclidean`   | Magnitude and direction      |
@@ -542,13 +546,13 @@ Metadata can be used to store:
 For example, a vector embedding representing an image could include the path to the [blob](/docs/features/blob) it was generated from, the format, and a category lookup:
 
 ```ts
-{ 
+{
   id: '1',
-  values: [32.4, 74.1, 3.2, ...], 
-  metadata: { 
+  values: [32.4, 74.1, 3.2, ...],
+  metadata: {
     path: 'r2://bucket-name/path/to/image.png',
     format: 'png',
-    category: 'profile_image' 
+    category: 'profile_image'
   }
 }
 ```
@@ -563,7 +567,7 @@ Metadata filtering allows you to query specific subsets of your data. You can fi
 
 ### Create metadata indexes
 
-In order to filter by a specific metadata property, it must be defined in the `metadataIndexes`. 
+In order to filter by a specific metadata property, it must be defined in the `metadataIndexes`.
 
 Metadata indexes are configured within the `metadataIndexes` object within your index configuration in `nuxt.config.ts`.
 
@@ -605,8 +609,8 @@ You can use metadata filters with the `query()` method by passing a `filter` opt
 ```ts
 const matches = await index.query(queryVector, {
   filter: {
-    "url": "https://hub.nuxt.com", 
-    "nested.property": { "$ne": true } 
+    "url": "https://hub.nuxt.com",
+    "nested.property": { "$ne": true }
   }
 });
 
@@ -670,8 +674,8 @@ const matches = await index.query(queryVector, {
 ```ts
 const matches = await index.query(queryVector, {
   filter: {
-    "pandas.nice": 42, 
-    "someKey": { "$ne": true } 
+    "pandas.nice": 42,
+    "someKey": { "$ne": true }
   }
 });
 
