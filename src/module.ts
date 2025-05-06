@@ -78,6 +78,9 @@ export default defineNuxtModule<ModuleOptions>({
       openapi: nuxt.options.nitro.experimental?.openAPI === true,
       // Extra bindings for the project
       bindings: {
+        observability: {
+          logs: true // enable with default settings
+        },
         hyperdrive: {},
         compatibilityFlags: nuxt.options.nitro.cloudflare?.wrangler?.compatibility_flags
       },
