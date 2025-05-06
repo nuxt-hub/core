@@ -42,7 +42,7 @@ const capture = async () => {
       </div>
     </template>
     <UAlert v-if="!image" :title="loading ? 'Capturing...' : 'No screenshot captured'" color="neutral" variant="outline" icon="i-lucide-info" />
-    <img v-if="image" :src="image" class="rounded border border-(--ui-border)" style="aspect-ratio: 16/9;" :class="{ 'animate-pulse': loading }">
+    <img v-if="image" :src="image" class="rounded border border-default" style="aspect-ratio: 16/9;" :class="{ 'animate-pulse': loading }">
     <UAlert v-if="framework" class="mt-4" :class="{ 'animate-pulse': loading }" :title="`This website is made with ${framework}`" color="neutral" variant="outline" icon="i-lucide-code-xml" />
     <div class="mt-4">
       Or open our <UButtonGroup>

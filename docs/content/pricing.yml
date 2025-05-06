@@ -3,7 +3,7 @@ description: 'Get started with NuxtHub for free and upgrade as you grow.'
 icon: i-lucide-credit-card
 hero:
   headline: '2 months off with yearly plan'
-  title: 'Start for free, upgrade [as you grow]{.text-(--ui-primary)}'
+  title: 'Start for free, upgrade [as you grow]{.text-primary}'
   description: 'NuxtHub is built on Cloudflare for optimal performance. While separate subscriptions are required, you get the combined power of both, with plans to suit your specific needs.'
   orientation: horizontal
   img:
@@ -66,7 +66,7 @@ pricing:
         label: 'Get started as a team'
         to: https://admin.hub.nuxt.com
       ui:
-        root: 'bg-gradient-to-t from-(--ui-primary)/10 dark:from-(--ui-primary)/20 via-(--ui-bg) to-(--ui-bg) rounded-xl'
+        root: 'bg-gradient-to-t from-primary/10 dark:from-primary/20 via-default to-default rounded-xl'
     - title: 'Enterprise'
       description: 'For large teams with advanced usage and needs.'
       billingCycle:
@@ -93,7 +93,7 @@ pricing:
         color: neutral
         variant: subtle
         to: 'mailto:hub@nuxt.com?subject=Enterprise%20Offer&body=Hi%20NuxtHub%20Team%2C%0A%0AI%20am%20interested%20in%20the%20Enterprise%20offer.%0A%0AKind%20regards%2C'
-  info: 'Prices does not include your <a href="https://www.cloudflare.com/plans/developer-platform/" target="_blank" class="underline underline-offset-4 hover:text-(--ui-text-highlighted)">Cloudflare costs</a>.'
+  info: 'Prices does not include your <a href="https://www.cloudflare.com/plans/developer-platform/" target="_blank" class="underline underline-offset-4 hover:text-highlighted">Cloudflare costs</a>.'
   contact:
     title: 'Are you an open source or non-profit organization?'
     description: "If you want to use NuxtHub to manage open source projects or if you are a non-profit organization, we have a special offer for you!"

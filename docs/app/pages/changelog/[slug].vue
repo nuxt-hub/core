@@ -62,7 +62,7 @@ onMounted(() => {
       <UPageHeader :title="post.title" :description="post.description" :ui="{ headline: 'flex flex-col gap-y-8 items-start' }">
         <template #headline>
           <UBreadcrumb :items="[{ label: 'Changelog', to: '/changelog' }, { label: post.title }]" :ui="{ root: 'max-w-full' }" />
-          <time class="text-(--ui-text-muted)">{{ formatDateByLocale('en', post.date) }}</time>
+          <time class="text-muted">{{ formatDateByLocale('en', post.date) }}</time>
         </template>
         <div class="flex flex-wrap items-center gap-3 mt-4">
           <div class="mt-4 flex flex-wrap items-center gap-6">
@@ -76,7 +76,7 @@ onMounted(() => {
                 <p class="font-medium">
                   {{ author.name }}
                 </p>
-                <p class="text-(--ui-text-muted) leading-4">
+                <p class="text-muted leading-4">
                   {{ `@${author.username}` }}
                 </p>
               </div>

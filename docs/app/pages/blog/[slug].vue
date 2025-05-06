@@ -64,7 +64,7 @@ onMounted(() => {
           <UBreadcrumb :items="[{ label: 'Blog', to: '/blog' }, { label: post.title }]" :ui="{ root: 'max-w-full' }" />
           <div class="flex items-center space-x-2">
             <UBadge :label="post?.category || 'Article'" color="neutral" variant="subtle" />
-            <span class="text-(--ui-text-muted)">&middot;&nbsp;&nbsp;<time>{{ formatDateByLocale('en', post.date) }}</time></span>
+            <span class="text-muted">&middot;&nbsp;&nbsp;<time>{{ formatDateByLocale('en', post.date) }}</time></span>
           </div>
         </template>
         <div class="flex flex-wrap items-center gap-3 mt-4">
@@ -79,7 +79,7 @@ onMounted(() => {
                 <p class="font-medium">
                   {{ author.name }}
                 </p>
-                <p class="text-(--ui-text-muted) leading-4">
+                <p class="text-muted leading-4">
                   {{ `@${author.username}` }}
                 </p>
               </div>

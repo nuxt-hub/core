@@ -89,28 +89,28 @@ onMounted(() => {
                 v-for="i in [1, 2, 3, 4]"
                 :key="i"
                 :src="`/images/landing/companies/logo-${i}-dark.svg`"
-                class="bg-(--ui-bg-elevated) p-[5px] hidden dark:inline-flex"
+                class="bg-elevated p-[5px] hidden dark:inline-flex"
               />
               <UAvatar
                 v-for="i in [1, 2, 3, 4]"
                 :key="i"
                 :src="`/images/landing/companies/logo-${i}-light.svg`"
-                class="bg-(--ui-bg-elevated) p-[5px] dark:hidden"
+                class="bg-elevated p-[5px] dark:hidden"
               />
               <UAvatar text="..." />
             </UAvatarGroup>
-            <span class="text-sm text-(--ui-text-elevated)">
-              Used and loved by <span class="font-medium text-(--ui-text-highlighted)">10K+ developers and teams</span>.
+            <span class="text-sm text-elevated">
+              Used and loved by <span class="font-medium text-highlighted">10K+ developers and teams</span>.
             </span>
           </div>
           <USeparator type="dashed" class="w-24" />
           <div class="flex flex-col gap-y-2">
-            <p class="text-sm text-(--ui-text-highlighted)">
+            <p class="text-sm text-highlighted">
               “Nuxt on Cloudflare infra with minimal effort - this is huge!”
             </p>
-            <div class="flex items-center flex-wrap gap-2 text-sm text-(--ui-text-muted)">
+            <div class="flex items-center flex-wrap gap-2 text-sm text-muted">
               <UAvatar src="https://avatars.githubusercontent.com/u/499550?v=4" size="xs" alt="Evan You" />
-              <span class="font-medium text-(--ui-text)">Evan You</span>
+              <span class="font-medium text-default">Evan You</span>
               <span>•</span>
               <span>Author of Vue.js and Vite.</span>
             </div>
@@ -120,7 +120,7 @@ onMounted(() => {
 
       <UCard
         variant="soft"
-        class="hidden lg:block max-2xl:absolute border border-(--ui-border-accented) bg-(--ui-bg-accented)/40 max-2xl:-right-30 [--padding-card:--spacing(3)] rounded-[calc(theme(borderRadius.lg)+var(--padding-card))] 2xl:scale-110 2xl:origin-right"
+        class="hidden lg:block max-2xl:absolute border border-accented bg-accented/40 max-2xl:-right-30 [--padding-card:--spacing(3)] rounded-[calc(theme(borderRadius.lg)+var(--padding-card))] 2xl:scale-110 2xl:origin-right"
         :ui="{
           body: 'lg:pl-(--padding-card) lg:pt-(--padding-card) lg:pb-(--padding-card) lg:pr-0 2xl:pr-(--padding-card) rounded-(--padding-card)'
         }"
@@ -162,19 +162,19 @@ onMounted(() => {
           :class="{ 'opacity-75': feature.soon }"
         >
           <NuxtLink v-if="feature.to" :to="feature.to" class="absolute inset-0 z-10" />
-          <div class="p-[3px] border border-dashed rounded-md border-(--ui-border-accented)">
-            <div class="bg-(--ui-bg-muted) p-1.5 rounded-md flex items-center justify-center border border-(--ui-border)">
+          <div class="p-[3px] border border-dashed rounded-md border-accented">
+            <div class="bg-muted p-1.5 rounded-md flex items-center justify-center border border-default">
               <UIcon :name="feature.icon" class="size-6 flex-shrink-0" />
             </div>
           </div>
           <div class="flex flex-col">
-            <h2 class="font-medium text-(--ui-text-highlighted) inline-flex items-center gap-x-1">
+            <h2 class="font-medium text-highlighted inline-flex items-center gap-x-1">
               {{ feature.title }} <UBadge v-if="feature.soon" color="neutral" variant="subtle" size="sm" class="rounded-full">
                 Soon
               </UBadge>
               <UIcon v-if="feature.to" name="i-lucide-arrow-right" class="size-4 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-all duration-200 -translate-x-1 group-hover:translate-x-0" />
             </h2>
-            <p class="text-sm text-(--ui-text-muted)">
+            <p class="text-sm text-muted">
               {{ feature.description }}
             </p>
           </div>
@@ -202,7 +202,7 @@ onMounted(() => {
           :key="index"
           v-bind="feature"
           orientation="vertical"
-          :ui="{ leadingIcon: 'text-(--ui-text-highlighted)' }"
+          :ui="{ leadingIcon: 'text-highlighted' }"
         />
       </template>
     </UPageSection>
@@ -226,10 +226,10 @@ onMounted(() => {
             lazy
           />
           <div>
-            <h2 class="font-medium text-(--ui-text-highlighted)">
+            <h2 class="font-medium text-highlighted">
               {{ step.title }}
             </h2>
-            <p class="text-sm text-(--ui-text-muted)">
+            <p class="text-sm text-muted">
               {{ step.description }}
             </p>
           </div>
@@ -259,8 +259,8 @@ onMounted(() => {
     >
       <template #headline>
         <div class="flex items-center gap-1.5">
-          <UIcon :name="section.headline.icon" class="w-5 h-5 flex-shrink-0 text-(--ui-text-highlighted) dark:text-(--ui-primary)" />
-          <span class="font-medium text-xs uppercase text-(--ui-text-accented)">{{ section.headline.title }}</span>
+          <UIcon :name="section.headline.icon" class="w-5 h-5 flex-shrink-0 text-highlighted dark:text-primary" />
+          <span class="font-medium text-xs uppercase text-accented">{{ section.headline.title }}</span>
         </div>
       </template>
       <template #description>
@@ -271,7 +271,7 @@ onMounted(() => {
           v-for="(feature, i) in section.features"
           :key="i"
           v-bind="feature"
-          :ui="{ title: 'text-(--ui-text-accented)', leadingIcon: 'text-(--ui-text-accented)' }"
+          :ui="{ title: 'text-accented', leadingIcon: 'text-accented' }"
         />
       </template>
       <UColorModeImage
