@@ -10,8 +10,8 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: "Worker Logs & Additional Bindings"
-    to: /changelog/observability-additional-bindings
+    label: "Introducing hubAutoRAG()"
+    to: /changelog/hub-autorag
     icon: i-lucide-arrow-right
 features:
   - title: Cloud Hosting
