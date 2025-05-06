@@ -1,7 +1,7 @@
 ---
 title: Introducing hubAutoRAG()
 description: "Create fully-managed RAG pipelines to power your AI applications with accurate and up-to-date information."
-date: 2025-04-26
+date: 2025-05-06
 image: '/images/changelog/nuxthub-autorag.png'
 authors:
   - name: Rihan Arfan
