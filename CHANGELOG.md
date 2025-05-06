@@ -1,6 +1,31 @@
 # Changelog
 
 
+## v0.8.26
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.25...v0.8.26)
+
+### 🚀 Enhancements
+
+- Autorag ([#541](https://github.com/nuxt-hub/core/pull/541))
+
+### 📖 Documentation
+
+- Update version ([6e99aa0](https://github.com/nuxt-hub/core/commit/6e99aa0))
+- Add autorag changelog image ([#558](https://github.com/nuxt-hub/core/pull/558))
+
+### 🏡 Chore
+
+- **release:** V0.8.25 ([988a38b](https://github.com/nuxt-hub/core/commit/988a38b))
+- Update to latest nuxt ui version ([#556](https://github.com/nuxt-hub/core/pull/556))
+
+### ❤️ Contributors
+
+- Rihan ([@RihanArfan](https://github.com/RihanArfan))
+- Hugo Richard ([@HugoRCD](https://github.com/HugoRCD))
+- Rihan Arfan ([@RihanArfan](https://github.com/RihanArfan))
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+
 ## v0.8.25
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.24...v0.8.25)
