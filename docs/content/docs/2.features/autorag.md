@@ -108,11 +108,11 @@ export default defineEventHandler(async () => {
 
 This is the response structure without `stream` enabled.
 
-```ts
+```json
 {
   "object": "vector_store.search_results.page",
   "search_query": "How do I train a llama to deliver coffee?",
-  "response": "To train a llama to deliver coffee:\n\n1. **Build trust** — Llamas appreciate patience (and decaf).\n2. **Know limits** — Max 3 cups per llama, per `llama-logistics.md`.\n3. **Use voice commands** — Start with \"Espresso Express!\"\n4.",
+  "response": "To train a llama to deliver coffee:\n\n1. **Build trust** — Llamas appreciate patience (and decaf).\n2. **Know limits** — Max 3 cups per llama, per `llama-logistics.md`.\n3. **Use voice commands**\n4. — Start with \"Espresso Express!\"",
   "data": [
     {
       "file_id": "llama001",
