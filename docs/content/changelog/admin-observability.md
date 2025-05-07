@@ -22,7 +22,7 @@ authors:
 ---
 
 ::tip
-Worker logs are available from [`@nuxthub/core >= v0.8.25`](https://github.com/nuxt-hub/core/releases/tag/v0.8.25), it is suggested to use the latest version. In the latest version, Worker Logs are enabled by default.
+Worker logs are available from [`@nuxthub/core >= v0.8.27`](https://github.com/nuxt-hub/core/releases/tag/v0.8.25). In the latest version, Worker Logs are enabled by default.
 ::
 
 It is now possible to view, filter and analyze worker logs within the NuxtHub Admin.
