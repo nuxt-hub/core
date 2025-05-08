@@ -10,8 +10,8 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: "Introducing hubAutoRAG()"
-    to: /changelog/hub-autorag
+    label: "Admin Observability is out!"
+    to: /changelog/admin-observability
     icon: i-lucide-arrow-right
 features:
   - title: Cloud Hosting
