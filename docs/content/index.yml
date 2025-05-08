@@ -10,8 +10,8 @@ hero:
     light: '/images/landing/hero-light.svg'
     dark: '/images/landing/hero-dark.svg'
   headline:
-    label: "Admin Observability is out!"
-    to: /changelog/admin-observability
+    label: "Workers logs with history"
+    to: /changelog/workers-logs-history
     icon: i-lucide-arrow-right
 features:
   - title: Cloud Hosting

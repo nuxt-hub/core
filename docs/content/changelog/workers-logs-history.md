@@ -1,8 +1,8 @@
 ---
-title: Worker Logs on NuxtHub Admin
+title: Worker logs with history on NuxtHub Admin
 description: Worker logs are now available on NuxtHub Admin, allowing you to filter and analyze historical logs from your deployed Nuxt App.
 date: 2025-05-08
-image: '/images/changelog/nuxthub-workers-admin-observability.png'
+image: '/images/changelog/nuxthub-workers-logs-history.png'
 authors:
   - name: Sebastien Chopin
     avatar:
@@ -22,21 +22,22 @@ authors:
 ---
 
 ::tip
-Worker logs are available from [`@nuxthub/core >= v0.8.27`](https://github.com/nuxt-hub/core/releases/tag/v0.8.25). In the latest version, Worker Logs are enabled by default.
+Worker logs are available from [`@nuxthub/core >= v0.8.27`](https://github.com/nuxt-hub/core/releases/tag/v0.8.27). In the latest version, Worker Logs are enabled by default.
 ::
 
 It is now possible to view, filter and analyze worker logs within the NuxtHub Admin.
 
 The logs page are refactored to be more user-friendly and easier to use. The new UI is easier to read and allows you to view the whole log message. This new logs page is available for both Pages and Workers.
 
-![Worker logs](/images/changelog/worker-logs-admin.png)
-
+![Worker logs](/images/changelog/worker-logs-admin.png){class="border border-default rounded"}
 
 ## Enable Worker Logs
 
 Worker logs are enabled by default in the latest version of NuxtHub core module (`@nuxthub/core >= v0.8.27`).
 
-If you are using older versions, you can enable Worker Logs by setting `hub.bindings.observability.logs` to `true` in your `nuxt.config.ts`.
+
+::note
+If you are using older versions and you cannot upgrade, you can enable Worker Logs by setting `hub.bindings.observability.logs` to `true` in your `nuxt.config.ts`.
 
 ```ts
 export default defineNuxtConfig({
@@ -49,6 +50,7 @@ export default defineNuxtConfig({
   },
 });
 ```
+::
 
 ::callout{to="/changelog/observability-additional-bindings" icon="i-lucide-book"}
 Learn more about enabling Worker Logs and additional bindings.
