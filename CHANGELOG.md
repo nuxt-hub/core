@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.8.27
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.26...v0.8.27)
+
+### 🚀 Enhancements
+
+- Enable worker logs with default settings ([#566](https://github.com/nuxt-hub/core/pull/566))
+
+### 📖 Documentation
+
+- Update example ([e770eac](https://github.com/nuxt-hub/core/commit/e770eac))
+
+### ❤️ Contributors
+
+- Farnabaz <farnabaz@gmail.com>
+- Sébastien Chopin <seb@nuxt.com>
+
 ## v0.8.26
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.25...v0.8.26)
