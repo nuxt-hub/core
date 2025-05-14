@@ -105,13 +105,13 @@ export interface ModuleOptions {
     }
   }
   /**
-   * Set to `true`, 'preview' or 'production' to use the remote storage.
+   * Set to `true`, 'preview', 'production' or <environment name> to use the remote storage.
    * Only set the value on a project you are deploying outside of NuxtHub or Cloudflare.
    * Or wrap it with $development to only use it in development mode.
    * @default process.env.NUXT_HUB_REMOTE or --remote option when running `nuxt dev`
    * @see https://hub.nuxt.com/docs/getting-started/remote-storage
    */
-  remote?: boolean | 'production' | 'preview'
+  remote?: boolean | 'production' | 'preview' | string
   /**
    * The URL of the NuxtHub Admin
    * @default 'https://admin.hub.nuxt.com'
@@ -131,7 +131,7 @@ export interface ModuleOptions {
    * The URL of the deployed project, used to fetch the remote storage.
    * @default process.env.NUXT_HUB_PROJECT_URL
    */
-  projectUrl?: string | (({ env, branch }: { env: 'production' | 'preview', branch: string }) => string)
+  projectUrl?: string | (({ env, branch }: { env: 'production' | 'preview' | string, branch: string }) => string)
   /**
    * The secret key defined in the deployed project as env variable, used to fetch the remote storage from the projectUrl
    * @default process.env.NUXT_HUB_PROJECT_SECRET_KEY
