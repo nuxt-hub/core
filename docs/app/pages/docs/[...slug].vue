@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import mediumZoom from 'medium-zoom'
-
 definePageMeta({
   layout: 'docs',
   primary: 'green',
@@ -31,12 +29,6 @@ useSeoMeta({
 
 defineOgImageComponent('Docs', {
   category: 'Docs'
-})
-
-onMounted(() => {
-  mediumZoom('[data-zoom-src]', {
-    margin: 5
-  })
 })
 </script>
 
