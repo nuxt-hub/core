@@ -873,7 +873,7 @@ export default defineEventHandler(async (event) => {
 
 ### Bulk generation and import
 
-This example bulk generates vectors using a text embeddings AI model for all data within a database table, using [Nitro tasks](https://nitro.unjs.io/guide/tasks). You can run the task via Nuxt DevTools.
+This example bulk generates vectors using a text embeddings AI model for all data within a database table, using [Nitro tasks](https://nitro.build/guide/tasks). You can run the task via Nuxt DevTools.
 
 ```ts [server/tasks/generate-embeddings.ts]
 import { jobs } from "../database/schema";
