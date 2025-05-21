@@ -22,10 +22,10 @@ This option will use Cloudflare platform proxy in development and automatically 
 
 ::tabs
 ::div{label="Nuxt DevTools"}
-:img{src="/images/landing/nuxt-devtools-blob.png" alt="Nuxt DevTools Blob" width="915" height="515" data-zoom-src="/images/landing/nuxt-devtools-blob.png"}
+:img{src="/images/landing/nuxt-devtools-blob.png" alt="Nuxt DevTools Blob" width="915" height="515"}
 ::
 ::div{label="NuxtHub Admin"}
-:img{src="/images/landing/nuxthub-admin-blob.png" alt="NuxtHub Admin Blob" width="915" height="515" data-zoom-src="/images/landing/nuxthub-admin-blob.png"}
+:img{src="/images/landing/nuxthub-admin-blob.png" alt="NuxtHub Admin Blob" width="915" height="515"}
 ::
 ::
 
