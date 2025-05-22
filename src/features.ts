@@ -346,10 +346,16 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
     }
 
     // Adapt env based on project defined production branch
-    if (String(hub.remote) === 'true') {
-      env = (branch === project.productionBranch ? 'production' : 'preview')
+    if (project.type === 'pages') {
+      if (String(hub.remote) === 'true') {
+        env = (branch === project.productionBranch ? 'production' : 'preview')
+      } else {
+        env = String(hub.remote)
+      }
     } else {
-      env = String(hub.remote)
+      const environment = await determineEnvironment(hub, project.teamSlug, project.slug, branch)
+      env = environment.name
+      hub.projectUrl = environment.url
     }
 
     if (typeof hub.projectUrl === 'function') {
@@ -434,6 +440,30 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
     logger.info(`Remote storage available: ${storageDescriptions.join(', ')}`)
   } else {
     log.fatal('No remote storage available: make sure to enable at least one of the storage options in your `nuxt.config.ts` and deploy new version before using remote storage. Read more at https://hub.nuxt.com/docs/getting-started/remote-storage')
+    process.exit(1)
+  }
+}
+
+/**
+ * Determine the deployment environment based on the branch name for Workers projects
+ * @param {HubConfig} hub - The Hub configuration
+ * @param {string} teamSlug - The team slug
+ * @param {string} projectSlug - The project slug
+ * @param {string} branch - The git branch name
+ * @returns {Promise} The determined environment
+ */
+export async function determineEnvironment(hub: HubConfig, teamSlug: string, projectSlug: string, branch: string) {
+  try {
+    return await $fetch(`/teams/${teamSlug}/projects/${projectSlug}/deploy/environment?branch=${branch}`, {
+      method: 'GET',
+      baseURL: hub.url,
+      headers: {
+        authorization: `Bearer ${hub.userToken}`
+      }
+    })
+  } catch (error) {
+    // If API call fails, default to preview
+    log.error('Failed to determine environment:', error)
     process.exit(1)
   }
 }
