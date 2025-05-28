@@ -4,7 +4,7 @@ navigation.title: Cache
 description: Learn how to cache Nuxt pages, API routes and functions in with NuxtHub cache storage.
 ---
 
-NuxtHub Cache is powered by [Nitro's cache storage](https://nitro.unjs.io/guide/cache#customize-cache-storage) and uses [Cloudflare Workers KV](https://developers.cloudflare.com/kv) as the cache storage. It allows you to cache API routes, server functions, and pages in your application.
+NuxtHub Cache is powered by [Nitro's cache storage](https://nitro.build/guide/cache#customize-cache-storage) and uses [Cloudflare Workers KV](https://developers.cloudflare.com/kv) as the cache storage. It allows you to cache API routes, server functions, and pages in your application.
 
 ## Getting Started
 
@@ -19,7 +19,7 @@ export default defineNuxtConfig({
 ```
 
 ::note
-This option will configure [Nitro's cache storage](https://nitro.unjs.io/guide/cache#customize-cache-storage) to use [Cloudflare Workers KV](https://developers.cloudflare.com/kv) as well as creating a new storage namespace for your project when you deploy it.
+This option will configure [Nitro's cache storage](https://nitro.build/guide/cache#customize-cache-storage) to use [Cloudflare Workers KV](https://developers.cloudflare.com/kv) as well as creating a new storage namespace for your project when you deploy it.
 ::
 
 Once your Nuxt project is deployed, you can manage your cache entries in the `Cache` section of your project in the [NuxtHub admin](https://admin.hub.nuxt.com/).
@@ -48,8 +48,8 @@ export default cachedEventHandler((event) => {
 
 The above example will cache the response of the `/api/cached-route` route for 1 hour. The `getKey` function is used to generate the key for the cache entry.
 
-::note{to="https://nitro.unjs.io/guide/cache#options"}
-Read more about [Nitro Cache options](https://nitro.unjs.io/guide/cache#options).
+::note{to="https://nitro.build/guide/cache#options"}
+Read more about [Nitro Cache options](https://nitro.build/guide/cache#options).
 ::
 
 ## Server Functions Caching
@@ -80,7 +80,7 @@ The above example will cache the result of the `getRepoStarCached` function for 
 ::important
 It is important to note that the `event` argument should always be the first argument of the cached function. Nitro leverages `event.waitUntil` to keep the instance alive while the cache is being updated while the response is sent to the client.  
 :br
-[Read more about this in the Nitro docs](https://nitro.unjs.io/guide/cache#edge-workers).
+[Read more about this in the Nitro docs](https://nitro.build/guide/cache#edge-workers).
 ::
 
 ## Routes Caching
@@ -148,7 +148,7 @@ await useStorage('cache').clear('nitro:handlers')
 ```
 
 
-::note{to="https://nitro.unjs.io/guide/cache"}
+::note{to="https://nitro.build/guide/cache"}
 Read more about Nitro Cache.
 ::
 
