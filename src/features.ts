@@ -353,7 +353,7 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
         env = String(hub.remote)
       }
     } else {
-      const environment = await determineEnvironment(hub, project.teamSlug, project.slug, branch)
+      const environment = await determineEnvironment(hub, hub.projectKey, branch)
       env = environment.name
       hub.projectUrl = environment.url
     }
@@ -447,14 +447,21 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
 /**
  * Determine the deployment environment based on the branch name for Workers projects
  * @param {HubConfig} hub - The Hub configuration
- * @param {string} teamSlug - The team slug
- * @param {string} projectSlug - The project slug
+ * @param {string} projectKey - The project key
  * @param {string} branch - The git branch name
  * @returns {Promise} The determined environment
  */
-export async function determineEnvironment(hub: HubConfig, teamSlug: string, projectSlug: string, branch: string) {
+export async function determineEnvironment(hub: HubConfig, projectKey: string, branch: string): Promise<{
+  name: string
+  description: string | null
+  url: string | null
+  branch: string | null
+  branchMatchStrategy: string
+  createdAt: Date
+  lastDeployedAt: Date | null
+}> {
   try {
-    return await $fetch(`/teams/${teamSlug}/projects/${projectSlug}/deploy/environment?branch=${branch}`, {
+    return await $fetch(`/api/projects/${projectKey}/environments/determine?branch=${branch}`, {
       method: 'GET',
       baseURL: hub.url,
       headers: {
