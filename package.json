@@ -90,6 +90,7 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "@parcel/watcher",
+      "@tailwindcss/oxide",
       "@tsparticles/engine",
       "better-sqlite3",
       "esbuild",
