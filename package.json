@@ -50,9 +50,9 @@
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "^4.20250422.0",
+    "@cloudflare/workers-types": "^4.20250529.0",
     "@nuxt/devtools-kit": "^2.4.0",
-    "@nuxt/kit": "^3.16.2",
+    "@nuxt/kit": "^3.17.4",
     "@uploadthing/mime-types": "^0.3.4",
     "citty": "^0.1.6",
     "confbox": "^0.2.2",
@@ -68,23 +68,23 @@
     "ufo": "^1.6.1",
     "uncrypto": "^0.1.3",
     "unstorage": "^1.15.0",
-    "zod": "^3.24.3"
+    "zod": "^3.25.34"
   },
   "devDependencies": {
     "@nuxt/devtools": "^2.4.0",
-    "@nuxt/eslint-config": "^1.3.0",
+    "@nuxt/eslint-config": "^1.4.1",
     "@nuxt/module-builder": "^1.0.1",
-    "@nuxt/schema": "^3.16.2",
-    "@nuxt/test-utils": "^3.17.2",
+    "@nuxt/schema": "^3.17.4",
+    "@nuxt/test-utils": "^3.19.1",
     "@nuxthub/core": "link:",
-    "@types/node": "^22.14.1",
+    "@types/node": "^22.15.24",
     "changelogen": "^0.6.1",
-    "eslint": "^9.25.1",
-    "nuxt": "^3.16.2",
+    "eslint": "^9.27.0",
+    "nuxt": "^3.17.4",
     "typescript": "~5.8.3",
-    "vitest": "^3.1.2",
+    "vitest": "^3.1.4",
     "vue-tsc": "^2.2.10",
-    "wrangler": "^4.12.1"
+    "wrangler": "^4.17.0"
   },
   "packageManager": "pnpm@10.9.0",
   "pnpm": {
