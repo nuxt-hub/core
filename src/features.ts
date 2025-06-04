@@ -4,7 +4,7 @@ import { mkdir } from 'node:fs/promises'
 import { isWindows } from 'std-env'
 import type { Nuxt } from '@nuxt/schema'
 import { join } from 'pathe'
-import { logger, addImportsDir, createResolver, addServerImports } from '@nuxt/kit'
+import { logger, addImportsDir, createResolver, addServerImports, addServerPlugin } from '@nuxt/kit'
 import { joinURL } from 'ufo'
 import { defu } from 'defu'
 import { $fetch } from 'ofetch'
@@ -238,6 +238,7 @@ export async function setupCache(nuxt: Nuxt) {
 export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
   // Add Server scanning
   addServerHandlers('/api/_hub', resolve('./runtime/database/server/api/_hub'))
+  addServerPlugin(resolve('./runtime/database/server/plugins/migrations.dev'))
 
   addServerImports([
     { name: 'hubDatabase', from: resolve('./runtime/database/server/utils/database') },
