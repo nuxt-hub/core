@@ -4,13 +4,14 @@ import { mkdir } from 'node:fs/promises'
 import { isWindows } from 'std-env'
 import type { Nuxt } from '@nuxt/schema'
 import { join } from 'pathe'
-import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createResolver } from '@nuxt/kit'
+import { logger, addImportsDir, createResolver, addServerImports } from '@nuxt/kit'
 import { joinURL } from 'ufo'
 import { defu } from 'defu'
 import { $fetch } from 'ofetch'
 import { addDevToolsCustomTabs } from './utils/devtools'
 import { getCloudflareAccessHeaders } from './runtime/utils/cloudflareAccess'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir } from './runtime/database/server/utils/migrations/helpers'
+import { addServerHandlers } from './utils/nitro'
 
 const log = logger.withTag('nuxt:hub')
 const { resolve, resolvePath } = createResolver(import.meta.url)
@@ -79,8 +80,12 @@ export async function setupBase(nuxt: Nuxt, hub: HubConfig) {
   }
 
   // Add Server scanning
-  addServerScanDir(resolve('./runtime/base/server'))
-  addServerImportsDir([resolve('./runtime/base/server/utils'), resolve('./runtime/base/server/utils/migrations')])
+  addServerHandlers('/api/_hub', resolve('./runtime/base/server/api/_hub'))
+
+  addServerImports([
+    { name: 'onHubReady', from: resolve('./runtime/base/server/utils/hooks') },
+    { name: 'hubHooks', from: resolve('./runtime/base/server/utils/hooks') }
+  ])
 
   // Add custom tabs to Nuxt DevTools
   if (nuxt.options.dev) {
@@ -112,7 +117,13 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
   }
 
   // Register auto-imports first so types are correct even when not running remotely
-  addServerImportsDir(resolve('./runtime/ai/server/utils'))
+  addServerImports([
+    { name: 'hubAI', from: resolve('./runtime/ai/server/utils/ai') },
+    { name: 'proxyHubAI', from: resolve('./runtime/ai/server/utils/ai') },
+    { name: 'hubAutoRAG', from: resolve('./runtime/ai/server/utils/autorag') },
+    { name: 'proxyHubAutoRAG', from: resolve('./runtime/ai/server/utils/autorag') }
+  ])
+
   // If we are in dev mode and the project is linked, verify it
   if (nuxt.options.dev && !hub.remote && hub.projectKey) {
     try {
@@ -135,19 +146,28 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
     }
   }
   // Add Server scanning
-  addServerScanDir(resolve('./runtime/ai/server'))
+  addServerHandlers('/api/_hub', resolve('./runtime/ai/server/api/_hub'))
 }
 
 export function setupAnalytics(_nuxt: Nuxt) {
   // Add Server scanning
-  addServerScanDir(resolve('./runtime/analytics/server'))
-  addServerImportsDir(resolve('./runtime/analytics/server/utils'))
+  addServerHandlers('/api/_hub', resolve('./runtime/analytics/server/api/_hub'))
+
+  addServerImports([
+    { name: 'hubAnalytics', from: resolve('./runtime/analytics/server/utils/analytics') },
+    { name: 'proxyHubAnalytics', from: resolve('./runtime/analytics/server/utils/analytics') }
+  ])
 }
 
 export function setupBlob(_nuxt: Nuxt) {
   // Add Server scanning
-  addServerScanDir(resolve('./runtime/blob/server'))
-  addServerImportsDir(resolve('./runtime/blob/server/utils'))
+  addServerHandlers('/api/_hub', resolve('./runtime/blob/server/api/_hub'))
+
+  addServerImports([
+    { name: 'hubBlob', from: resolve('./runtime/blob/server/utils/blob') },
+    { name: 'proxyHubBlob', from: resolve('./runtime/blob/server/utils/blob') },
+    { name: 'ensureBlob', from: resolve('./runtime/blob/server/utils/blob') }
+  ])
 
   // Add Composables
   addImportsDir(resolve('./runtime/blob/app/composables'))
@@ -155,7 +175,10 @@ export function setupBlob(_nuxt: Nuxt) {
 
 export async function setupBrowser(nuxt: Nuxt) {
   // Register auto-imports first so types are correct even when not running remotely
-  addServerImportsDir(resolve('./runtime/browser/server/utils'))
+  addServerImports([
+    { name: 'hubBrowser', from: resolve('./runtime/browser/server/utils/browser') }
+  ])
+
   // Check if dependencies are installed
   const missingDeps = []
   try {
@@ -209,13 +232,33 @@ export async function setupCache(nuxt: Nuxt) {
   })
 
   // Add Server scanning
-  addServerScanDir(resolve('./runtime/cache/server'))
+  addServerHandlers('/api/_hub', resolve('./runtime/cache/server/api/_hub'))
 }
 
 export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
   // Add Server scanning
-  addServerScanDir(resolve('./runtime/database/server'))
-  addServerImportsDir(resolve('./runtime/database/server/utils'))
+  addServerHandlers('/api/_hub', resolve('./runtime/database/server/api/_hub'))
+
+  addServerImports([
+    { name: 'hubDatabase', from: resolve('./runtime/database/server/utils/database') },
+    { name: 'proxyHubDatabase', from: resolve('./runtime/database/server/utils/database') },
+    { name: 'queryRemoteDatabase', from: resolve('./runtime/database/server/utils/migrations/remote') },
+    { name: 'fetchRemoteDatabaseMigrations', from: resolve('./runtime/database/server/utils/migrations/remote') },
+    { name: 'applyRemoteDatabaseMigrations', from: resolve('./runtime/database/server/utils/migrations/remote') },
+    { name: 'applyRemoteDatabaseQueries', from: resolve('./runtime/database/server/utils/migrations/remote') },
+    { name: 'applyDatabaseMigrations', from: resolve('./runtime/database/server/utils/migrations/migrations') },
+    { name: 'applyDatabaseQueries', from: resolve('./runtime/database/server/utils/migrations/migrations') },
+    { name: 'useDatabaseMigrationsStorage', from: resolve('./runtime/database/server/utils/migrations/helpers') },
+    { name: 'getDatabaseMigrationFiles', from: resolve('./runtime/database/server/utils/migrations/helpers') },
+    { name: 'copyDatabaseMigrationsToHubDir', from: resolve('./runtime/database/server/utils/migrations/helpers') },
+    { name: 'useDatabaseQueriesStorage', from: resolve('./runtime/database/server/utils/migrations/helpers') },
+    { name: 'getDatabaseQueryFiles', from: resolve('./runtime/database/server/utils/migrations/helpers') },
+    { name: 'copyDatabaseQueriesToHubDir', from: resolve('./runtime/database/server/utils/migrations/helpers') },
+    { name: 'splitSqlQueries', from: resolve('./runtime/database/server/utils/migrations/helpers') },
+    { name: 'CreateDatabaseMigrationsTableQuery', from: resolve('./runtime/database/server/utils/migrations/helpers') },
+    { name: 'AppliedDatabaseMigrationsQuery', from: resolve('./runtime/database/server/utils/migrations/helpers') }
+  ])
+
   // Bind `useDatabase()` to `hubDatabase()` if experimental.database is true
   if (nuxt.options.nitro.experimental?.database) {
     // @ts-expect-error cannot respect the typed database configs
@@ -240,19 +283,26 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
 
 export function setupKV(_nuxt: Nuxt) {
   // Add Server scanning
-  addServerScanDir(resolve('./runtime/kv/server'))
-  addServerImportsDir(resolve('./runtime/kv/server/utils'))
+  addServerHandlers('/api/_hub', resolve('./runtime/kv/server/api/_hub'))
+
+  addServerImports([
+    { name: 'hubKV', from: resolve('./runtime/kv/server/utils/kv') },
+    { name: 'proxyHubKV', from: resolve('./runtime/kv/server/utils/kv') }
+  ])
 }
 
 export function setupVectorize(nuxt: Nuxt, hub: HubConfig) {
   // Register auto-imports first so types are correct even when not running remotely
-  addServerImportsDir(resolve('./runtime/vectorize/server/utils'))
+  addServerImports([
+    { name: 'hubVectorize', from: resolve('./runtime/vectorize/server/utils/vectorize') },
+    { name: 'proxyHubVectorize', from: resolve('./runtime/vectorize/server/utils/vectorize') }
+  ])
   if (nuxt.options.dev && !hub.remote) {
     log.warn('`hubVectorize()` is disabled: only supported with remote storage in development mode (`nuxt dev --remote`).')
     return
   }
   // Add Server scanning
-  addServerScanDir(resolve('./runtime/vectorize/server'))
+  addServerHandlers('/api/_hub', resolve('./runtime/vectorize/server/api/_hub'))
 }
 
 export function vectorizeRemoteCheck(hub: HubConfig) {
@@ -291,7 +341,7 @@ export function setupOpenAPI(nuxt: Nuxt, hub: HubConfig) {
   }
   nuxt.options.nitro.openAPI.ui.swagger ||= false
   hub.openAPIRoute = nuxt.options.nitro.openAPI.route
-  addServerScanDir(resolve('./runtime/openapi/server'))
+  addServerHandlers('/api/_hub', resolve('./runtime/openapi/server/api/_hub'))
 }
 
 export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
