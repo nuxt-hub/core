@@ -90,7 +90,7 @@ export default defineNuxtModule<ModuleOptions>({
         clientSecret: process.env.NUXT_HUB_CLOUDFLARE_ACCESS_CLIENT_SECRET || null
       }
     })
-    if (!['test', 'preview', 'production'].includes(hub.env)) {
+    if (!['test', 'preview', 'production'].includes(hub.env) && !hub.workers) {
       log.error('Invalid hub environment, should be `test`, `preview` or `production`')
       process.exit(1)
     }
@@ -115,7 +115,7 @@ export default defineNuxtModule<ModuleOptions>({
       nuxt.options.nitro.cloudflare.wrangler = {}
     }
     // validate remote option
-    if (hub.remote && !['true', 'production', 'preview'].includes(String(hub.remote))) {
+    if (hub.remote && !['true', 'production', 'preview'].includes(String(hub.remote)) && !hub.workers) {
       log.error('Invalid remote option, should be `false`, `true`, `\'production\'` or `\'preview\'`')
       hub.remote = false
     }
