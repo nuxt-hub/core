@@ -21,9 +21,9 @@ We are excited to announce that we have added a new page to your NuxtHub project
 :img{src="/images/changelog/server-cache.png" alt="NuxtHub Deployment Details" width="915" height="515"}
 
 It works with:
-- [`cachedEventHandler`](https://nitro.unjs.io/guide/cache#cached-event-handlers)
-- [`cachedFunction`](https://nitro.unjs.io/guide/cache#cached-functions)
-- [`routeRules`](https://nitro.unjs.io/guide/cache#caching-route-rules)
+- [`cachedEventHandler`](https://nitro.build/guide/cache#cached-event-handlers)
+- [`cachedFunction`](https://nitro.build/guide/cache#cached-functions)
+- [`routeRules`](https://nitro.build/guide/cache#caching-route-rules)
 
 ::callout{to="/docs/features/cache" icon="i-lucide-book"}
 Learn more about server cache.
