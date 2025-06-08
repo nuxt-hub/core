@@ -1,8 +1,8 @@
 ---
-title: Environments & Improved variables management
+title: Environments & Improved variable management
 description: "Create additional deployment environments & revamped environment variable management"
 date: 2025-06-06
-image: '/images/changelog/workers-support.png'
+image: '/images/changelog/nuxthub-environments.png'
 authors:
   - name: Rihan Arfan
     avatar:
@@ -37,7 +37,6 @@ We're taking things a step further and introducing the ability to create additio
   - Example: All branches starting with `bugfix/` deploys to a testing environment
 
 Get started from the new "Environments" page of NuxtHub Admin.
-
 
 ## Revamped environment variables management
 

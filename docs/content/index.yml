@@ -10,7 +10,7 @@ hero:
     light: "/images/landing/hero-light.svg"
     dark: "/images/landing/hero-dark.svg"
   headline:
-    label: "Environments & Improved variables management"
+    label: "Environments & Improved variable management"
     to: /changelog/environments
     icon: i-lucide-arrow-right
 features:
