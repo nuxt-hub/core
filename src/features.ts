@@ -28,6 +28,7 @@ export interface HubConfig {
     clientId: string
     clientSecret: string
   }
+  workers?: boolean | undefined
 
   ai?: boolean
   analytics?: boolean
