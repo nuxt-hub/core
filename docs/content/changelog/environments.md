@@ -22,6 +22,8 @@ This feature is available on both [free and pro plans](/pricing) and in [`@nuxth
 
 We've been working hard on closing the gap between Pages and Workers, and improving the experience using NuxtHub. With this release, we've brought preview environments to Workers, and improved environment variables management.
 
+:img{src="/images/changelog/nuxthub-environments.png" alt="NuxtHub Environments" width="925" height="485"}
+
 ## Environments
 
 When we first introduced Cloudflare Workers support in NuxtHub, we only supported production deployments. Today, we're excited to announce that Workers now has the same powerful environment capabilities as Pages, making it easier than ever to test and deploy your applications. Any deployment from a non-production branch automatically gets deployed to the preview environment with separate resources (database, kv, etc.) than production.
