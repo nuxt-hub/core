@@ -59,7 +59,7 @@ export default defineNuxtModule<ModuleOptions>({
       // Local storage
       dir: '.data/hub',
       // Workers support
-      workers: false,
+      workers: undefined,
       // NuxtHub features
       ai: false,
       analytics: false,
@@ -90,7 +90,22 @@ export default defineNuxtModule<ModuleOptions>({
         clientSecret: process.env.NUXT_HUB_CLOUDFLARE_ACCESS_CLIENT_SECRET || null
       }
     })
-    if (!['test', 'preview', 'production'].includes(hub.env)) {
+
+    if (typeof hub.workers === 'undefined') {
+      const remoteProjectType = process.env.REMOTE_PROJECT_TYPE
+      if (remoteProjectType === 'pages') {
+        hub.workers = false
+      } else if (remoteProjectType === 'workers') {
+        hub.workers = true
+      }
+    }
+    // Pages incompatible with Nitro websocket
+    if (process.env.REMOTE_PROJECT_TYPE === 'pages' && nuxt.options.nitro.experimental?.websocket) {
+      log.error('Nitro websocket is only compatible with Workers project type, but the current project type is Pages. Please link a new project with the Workers project type to use Nitro websocket.')
+      process.exit(1)
+    }
+
+    if (!['test', 'preview', 'production'].includes(hub.env) && !hub.workers) {
       log.error('Invalid hub environment, should be `test`, `preview` or `production`')
       process.exit(1)
     }
@@ -115,7 +130,7 @@ export default defineNuxtModule<ModuleOptions>({
       nuxt.options.nitro.cloudflare.wrangler = {}
     }
     // validate remote option
-    if (hub.remote && !['true', 'production', 'preview'].includes(String(hub.remote))) {
+    if (hub.remote && !['true', 'production', 'preview'].includes(String(hub.remote)) && !hub.workers) {
       log.error('Invalid remote option, should be `false`, `true`, `\'production\'` or `\'preview\'`')
       hub.remote = false
     }
