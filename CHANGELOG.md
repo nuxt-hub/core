@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.9.0
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.8.27...v0.9.0)
+
+### 🚀 Enhancements
+
+- Environments + env sync API ([#579](https://github.com/nuxt-hub/core/pull/579))
+
+### 📖 Documentation
+
+- Update nitro.unjs.io links to nitro.build ([#571](https://github.com/nuxt-hub/core/pull/571))
+
+### ❤️ Contributors
+
+- Farnabaz <farnabaz@gmail.com>
+- Mr Kaashee <mrkaashee@gmail.com>
+
 ## v0.8.27
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.26...v0.8.27)
