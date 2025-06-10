@@ -1,7 +1,7 @@
 ---
 title: Environments & Improved variable management
 description: "Create additional deployment environments & revamped environment variable management"
-date: 2025-06-06
+date: 2025-06-10
 image: '/images/changelog/nuxthub-environments.png'
 authors:
   - name: Rihan Arfan
