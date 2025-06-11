@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import mediumZoom from 'medium-zoom'
 import { joinURL } from 'ufo'
 
 definePageMeta({
@@ -48,12 +47,6 @@ const socialLinks = computed(() => [{
   icon: 'i-simple-icons-x',
   to: `https://x.com/intent/tweet?text=${encodeURIComponent(`${post.value.title}\n\n`)}https://hub.nuxt.com${post.value._path}`
 }])
-
-onMounted(() => {
-  mediumZoom('[data-zoom-src]', {
-    margin: 5
-  })
-})
 </script>
 
 <template>
