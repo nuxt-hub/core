@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import mediumZoom from 'medium-zoom'
 import { joinURL } from 'ufo'
 
 const { data: page } = await useAsyncData('index', () => {
@@ -21,9 +20,6 @@ const demoVideoLink = page.value.deploy?.links?.find(link => link.id === 'demo-v
 const videoLink = ref('')
 
 onMounted(() => {
-  mediumZoom('[data-zoom-src]', {
-    margin: 5
-  })
   if (introVideoLink) {
     document.body.querySelector(`#${introVideoLink.id}`)?.addEventListener('click', (e) => {
       if (e.ctrlKey || e.metaKey) {
@@ -312,14 +308,5 @@ onMounted(() => {
 <style lang="postcss">
 .hero_code div div {
   @apply dark:bg-neutral-900/60 backdrop-blur-3xl bg-white/60;
-}
-
-.medium-zoom-overlay {
-  @apply dark:!bg-neutral-950 !bg-white;
-}
-
-.medium-zoom-overlay,
-.medium-zoom-image--opened {
-  z-index: 100;
 }
 </style>
