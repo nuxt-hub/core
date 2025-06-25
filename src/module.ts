@@ -26,7 +26,7 @@ export default defineNuxtModule<ModuleOptions>({
   defaults: {},
   async setup(options: ModuleOptions, nuxt: Nuxt) {
     // Cannot be used with `nuxt generate`
-    if (nuxt.options._generate) {
+    if (nuxt.options.nitro.static || (nuxt.options as any)._generate /* TODO: remove in future */) {
       log.error('NuxtHub is not compatible with `nuxt generate` as it needs a server to run.')
       log.info('To pre-render all pages: `https://hub.nuxt.com/docs/recipes/pre-rendering#pre-render-all-pages`')
       return process.exit(1)
