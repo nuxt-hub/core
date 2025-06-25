@@ -19,7 +19,7 @@
     "@nuxt/content": "^3.4.0",
     "@nuxt/image": "^1.10.0",
     "@nuxt/scripts": "^0.11.6",
-    "@nuxt/ui-pro": "https://pkg.pr.new/@nuxt/ui-pro@71f41ec",
+    "@nuxt/ui-pro": "^3.2.0",
     "@nuxtjs/plausible": "^1.2.0",
     "@rollup/plugin-yaml": "^4.1.2",
     "@tsparticles/engine": "^3.8.1",
