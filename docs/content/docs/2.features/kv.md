@@ -31,10 +31,10 @@ You can inspect your KV namespace during local development in the Nuxt DevTools 
 
 ::tabs
 ::div{label="Nuxt DevTools"}
-:img{src="/images/landing/nuxt-devtools-kv.png" alt="Nuxt DevTools KV" width="915" height="515" data-zoom-src="/images/landing/nuxt-devtools-kv.png"}
+:img{src="/images/landing/nuxt-devtools-kv.png" alt="Nuxt DevTools KV" width="915" height="515"}
 ::
-::div{label="NuxtHub Admin"}
-:img{src="/images/landing/nuxthub-admin-kv.png" alt="NuxtHub Admin KV" width="915" height="515" data-zoom-src="/images/landing/nuxthub-admin-kv.png"}
+  ::div{label="NuxtHub Admin"}
+  :img{src="/images/landing/nuxthub-admin-kv.png" alt="NuxtHub Admin KV" width="915" height="515"}
 ::
 ::
 
