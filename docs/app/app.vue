@@ -99,6 +99,23 @@ const links = computed(() => [
 
 <template>
   <UApp>
+    <UBanner
+      id="nuxtlabs-joins-vercel"
+      title="NuxtLabs is joining Vercel"
+      icon="i-simple-icons-vercel"
+      to="https://nuxtlabs.com/?utm_source=nuxthub&utm_medium=banner&utm_campaign=nuxtlabs-vercel"
+      close
+      :actions="[
+        {
+          label: 'Read the announcement',
+          color: 'neutral',
+          variant: 'outline',
+          trailingIcon: 'i-lucide-arrow-right',
+          to: 'https://nuxtlabs.com/?utm_source=nuxthub&utm_medium=banner&utm_campaign=nuxtlabs-vercel'
+        }
+      ]"
+    />
+
     <AppHeader />
     <UMain class="relative">
       <HeroBackground
