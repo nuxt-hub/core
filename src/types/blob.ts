@@ -149,8 +149,8 @@ export interface BlobMultipartOptions {
   [key: string]: any
 }
 
-export type HandleMPUResponse =
-  | {
+export type HandleMPUResponse
+  = | {
     action: 'create'
     data: Pick<BlobMultipartUpload, 'pathname' | 'uploadId'>
   }
