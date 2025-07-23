@@ -142,7 +142,11 @@ export interface ModuleOptions {
    * @default '.data/hub'
    */
   dir?: string
-
+  /**
+   * The directories to scan for database migrations.
+   * @default ['server/database/migrations']
+   */
+  databaseMigrationsDirs?: string[]
   /**
    * The extra bindings for the project.
    *
