@@ -40,6 +40,11 @@ export interface ModuleOptions {
    */
   dir?: string
   /**
+   * The directories to scan for database migrations.
+   * @default ['server/database/migrations']
+   */
+  databaseMigrationsDirs?: string[]
+  /**
    * Set `true` to apply database migrations during build time.
    *
    * @default true
