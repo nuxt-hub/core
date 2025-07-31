@@ -14,12 +14,11 @@ export default defineNuxtConfig({
     module
   ],
   devtools: { enabled: true },
-  css: ['assets/main.css'],
+  css: ['~/assets/main.css'],
 
   routeRules: {
     '/cached': { prerender: true }
   },
-  future: { compatibilityVersion: 4 },
 
   compatibilityDate: '2025-04-22',
 
