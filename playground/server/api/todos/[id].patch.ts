@@ -9,9 +9,10 @@ export default eventHandler(async (event) => {
   }).parse)
 
   // List todos for the current user
-  const todo = await useDrizzle().update(tables.todos).set({
+  const db = await useDrizzle()
+  const todo = await db.update(tables.todos).set({
     completed
-  }).where(eq(tables.todos.id, Number(id))).returning().get()
+  }).where(eq(tables.todos.id, Number(id))).returning().then(r => r[0])
 
   return todo
 })

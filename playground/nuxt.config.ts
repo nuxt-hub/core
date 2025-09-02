@@ -29,44 +29,48 @@ export default defineNuxtConfig({
       database: true,
       openAPI: true,
       websocket: true
+    },
+
+    storage: {
+      kv: {
+        driver: 'redis',
+        base: 'unstorage',
+        host: 'HOSTNAME',
+        tls: true as any,
+        port: 6380,
+        password: 'REDIS_PASSWORD'
+      },
+      blob: {
+        driver: 'fs',
+        base: '.data/blob'
+      },
+      cache: {
+        driver: 'fs',
+        base: '.data/cache'
+      }
     }
+
+    // Production database configuration
+    // Not necessary if hub.database is set to a specific dialect
+    // database: {
+    //   db: {
+    //     connector: 'better-sqlite3'
+    //   }
+    // },
+    // Override local development database configuration
+    // By default it's automatically configured based on set hub.database dialect or production database connector
+    // devDatabase: {
+    //   db: {
+    //     connector: 'better-sqlite3'
+    //   }
+    // }
   },
 
   hub: {
-    ai: true,
-    database: true,
+    database: 'sqlite',
     blob: true,
-    browser: true,
     kv: true,
-    cache: true,
-    vectorize: {
-      example: {
-        metric: 'cosine',
-        dimensions: 768,
-        metadataIndexes: { name: 'string', price: 'number' }
-      }
-    },
-    bindings: {
-      compatibilityDate: '2025-04-02',
-      observability: {
-        logs: true
-      }
-      // compatibilityFlags: ['nodejs_compat']
-      // Used for /api/hyperdrive
-      // hyperdrive: {
-      //   POSTGRES: '8bb2913857b84c939cd908740fa5a5d5'
-      // }
-      // Custom bindings example
-      // version_metadata: {
-      //   VERSION: {}
-      // },
-      // analytics_engine: {
-      //   ANALYTICS2: {
-      //     dataset: 'testing'
-      //   }
-      // }
-    }
-    // projectUrl: ({ branch }) => branch === 'main' ? 'https://playground.nuxt.dev' : `https://${encodeHost(branch).replace(/\//g, '-')}.playground-to39.pages.dev`
+    cache: true
   },
   hooks: {
     'hub:database:migrations:dirs': (dirs) => {

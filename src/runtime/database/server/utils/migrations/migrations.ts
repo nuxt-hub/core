@@ -1,15 +1,14 @@
 import { consola } from 'consola'
 import { hubDatabase } from '../database'
 import type { HubConfig } from '../../../../../features'
-import { AppliedDatabaseMigrationsQuery, CreateDatabaseMigrationsTableQuery, getDatabaseMigrationFiles, getDatabaseQueryFiles, splitSqlQueries, useDatabaseMigrationsStorage, useDatabaseQueriesStorage } from './helpers'
+import { AppliedDatabaseMigrationsQuery, getCreateMigrationsTableQuery, getDatabaseMigrationFiles, getDatabaseQueryFiles, splitSqlQueries, useDatabaseMigrationsStorage, useDatabaseQueriesStorage } from './helpers'
 
-// Apply migrations during local development and self-hosted remote development.
-// See src/utils/migrations/remote.ts for applying migrations on remote development (linked projects) and Pages CI deployments
 export async function applyDatabaseMigrations(hub: HubConfig) {
   const migrationsStorage = useDatabaseMigrationsStorage(hub)
   const db = hubDatabase()
 
-  await db.prepare(CreateDatabaseMigrationsTableQuery).all()
+  const createMigrationsTableQuery = getCreateMigrationsTableQuery(db)
+  await db.prepare(createMigrationsTableQuery).run()
   const appliedMigrations = (await db.prepare(AppliedDatabaseMigrationsQuery).all()).results
   const localMigrations = (await getDatabaseMigrationFiles(hub)).map(fileName => fileName.replace('.sql', ''))
   const pendingMigrations = localMigrations.filter(localName => !appliedMigrations.find(({ name }) => name === localName))
@@ -37,8 +36,6 @@ export async function applyDatabaseMigrations(hub: HubConfig) {
   }
 }
 
-// Apply migrations during local development and self-hosted remote development.
-// See src/utils/migrations/remote.ts for applying migrations on remote development (linked projects) and Pages CI deployments
 export async function applyDatabaseQueries(hub: HubConfig) {
   const queriesStorage = useDatabaseQueriesStorage(hub)
   const db = hubDatabase()

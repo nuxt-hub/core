@@ -15,7 +15,7 @@ export default defineEventHandler(async () => {
     ;`
 
   console.log(_tables.rows)
-  const db = useDrizzle()
+  const db = await useDrizzle()
 
   const tables = await db.all(sql`
     SELECT

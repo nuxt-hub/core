@@ -1,127 +1,156 @@
-import { ofetch } from 'ofetch'
-import { joinURL } from 'ufo'
-import { createError } from 'h3'
-import type { H3Error } from 'h3'
-import type { D1ExecResult, D1PreparedStatement } from '@cloudflare/workers-types'
+import type { ExecResult, Database, Statement as DB0Statement, PreparedStatement as DB0PreparedStatement, Primitive } from 'db0'
 import { requireNuxtHubFeature } from '../../../utils/features'
-import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
-import type { D1Database } from '@nuxthub/core'
-import { useRuntimeConfig } from '#imports'
+import { useDatabase } from '#imports'
 
-let _db: D1Database
+import type { HubDatabase, D1PreparedStatement, D1AllResult, D1RunResult, D1Statement } from '../../../../types'
+
+let _db: HubDatabase
+
+// Wrapper functions to create D1-compatible interfaces since db0 differs very slightly
+function createD1PreparedStatement(preparedStmt: DB0PreparedStatement, originalStmt?: any): D1PreparedStatement {
+  const statement: D1PreparedStatement = {
+    bind(...params: Primitive[]): D1PreparedStatement {
+      return createD1PreparedStatement(preparedStmt.bind(...params), originalStmt)
+    },
+    // adds results object to all()
+    async all(): Promise<D1AllResult> {
+      const results = await preparedStmt.all()
+      return {
+        success: true,
+        meta: {},
+        results: results as any[]
+      }
+    },
+    async run(): Promise<D1RunResult> {
+      return preparedStmt.run()
+    },
+    // changes db0 .get() to .first()
+    first() {
+      return preparedStmt.get()
+    }
+  }
+
+  // Store reference to original statement for batch operations
+  if (originalStmt) {
+    ;(statement as any)._originalStmt = originalStmt
+  }
+
+  return statement
+}
+
+function createD1Statement(stmt: DB0Statement, originalStmt?: any): D1Statement {
+  return {
+    bind(...params: Primitive[]): D1PreparedStatement {
+      return createD1PreparedStatement(stmt.bind(...params), originalStmt)
+    },
+    async all(...params: Primitive[]): Promise<D1AllResult> {
+      const results = await stmt.all(...params)
+      return {
+        success: true,
+        meta: {},
+        results: results as any[]
+      }
+    },
+    async run(...params: Primitive[]): Promise<D1RunResult> {
+      return stmt.run(...params)
+    },
+    // db0 get() method
+    async get(...params: Primitive[]): Promise<unknown> {
+      return stmt.get(...params)
+    },
+    // D1 first() method (alias for get())
+    async first(...params: Primitive[]): Promise<any> {
+      return stmt.get(...params)
+    }
+  }
+}
+
+function createD1CompatibleDatabase(db: Database): HubDatabase {
+  return {
+    dialect: db.dialect,
+    exec(sql: string): Promise<ExecResult> {
+      return db.exec(sql)
+    },
+    prepare(sql: string): D1Statement {
+      return createD1Statement(db.prepare(sql))
+    },
+    sql<T = any>(strings: TemplateStringsArray, ...values: Primitive[]): Promise<T> {
+      return db.sql(strings, ...values)
+    },
+    getInstance(): Promise<any> {
+      return db.getInstance()
+    },
+    async batch(statements: D1PreparedStatement[]): Promise<D1AllResult[]> {
+      // Try to detect the actual driver type and use native batch functionality
+      try {
+        const instance = await db.getInstance()
+
+        // Check if this is a D1 database by looking for the batch method
+        if (instance && typeof instance === 'object' && 'batch' in instance && typeof instance.batch === 'function') {
+          // Use native D1 batch functionality
+          const d1Statements = statements.map((stmt) => {
+            // Extract the original prepared statement from our wrapper
+            // This is a bit hacky but necessary to get the underlying D1 prepared statement
+            return (stmt as any)._originalStmt || stmt
+          })
+          const results = await (instance as any).batch(d1Statements)
+          return results.map((result: any) => ({
+            success: true,
+            meta: result.meta || {},
+            results: result.results || []
+          }))
+        }
+      } catch (error) {
+        // Fall through to custom implementation if D1 batch fails
+      }
+
+      // For SQLite (better-sqlite3), PostgreSQL, and PGlite
+      // we'll fall through to sequential execution to avoid complexity
+      // TODO: Implement proper batch/transaction support in db0
+
+      // Fallback: execute statements sequentially
+      const results: D1AllResult[] = []
+      for (const stmt of statements) {
+        try {
+          const result = await stmt.all()
+          results.push(result)
+        } catch (error: any) {
+          // If all() fails (for INSERT/UPDATE/DELETE), use run()
+          if (error?.message?.includes('does not return data')) {
+            const runResult = await stmt.run()
+            results.push({
+              success: runResult.success,
+              meta: {},
+              results: []
+            })
+          } else {
+            throw error
+          }
+        }
+      }
+      return results
+    }
+  }
+}
 
 /**
- * Access the D1 database.
+ * Access the NuxtHub database.
  *
  * @example ```ts
  * const db = hubDatabase()
- * const result = await db.exec('SELECT * FROM table')
+ * const { rows } = await db.sql`SELECT * FROM users`;
  * ```
  *
  * @see https://hub.nuxt.com/docs/features/database
  */
-export function hubDatabase(): D1Database {
+export function hubDatabase(): HubDatabase {
   requireNuxtHubFeature('database')
 
   if (_db) {
     return _db
   }
-  const hub = useRuntimeConfig().hub
-  // @ts-expect-error globalThis.__env__ is not defined
-  const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
-  if (hub.remote && hub.projectUrl && !binding) {
-    const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
-    _db = proxyHubDatabase(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
-    return _db
-  }
-  if (binding) {
-    _db = binding as D1Database
-    return _db
-  }
-  throw createError('Missing Cloudflare DB binding (D1)')
-}
+  const db = useDatabase('db') as Database
 
-/**
- * Access the remote D1 database.
- *
- * @param projectUrl The project URL (e.g. https://my-deployed-project.nuxt.dev)
- * @param secretKey The secret key to authenticate to the remote endpoint
- * @param headers The headers to send with the request to the remote endpoint
- *
- * @example ```ts
- * const db = proxyHubDatabase('https://my-deployed-project.nuxt.dev', 'my-secret-key')
- * await db.exec('SELECT * FROM table')
- * ```
- *
- * @see https://hub.nuxt.com/docs/features/database
- */
-export function proxyHubDatabase(projectUrl: string, secretKey?: string, headers?: HeadersInit): D1Database {
-  requireNuxtHubFeature('database')
-
-  const d1API = ofetch.create({
-    baseURL: joinURL(projectUrl, '/api/_hub/database'),
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${secretKey}`,
-      ...headers
-    }
-  })
-  return {
-    async exec(query: string) {
-      return d1API<D1ExecResult>('/exec', {
-        body: { query }
-      }).catch(handleProxyError)
-    },
-    prepare(query: string) {
-      const stmt = {
-        _body: {
-          query,
-          params: [] as unknown[]
-        },
-        bind(...params: unknown[]) {
-          return {
-            ...stmt,
-            _body: { query, params }
-          }
-        },
-        async all() {
-          return d1API('/all', { body: this._body }).catch(handleProxyError)
-        },
-        async raw(options?: { columnNames?: boolean }) {
-          return d1API('/raw', {
-            body: {
-              ...this._body,
-              ...options
-            }
-          }).catch(handleProxyError)
-        },
-        async run() {
-          return d1API('/run', { body: this._body }).catch(handleProxyError)
-        },
-        async first(colName?: string) {
-          return d1API('/first', {
-            body: {
-              ...this._body,
-              colName
-            }
-          }).catch(handleProxyError).then(res => res || null)
-        }
-      }
-      return stmt as D1PreparedStatement
-    },
-    batch(statements: D1PreparedStatement[]) {
-      return d1API('/batch', {
-        // @ts-expect-error _body is not recognized but internally used
-        body: statements.map(smtm => smtm._body)
-      })
-    }
-  } as D1Database
-}
-
-function handleProxyError(err: H3Error) {
-  throw createError({
-    statusCode: err.statusCode,
-    // @ts-expect-error not aware of data property
-    message: err.data?.message || err.message
-  })
+  _db = createD1CompatibleDatabase(db)
+  return _db
 }

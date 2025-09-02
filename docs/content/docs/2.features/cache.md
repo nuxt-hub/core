@@ -4,11 +4,11 @@ navigation.title: Cache
 description: Learn how to cache Nuxt pages, API routes and functions in with NuxtHub cache storage.
 ---
 
-NuxtHub Cache is powered by [Nitro's cache storage](https://nitro.build/guide/cache#customize-cache-storage) and uses [Cloudflare Workers KV](https://developers.cloudflare.com/kv) as the cache storage. It allows you to cache API routes, server functions, and pages in your application.
+NuxtHub Cache is powered by [Nitro's cache storage](https://nitro.build/guide/cache#customize-cache-storage). It allows you to cache API routes, server functions, and pages in your application.
 
 ## Getting Started
 
-Enable the cache storage in your NuxtHub project by adding the `cache` property to the `hub` object in your `nuxt.config.ts` file.
+1. Enable the cache storage in your NuxtHub project by adding the `cache` property to the `hub` object in your `nuxt.config.ts` file.
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
@@ -18,15 +18,45 @@ export default defineNuxtConfig({
 })
 ```
 
-::note
-This option will configure [Nitro's cache storage](https://nitro.build/guide/cache#customize-cache-storage) to use [Cloudflare Workers KV](https://developers.cloudflare.com/kv) as well as creating a new storage namespace for your project when you deploy it.
+2. Configure your production storage provider in Nitro
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    storage: {
+      cache: {
+        driver: 'vercel-runtime-cache',
+        /* any additional connector options */
+      }
+    }
+  },
+
+  hub: {
+    cache: true,
+  },
+})
+```
+
+::callout{to="https://nitro.build/guide/storage#configuration"}
+You can find the driver list on [unstorage documentation](https://unstorage.unjs.io/drivers) with their configuration.
 ::
 
-Once your Nuxt project is deployed, you can manage your cache entries in the `Cache` section of your project in the [NuxtHub admin](https://admin.hub.nuxt.com/).
-
-:img{src="/images/landing/nuxthub-admin-cache.png" alt="NuxtHub Admin Cache" width="915" height="515"}
-
-In development, checkout the Hub Cache section in the Nuxt Devtools.
+By default, NuxtHub will automatically use the filesystem during local development. You can modify this behaviour by specifying a different storage driver.
+::collapsible{name="local development storage driver example"}
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    // default cache driver
+    devStorage: {
+      cache: {
+        driver: 'fs',
+        base: join(nuxt.options.rootDir, '.data/cache')
+      }
+    }
+  },
+})
+```
+::
 
 ## API Routes Caching
 
@@ -78,7 +108,7 @@ export const getRepoStarCached = defineCachedFunction(async (event: H3Event, rep
 The above example will cache the result of the `getRepoStarCached` function for 1 hour.
 
 ::important
-It is important to note that the `event` argument should always be the first argument of the cached function. Nitro leverages `event.waitUntil` to keep the instance alive while the cache is being updated while the response is sent to the client.  
+It is important to note that the `event` argument should always be the first argument of the cached function. Nitro leverages `event.waitUntil` to keep the instance alive while the cache is being updated while the response is sent to the client.
 :br
 [Read more about this in the Nitro docs](https://nitro.build/guide/cache#edge-workers).
 ::
@@ -140,7 +170,7 @@ You can invalidate the cached function entry from your storage using cache key.
 await useStorage('cache').removeItem('nitro:functions:getAccessToken:default.json')
 ```
 
-You can use the `group` and `name` options to invalidate multiple cache entries based on their prefixes. 
+You can use the `group` and `name` options to invalidate multiple cache entries based on their prefixes.
 
 ```ts
 // Gets all keys that start with nitro:handlers
@@ -201,7 +231,7 @@ await useStorage('cache').removeItem(`nitro:functions:getProductDetails:${normal
 
 As NuxtHub leverages Cloudflare Workers KV to store your cache entries, we leverage the [`expiration` property](https://developers.cloudflare.com/kv/api/write-key-value-pairs/#expiring-keys) of the KV binding to handle the cache expiration.
 
-By default, `stale-while-revalidate` behavior is enabled. If an expired cache entry is requested, the stale value will be served while the cache is asynchronously refreshed. This also means that all cache entries will remain in your KV namespace until they are manually invalidated/deleted. 
+By default, `stale-while-revalidate` behavior is enabled. If an expired cache entry is requested, the stale value will be served while the cache is asynchronously refreshed. This also means that all cache entries will remain in your KV namespace until they are manually invalidated/deleted.
 
 To disable this behavior, set `swr` to `false` when defining a cache rule. This will delete the cache entry once `maxAge` is reached.
 
@@ -221,9 +251,5 @@ export default defineNuxtConfig({
 ```
 
 ::note
-If you set an expiration (`maxAge`) lower than `60` seconds, NuxtHub will set the KV entry expiration to `60` seconds in the future (Cloudflare KV limitation) so it can be removed automatically.
+If you set an expiration (`maxAge`) lower than `60` seconds, NuxtHub will set the KV entry expiration to `60` seconds in the future so it can be removed automatically on providers that do not support TTLs lower than 60s.
 ::
-
-## Pricing
-
-:pricing-table{:tabs='["KV"]'}

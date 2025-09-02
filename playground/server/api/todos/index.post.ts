@@ -4,10 +4,11 @@ export default eventHandler(async (event) => {
   }).parse)
 
   // List todos for the current user
-  const todo = await useDrizzle().insert(tables.todos).values({
+  const db = await useDrizzle()
+  const todo = await db.insert(tables.todos).values({
     title,
     createdAt: new Date()
-  }).returning().get()
+  }).returning().then(r => r[0])
 
   return todo
 })

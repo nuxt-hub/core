@@ -1,6 +1,7 @@
 export default eventHandler(async () => {
   // List todos for the current user
-  const todos = await useDrizzle().select().from(tables.todos).all()
+  const db = await useDrizzle()
+  const todos = await db.select().from(tables.todos)
 
   return todos
 })

@@ -1,7 +1,7 @@
 {
   "name": "@nuxthub/core",
   "private": false,
-  "version": "0.9.0",
+  "version": "1.0.0-alpha.1",
   "description": "Build full-stack Nuxt applications on Cloudflare, with zero configuration.",
   "repository": {
     "type": "git",
@@ -50,43 +50,42 @@
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "^4.20250529.0",
+    "@cloudflare/workers-types": "^4.20250810.0",
     "@nuxt/devtools-kit": "^2.4.0",
-    "@nuxt/kit": "^3.17.4",
-    "@uploadthing/mime-types": "^0.3.4",
-    "citty": "^0.1.6",
+    "@uploadthing/mime-types": "^0.3.5",
     "confbox": "^0.2.2",
+    "db0": "^0.3.2",
     "defu": "^6.1.4",
     "destr": "^2.0.5",
-    "h3": "^1.15.1",
+    "h3": "^1.15.4",
     "mime": "^4.0.7",
     "nitro-cloudflare-dev": "^0.2.2",
     "ofetch": "^1.4.1",
     "pathe": "^2.0.3",
     "pkg-types": "^2.1.0",
-    "std-env": "^3.9.0",
     "ufo": "^1.6.1",
     "uncrypto": "^0.1.3",
-    "unstorage": "^1.15.0",
+    "unstorage": "^1.16.1",
     "zod": "^3.25.34"
   },
   "devDependencies": {
     "@nuxt/devtools": "^2.4.0",
-    "@nuxt/eslint-config": "^1.4.1",
-    "@nuxt/module-builder": "^1.0.1",
-    "@nuxt/schema": "^3.17.4",
-    "@nuxt/test-utils": "3.18.0",
+    "@nuxt/eslint-config": "^1.8.0",
+    "@nuxt/kit": "^4.0.3",
+    "@nuxt/module-builder": "^1.0.2",
+    "@nuxt/schema": "^4.0.3",
+    "@nuxt/test-utils": "3.19.2",
     "@nuxthub/core": "link:",
     "@types/node": "^22.15.24",
-    "changelogen": "^0.6.1",
-    "eslint": "^9.27.0",
-    "nuxt": "^3.17.4",
-    "typescript": "~5.8.3",
-    "vitest": "^3.1.4",
-    "vue-tsc": "^2.2.10",
-    "wrangler": "^4.17.0"
+    "changelogen": "^0.6.2",
+    "eslint": "^9.33.0",
+    "nuxt": "^4.0.3",
+    "typescript": "~5.9.2",
+    "vitest": "^3.2.4",
+    "vue-tsc": "^3.0.5",
+    "wrangler": "^4.28.1"
   },
-  "packageManager": "pnpm@10.9.0",
+  "packageManager": "pnpm@10.14.0",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@parcel/watcher",
@@ -94,10 +93,7 @@
       "@tsparticles/engine",
       "better-sqlite3",
       "esbuild",
-      "puppeteer",
       "sharp",
-      "unrs-resolver",
-      "vue-demi",
       "workerd"
     ]
   }

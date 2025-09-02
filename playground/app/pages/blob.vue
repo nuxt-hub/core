@@ -2,7 +2,6 @@
 const loading = ref(false)
 const loadingProgress = ref<number | undefined>(undefined)
 const newFilesValue = ref<File[]>([])
-const useSignedUrl = ref(false)
 const uploadRef = ref<HTMLInputElement>()
 const folded = ref(false)
 const prefixes = ref<string[]>([])
@@ -46,30 +45,6 @@ async function addFile() {
   }
   loading.value = true
 
-  if (useSignedUrl.value) {
-    for (const file of newFilesValue.value) {
-      const url = await $fetch(`/api/blob/sign/${file.name}`, {
-        query: {
-          contentType: file.type,
-          contentLength: file.size
-        }
-      })
-      await $fetch(url, {
-        method: 'PUT',
-        body: file
-      })
-        .then(() => {
-          toast.add({ title: `File ${file.name} uploaded.` })
-          refresh()
-        })
-        .catch((err) => {
-          toast.add({ title: `Failed to upload ${file.name}.`, description: err.message, color: 'red' })
-        })
-    }
-    loading.value = false
-    return
-  }
-
   try {
     const uploadedFiles = await uploadFiles(newFilesValue.value)
     files.value!.push(...uploadedFiles)
@@ -101,6 +76,7 @@ async function uploadFiles(files: File[]) {
     })(smallFiles)
   }
 
+  // TODO: multipart upload
   // upload big files
   const uploadLarge = useMultipartUpload('/api/blob/multipart', {
     concurrent: 2,
@@ -108,6 +84,9 @@ async function uploadFiles(files: File[]) {
   })
 
   for (const file of bigFiles) {
+    toast.add({ title: 'Multipart upload is not supported yet.', color: 'warning' })
+    continue
+
     const { completed, progress, abort } = uploadLarge(file)
 
     const uploadingToast = toast.add({
@@ -207,7 +186,6 @@ async function deleteFile(pathname: string) {
 
     <div class="flex items-center gap-6 mt-2">
       <UCheckbox v-model="folded" label="View prefixes as directory" />
-      <UCheckbox v-model="useSignedUrl" label="Use signed url to upload" />
     </div>
 
     <UProgress v-if="loading" :value="loadingProgress" :max="1" class="mt-2" />

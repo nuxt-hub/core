@@ -2,60 +2,16 @@ import { addCustomTab } from '@nuxt/devtools-kit'
 import type { Nuxt } from 'nuxt/schema'
 import type { HubConfig } from '../features'
 
-export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
-  nuxt.hook('listen', (_, { url }) => {
-    hub.database && addCustomTab({
-      category: 'server',
-      name: 'hub-database',
-      title: 'Hub Database',
-      icon: 'i-lucide-database',
-      view: {
-        type: 'iframe',
-        src: `https://admin.hub.nuxt.com/embed/database?url=${url}`
-      }
-    })
-
-    hub.kv && addCustomTab({
-      category: 'server',
-      name: 'hub-kv',
-      title: 'Hub KV',
-      icon: 'i-lucide-list',
-      view: {
-        type: 'iframe',
-        src: `https://admin.hub.nuxt.com/embed/kv?url=${url}`
-      }
-    })
-
-    hub.blob && addCustomTab({
-      category: 'server',
-      name: 'hub-blob',
-      title: 'Hub Blob',
-      icon: 'i-lucide-shapes',
-      view: {
-        type: 'iframe',
-        src: `https://admin.hub.nuxt.com/embed/blob?url=${url}`
-      }
-    })
-
-    hub.cache && addCustomTab({
-      category: 'server',
-      name: 'hub-cache',
-      title: 'Hub Cache',
-      icon: 'i-lucide-database-zap',
-      view: {
-        type: 'iframe',
-        src: `https://admin.hub.nuxt.com/embed/cache?url=${url}`
-      }
-    })
-
-    hub.openAPIRoute && addCustomTab({
+export function addDevToolsCustomTabs(nuxt: Nuxt, _hub: HubConfig) {
+  nuxt.hook('listen', (_) => {
+    nuxt.options.nitro.experimental?.openAPI && addCustomTab({
       category: 'server',
       name: 'hub-open-api',
       title: 'OpenAPI',
       icon: 'i-lucide-file-text',
       view: {
         type: 'iframe',
-        src: `/api/_hub/scalar`
+        src: `/_scalar`
       }
     })
   })

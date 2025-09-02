@@ -6,7 +6,7 @@ description: Upload, store and serve images, videos, music, documents and other 
 
 ## Getting Started
 
-Enable the blob storage in your NuxtHub project by adding the `blob` property to the `hub` object in your `nuxt.config.ts` file.
+1. Enable the blob storage in your NuxtHub project by adding the `blob` property to the `hub` object in your `nuxt.config.ts` file.
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
@@ -16,17 +16,45 @@ export default defineNuxtConfig({
 })
 ```
 
-::note
-This option will use Cloudflare platform proxy in development and automatically create a [Cloudflare R2](https://developers.cloudflare.com/r2) bucket for your project when you [deploy it](/docs/getting-started/deploy).
+2. Configure your production storage provider in Nitro
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    storage: {
+      BLOB: {
+        driver: 'vercel-blob',
+        access: 'public',
+        /* any additional connector options */
+      }
+    }
+  },
+
+  hub: {
+    blob: true,
+  },
+})
+```
+
+::callout{to="https://nitro.build/guide/storage#configuration"}
+You can find the driver list on [unstorage documentation](https://unstorage.unjs.io/drivers) with their configuration.
 ::
 
-::tabs
-::div{label="Nuxt DevTools"}
-:img{src="/images/landing/nuxt-devtools-blob.png" alt="Nuxt DevTools Blob" width="915" height="515"}
-::
-::div{label="NuxtHub Admin"}
-:img{src="/images/landing/nuxthub-admin-blob.png" alt="NuxtHub Admin Blob" width="915" height="515"}
-::
+By default, NuxtHub will automatically use the filesystem during local development. You can modify this behaviour by specifying a different storage driver.
+::collapsible{name="local development storage driver example"}
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    // default blob driver
+    devStorage: {
+      BLOB: {
+        driver: 'fs',
+        base: join(nuxt.options.rootDir, '.data/blob')
+      }
+    }
+  },
+})
+```
 ::
 
 ## `hubBlob()`
@@ -73,7 +101,7 @@ Returns [`BlobListResult`](#bloblistresult).
 
 #### Return all blobs
 
-To fetch all blobs, you can use a `while` loop to fetch the next page until the `cursor` is `null`. 
+To fetch all blobs, you can use a `while` loop to fetch the next page until the `cursor` is `null`.
 
 ```ts
 let blobs = []
@@ -362,7 +390,7 @@ Returns a [`BlobObject`](#blobobject) or an array of [`BlobObject`](#blobobject)
 
 Throws an error if `file` doesn't meet the requirements.
 
-### `handleMultipartUpload()`
+<!-- ### `handleMultipartUpload()`
 
 Handle the request to support multipart upload.
 
@@ -488,7 +516,7 @@ export default eventHandler(async (event) => {
 })
 ```
 
-If you want to cancel the upload, you need to call `abort()` method: 
+If you want to cancel the upload, you need to call `abort()` method:
 
 ```ts [server/api/files/multipart/[...pathname\\].delete.ts]
 export default eventHandler(async (event) => {
@@ -567,70 +595,7 @@ Returns a `BlobMultipartUpload`
   ::field{name="event" type="H3Event" required}
     The event to handle.
   ::
-::
-
-
-### `createCredentials()`
-
-Creates temporary access credentials that can be optionally scoped to prefixes or objects.
-
-Useful to create presigned URLs to upload files to R2 from client-side ([see example](#create-presigned-urls-to-upload-files-to-r2)).
-
-::note
-This method is only available in production or in development with `--remote` flag.
-::
-
-```ts
-// Create credentials with default permission & scope (admin-read-write)
-const credentials = await hubBlob().createCredentials()
-
-// Limit the scope to a specific object & permission
-const credentials = await hubBlob().createCredentials({
-  permission: 'object-read-write',
-  pathnames: ['only-this-file.png']
-})
-```
-
-Read more about [creating presigned URLs to upload files to R2](#create-presigned-urls-to-upload-files-to-r2).
-
-#### Params
-
-::field-group
-  ::field{name="options" type="Object"}
-    The options to create the credentials.
-    ::collapsible
-      ::field{name="permission" type="string"}
-        The permission of the credentials, defaults to `'admin-read-write'`{lang=ts}.
-        ```ts
-        'admin-read-write' | 'admin-read-only' | 'object-read-write' | 'object-read-only'
-        ```
-      ::
-      ::field{name="ttl" type="number"}
-        The ttl of the credentials in seconds, defaults to `900`.
-      ::
-      ::field{name="pathnames" type="string[]"}
-        The pathnames to scope the credentials to.
-      ::
-      ::field{name="prefixes" type="string[]"}
-        The prefixes to scope the credentials to.
-      ::
-    ::
-  ::
-::
-
-#### Return
-
-Returns an object with the following properties:
-
-```ts
-{
-  accountId: string
-  bucketName: string
-  accessKeyId: string
-  secretAccessKey: string
-  sessionToken: string
-}
-```
+:: -->
 
 ## `ensureBlob()`
 
@@ -834,158 +799,3 @@ interface BlobListResult {
   folders?: string[]
 }
 ```
-
-## Examples
-
-### List blobs with pagination
-
-::code-group
-```ts [server/api/blobs.get.ts]
-export default eventHandler(async (event) => {
-  const { limit, cursor } = await getQuery(event)
-
-  return hubBlob().list({
-    limit: limit ? Number.parseInt(limit) : 10,
-    cursor: cursor ? cursor : undefined
-  })
-})
-```
-
-```vue [pages/blobs.vue]
-<script setup lang="ts">
-const blobs = ref<BlobObject[]>([])
-const hasMore = ref(true)
-const cursor = ref()
-
-async function loadMore() {
-  if (!hasMore.value) {
-    return
-  }
-  const res = await $fetch('/api/blobs', {
-    query: {
-      limit: 3,
-      cursor: cursor.value
-    }
-  })
-  blobs.value.push(...res.blobs)
-  hasMore.value = res.hasMore
-  cursor.value = res.cursor
-}
-</script>
-<template>
-  <div>
-    <div v-for="blob in blobs" :key="blob.pathname">
-      {{ blob.pathname }}
-    </div>
-    <button @click="loadMore">
-      Load more
-    </button>
-  </div>
-</template>
-```
-::
-
-### Create presigned URLs to upload files to R2
-
-Presigned URLs can be used to upload files to R2 from client-side without using an API key.
-
-:img{src="/images/docs/blob-presigned-urls.png" alt="NuxtHub presigned URLs to upload files to R2" width="915" height="515" class="rounded"}
-
-As we use [aws4fetch](https://github.com/mhart/aws4fetch) to sign the request and [zod](https://github.com/colinhacks/zod) to validate the request, we need to install the packages:
-
-```bash [Terminal]
-npx nypm i aws4fetch zod
-```
-
-First, we need to create an API route that will return a presigned URL to the client.
-
-```ts [server/api/blob/sign/\[...pathname\\].get.ts]
-import { z } from 'zod'
-import { AwsClient } from 'aws4fetch'
-
-export default eventHandler(async (event) => {
-  const { pathname } = await getValidatedRouterParams(event, z.object({
-    pathname: z.string().min(1)
-  }).parse)
-  // Create credentials with the right permission & scope
-  const blob = hubBlob()
-  const { accountId, bucketName, ...credentials } = await blob.createCredentials({
-    permission: 'object-read-write',
-    pathnames: [pathname]
-  })
-  // Create the presigned URL
-  const client = new AwsClient(credentials)
-  const endpoint = new URL(
-    pathname,
-    `https://${bucketName}.${accountId}.r2.cloudflarestorage.com`
-  )
-  const { url } = await client.sign(endpoint, {
-    method: 'PUT',
-    aws: { signQuery: true }
-  })
-  // Return the presigned URL to the client
-  return { url }
-})
-```
-
-::important
-Make sure to authenticate the request on the server side to avoid letting anyone upload files to your R2 bucket. Checkout [nuxt-auth-utils](https://github.com/atinux/nuxt-auth-utils) as one of the possible solutions.
-::
-
-Next, we need to create the Vue page to upload a file to our R2 bucket using the presigned URL:
-
-```vue [pages/upload.vue]
-<script setup lang="ts">
-async function uploadWithPresignedUrl(file: File) {
-  const { url } = await $fetch(`/api/blob/sign/${file.name}`)
-  await $fetch(url, {
-    method: 'PUT',
-    body: file
-  })
-}
-</script>
-
-<template>
-  <input type="file" @change="uploadWithPresignedUrl($event.target.files[0])">
-</template>
-```
-
-At this stage, you will get a CORS error because we did not setup the CORS on our R2 bucket.
-
-To setup the CORS on our R2 bucket:
-- Open the project on NuxtHub Admin with `npx nuxthub manage`
-- Go to the **Blob tab** (make sure to be on the right environment: production or preview)
-- Click on the Cloudflare icon on the top right corner
-- Once on Cloudflare, Go to the `Settings` tab of your R2 bucket
-- Scroll to **CORS policy**
-- Click on `Edit CORS policy`
-- Update the allowed origins with your origins by following this example:
-```json
-[
-  {
-    "AllowedOrigins": [
-      "http://localhost:3000",
-      "https://my-app.nuxt.dev"
-    ],
-    "AllowedMethods": [
-      "GET",
-      "PUT"
-    ],
-    "AllowedHeaders": [
-      "*"
-    ]
-  }
-]
-```
-- Save the changes
-
-That's it! You can now upload files to R2 using the presigned URLs.
-
-::callout
-Read more about presigned URLs on Cloudflare's [official documentation](https://developers.cloudflare.com/r2/api/s3/presigned-urls/).
-::
-
-## Pricing
-
-:pricing-table{:tabs='["Blob"]'}
-

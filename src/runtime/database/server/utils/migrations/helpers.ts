@@ -38,13 +38,47 @@ export async function copyDatabaseMigrationsToHubDir(hub: HubConfig) {
   }))
 }
 
-export const CreateDatabaseMigrationsTableQuery = `CREATE TABLE IF NOT EXISTS _hub_migrations (
+export const CreateDatabaseMigrationsTableQuerySqlite = `CREATE TABLE IF NOT EXISTS _hub_migrations (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
   name       TEXT UNIQUE,
   applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );`
 
+export const CreateDatabaseMigrationsTableQueryPostgresql = `CREATE TABLE IF NOT EXISTS _hub_migrations (
+  id         SERIAL PRIMARY KEY,
+  name       TEXT UNIQUE,
+  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);`
+
+export const CreateDatabaseMigrationsTableQueryMysql = `CREATE TABLE IF NOT EXISTS _hub_migrations (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  name       VARCHAR(255) UNIQUE,
+  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);`
+
+export const CreateDatabaseMigrationsTableQueryLibsql = CreateDatabaseMigrationsTableQuerySqlite
+
 export const AppliedDatabaseMigrationsQuery = 'select "id", "name", "applied_at" from "_hub_migrations" order by "_hub_migrations"."id"'
+
+/**
+ * Get the appropriate create table query for the migrations table based on the database dialect
+ */
+export function getCreateMigrationsTableQuery(db: { dialect: string }): string {
+  const dialect = db.dialect
+
+  switch (dialect) {
+    case 'postgresql':
+      return CreateDatabaseMigrationsTableQueryPostgresql
+    case 'mysql':
+      return CreateDatabaseMigrationsTableQueryMysql
+    case 'sqlite':
+      return CreateDatabaseMigrationsTableQuerySqlite
+    case 'libsql':
+      return CreateDatabaseMigrationsTableQueryLibsql
+    default:
+      throw new Error('Invalid database dialect')
+  }
+}
 // #endregion
 
 // #region Queries
