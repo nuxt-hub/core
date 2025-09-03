@@ -19,7 +19,7 @@ export function useMultipartUpload(
     fetchOptions,
     prefix
   } = defu(options, {
-    partSize: 10 * 1024 * 1024, // 10MB
+    partSize: 4 * 1024 * 1024, // 10MB
     concurrent: 1, // no concurrent upload by default
     maxRetry: 3
   })

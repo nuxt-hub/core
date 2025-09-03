@@ -53,6 +53,7 @@
     "@cloudflare/workers-types": "^4.20250810.0",
     "@nuxt/devtools-kit": "^2.4.0",
     "@uploadthing/mime-types": "^0.3.5",
+    "@vercel/blob": "^1.1.1",
     "confbox": "^0.2.2",
     "db0": "^0.3.2",
     "defu": "^6.1.4",
