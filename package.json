@@ -53,7 +53,6 @@
     "@cloudflare/workers-types": "^4.20250810.0",
     "@nuxt/devtools-kit": "^2.4.0",
     "@uploadthing/mime-types": "^0.3.5",
-    "confbox": "^0.2.2",
     "db0": "^0.3.2",
     "defu": "^6.1.4",
     "destr": "^2.0.5",
@@ -82,10 +81,9 @@
     "nuxt": "^4.0.3",
     "typescript": "~5.9.2",
     "vitest": "^3.2.4",
-    "vue-tsc": "^3.0.5",
-    "wrangler": "^4.28.1"
+    "vue-tsc": "^3.0.5"
   },
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.15.1",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@parcel/watcher",

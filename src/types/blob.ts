@@ -1,4 +1,4 @@
-import type { ReadableStream, R2HTTPMetadata } from '@cloudflare/workers-types/experimental'
+import type { ReadableStream, R2HTTPMetadata } from '@cloudflare/workers-types/experimental' // TODO: agnostic
 import type { MimeType } from '@uploadthing/mime-types'
 
 // Credits from shared utils of https://github.com/pingdotgg/uploadthing
