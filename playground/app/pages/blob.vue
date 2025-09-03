@@ -76,7 +76,6 @@ async function uploadFiles(files: File[]) {
     })(smallFiles)
   }
 
-  // TODO: multipart upload
   // upload big files
   const uploadLarge = useMultipartUpload('/api/blob/multipart', {
     concurrent: 2,
@@ -84,9 +83,6 @@ async function uploadFiles(files: File[]) {
   })
 
   for (const file of bigFiles) {
-    toast.add({ title: 'Multipart upload is not supported yet.', color: 'warning' })
-    continue
-
     const { completed, progress, abort } = uploadLarge(file)
 
     const uploadingToast = toast.add({
