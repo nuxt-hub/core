@@ -172,7 +172,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
         db: {
           connector: 'pglite',
           options: {
-            dataDir: join(hub.dir!, 'db/pglite')
+            dataDir: join(hub.dir!, 'database/pglite')
           }
         }
       }
@@ -183,7 +183,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
       db: {
         connector: 'better-sqlite3',
         options: {
-          path: join(hub.dir!, 'db/sqlite/db.sqlite3')
+          path: join(hub.dir!, 'database/sqlite/db.sqlite3')
         }
       }
     }
