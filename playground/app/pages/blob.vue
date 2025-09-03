@@ -9,7 +9,7 @@ const limit = ref(5)
 
 const prefix = computed(() => prefixes.value?.[prefixes.value.length - 1])
 const toast = useToast()
-const { data: blobData, refresh } = await useFetch('/api/blob', {
+const { data: blobData, refresh: _refresh } = await useFetch('/api/blob', {
   query: {
     folded,
     prefix,
