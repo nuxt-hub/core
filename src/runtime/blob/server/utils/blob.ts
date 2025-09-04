@@ -9,7 +9,7 @@ import { joinURL } from 'ufo'
 import { streamToArrayBuffer } from '../../../utils/stream'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import type { BlobType, FileSizeUnit, BlobListResult, BlobUploadOptions, BlobPutOptions, BlobEnsureOptions, BlobObject, BlobListOptions, BlobMultipartUpload, BlobMultipartOptions, HandleMPUResponse } from '@nuxthub/core' // BlobMultipartUpload, HandleMPUResponse, BlobMultipartOptions,
-import { useStorage } from '#imports'
+import { useStorage, useRuntimeConfig } from '#imports'
 import type { Storage } from 'unstorage'
 import { multiPartBlobStorage } from '../helpers/multipart-storage'
 
@@ -522,6 +522,10 @@ function createMultipartUploadHandler(storage: Storage, mountPoint: string): Hub
   }
 
   return async (event: H3Event, options?: BlobMultipartOptions) => {
+    if (useRuntimeConfig().public.hub.blobProvider === 'vercel-blob') {
+      return import('../helpers/blob-vercel').then(({ multipartUploadHandler }) => multipartUploadHandler(event, options))
+    }
+    
     const result = await handler(event, options)
 
     if (result.data) {

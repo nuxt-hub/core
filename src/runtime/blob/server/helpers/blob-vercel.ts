@@ -1,6 +1,8 @@
+import { readBody, type H3Event } from 'h3'
+import { handleUpload, type HandleUploadBody } from '@vercel/blob/client'
 import type { PutBlobResult } from '@vercel/blob'
 import { createMultipartUpload as vercelCreateMultipartUpload, uploadPart as vercelUploadPart, completeMultipartUpload as vercelCompleteMultipartUpload } from '@vercel/blob'
-import type { BlobMultipartOptions, BlobMultipartUpload, BlobObject } from '@nuxthub/core'
+import type { BlobMultipartOptions, BlobMultipartUpload, BlobObject, HandleMPUResponse } from '@nuxthub/core'
 
 export async function createMultipartUpload(token: string, pathname: string, options?: BlobMultipartOptions): Promise<BlobMultipartUpload> {
   const { key, uploadId } = await vercelCreateMultipartUpload(pathname, {
@@ -62,6 +64,22 @@ export async function resumeMultipartUpload(token: string, pathname: string, upl
       return mapR2ObjectToBlob(putBlobResult)
     }
   }
+}
+
+export const multipartUploadHandler = async (event: H3Event, options?: BlobMultipartOptions): Promise<HandleMPUResponse> => {
+  const body = await readBody<HandleUploadBody>(event)
+
+  const json = await handleUpload({
+    body,
+    request: event.node.req,
+    onBeforeGenerateToken: async (pathname, clientPayload) => {
+      const result = options?.onBeforeGenerateToken ? options?.onBeforeGenerateToken?.(pathname, clientPayload) : {}
+      return { ...options, ...result }
+    },
+    onUploadCompleted: options?.onUploadCompleted || undefined
+  })
+
+  return json
 }
 
 function mapR2ObjectToBlob(object: PutBlobResult): BlobObject {
