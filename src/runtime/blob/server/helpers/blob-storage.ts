@@ -1,15 +1,23 @@
 import type { Driver, Storage } from 'unstorage'
-import type { BlobMultipartOptions } from '@nuxthub/core'
+import type { BlobMultipartOptions, BlobMultipartUpload } from '@nuxthub/core'
 
-export function multiPartBlobStorage(storage: Storage, mountPoint: string) {
-  const driver = getMultiPartDriver(storage.getMount(mountPoint).driver)
+export interface BlobStorage extends Storage {
+  driverName: string
+  createMultipartUpload: (pathname: string, options?: BlobMultipartOptions) => Promise<BlobMultipartUpload>
+  resumeMultipartUpload: (pathname: string, uploadId: string) => Promise<BlobMultipartUpload>
+}
+
+export function blobStorage(storage: Storage, mountPoint: string): BlobStorage {
+  const driver = storage.getMount(mountPoint).driver
+  const multiPartDriver = getMultiPartDriver(driver)
   return {
+    driverName: driver.name!,
     ...storage,
     createMultipartUpload: async (pathname: string, options?: BlobMultipartOptions) => {
-      return driver.createMultipartUpload(pathname, options)
+      return multiPartDriver.createMultipartUpload(pathname, options)
     },
     resumeMultipartUpload: async (pathname: string, uploadId: string) => {
-      return driver.resumeMultipartUpload(pathname, uploadId)
+      return multiPartDriver.resumeMultipartUpload(pathname, uploadId)
     }
   }
 }

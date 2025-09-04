@@ -132,7 +132,7 @@ export function useMultipartUpload(
       if (hub.blobProvider === 'vercel-blob') {
         return import('@vercel/blob/client').then(({ upload: vercelUpload }) => {
           return vercelUpload(file.name, file, {
-            access: 'public',        
+            access: 'public',
             multipart: true,
             handleUploadUrl: joinURL(baseURL, 'multipart', file.name || ''),
             onUploadProgress: (uploadProgress) => {

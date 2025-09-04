@@ -1,17 +1,15 @@
 import mime from 'mime'
-import { z } from 'zod'
 import type { H3Event } from 'h3'
-import { setHeader, createError, readFormData, assertMethod, getValidatedQuery, getValidatedRouterParams, readValidatedBody, sendNoContent, getHeader, getRequestWebStream } from 'h3'
+import { setHeader, createError, readFormData, assertMethod } from 'h3'
 import { defu } from 'defu'
 import { randomUUID } from 'uncrypto'
 import { parse } from 'pathe'
 import { joinURL } from 'ufo'
-import { streamToArrayBuffer } from '../../../utils/stream'
 import { requireNuxtHubFeature } from '../../../utils/features'
-import type { BlobType, FileSizeUnit, BlobListResult, BlobUploadOptions, BlobPutOptions, BlobEnsureOptions, BlobObject, BlobListOptions, BlobMultipartUpload, BlobMultipartOptions, HandleMPUResponse } from '@nuxthub/core' // BlobMultipartUpload, HandleMPUResponse, BlobMultipartOptions,
-import { useStorage, useRuntimeConfig } from '#imports'
-import type { Storage } from 'unstorage'
-import { multiPartBlobStorage } from '../helpers/multipart-storage'
+import type { BlobType, FileSizeUnit, BlobListResult, BlobUploadOptions, BlobPutOptions, BlobEnsureOptions, BlobObject, BlobListOptions, BlobMultipartUpload, BlobMultipartOptions, HandleMPUResponse } from '@nuxthub/core'
+import { useStorage } from '#imports'
+import { blobStorage } from '../helpers/blob-storage'
+import { createMultipartUploadHandler } from '../helpers/multipart-handler'
 
 interface HubBlob {
   /**
@@ -132,7 +130,7 @@ interface HubBlob {
 export function hubBlob(): HubBlob {
   requireNuxtHubFeature('blob')
 
-  const storage = useStorage('blob')
+  const storage = blobStorage(useStorage('blob'), 'blob')
 
   const blob = {
     storage,
@@ -342,10 +340,10 @@ export function hubBlob(): HubBlob {
         httpMetadata.contentLength = contentLength
       }
 
-      return await multiPartBlobStorage(useStorage('blob'), 'blob').createMultipartUpload(pathname, { httpMetadata, customMetadata })
+      return await storage.createMultipartUpload(pathname, { httpMetadata, customMetadata })
     },
     async resumeMultipartUpload(pathname: string, uploadId: string) {
-      return await multiPartBlobStorage(useStorage('blob'), 'blob').resumeMultipartUpload(decodeURIComponent(pathname), uploadId)
+      return await storage.resumeMultipartUpload(decodeURIComponent(pathname), uploadId)
     },
     async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
       assertMethod(event, ['POST', 'PUT', 'PATCH'])
@@ -388,152 +386,7 @@ export function hubBlob(): HubBlob {
   return {
     ...blob,
     delete: blob.del,
-    handleMultipartUpload: createMultipartUploadHandler(useStorage('blob'), 'blob')
-  }
-}
-
-function createMultipartUploadHandler(storage: Storage, mountPoint: string): HubBlob['handleMultipartUpload'] {
-  const createHandler = async (event: H3Event, options?: BlobMultipartOptions) => {
-    const { pathname } = await getValidatedRouterParams(event, z.object({
-      pathname: z.string().min(1)
-    }).parse)
-
-    options ||= {}
-    if (getHeader(event, 'x-nuxthub-file-content-type')) {
-      options.contentType ||= getHeader(event, 'x-nuxthub-file-content-type')
-    }
-
-    try {
-      const object = await multiPartBlobStorage(storage, mountPoint).createMultipartUpload(pathname, options)
-      return {
-        uploadId: object.uploadId,
-        pathname: object.pathname
-      }
-    } catch (e: any) {
-      throw createError({
-        statusCode: 400,
-        message: e.message
-      })
-    }
-  }
-
-  const uploadHandler = async (event: H3Event) => {
-    const { pathname } = await getValidatedRouterParams(event, z.object({
-      pathname: z.string().min(1)
-    }).parse)
-
-    const { uploadId, partNumber } = await getValidatedQuery(event, z.object({
-      uploadId: z.string(),
-      partNumber: z.coerce.number()
-    }).parse)
-
-    const contentLength = Number(getHeader(event, 'content-length') || '0')
-
-    const stream = getRequestWebStream(event)!
-    const body = await streamToArrayBuffer(stream, contentLength)
-
-    const mpu = await multiPartBlobStorage(storage, mountPoint).resumeMultipartUpload(pathname, uploadId)
-
-    try {
-      return await mpu.uploadPart(partNumber, body)
-    } catch (e: any) {
-      throw createError({ status: 400, message: e.message })
-    }
-  }
-
-  const completeHandler = async (event: H3Event) => {
-    const { pathname } = await getValidatedRouterParams(event, z.object({
-      pathname: z.string().min(1)
-    }).parse)
-
-    const { uploadId } = await getValidatedQuery(event, z.object({
-      uploadId: z.string().min(1)
-    }).parse)
-
-    const { parts } = await readValidatedBody(event, z.object({
-      parts: z.array(z.object({
-        partNumber: z.number(),
-        etag: z.string()
-      }))
-    }).parse)
-
-    const mpu = await multiPartBlobStorage(storage, mountPoint).resumeMultipartUpload(pathname, uploadId)
-    try {
-      const object = await mpu.complete(parts)
-      return object
-    } catch (e: any) {
-      throw createError({ status: 400, message: e.message })
-    }
-  }
-
-  const abortHandler = async (event: H3Event) => {
-    const { pathname } = await getValidatedRouterParams(event, z.object({
-      pathname: z.string().min(1)
-    }).parse)
-
-    const { uploadId } = await getValidatedQuery(event, z.object({
-      uploadId: z.string().min(1)
-    }).parse)
-
-    const mpu = await multiPartBlobStorage(storage, mountPoint).resumeMultipartUpload(pathname, uploadId)
-
-    try {
-      await mpu.abort()
-    } catch (e: any) {
-      throw createError({ status: 400, message: e.message })
-    }
-  }
-
-  const handler = async (event: H3Event, options?: BlobMultipartOptions) => {
-    const method = event.method
-    const { action } = await getValidatedRouterParams(event, z.object({
-      action: z.enum(['create', 'upload', 'complete', 'abort'])
-    }).parse)
-
-    if (action === 'create' && method === 'POST') {
-      return {
-        action,
-        data: await createHandler(event, options)
-      }
-    }
-
-    if (action === 'upload' && method === 'PUT') {
-      return {
-        action,
-        data: await uploadHandler(event)
-      }
-    }
-
-    if (action === 'complete' && method === 'POST') {
-      return {
-        action,
-        data: await completeHandler(event)
-      }
-    }
-
-    if (action === 'abort' && method === 'DELETE') {
-      return {
-        action,
-        data: await abortHandler(event)
-      }
-    }
-
-    throw createError({ status: 405 })
-  }
-
-  return async (event: H3Event, options?: BlobMultipartOptions) => {
-    if (useRuntimeConfig().public.hub.blobProvider === 'vercel-blob') {
-      return import('../helpers/blob-vercel').then(({ multipartUploadHandler }) => multipartUploadHandler(event, options))
-    }
-    
-    const result = await handler(event, options)
-
-    if (result.data) {
-      event.respondWith(Response.json(result.data))
-    } else {
-      sendNoContent(event)
-    }
-    return result
+    handleMultipartUpload: createMultipartUploadHandler(storage)
   }
 }
 

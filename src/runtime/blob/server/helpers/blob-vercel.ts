@@ -85,7 +85,6 @@ export const multipartUploadHandler = async (event: H3Event, options?: BlobMulti
 function mapR2ObjectToBlob(object: PutBlobResult): BlobObject {
   return {
     pathname: object.pathname,
-    url: object.url,
     contentType: object.contentType,
     size: 0, // TODO: get size
     httpEtag: '', // TODO: get etag
