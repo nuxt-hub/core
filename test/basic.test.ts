@@ -8,8 +8,8 @@ describe('ssr', async () => {
     dev: true
   })
 
-  it('Fetch Hub manifetst', async () => {
-    const manifest = await $fetch('/api/_hub/manifest')
+  it('Check all features are disabled', async () => {
+    const manifest = await $fetch('/api/manifest')
     expect(manifest).toMatchObject({
       storage: {
         database: false,
