@@ -121,7 +121,7 @@ defineOgImageComponent('Docs')
           </div>
         </template>
         <template #footer>
-          <UButtonGroup class="w-full">
+          <UFieldGroup class="w-full">
             <UButton
               v-if="template.demoUrl"
               label="Demo"
@@ -145,7 +145,7 @@ defineOgImageComponent('Docs')
               :class="template.demoUrl ? 'w-1/2' : 'w-full'"
               :ui="{ trailingIcon: 'size-4' }"
             />
-          </UButtonGroup>
+          </UFieldGroup>
         </template>
       </UBlogPost>
     </UBlogPosts>

@@ -191,10 +191,10 @@ onMounted(() => {
     </UModal>
   </UPageSection>
   <UPageSection :title="page.faq.title" :description="page.faq.description" :ui="{ container: 'max-w-5xl' }">
-    <UPageAccordion :items="page?.faq.items" multiple>
+    <UAccordion :items="page?.faq.items" multiple :unmount-on-hide="false" :ui="{ trigger: 'text-base', body: 'text-base text-muted' }">
       <template #body="{ item }">
         <MDC :value="item.content" unwrap="p" />
       </template>
-    </UPageAccordion>
+    </UAccordion>
   </UPageSection>
 </template>
