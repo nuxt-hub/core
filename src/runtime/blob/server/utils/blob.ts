@@ -140,6 +140,11 @@ export function hubBlob(): HubBlob {
         delimiter: options?.folded ? '/' : undefined
       })
 
+      // Convert "/" to ":" in prefix for unstorage driver compatibility
+      if (resolvedOptions.prefix) {
+        resolvedOptions.prefix = resolvedOptions.prefix.replace(/\//g, ':')
+      }
+
       // TODO: cursor based pagination
       const listed = await storage.getKeys(resolvedOptions.prefix)
       const hasMore = false
@@ -151,7 +156,7 @@ export function hubBlob(): HubBlob {
         try {
           const meta = await storage.getMeta(key)
           blobs.push({
-            pathname: key,
+            pathname: key.replace(/:/g, '/'), // Convert ":" back to "/" for consumer
             contentType: getContentType(key),
             size: typeof meta?.size === 'number' ? meta.size : 0,
             httpEtag: typeof meta?.etag === 'string' ? meta.etag : '',
@@ -170,10 +175,10 @@ export function hubBlob(): HubBlob {
         const folderSet = new Set<string>()
         for (const key of listed) {
           const relativePath = resolvedOptions.prefix ? key.replace(resolvedOptions.prefix, '') : key
-          const slashIndex = relativePath.indexOf('/')
-          if (slashIndex > 0) {
-            const folder = relativePath.substring(0, slashIndex + 1)
-            folderSet.add((resolvedOptions.prefix || '') + folder)
+          const colonIndex = relativePath.indexOf(':')
+          if (colonIndex > 0) {
+            const folder = relativePath.substring(0, colonIndex + 1).replace(/:/g, '/')
+            folderSet.add((resolvedOptions.prefix || '').replace(/:/g, '/') + folder)
           }
         }
         folders.push(...Array.from(folderSet))
@@ -183,7 +188,7 @@ export function hubBlob(): HubBlob {
         blobs: resolvedOptions.folded
           ? blobs.filter((blob) => {
               const relativePath = resolvedOptions.prefix
-                ? blob.pathname.replace(resolvedOptions.prefix, '')
+                ? blob.pathname.replace(resolvedOptions.prefix.replace(/:/g, '/'), '')
                 : blob.pathname
               return !relativePath.includes('/')
             })
@@ -194,7 +199,7 @@ export function hubBlob(): HubBlob {
       }
     },
     async serve(event: H3Event, pathname: string) {
-      pathname = decodeURIComponent(pathname)
+      pathname = decodeURIComponent(pathname).replace(/\//g, ':') // Convert "/" to ":" for unstorage
       const arrayBuffer = await storage.getItemRaw(pathname, { type: 'arrayBuffer' })
 
       if (!arrayBuffer) {
@@ -217,7 +222,7 @@ export function hubBlob(): HubBlob {
       })
     },
     async get(pathname: string): Promise<Blob | null> {
-      const arrayBuffer = await storage.getItemRaw(decodeURIComponent(pathname), { type: 'arrayBuffer' })
+      const arrayBuffer = await storage.getItemRaw(decodeURIComponent(pathname).replace(/\//g, ':'), { type: 'arrayBuffer' })
 
       if (!arrayBuffer) {
         return null
@@ -239,6 +244,8 @@ export function hubBlob(): HubBlob {
 
       if (prefix) {
         pathname = joinURL(prefix, pathname).replace(/\/+/g, '/').replace(/^\/+/, '')
+        // Convert "/" to ":" for unstorage driver compatibility
+        pathname = pathname.replace(/\//g, ':')
       }
 
       const httpMetadata: Record<string, string> = { contentType }
@@ -273,7 +280,7 @@ export function hubBlob(): HubBlob {
 
       // Return the created blob object
       return {
-        pathname,
+        pathname: pathname.replace(/:/g, '/'), // Convert ":" back to "/" for backwards compat with R2's hubBlob()
         contentType,
         size: typeof body === 'string'
           ? new TextEncoder().encode(body).length
@@ -291,7 +298,7 @@ export function hubBlob(): HubBlob {
       }
     },
     async head(pathname: string) {
-      pathname = decodeURIComponent(pathname)
+      pathname = decodeURIComponent(pathname).replace(/\//g, ':') // Convert "/" to ":" for unstorage
       const hasItem = await storage.hasItem(pathname)
 
       if (!hasItem) {
@@ -301,7 +308,7 @@ export function hubBlob(): HubBlob {
       const meta = await storage.getMeta(pathname)
 
       return {
-        pathname,
+        pathname: pathname.replace(/:/g, '/'), // Convert ":" back to "/" for consumer
         contentType: getContentType(pathname),
         size: typeof meta?.size === 'number' ? meta.size : 0,
         httpEtag: typeof meta?.etag === 'string' ? meta.etag : '',
@@ -313,10 +320,10 @@ export function hubBlob(): HubBlob {
     async del(pathnames: string | string[]) {
       if (Array.isArray(pathnames)) {
         for (const pathname of pathnames) {
-          await storage.removeItem(decodeURIComponent(pathname))
+          await storage.removeItem(decodeURIComponent(pathname).replace(/\//g, ':'))
         }
       } else {
-        await storage.removeItem(decodeURIComponent(pathnames))
+        await storage.removeItem(decodeURIComponent(pathnames).replace(/\//g, ':'))
       }
     },
     // async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}): Promise<BlobMultipartUpload> {
