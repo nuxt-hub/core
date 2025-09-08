@@ -103,12 +103,12 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
   }
 
   let dialect: string
+  const productionDriver = nuxt.options.nitro.database?.db?.connector as ConnectorName
   const isDialectConfigured = typeof hub.database === 'string' && (['postgresql', 'sqlite', 'mysql'].includes(hub.database))
   if (isDialectConfigured) {
     dialect = hub.database as string
   } else {
     // Infer dialect from production database driver
-    const productionDriver = nuxt.options.nitro.database?.db?.connector as ConnectorName
     // Map connectors to dialects based on the mappings:
     // "postgresql" -> "postgresql", pglite
     // "sqlite" -> "better-sqlite3", bun-sqlite, bun, node-sqlite, sqlite3
@@ -125,6 +125,31 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
       dialect = 'sqlite' // libsql is SQLite-compatible
     } else {
       return log.error('Please specify adatabase dialect in `hub.database: \'<dialect>\'` or configure `nitro.database.db` within `nuxt.config.ts`. Learn more at https://hub.nuxt.com/docs/features/database.')
+    }
+  }
+
+  // Check if the configured dialect matches the production driver
+  if (isDialectConfigured && productionDriver) {
+    const dialectMatchesDriver = (
+      (dialect === 'postgresql' && (productionDriver === 'postgresql' || productionDriver === 'pglite'))
+      || (dialect === 'sqlite' && ['better-sqlite3', 'bun-sqlite', 'bun', 'node-sqlite', 'sqlite3', 'libsql-core', 'libsql-http', 'libsql-node', 'libsql-web'].includes(productionDriver))
+      || (dialect === 'mysql' && productionDriver === 'mysql2')
+    )
+
+    if (!dialectMatchesDriver) {
+      // Infer the dialect from the production driver for the error message
+      let inferredDialect: string
+      if (productionDriver === 'postgresql' || productionDriver === 'pglite') {
+        inferredDialect = 'postgresql'
+      } else if (['better-sqlite3', 'bun-sqlite', 'bun', 'node-sqlite', 'sqlite3', 'libsql-core', 'libsql-http', 'libsql-node', 'libsql-web'].includes(productionDriver)) {
+        inferredDialect = 'sqlite'
+      } else if (productionDriver === 'mysql2') {
+        inferredDialect = 'mysql'
+      } else {
+        inferredDialect = 'unknown'
+      }
+
+      log.warn(`Database dialect mismatch: \`hub.database\` is set to \`${dialect}\` but \`nitro.database.db\` is \`${inferredDialect}\` (\`${productionDriver}\`). Set \`hub.database\` to \`true\` or \`'${inferredDialect}'\` in your \`nuxt.config.ts\`.`)
     }
   }
 
@@ -151,7 +176,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
         db: {
           connector: 'pglite',
           options: {
-            dataDir: join(hub.dir!, 'db/pglite')
+            dataDir: join(hub.dir!, 'database/pglite')
           }
         }
       }
@@ -162,7 +187,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
       db: {
         connector: 'better-sqlite3',
         options: {
-          path: join(hub.dir!, 'db/sqlite/db.sqlite3')
+          path: join(hub.dir!, 'database/sqlite/db.sqlite3')
         }
       }
     }
@@ -175,8 +200,6 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
   nuxt.options.nitro = defu(nuxt.options.nitro, {
     devDatabase: devDatabaseConfig
   })
-
-  // Configure production database based on dialect if it's not already configured
 
   // Enable Nitro database
   nuxt.options.nitro.experimental ||= {}

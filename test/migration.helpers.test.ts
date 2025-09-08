@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { splitSqlQueries } from '~/src/runtime/database/server/utils/migrations/helpers'
+import { splitSqlQueries } from '../src/runtime/database/server/utils/migrations/helpers'
 
 describe('splitSqlQueries', () => {
   it('Should split minified sql', () => {

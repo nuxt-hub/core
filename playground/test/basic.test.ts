@@ -1,20 +1,14 @@
 import { fileURLToPath } from 'node:url'
+import fs from 'node:fs/promises'
 import { describe, it, expect } from 'vitest'
 import { setup, $fetch } from '@nuxt/test-utils/e2e'
 
 describe('ssr', async () => {
+  await cleanUp()
+
   await setup({
     rootDir: fileURLToPath(new URL('..', import.meta.url)),
     dev: true
-  })
-
-  it('Clear todos table', async () => {
-    await $fetch('/api/_hub/database/query', {
-      method: 'POST',
-      body: {
-        query: 'DELETE FROM todos'
-      }
-    })
   })
 
   it('List todos', async () => {
@@ -30,3 +24,7 @@ describe('ssr', async () => {
     expect(todo).toMatchObject({ id: expect.any(Number), title: 'Test todo' })
   })
 })
+
+async function cleanUp() {
+  await fs.rm(fileURLToPath(new URL('./../.data/database', import.meta.url)), { force: true, recursive: true })
+}

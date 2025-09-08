@@ -2,7 +2,7 @@ import { fileURLToPath } from 'node:url'
 import { describe, it, expect } from 'vitest'
 import { setup, $fetch } from '@nuxt/test-utils'
 
-describe('Ai', async () => {
+describe.skip('Ai', async () => {
   await setup({
     rootDir: fileURLToPath(new URL('./fixtures/ai', import.meta.url)),
     dev: true

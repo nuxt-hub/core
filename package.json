@@ -50,9 +50,9 @@
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "^4.20250810.0",
-    "@nuxt/devtools-kit": "^2.4.0",
-    "@uploadthing/mime-types": "^0.3.5",
+    "@cloudflare/workers-types": "^4.20250904.0",
+    "@nuxt/devtools-kit": "^2.6.3",
+    "@uploadthing/mime-types": "^0.3.6",
     "@vercel/blob": "^1.1.1",
     "confbox": "^0.2.2",
     "db0": "^0.3.2",
@@ -63,30 +63,29 @@
     "nitro-cloudflare-dev": "^0.2.2",
     "ofetch": "^1.4.1",
     "pathe": "^2.0.3",
-    "pkg-types": "^2.1.0",
+    "pkg-types": "^2.3.0",
     "ufo": "^1.6.1",
     "uncrypto": "^0.1.3",
-    "unstorage": "^1.16.1",
+    "unstorage": "^1.17.1",
     "zod": "^3.25.34"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^2.4.0",
-    "@nuxt/eslint-config": "^1.8.0",
-    "@nuxt/kit": "^4.0.3",
+    "@nuxt/devtools": "^2.6.3",
+    "@nuxt/eslint-config": "^1.9.0",
+    "@nuxt/kit": "^4.1.0",
     "@nuxt/module-builder": "^1.0.2",
-    "@nuxt/schema": "^4.0.3",
+    "@nuxt/schema": "^4.1.0",
     "@nuxt/test-utils": "3.19.2",
     "@nuxthub/core": "link:",
-    "@types/node": "^22.15.24",
+    "@types/node": "^24.3.1",
     "changelogen": "^0.6.2",
-    "eslint": "^9.33.0",
-    "nuxt": "^4.0.3",
+    "eslint": "^9.34.0",
+    "nuxt": "^4.1.0",
     "typescript": "~5.9.2",
     "vitest": "^3.2.4",
-    "vue-tsc": "^3.0.5",
-    "wrangler": "^4.28.1"
+    "vue-tsc": "^3.0.6"
   },
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.15.1",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@parcel/watcher",
@@ -95,6 +94,7 @@
       "better-sqlite3",
       "esbuild",
       "sharp",
+      "unrs-resolver",
       "workerd"
     ]
   }

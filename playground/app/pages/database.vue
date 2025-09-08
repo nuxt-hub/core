@@ -54,7 +54,7 @@ async function deleteTodo(todo) {
 <template>
   <UCard>
     <div class="flex items-center gap-2">
-      <UButtonGroup class="flex-1" as="form" @submit.prevent="addTodo">
+      <UFieldGroup class="flex-1" as="form" @submit.prevent="addTodo">
         <UInput
           ref="newTodoInput"
           v-model="newTodo"
@@ -67,7 +67,7 @@ async function deleteTodo(todo) {
         />
 
         <UButton type="submit" icon="i-lucide-plus" label="Add" :loading="loading" :disabled="newTodo.trim().length === 0" />
-      </UButtonGroup>
+      </UFieldGroup>
     </div>
 
     <ul v-if="todos?.length" class="divide-y divide-gray-200 dark:divide-gray-800 mt-4">

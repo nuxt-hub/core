@@ -9,7 +9,7 @@ const limit = ref(5)
 
 const prefix = computed(() => prefixes.value?.[prefixes.value.length - 1])
 const toast = useToast()
-const { data: blobData, refresh } = await useFetch('/api/blob', {
+const { data: blobData, refresh: _refresh } = await useFetch('/api/blob', {
   query: {
     folded,
     prefix,
@@ -152,7 +152,7 @@ async function deleteFile(pathname: string) {
 <template>
   <UCard @submit.prevent="addFile">
     <div class="flex">
-      <UButtonGroup class="flex-1">
+      <UFieldGroup class="flex-1">
         <UInput
           :model-value="newFilesValue?.map((file: File) => file.name).join(', ')"
           name="fileValue"
@@ -177,7 +177,7 @@ async function deleteFile(pathname: string) {
           variant="subtle"
           @click="uploadRef?.click()"
         />
-      </UButtonGroup>
+      </UFieldGroup>
     </div>
 
     <div class="flex items-center gap-6 mt-2">

@@ -3,16 +3,27 @@ import yaml from '@rollup/plugin-yaml'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
-    '@nuxt/ui-pro',
+    '@nuxt/ui',
     '@nuxt/content',
     '@nuxt/image',
     '@nuxt/scripts',
-    '@nuxtjs/plausible',
     '@vueuse/nuxt',
     'nuxt-og-image',
-    'nuxt-cloudflare-analytics',
     'nuxt-llms'
   ],
+
+  $production: {
+    scripts: {
+      registry: {
+        cloudflareWebAnalytics: {
+          token: '469b1f7049f14941acef0d0262a07ab3'
+        },
+        plausibleAnalytics: {
+          domain: 'hub.nuxt.com'
+        }
+      }
+    }
+  },
   devtools: {
     enabled: true
   },
@@ -50,9 +61,6 @@ export default defineNuxtConfig({
     '/docs/server/cache': { redirect: { statusCode: 301, to: '/docs/features/cache' } },
     '/docs/server/logs': { redirect: { statusCode: 301, to: '/docs/getting-started/server-logs' } }
   },
-  future: {
-    compatibilityVersion: 4
-  },
   compatibilityDate: '2025-02-11',
   nitro: {
     prerender: {
@@ -69,10 +77,6 @@ export default defineNuxtConfig({
   },
   typescript: {
     strict: false
-  },
-  cloudflareAnalytics: {
-    token: '469b1f7049f14941acef0d0262a07ab3',
-    scriptPath: false
   },
   llms: {
     domain: 'https://hub.nuxt.com',
