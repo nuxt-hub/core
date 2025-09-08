@@ -1,7 +1,7 @@
 import z from 'zod'
 import type { H3Event } from 'h3'
 import type { BlobMultipartOptions } from '@nuxthub/core'
-import { type BlobStorage } from './blob-storage'
+import type { BlobStorage } from './blob-storage'
 import { createError, getValidatedQuery, readValidatedBody, getRequestWebStream, sendNoContent, getHeader, getValidatedRouterParams } from 'h3'
 import { streamToArrayBuffer } from '../../../utils/stream'
 
