@@ -390,7 +390,7 @@ Returns a [`BlobObject`](#blobobject) or an array of [`BlobObject`](#blobobject)
 
 Throws an error if `file` doesn't meet the requirements.
 
-<!-- ### `handleMultipartUpload()`
+### `handleMultipartUpload()`
 
 Handle the request to support multipart upload.
 
@@ -438,6 +438,9 @@ See [`useMultipartUpload()`](#usemultipartupload) on usage details.
 
 ::note
 We suggest to use [`handleMultipartUpload()`](#handlemultipartupload) method to handle the multipart upload request.
+:br
+:br
+If you like to handle multi-part uploads manually using this utility, keep in mind that you cannot use this utility for Vercel Blob due to payload size limit of Vercel functions. Consider using [Vercel Blob Client SDK](https://vercel.com/docs/vercel-blob/client-upload).
 ::
 
 Start a new multipart upload.
@@ -595,7 +598,7 @@ Returns a `BlobMultipartUpload`
   ::field{name="event" type="H3Event" required}
     The event to handle.
   ::
-:: -->
+::
 
 ## `ensureBlob()`
 
@@ -697,6 +700,10 @@ const data = await completed
 
 Application composable that creates a multipart upload helper.
 
+::important
+When you configure to use Vercel Blob, this utility will automatically use [Vercel Blob Client SDK](https://vercel.com/docs/vercel-blob/client-upload) to upload the file.
+::
+
 ```ts [utils/multipart-upload.ts]
 export const mpu = useMultipartUpload('/api/files/multipart')
 ```
@@ -752,6 +759,7 @@ interface BlobObject {
   uploadedAt: Date
   httpMetadata: Record<string, string>
   customMetadata: Record<string, string>
+  url: string | undefined
 }
 ```
 
