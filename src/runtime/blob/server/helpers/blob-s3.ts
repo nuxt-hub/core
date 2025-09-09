@@ -21,10 +21,10 @@ export async function createMultipartUpload(pathname: string, driverOptions: S3D
   const xmlText = await res.text()
   const uploadId = xmlTagContent(xmlText, 'UploadId')!
 
-  return resumeMultipartUpload(pathname, uploadId, driverOptions, options)
+  return resumeMultipartUpload(pathname, uploadId, driverOptions)
 }
 
-export async function resumeMultipartUpload(pathname: string, uploadId: string, driverOptions: S3DriverOptions, options?: BlobMultipartOptions): Promise<BlobMultipartUpload> {
+export async function resumeMultipartUpload(pathname: string, uploadId: string, driverOptions: S3DriverOptions): Promise<BlobMultipartUpload> {
   const aws = new AwsClient({
     accessKeyId: driverOptions.accessKeyId!,
     secretAccessKey: driverOptions.secretAccessKey!,
