@@ -259,7 +259,7 @@ export function hubBlob(): HubBlob {
       }
 
       // Convert File or Blob to TypedArray for storage
-      let processedBody: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView = body
+      let processedBody = body as string | ReadableStream<any> | ArrayBuffer | ArrayBufferView
       if (body instanceof Blob) {
         const arrayBuffer = await body.arrayBuffer()
         processedBody = new Uint8Array(arrayBuffer)

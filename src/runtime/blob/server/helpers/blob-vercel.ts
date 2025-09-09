@@ -34,7 +34,7 @@ export async function createMultipartUpload(token: string, pathname: string, opt
         uploadId,
         key
       })
-      return mapR2ObjectToBlob(r2Object)
+      return mapPutBlobToBlob(r2Object)
     }
   }
 }
@@ -61,7 +61,7 @@ export async function resumeMultipartUpload(token: string, pathname: string, upl
         uploadId,
         key: pathname
       })
-      return mapR2ObjectToBlob(putBlobResult)
+      return mapPutBlobToBlob(putBlobResult)
     }
   }
 }
@@ -79,13 +79,14 @@ export const multipartUploadHandler = async (event: H3Event, options?: BlobMulti
     onUploadCompleted: options?.onUploadCompleted || undefined
   })
 
-  return json
+  return json as unknown as HandleMPUResponse
 }
 
-function mapR2ObjectToBlob(object: PutBlobResult): BlobObject {
+function mapPutBlobToBlob(object: PutBlobResult): BlobObject {
   return {
     pathname: object.pathname,
     contentType: object.contentType,
+    url: object.url,
     size: 0, // TODO: get size
     httpEtag: '', // TODO: get etag
     uploadedAt: new Date(),

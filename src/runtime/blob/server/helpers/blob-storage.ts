@@ -1,5 +1,6 @@
 import type { Driver, Storage } from 'unstorage'
 import type { BlobMultipartOptions, BlobMultipartUpload } from '@nuxthub/core'
+import type { S3DriverOptions } from 'unstorage/drivers/s3'
 
 export interface BlobStorage extends Storage {
   driverName: string
@@ -23,6 +24,22 @@ export function blobStorage(storage: Storage, mountPoint: string): BlobStorage {
 }
 
 function getMultiPartDriver(driver: Driver) {
+  if (driver.name === 's3') {
+    const driverOptions = driver.options as S3DriverOptions
+    return {
+      createMultipartUpload: async (pathname: string, options?: BlobMultipartOptions) => {
+        return await import('./blob-s3').then(({ createMultipartUpload }) => {
+          return createMultipartUpload(pathname, driverOptions, options)
+        })
+      },
+      resumeMultipartUpload: async (pathname: string, uploadId: string) => {
+        return await import('./blob-s3').then(({ resumeMultipartUpload }) => {
+          return resumeMultipartUpload(pathname, uploadId, driverOptions)
+        })
+      }
+    }
+  }
+
   if (driver.name === 'cloudflare-r2-binding') {
     return {
       createMultipartUpload: async (pathname: string, options?: BlobMultipartOptions) => {
