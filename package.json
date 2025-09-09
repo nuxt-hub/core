@@ -59,6 +59,7 @@
     "h3": "^1.15.4",
     "mime": "^4.0.7",
     "nitro-cloudflare-dev": "^0.2.2",
+    "nypm": "^0.6.1",
     "ofetch": "^1.4.1",
     "pathe": "^2.0.3",
     "pkg-types": "^2.3.0",

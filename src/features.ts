@@ -60,13 +60,10 @@ export async function setupAI(_nuxt: Nuxt, _hub: HubConfig) {
 
 export function setupBlob(nuxt: Nuxt, hub: HubConfig) {
   // Configure dev storage
-  nuxt.options.nitro = defu(nuxt.options.nitro, {
-    devStorage: {
-      blob: {
-        driver: 'fs',
-        base: join(hub.dir!, 'blob')
-      }
-    }
+  nuxt.options.nitro.devStorage ||= {}
+  nuxt.options.nitro.devStorage.blob = defu(nuxt.options.nitro.devStorage.blob, {
+    driver: 'fs',
+    base: join(hub.dir!, 'blob')
   })
 
   // Add Server scanning
@@ -79,13 +76,10 @@ export function setupBlob(nuxt: Nuxt, hub: HubConfig) {
 
 export async function setupCache(nuxt: Nuxt, hub: HubConfig) {
   // Configure dev storage
-  nuxt.options.nitro = defu(nuxt.options.nitro, {
-    devStorage: {
-      cache: {
-        driver: 'fs',
-        base: join(hub.dir!, 'cache')
-      }
-    }
+  nuxt.options.nitro.devStorage ||= {}
+  nuxt.options.nitro.devStorage.cache = defu(nuxt.options.nitro.devStorage.cache, {
+    driver: 'fs',
+    base: join(hub.dir!, 'cache')
   })
 
   // Add Server scanning
@@ -120,7 +114,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
       // NOTE: libSQL implements additional functionality beyond sqlite, but users can manually configure a libsql database within Nitro if they require them
       dialect = 'sqlite' // libsql is SQLite-compatible
     } else {
-      return log.error('Please specify adatabase dialect in `hub.database: \'<dialect>\'` or configure `nitro.database.db` within `nuxt.config.ts`. Learn more at https://hub.nuxt.com/docs/features/database.')
+      return log.error('Please specify a database dialect in `hub.database: \'<dialect>\'` or configure `nitro.database.db` within `nuxt.config.ts`. Learn more at https://hub.nuxt.com/docs/features/database.')
     }
   }
 
@@ -150,7 +144,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
   }
 
   // Configure dev database based on dialect
-  let devDatabaseConfig: any
+  let devDatabaseConfig: NitroOptions['database']['default']
 
   if (dialect === 'postgresql') {
     if (process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL) {
@@ -158,33 +152,27 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
       const setEnvVarName = process.env.POSTGRES_URL ? 'POSTGRES_URL' : process.env.POSTGRESQL_URL ? 'POSTGRESQL_URL' : 'DATABASE_URL'
       log.info(`Using PostgreSQL during local development using provided \`${setEnvVarName}\``)
       devDatabaseConfig = {
-        db: {
-          connector: 'postgresql',
-          options: {
-            url: process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL
-          }
+        connector: 'postgresql',
+        options: {
+          url: process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL
         }
       }
     } else {
       // Use pglite if env variable not provided
       log.info('Using PGlite during local development')
       devDatabaseConfig = {
-        db: {
-          connector: 'pglite',
-          options: {
-            dataDir: join(hub.dir!, 'database/pglite')
-          }
+        connector: 'pglite',
+        options: {
+          dataDir: join(hub.dir!, 'database/pglite')
         }
       }
     }
   } else if (dialect === 'sqlite') {
     log.info('Using SQLite during local development')
     devDatabaseConfig = {
-      db: {
-        connector: 'better-sqlite3',
-        options: {
-          path: join(hub.dir!, 'database/sqlite/db.sqlite3')
-        }
+      connector: 'better-sqlite3',
+      options: {
+        path: join(hub.dir!, 'database/sqlite/db.sqlite3')
       }
     }
   } else if (dialect === 'mysql') {
@@ -193,9 +181,8 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
     }
   }
 
-  nuxt.options.nitro = defu(nuxt.options.nitro, {
-    devDatabase: devDatabaseConfig
-  })
+  nuxt.options.nitro.devDatabase ||= {}
+  nuxt.options.nitro.devDatabase.db = defu(nuxt.options.nitro.devDatabase.db, devDatabaseConfig!) as NitroOptions['database']['default']
 
   // Enable Nitro database
   nuxt.options.nitro.experimental ||= {}
@@ -219,13 +206,10 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
 
 export function setupKV(nuxt: Nuxt, hub: HubConfig) {
   // Configure dev storage
-  nuxt.options.nitro = defu(nuxt.options.nitro, {
-    devStorage: {
-      kv: {
-        driver: 'fs',
-        base: join(hub.dir!, 'kv')
-      }
-    }
+  nuxt.options.nitro.devStorage ||= {}
+  nuxt.options.nitro.devStorage.kv = defu(nuxt.options.nitro.devStorage.kv, {
+    driver: 'fs',
+    base: join(hub.dir!, 'kv')
   })
 
   // Add Server scanning
