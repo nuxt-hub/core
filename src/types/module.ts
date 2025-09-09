@@ -47,4 +47,11 @@ export interface ModuleOptions {
    * @default '.data'
    */
   dir?: string
+  /**
+   * Set `true` to apply database migrations during build time.
+   *
+   * @default true
+   * @see https://hub.nuxt.com/docs/features/database
+   */
+  applyDatabaseMigrationsDuringBuild?: boolean
 }

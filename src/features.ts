@@ -6,6 +6,7 @@ import { defu } from 'defu'
 import { addDevToolsCustomTabs } from './utils/devtools'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir } from './runtime/database/server/utils/migrations/helpers'
 import type { ConnectorName } from 'db0'
+import type { NitroOptions } from 'nitropack'
 
 const log = logger.withTag('nuxt:hub')
 const { resolve } = createResolver(import.meta.url)
@@ -21,6 +22,7 @@ export interface HubConfig {
   dir?: string
   databaseMigrationsDirs?: string[]
   databaseQueriesPaths?: string[]
+  applyDatabaseMigrationsDuringBuild?: boolean
 }
 
 export async function setupBase(nuxt: Nuxt, hub: HubConfig) {
