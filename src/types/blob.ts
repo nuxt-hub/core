@@ -37,6 +37,10 @@ export interface BlobObject {
    * The custom metadata of the blob.
    */
   customMetadata: Record<string, string>
+  /**
+   * The URL of the blob.
+   */
+  url?: string
 }
 
 export interface BlobUploadedPart {

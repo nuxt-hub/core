@@ -4,7 +4,7 @@ import { joinURL } from 'ufo'
 import { readonly, ref, type Ref } from 'vue'
 import type { SerializeObject } from 'nitropack'
 import type { BlobUploadedPart, BlobObject } from '@nuxthub/core'
-
+import { useRuntimeConfig } from '#imports'
 /**
  * Create a multipart uploader.
  */
@@ -128,6 +128,20 @@ export function useMultipartUpload(
     }
 
     const start = async () => {
+      const hub = useRuntimeConfig().public.hub
+      if (hub.blobProvider === 'vercel-blob') {
+        return import('@vercel/blob/client').then(({ upload }) => {
+          return upload(file.name, file, {
+            access: 'public',
+            multipart: true,
+            handleUploadUrl: joinURL(baseURL, 'multipart', file.name || ''),
+            onUploadProgress: (uploadProgress) => {
+              progress.value = uploadProgress.percentage
+            }
+          })
+        })
+      }
+
       try {
         await Promise.all(Array.from({ length: concurrent }).map(() => {
           const partNumber = queue.shift()

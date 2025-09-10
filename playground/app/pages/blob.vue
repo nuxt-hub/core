@@ -40,7 +40,7 @@ async function loadMore() {
 
 async function addFile() {
   if (!newFilesValue.value.length) {
-    toast.add({ title: 'Missing files.', color: 'red' })
+    toast.add({ title: 'Missing files.', color: 'error' })
     return
   }
   loading.value = true
@@ -54,7 +54,7 @@ async function addFile() {
     newFilesValue.value = []
   } catch (err: any) {
     const title = err.data?.data?.issues?.map((issue: any) => issue.message).join('\n') || err.message
-    toast.add({ title, color: 'red' })
+    toast.add({ title, color: 'error' })
   }
   loading.value = false
 }
@@ -76,7 +76,6 @@ async function uploadFiles(files: File[]) {
     })(smallFiles)
   }
 
-  // TODO: multipart upload
   // upload big files
   const uploadLarge = useMultipartUpload('/api/blob/multipart', {
     concurrent: 2,
@@ -84,9 +83,6 @@ async function uploadFiles(files: File[]) {
   })
 
   for (const file of bigFiles) {
-    toast.add({ title: 'Multipart upload is not supported yet.', color: 'warning' })
-    continue
-
     const { completed, progress, abort } = uploadLarge(file)
 
     const uploadingToast = toast.add({
@@ -118,7 +114,7 @@ async function uploadFiles(files: File[]) {
     } else {
       toast.add({
         title: `Failed to upload ${file.name}.`,
-        color: 'red'
+        color: 'error'
       })
     }
   }
@@ -148,7 +144,7 @@ async function deleteFile(pathname: string) {
     toast.add({ title: `File "${pathname}" deleted.` })
   } catch (err: any) {
     const title = err.data?.data?.issues?.map((issue: any) => issue.message).join('\n') || err.message
-    toast.add({ title, color: 'red' })
+    toast.add({ title, color: 'error' })
   }
 }
 </script>
@@ -163,7 +159,7 @@ async function deleteFile(pathname: string) {
           disabled
           class="flex-1"
           autocomplete="off"
-          :ui="{ wrapper: 'flex-1' }"
+          :ui="{ root: 'flex-1' }"
         />
         <input
           ref="uploadRef"

@@ -66,6 +66,10 @@ export function setupBlob(nuxt: Nuxt, hub: HubConfig) {
 
   // Add Composables
   addImportsDir(resolve('./runtime/blob/app/composables'))
+
+  if (nuxt.options.nitro.storage?.blob?.driver === 'vercel-blob') {
+    nuxt.options.runtimeConfig.public.hub.blobProvider = 'vercel-blob'
+  }
 }
 
 export async function setupCache(nuxt: Nuxt, hub: HubConfig) {
