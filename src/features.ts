@@ -43,14 +43,6 @@ export async function setupBase(nuxt: Nuxt, hub: HubConfig) {
     addDevToolsCustomTabs(nuxt, hub)
   }
 
-  // TODO: evaluate if we even need routes outside development
-  // Add routeRules to work with some security modules
-  nuxt.options.routeRules = nuxt.options.routeRules || {}
-  nuxt.options.routeRules['/api/_hub/**'] = nuxt.options.routeRules['/api/_hub/**'] || {}
-  // @ts-expect-error csurf is not typed here
-  nuxt.options.routeRules['/api/_hub/**'].csurf = false
-  nuxt.options.routeRules['/api/_hub/**'].cache = false
-  nuxt.options.routeRules['/api/_hub/**'].prerender = false
   // Remove trailing slash for prerender routes
   nuxt.options.nitro.prerender ||= {}
   nuxt.options.nitro.prerender.autoSubfolderIndex ||= false
