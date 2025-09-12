@@ -1,8 +1,7 @@
-import { addCustomTab } from '@nuxt/devtools-kit'
 import { logger } from '@nuxt/kit'
 import type { Nuxt } from 'nuxt/schema'
 import type { HubConfig } from '../features'
-import { getPort, waitForPort } from 'get-port-please'
+import { checkPort, getPort } from 'get-port-please'
 import { existsSync } from 'node:fs'
 import { writeFile } from 'node:fs/promises'
 import { detectPackageManager, dlxCommand } from 'nypm'
@@ -97,12 +96,16 @@ export default defineConfig({
       shell: true
     })
 
-    // await waitForPort(port, {
-    //   delay: 500,
-    //   retries: 30
-    // })
-
-    isReady = true
+    // Wait for Drizzle Studio to be ready
+    const checkInterval = 100 // 100ms
+    while (!isReady) {
+      const portCheck = await checkPort(port)
+      if (portCheck !== false) {
+        isReady = true
+        break
+      }
+      await new Promise(resolve => setTimeout(resolve, checkInterval))
+    }
   } catch (error) {
     log.error('Failed to launch Drizzle Studio:', error)
     throw error
@@ -110,38 +113,40 @@ export default defineConfig({
 }
 
 export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
-  nuxt.options.nitro.experimental?.openAPI && addCustomTab({
-    category: 'server',
-    name: 'hub-open-api',
-    title: 'OpenAPI',
-    icon: 'i-lucide-file-text',
-    view: {
-      type: 'iframe',
-      src: `/_scalar`
-    }
-  })
+  nuxt.hook('devtools:customTabs', (tabs) => {
+    if (nuxt.options.nitro.experimental?.openAPI)({
+      category: 'server',
+      name: 'hub-open-api',
+      title: 'OpenAPI',
+      icon: 'i-lucide-file-text',
+      view: {
+        type: 'iframe',
+        src: `/_scalar`
+      }
+    })
 
-  hub.database && addCustomTab({
-    category: 'server',
-    name: 'hub-database',
-    title: 'Database',
-    icon: 'i-lucide-database',
-    view: isReady && port
-      ? {
-          type: 'iframe',
-          src: `https://local.drizzle.studio?port=${port}`
-        }
-      : {
-          type: 'launch',
-          description: 'Launch Drizzle Studio',
-          actions: [{
-            label: 'Start',
-            async handle() {
-              if (!promise)
-                promise = launchDrizzleStudio(nuxt)
-              await promise
-            }
-          }]
-        }
+    if (hub.database) tabs.push({
+      category: 'server',
+      name: 'hub-database',
+      title: 'Database',
+      icon: 'i-lucide-database',
+      view: isReady && port
+        ? {
+            type: 'iframe',
+            src: `https://local.drizzle.studio?port=${port}`
+          }
+        : {
+            type: 'launch',
+            description: 'Launch Drizzle Studio',
+            actions: [{
+              label: promise ? 'Starting...' : 'Launch',
+              pending: isReady,
+              handle() {
+                promise = promise || launchDrizzleStudio(nuxt)
+                return promise
+              }
+            }]
+          }
+    })
   })
 }
