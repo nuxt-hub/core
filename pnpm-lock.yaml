@@ -26,6 +26,12 @@ importers:
       destr:
         specifier: ^2.0.5
         version: 2.0.5
+      execa:
+        specifier: ^9.6.0
+        version: 9.6.0
+      get-port-please:
+        specifier: ^3.2.0
+        version: 3.2.0
       h3:
         specifier: ^1.15.4
         version: 1.15.4

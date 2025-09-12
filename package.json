@@ -57,6 +57,8 @@
     "db0": "^0.3.2",
     "defu": "^6.1.4",
     "destr": "^2.0.5",
+    "execa": "^9.6.0",
+    "get-port-please": "^3.2.0",
     "h3": "^1.15.4",
     "mime": "^4.0.7",
     "nitro-cloudflare-dev": "^0.2.2",
