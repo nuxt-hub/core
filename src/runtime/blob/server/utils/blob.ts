@@ -11,7 +11,7 @@ import { joinURL } from 'ufo'
 import { streamToArrayBuffer } from '../../../utils/stream'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
-import type { BlobType, FileSizeUnit, BlobUploadedPart, BlobListResult, BlobMultipartUpload, HandleMPUResponse, BlobMultipartOptions, BlobUploadOptions, BlobPutOptions, BlobEnsureOptions, BlobObject, BlobListOptions, BlobCredentialsOptions, BlobCredentials } from '@nuxthub/core'
+import type { BlobType, FileSizeUnit, BlobUploadedPart, BlobListResult, BlobMultipartUpload, BlobMultipartOptions, BlobUploadOptions, BlobPutOptions, BlobEnsureOptions, BlobObject, BlobListOptions, BlobCredentialsOptions, BlobCredentials, HubBlob } from '@nuxthub/core'
 import { useRuntimeConfig } from '#imports'
 
 const _r2_buckets: Record<string, R2Bucket> = {}
@@ -31,124 +31,6 @@ function _useBucket(name: string = 'BLOB') {
     return _r2_buckets[name]
   }
   throw createError(`Missing Cloudflare ${name} binding (R2)`)
-}
-
-interface HubBlob {
-  /**
-   * List all the blobs in the bucket (metadata only).
-   *
-   * @param options The list options
-   *
-   * @example ```ts
-   * const { blobs } = await hubBlob().list({ limit: 10 })
-   * ```
-   */
-  list(options?: BlobListOptions): Promise<BlobListResult>
-  /**
-   * Serve the blob from the bucket.
-   *
-   * @param event The H3 event (needed to set headers for the response)
-   * @param pathname The pathname of the blob
-   *
-   * @example ```ts
-   * export default eventHandler(async (event) => {
-   *   return hubBlob().serve(event, '/my-image.jpg')
-   * })
-   * ```
-   */
-  serve(event: H3Event, pathname: string): Promise<ReadableStream<any>>
-  /**
-   * Put a new blob into the bucket.
-   *
-   * @param pathname The pathname of the blob
-   * @param body The blob content
-   * @param options The put options
-   *
-   * @example ```ts
-   * const blob = await hubBlob().put('/my-image.jpg', file)
-   * ```
-   */
-  put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options?: BlobPutOptions): Promise<BlobObject>
-  /**
-   * Get the blob metadata from the bucket.
-   *
-   * @param pathname The pathname of the blob
-   *
-   * @example ```ts
-   * const blobMetadata = await hubBlob().head('/my-image.jpg')
-   * ```
-   */
-  head(pathname: string): Promise<BlobObject>
-  /**
-   * Get the blob body from the bucket.
-   *
-   * @param pathname The pathname of the blob
-   *
-   * @example ```ts
-   * const blob = await hubBlob().get('/my-image.jpg')
-   * ```
-   */
-  get(pathname: string): Promise<Blob | null>
-  /**
-   * Delete the blob from the bucket.
-   *
-   * @param pathnames The pathname of the blob
-   *
-   * @example ```ts
-   * await hubBlob().del('/my-image.jpg')
-   * ```
-   */
-  del(pathnames: string | string[]): Promise<void>
-  /**
-   * Delete the blob from the bucket.
-   *
-   * @param pathnames The pathname of the blob
-   *
-   * @example ```ts
-   * await hubBlob().delete('/my-image.jpg')
-   * ```
-   */
-  delete(pathnames: string | string[]): Promise<void>
-  /**
-   * Create a multipart upload.
-   *
-   * @see https://hub.nuxt.com/docs/features/blob#createmultipartupload
-   */
-  createMultipartUpload(pathname: string, options?: BlobMultipartOptions): Promise<BlobMultipartUpload>
-  /**
-   * Get the specified multipart upload.
-   *
-   * @see https://hub.nuxt.com/docs/features/blob#resumemultipartupload
-   */
-  resumeMultipartUpload(pathname: string, uploadId: string): BlobMultipartUpload
-  /**
-   * Handle the multipart upload request.
-   * Make sure your route includes `[action]` and `[...pathname]` params.
-   *
-   * @see https://hub.nuxt.com/docs/features/blob#handlemultipartupload
-   */
-  handleMultipartUpload(event: H3Event, options?: BlobMultipartOptions): Promise<HandleMPUResponse>
-  /**
-   * Handle a file upload.
-   *
-   * @param event The H3 event (needed to set headers for the response)
-   * @param options The upload options
-   *
-   * @see https://hub.nuxt.com/docs/features/blob#handleupload
-   */
-  handleUpload(event: H3Event, options?: BlobUploadOptions): Promise<BlobObject[]>
-  /**
-   * Creates temporary access credentials that can be optionally scoped to prefixes or objects.
-   *
-   * Useful to create a signed url to upload directory to R2 from client-side.
-   *
-   * Only available in production or in development with `--remote` flag.
-   *
-   * @example ```ts
-   * const { accountId, bucketName, accessKeyId, secretAccessKey, sessionToken } = await hubBlob().createCredentials()
-   * ```
-   */
-  createCredentials(options?: BlobCredentialsOptions): Promise<BlobCredentials>
 }
 
 /**
