@@ -91,8 +91,8 @@ export async function applyRemoteDatabaseQueries(hub: HubConfig) {
     }
 
     consola.success(`Database query \`${queryPath}\` applied`)
-    return true
   }
+  return true
 }
 
 // #endregion
