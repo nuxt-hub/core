@@ -18,7 +18,7 @@ export async function getDb0Connector(nitro: Nitro) {
     throw new Error('No database connector configured in nitro.options.database.db')
   }
 
-  const connector = dbConfig.connector
+  const connector = dbConfig.connector === 'sqlite' ? 'better-sqlite3' : dbConfig.connector
   const connectorPath = `db0/connectors/${connector}`
 
   try {
