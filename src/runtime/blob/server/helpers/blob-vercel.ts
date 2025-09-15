@@ -87,8 +87,7 @@ function mapPutBlobToBlob(object: PutBlobResult): BlobObject {
     pathname: object.pathname,
     contentType: object.contentType,
     url: object.url,
-    size: 0, // TODO: get size
-    httpEtag: '', // TODO: get etag
+    httpEtag: undefined,
     uploadedAt: new Date(),
     httpMetadata: {},
     customMetadata: {}

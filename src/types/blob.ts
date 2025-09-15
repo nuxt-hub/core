@@ -20,11 +20,11 @@ export interface BlobObject {
   /**
    * The size of the blob in bytes.
    */
-  size: number
+  size?: number
   /**
    * The blob's etag, in quotes so as to be returned as a header.
    */
-  httpEtag: string
+  httpEtag: string | undefined
   /**
    * The date the blob was uploaded at.
    */

@@ -84,7 +84,6 @@ async function createOrResumeMultipartUpload(driver: Driver, pathname: string, u
       return {
         pathname: currentMetadata.pathname,
         contentType: currentMetadata.contentType,
-        size: 0, // TODO: get size from uploaded parts
         httpEtag: `"${randomUUID()}"`,
         uploadedAt: new Date(),
         httpMetadata: {
