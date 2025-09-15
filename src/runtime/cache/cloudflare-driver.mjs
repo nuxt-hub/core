@@ -3,8 +3,6 @@ import { defineDriver } from 'unstorage'
 import cloudflareKVBindingDriver from 'unstorage/drivers/cloudflare-kv-binding'
 import { getContext } from 'unctx'
 
-// TODO: agnostic
-
 export const nitroAsyncContext = getContext('nitro-app', {
   asyncContext: true,
   AsyncLocalStorage

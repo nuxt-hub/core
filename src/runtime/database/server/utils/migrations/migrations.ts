@@ -1,18 +1,31 @@
 import { consola } from 'consola'
-import { hubDatabase } from '../database'
+import { join, relative } from 'pathe'
 import type { HubConfig } from '../../../../../features'
 import { AppliedDatabaseMigrationsQuery, getCreateMigrationsTableQuery, getDatabaseMigrationFiles, getDatabaseQueryFiles, splitSqlQueries, useDatabaseMigrationsStorage, useDatabaseQueriesStorage } from './helpers'
+import type { Database } from 'db0'
 
-export async function applyDatabaseMigrations(hub: HubConfig) {
+const log = consola.withTag('nuxt:hub')
+
+function getRelativePath(fullPath: string) {
+  return relative(process.cwd(), fullPath)
+}
+
+export async function applyDatabaseMigrations(hub: HubConfig, db: Database) {
   const migrationsStorage = useDatabaseMigrationsStorage(hub)
-  const db = hubDatabase()
 
   const createMigrationsTableQuery = getCreateMigrationsTableQuery(db)
+  log.debug('Creating migrations table if not exists...')
   await db.prepare(createMigrationsTableQuery).run()
-  const appliedMigrations = (await db.prepare(AppliedDatabaseMigrationsQuery).all()).results
+  log.debug('Successfully created migrations table if not exists')
+
+  const appliedMigrations = await db.prepare(AppliedDatabaseMigrationsQuery).all()
+  if (!import.meta.dev) {
+    log.info(`Found ${appliedMigrations.length} applied migration${appliedMigrations.length === 1 ? '' : 's'}`)
+  }
+
   const localMigrations = (await getDatabaseMigrationFiles(hub)).map(fileName => fileName.replace('.sql', ''))
   const pendingMigrations = localMigrations.filter(localName => !appliedMigrations.find(({ name }) => name === localName))
-  if (!pendingMigrations.length) return consola.success('Database migrations up to date')
+  if (!pendingMigrations.length) return log.success('Database migrations up to date')
 
   for (const migration of pendingMigrations) {
     let query = await migrationsStorage.getItem<string>(`${migration}.sql`)
@@ -23,22 +36,24 @@ export async function applyDatabaseMigrations(hub: HubConfig) {
     const queries = splitSqlQueries(query)
 
     try {
-      await db.batch(queries.map(q => db.prepare(q)))
+      log.debug(`Applying database migration \`${getRelativePath(join(hub.dir!, 'database/migrations', migration + '.sql'))}\`...`)
+      for (const query of queries) {
+        await db.prepare(query).run()
+      }
     } catch (error: any) {
-      consola.error(`Failed to apply migration \`.data/hub/database/migrations/${migration}.sql\`\n`, error?.message)
+      log.error(`Failed to apply migration \`${getRelativePath(join(hub.dir!, 'database/migrations', migration + '.sql'))}\`\n`, error?.message)
       if (error?.message?.includes('already exists')) {
-        consola.info('If your database already contains the migration, run `npx nuxthub database migrations mark-all-applied` to mark all migrations as applied.')
+        log.info('If your database already contains the migration, run `npx nuxthub database migrations mark-all-applied` to mark all migrations as applied.')
       }
       break
     }
 
-    consola.success(`Database migration \`.data/hub/database/migrations/${migration}.sql\` applied`)
+    log.success(`Database migration \`${getRelativePath(join(hub.dir!, 'database/migrations', migration + '.sql'))}\` applied`)
   }
 }
 
-export async function applyDatabaseQueries(hub: HubConfig) {
+export async function applyDatabaseQueries(hub: HubConfig, db: Database) {
   const queriesStorage = useDatabaseQueriesStorage(hub)
-  const db = hubDatabase()
 
   const queriesPaths = await getDatabaseQueryFiles(hub)
   if (!queriesPaths.length) return
@@ -48,12 +63,15 @@ export async function applyDatabaseQueries(hub: HubConfig) {
     if (!sql) continue
     const queries = splitSqlQueries(sql)
     try {
-      await db.batch(queries.map(q => db.prepare(q)))
+      log.debug(`Applying database query \`${getRelativePath(join(hub.dir!, 'database/queries', queryPath))}\`...`)
+      for (const query of queries) {
+        await db.prepare(query).run()
+      }
     } catch (error: any) {
-      consola.error(`Failed to apply query \`.data/hub/database/queries/${queryPath}\`\n`, error?.message)
+      log.error(`Failed to apply query \`${getRelativePath(join(hub.dir!, 'database/queries', queryPath))}\`\n`, error?.message)
       break
     }
 
-    consola.success(`Database query \`.data/hub/database/queries/${queryPath}\` applied`)
+    log.success(`Database query \`${getRelativePath(join(hub.dir!, 'database/queries', queryPath))}\` applied`)
   }
 }
