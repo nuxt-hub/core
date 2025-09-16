@@ -1,16 +1,12 @@
 <script setup lang="ts">
 const links = [
   {
-    label: 'Terms',
-    to: 'https://admin.hub.nuxt.com/terms',
+    label: 'Report a bug',
+    to: 'https://github.com/nuxt-hub/core/issues/new/choose',
     target: '_blank'
   }, {
-    label: 'Privacy',
-    to: 'https://admin.hub.nuxt.com/privacy',
-    target: '_blank'
-  }, {
-    label: 'Status',
-    to: 'https://status.hub.nuxt.com',
+    label: 'Star on GitHub',
+    to: 'https://github.com/nuxt-hub/core',
     target: '_blank'
   }
 ]
