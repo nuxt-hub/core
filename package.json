@@ -1,7 +1,7 @@
 {
   "name": "@nuxthub/core",
   "private": false,
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.0",
   "description": "Build full-stack Nuxt applications, with zero configuration.",
   "repository": {
     "type": "git",
@@ -51,7 +51,7 @@
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "^4.20250904.0",
+    "@cloudflare/workers-types": "^4.20250913.0",
     "@nuxt/devtools-kit": "^2.6.3",
     "@uploadthing/mime-types": "^0.3.6",
     "db0": "^0.3.2",
@@ -60,9 +60,9 @@
     "execa": "^9.6.0",
     "get-port-please": "^3.2.0",
     "h3": "^1.15.4",
-    "mime": "^4.0.7",
+    "mime": "^4.1.0",
     "nitro-cloudflare-dev": "^0.2.2",
-    "nypm": "^0.6.1",
+    "nypm": "^0.6.2",
     "ofetch": "^1.4.1",
     "pathe": "^2.0.3",
     "pkg-types": "^2.3.0",
@@ -75,20 +75,20 @@
   "devDependencies": {
     "@nuxt/devtools": "^2.6.3",
     "@nuxt/eslint-config": "^1.9.0",
-    "@nuxt/kit": "^4.1.0",
+    "@nuxt/kit": "^4.1.2",
     "@nuxt/module-builder": "^1.0.2",
-    "@nuxt/schema": "^4.1.0",
+    "@nuxt/schema": "^4.1.2",
     "@nuxt/test-utils": "3.19.2",
     "@nuxthub/core": "link:",
-    "@types/node": "^24.3.1",
+    "@types/node": "^24.5.0",
     "changelogen": "^0.6.2",
-    "eslint": "^9.34.0",
-    "nuxt": "^4.1.0",
+    "eslint": "^9.35.0",
+    "nuxt": "^4.1.2",
     "typescript": "~5.9.2",
     "vitest": "^3.2.4",
-    "vue-tsc": "^3.0.6"
+    "vue-tsc": "^3.0.7"
   },
-  "packageManager": "pnpm@10.15.1",
+  "packageManager": "pnpm@10.16.1",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@parcel/watcher",
