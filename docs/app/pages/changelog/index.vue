@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // @ts-expect-error yaml is not typed
-import page from '.changelog.yml'
+import page from './.changelog.yml'
 
 definePageMeta({
   primary: 'green'

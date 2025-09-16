@@ -47,11 +47,6 @@ const links = computed(() => [
     to: item.path === '/docs' ? '/docs/getting-started' : item.path
   })),
   {
-    label: 'NuxtHub Admin',
-    to: 'https://admin.hub.nuxt.com',
-    target: '_blank',
-    icon: 'i-simple-icons-nuxtdotjs'
-  }, {
     label: 'nuxt-hub/core',
     to: 'https://github.com/nuxt-hub/core',
     target: '_blank',

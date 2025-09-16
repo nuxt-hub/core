@@ -4,11 +4,11 @@ navigation.title: Database
 description: Access a SQL database in your Nuxt application to store and retrieve relational data.
 ---
 
-NuxtHub Database uses [Cloudflare D1](https://developers.cloudflare.com/d1/), a managed, serverless database built on SQLite to store and retrieve relational data.
+NuxtHub Database is compatible with PostgreSQL, MySQL and SQLite and is built on [db0](https://db0.unjs.io/).
 
 ## Getting Started
 
-Enable the database in your NuxtHub project by adding the `database` property to the `hub` object in your `nuxt.config.ts` file.
+Enable the database in NuxtHub by setting the `database` property to your dialect in `hub` within your `nuxt.config.ts` file.
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
@@ -18,36 +18,22 @@ export default defineNuxtConfig({
 })
 ```
 
-::note
-This option will use Cloudflare platform proxy in development and automatically create a [Cloudflare D1](https://developers.cloudflare.com/d1) database for your project when you [deploy it](/docs/getting-started/deploy).
-::
-
 ::tip
 Checkout our [Drizzle ORM recipe](/docs/recipes/drizzle) to get started with the database by providing a schema and migrations.
 ::
 
-During local development, you can view and edit your database in the Nuxt DevTools. Once your project is deployed, you can inspect the database in the NuxtHub Admin Dashboard. 
+During local development, you can view and edit your database from Nuxt DevTools.
 
-::tabs
-::div{label="Nuxt DevTools"}
 :img{src="/images/landing/nuxt-devtools-database.png" alt="Nuxt DevTools Database" width="915" height="515"}
-::
-::div{label="NuxtHub Admin"}
-:img{src="/images/landing/nuxthub-admin-database.png" alt="NuxtHub Admin Database" width="915" height="515"}
-::
 ::
 
 ## `hubDatabase()`
 
-Server composable that returns a [D1 database client](https://developers.cloudflare.com/d1/build-databases/query-databases/).
+Server composable that returns a [db0 client](https://db0.unjs.io/).
 
 ```ts
 const db = hubDatabase()
 ```
-
-::callout
-This documentation is a small reflection of the [Cloudflare D1 documentation](https://developers.cloudflare.com/d1/build-databases/query-databases/). We recommend reading it to understand the full potential of the D1 database.
-::
 
 ### `prepare()`
 
@@ -73,13 +59,13 @@ stmt.bind('Evan You')
 // SELECT * FROM users WHERE name = 'Evan You'
 ```
 
-The `?` character followed by a number (1-999) represents an ordered parameter. The number represents the position of the parameter when calling `.bind(...params)`. 
+The `?` character followed by a number (1-999) represents an ordered parameter. The number represents the position of the parameter when calling `.bind(...params)`.
 
 ```ts
 const stmt = db
   .prepare('SELECT * FROM users WHERE name = ?2 AND age = ?1')
   .bind(3, 'Leo Chopin')
-// SELECT * FROM users WHERE name = 'Leo Chopin' AND age = 3 
+// SELECT * FROM users WHERE name = 'Leo Chopin' AND age = 3
 ```
 
 If you instead use anonymous parameters (without a number), the values passed to `bind` will be assigned in order to the `?` placeholders in the query.
@@ -91,7 +77,7 @@ const stmt = db
   .prepare('SELECT * FROM users WHERE name = ? AND age = ?')
   .bind('Leo Chopin', 3)
 
-// SELECT * FROM users WHERE name = 'Leo Chopin' AND age = 3 
+// SELECT * FROM users WHERE name = 'Leo Chopin' AND age = 3
 ```
 
 ### `all()`
@@ -260,7 +246,7 @@ This method can have poorer performance (prepared statements can be reused in so
 
 ## Working with JSON
 
-Cloudflare D1 supports querying and parsing JSON data. This can improve performance by reducing the number of round trips to your database. Instead of querying a JSON column, extracting the data you need, and using that data to make another query, you can do all of this work in a single query by using JSON functions. 
+Cloudflare D1 supports querying and parsing JSON data. This can improve performance by reducing the number of round trips to your database. Instead of querying a JSON column, extracting the data you need, and using that data to make another query, you can do all of this work in a single query by using JSON functions.
 
 JSON columns are stored as `TEXT` columns in your database.
 
@@ -360,9 +346,11 @@ All migrations files are copied to the `.data/hub/database/migrations` directory
 ### Automatic Application
 
 All `.sql` files in the database migrations directories are automatically applied when you:
-- Start the development server (`npx nuxt dev` or [`npx nuxt dev --remote`](/docs/getting-started/remote-storage))
-- Preview builds locally ([`npx nuxthub preview`](/changelog/nuxthub-preview))
-- Deploy via [`npx nuxthub deploy`](/docs/getting-started/deploy#nuxthub-cli) or [Cloudflare Pages CI](/docs/getting-started/deploy#cloudflare-pages-ci)
+- Start the development server (`npx nuxi dev`)
+- Build the application via CLI ([`npx nuxi build`](https://nuxt.com/docs/api/commands/build)) or during CI
+
+To apply migrations during CI with a zero-config provider, ensure the connection string environment variable is set during build time. Alternatively, manually configure `db` [Nitro database](https://nitro.build/guide/database).
+- PostgreSQL: `POSTGRESQL_URL` | `POSTGRESQL_URL` | `DATABASE_URL`
 
 ::tip
 All applied migrations are tracked in the `_hub_migrations` database table.
@@ -491,7 +479,7 @@ These queries run after all migrations are applied but are not tracked in the `_
 
 ### Foreign Key Constraints
 
-If you are using [Drizzle ORM](/docs/recipes/drizzle) to generate your database migrations, your generated migration files will use `PRAGMA foreign_keys = ON | OFF;`. This is not supported by Cloudflare D1. Instead, they support [defer foreign key constraints](https://developers.cloudflare.com/d1/sql-api/foreign-keys/#defer-foreign-key-constraints).
+If you are using Cloudflare D1 and using [Drizzle ORM](/docs/recipes/drizzle) to generate your database migrations, your generated migration files will use `PRAGMA foreign_keys = ON | OFF;`, which is not supported by Cloudflare D1. Instead, they support [defer foreign key constraints](https://developers.cloudflare.com/d1/sql-api/foreign-keys/#defer-foreign-key-constraints).
 
 You need to update your migration file to use `PRAGMA defer_foreign_keys = on|off;` instead:
 
@@ -504,14 +492,3 @@ ALTER TABLE ...
 -PRAGMA foreign_keys = ON;
 +PRAGMA defer_foreign_keys = off;
 ```
-
-## Limits
-
-- The maximum database size is 10 GB
-- The maximum number of columns per table is 100
-
-See all of the [D1 Limits](https://developers.cloudflare.com/d1/platform/limits/)
-
-## Pricing
-
-:pricing-table{:tabs='["DB"]'}

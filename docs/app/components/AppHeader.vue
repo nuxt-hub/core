@@ -15,10 +15,6 @@ const links = computed(() => [
     to: '/templates',
     icon: 'i-lucide-panels-top-left'
   }, {
-    label: 'Pricing',
-    to: '/pricing',
-    icon: 'i-lucide-credit-card'
-  }, {
     label: 'Changelog',
     to: '/changelog',
     icon: 'i-lucide-megaphone'

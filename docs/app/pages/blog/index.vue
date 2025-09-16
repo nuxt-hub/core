@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // @ts-expect-error yaml is not typed
-import page from '.blog.yml'
+import page from './.blog.yml'
 
 const { data: posts } = await useAsyncData('posts', async () => {
   return queryCollection('blog')
