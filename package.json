@@ -55,7 +55,6 @@
     "@nuxt/devtools-kit": "^2.6.3",
     "@uploadthing/mime-types": "^0.3.6",
     "@vercel/blob": "^1.1.1",
-    "confbox": "^0.2.2",
     "db0": "^0.3.2",
     "defu": "^6.1.4",
     "destr": "^2.0.5",

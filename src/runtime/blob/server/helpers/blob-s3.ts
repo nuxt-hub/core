@@ -11,11 +11,9 @@ export async function createMultipartUpload(pathname: string, driverOptions: S3D
   })
 
   const res = await aws.fetch(`${baseUrl(driverOptions, pathname)}?uploads`, { method: 'POST', headers: buildCreateHeaders(options) }).catch((e) => {
-    console.log('error', e)
     throw e
   })
   if (!res.ok) {
-    console.log('error', res)
     throw new Error(`Initiate failed: ${res.status} ${res.statusText}`)
   }
   const xmlText = await res.text()
@@ -92,12 +90,10 @@ export async function resumeMultipartUpload(pathname: string, uploadId: string, 
       }
 
       const xmlText = await res.text()
-      console.log('xmlText', xmlText)
       return {
         pathname,
         contentType: 'application/octet-stream',
         url: xmlTagContent(xmlText, 'Location'),
-        size: 0,
         httpEtag: xmlTagContent(xmlText, 'ETag'),
         uploadedAt: new Date(),
         httpMetadata: {},

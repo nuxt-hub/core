@@ -24,7 +24,7 @@ export async function createMultipartUpload(token: string, pathname: string, opt
       })
     },
     abort: async () => {
-      // await mpu.abort()
+      // Vercel Blob does not support aborting a multipart upload
     },
     complete: async (uploadedParts) => {
       const r2Object = await vercelCompleteMultipartUpload(pathname, uploadedParts, {
@@ -52,7 +52,7 @@ export async function resumeMultipartUpload(token: string, pathname: string, upl
       })
     },
     abort: async () => {
-      // await mpu.abort()
+      // Vercel Blob does not support aborting a multipart upload
     },
     complete: async (uploadedParts) => {
       const putBlobResult = await vercelCompleteMultipartUpload(pathname, uploadedParts, {

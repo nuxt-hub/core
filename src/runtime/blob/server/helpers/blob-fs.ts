@@ -1,7 +1,7 @@
 import type { BlobMultipartUpload, BlobObject, BlobUploadedPart } from '~/src/types/blob'
 import { randomUUID } from 'uncrypto'
 import { join } from 'pathe'
-import fs from 'node:fs'
+import fs, { read } from 'node:fs'
 import fsp from 'node:fs/promises'
 import type { Driver } from 'unstorage'
 
@@ -78,12 +78,13 @@ async function createOrResumeMultipartUpload(driver: Driver, pathname: string, u
         }
       }
 
-      await completeUpload(driver, pathname, uploadId, uploadedParts)
+      const size = await completeUpload(driver, pathname, uploadId, uploadedParts)
       await cleanUploadTmpFiles(driver, uploadId, pathname)
 
       return {
         pathname: currentMetadata.pathname,
         contentType: currentMetadata.contentType,
+        size,
         httpEtag: `"${randomUUID()}"`,
         uploadedAt: new Date(),
         httpMetadata: {
@@ -109,22 +110,28 @@ async function cleanUploadTmpFiles(driver: Driver, uploadId: string, pathname: s
   await driver.removeItem!(pathname + '$', {})
 }
 
-async function completeUpload(driver: Driver, pathname: string, uploadId: string, uploadedParts: BlobUploadedPart[]) {
+async function completeUpload(driver: Driver, pathname: string, uploadId: string, uploadedParts: BlobUploadedPart[]): Promise<number> {
   const root = driver.options.base
   const fullPath = join(root, pathname)
   const orderedUploadedParts = uploadedParts.sort((a, b) => a.partNumber - b.partNumber)
 
-  const writeStream = fs.createWriteStream(fullPath)
-  for (const file of orderedUploadedParts) {
-    await new Promise((resolve, reject) => {
-      const readStream = fs.createReadStream(join(root, partKey(uploadId, file.partNumber)))
-      readStream.pipe(writeStream, { end: false })
-      readStream.on('error', reject)
-      readStream.on('end', resolve as () => void)
-    })
-  }
+  return new Promise(async (resolve, reject) => {
+    const writeStream = fs.createWriteStream(fullPath)
+    for (const file of orderedUploadedParts) {
+      await new Promise((resolve, reject) => {
+        const readStream = fs.createReadStream(join(root, partKey(uploadId, file.partNumber)))
+        readStream.pipe(writeStream, { end: false })
+        readStream.on('error', reject)
+        readStream.on('end', resolve as () => void)
+      })
+    }
 
-  writeStream.end()
-  writeStream.on('finish', () => {
+    writeStream.end()
+    writeStream.on('finish', () => {
+      resolve(fs.statSync(fullPath).size)
+    })
+    writeStream.on('error', (error) => {
+      reject(error)
+    })
   })
 }

@@ -437,10 +437,10 @@ See [`useMultipartUpload()`](#usemultipartupload) on usage details.
 ### `createMultipartUpload()`
 
 ::note
-We suggest to use [`handleMultipartUpload()`](#handlemultipartupload) method to handle the multipart upload request.
+We suggest using [`handleMultipartUpload()`](#handlemultipartupload) method to handle the multipart upload request.
 :br
 :br
-If you like to handle multi-part uploads manually using this utility, keep in mind that you cannot use this utility for Vercel Blob due to payload size limit of Vercel functions. Consider using [Vercel Blob Client SDK](https://vercel.com/docs/vercel-blob/client-upload).
+If you want to handle multipart uploads manually using this utility, keep in mind that you cannot use this utility for Vercel Blob due to payload size limit of Vercel functions. Consider using [Vercel Blob Client SDK](https://vercel.com/docs/vercel-blob/client-upload).
 ::
 
 Start a new multipart upload.
@@ -487,7 +487,7 @@ Returns a `BlobMultipartUpload`
 ### `resumeMultipartUpload()`
 
 ::note
-We suggest to use [`handleMultipartUpload()`](#handlemultipartupload) method to handle the multipart upload request.
+We suggest using [`handleMultipartUpload()`](#handlemultipartupload) method to handle the multipart upload request.
 ::
 
 Continue processing of unfinished multipart upload.
@@ -815,7 +815,7 @@ bucket_name = "my-bucket"
 
 #### Using S3-Compatible Driver
 
-Alternatively, you can use the S3-compatible driver with Cloudflare R2. This is useful for deploying your project in different environments while still using Cloudflare Blob.
+Alternatively, you can use the S3-compatible driver with Cloudflare R2. This is useful for deploying your project in different environments while still using Cloudflare R2.
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
@@ -859,7 +859,7 @@ For additional storage providers and configuration options, see the unstorage do
 ::
 
 ::note
-Other unstorage drivers do not support multi-part upload. If you want to upload big files, consider using one of the above providers.
+Other unstorage drivers do not support multipart upload. If you want to upload large files, consider using one of the above providers.
 ::
 
 ## Types
