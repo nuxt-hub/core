@@ -1,7 +1,7 @@
 import type { BlobMultipartUpload, BlobObject, BlobUploadedPart } from '~/src/types/blob'
 import { randomUUID } from 'uncrypto'
 import { join } from 'pathe'
-import fs, { read } from 'node:fs'
+import fs from 'node:fs'
 import fsp from 'node:fs/promises'
 import type { Driver } from 'unstorage'
 
@@ -115,17 +115,17 @@ async function completeUpload(driver: Driver, pathname: string, uploadId: string
   const fullPath = join(root, pathname)
   const orderedUploadedParts = uploadedParts.sort((a, b) => a.partNumber - b.partNumber)
 
-  return new Promise(async (resolve, reject) => {
-    const writeStream = fs.createWriteStream(fullPath)
-    for (const file of orderedUploadedParts) {
-      await new Promise((resolve, reject) => {
-        const readStream = fs.createReadStream(join(root, partKey(uploadId, file.partNumber)))
-        readStream.pipe(writeStream, { end: false })
-        readStream.on('error', reject)
-        readStream.on('end', resolve as () => void)
-      })
-    }
+  const writeStream = fs.createWriteStream(fullPath)
+  for (const file of orderedUploadedParts) {
+    await new Promise((resolve, reject) => {
+      const readStream = fs.createReadStream(join(root, partKey(uploadId, file.partNumber)))
+      readStream.pipe(writeStream, { end: false })
+      readStream.on('error', reject)
+      readStream.on('end', resolve as () => void)
+    })
+  }
 
+  return new Promise((resolve, reject) => {
     writeStream.end()
     writeStream.on('finish', () => {
       resolve(fs.statSync(fullPath).size)

@@ -19,7 +19,7 @@ export interface BlobObject {
   contentType: string | undefined
   /**
    * The size of the blob in bytes
-   * 
+   *
    * Some drivers do not return the size of the blob at the time of upload. This is supported in the `fs` and `cloudflare-r2` drivers.
    * In the Vercel Blob and S3 drivers, the size is missing.
    */
