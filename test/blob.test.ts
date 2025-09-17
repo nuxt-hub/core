@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url'
 import fs from 'node:fs/promises'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { setup, $fetch, url } from '@nuxt/test-utils'
 import type { BlobListResult } from '../src/types/blob'
 import { useUpload } from '../src/runtime/blob/app/composables/useUpload'
@@ -18,6 +18,17 @@ const images = [
     size: 2094540
   }
 ]
+
+// create mock for import { useRuntimeConfig } from '#imports'
+vi.mock('#imports', () => ({
+  useRuntimeConfig: () => ({
+    public: {
+      hub: {
+        blobProvider: 'fs'
+      }
+    }
+  })
+}))
 
 describe('Blob', async () => {
   await cleanUp()

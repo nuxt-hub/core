@@ -18,13 +18,16 @@ export interface BlobObject {
    */
   contentType: string | undefined
   /**
-   * The size of the blob in bytes.
+   * The size of the blob in bytes
+   *
+   * Some drivers do not return the size of the blob at the time of upload. This is supported in the `fs` and `cloudflare-r2` drivers.
+   * In the Vercel Blob and S3 drivers, the size is missing.
    */
-  size: number
+  size?: number
   /**
    * The blob's etag, in quotes so as to be returned as a header.
    */
-  httpEtag: string
+  httpEtag: string | undefined
   /**
    * The date the blob was uploaded at.
    */
@@ -37,6 +40,10 @@ export interface BlobObject {
    * The custom metadata of the blob.
    */
   customMetadata: Record<string, string>
+  /**
+   * The URL of the blob.
+   */
+  url?: string
 }
 
 export interface BlobUploadedPart {

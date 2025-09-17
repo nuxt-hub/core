@@ -54,6 +54,8 @@
     "@cloudflare/workers-types": "^4.20250913.0",
     "@nuxt/devtools-kit": "^2.6.3",
     "@uploadthing/mime-types": "^0.3.6",
+    "@vercel/blob": "^1.1.1",
+    "aws4fetch": "^1.0.20",
     "db0": "^0.3.2",
     "defu": "^6.1.4",
     "destr": "^2.0.5",

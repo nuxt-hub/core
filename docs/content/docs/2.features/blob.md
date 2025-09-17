@@ -390,7 +390,7 @@ Returns a [`BlobObject`](#blobobject) or an array of [`BlobObject`](#blobobject)
 
 Throws an error if `file` doesn't meet the requirements.
 
-<!-- ### `handleMultipartUpload()`
+### `handleMultipartUpload()`
 
 Handle the request to support multipart upload.
 
@@ -437,7 +437,10 @@ See [`useMultipartUpload()`](#usemultipartupload) on usage details.
 ### `createMultipartUpload()`
 
 ::note
-We suggest to use [`handleMultipartUpload()`](#handlemultipartupload) method to handle the multipart upload request.
+We suggest using [`handleMultipartUpload()`](#handlemultipartupload) method to handle the multipart upload request.
+:br
+:br
+If you want to handle multipart uploads manually using this utility, keep in mind that you cannot use this utility for Vercel Blob due to payload size limit of Vercel functions. Consider using [Vercel Blob Client SDK](https://vercel.com/docs/vercel-blob/client-upload).
 ::
 
 Start a new multipart upload.
@@ -484,7 +487,7 @@ Returns a `BlobMultipartUpload`
 ### `resumeMultipartUpload()`
 
 ::note
-We suggest to use [`handleMultipartUpload()`](#handlemultipartupload) method to handle the multipart upload request.
+We suggest using [`handleMultipartUpload()`](#handlemultipartupload) method to handle the multipart upload request.
 ::
 
 Continue processing of unfinished multipart upload.
@@ -595,7 +598,7 @@ Returns a `BlobMultipartUpload`
   ::field{name="event" type="H3Event" required}
     The event to handle.
   ::
-:: -->
+::
 
 ## `ensureBlob()`
 
@@ -697,6 +700,10 @@ const data = await completed
 
 Application composable that creates a multipart upload helper.
 
+::important
+When you configure to use Vercel Blob, this utility will automatically use [Vercel Blob Client SDK](https://vercel.com/docs/vercel-blob/client-upload) to upload the file.
+::
+
 ```ts [utils/multipart-upload.ts]
 export const mpu = useMultipartUpload('/api/files/multipart')
 ```
@@ -739,6 +746,122 @@ const { completed, progress, abort } = mpu(file)
 const data = await completed
 ```
 
+## Storage Providers
+
+NuxtHub supports multiple storage providers for blob storage. In development mode, NuxtHub automatically configures the filesystem (`fs`) driver for local development.
+
+### Filesystem (fs)
+
+The filesystem driver stores blobs locally on your development machine.
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    storage: {
+      BLOB: {
+        driver: 'fs',
+        base: './.data/blob'
+      }
+    }
+  }
+})
+```
+
+### Vercel Blob
+
+For production deployments on Vercel, use the Vercel Blob driver.
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    storage: {
+      BLOB: {
+        driver: 'vercel-blob',
+        access: 'public'
+      }
+    }
+  }
+})
+```
+
+### Cloudflare R2
+
+For Cloudflare deployments, you can use Cloudflare R2 with either bindings (recommended) or the S3-compatible driver.
+
+#### Using R2 Bindings (Recommended)
+
+When deploying to Cloudflare Workers, use R2 bindings for optimal performance and integration.
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    storage: {
+      BLOB: {
+        driver: 'cloudflare-r2',
+        binding: 'BLOB'
+      }
+    }
+  }
+})
+```
+
+Make sure to configure the R2 binding in your `wrangler.toml`:
+
+```toml [wrangler.toml]
+[[r2_buckets]]
+binding = "BLOB"
+bucket_name = "my-bucket"
+```
+
+#### Using S3-Compatible Driver
+
+Alternatively, you can use the S3-compatible driver with Cloudflare R2. This is useful for deploying your project in different environments while still using Cloudflare R2.
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    storage: {
+      BLOB: {
+        driver: 's3',
+        accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
+        secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
+        region: 'auto',
+        endpoint: `https://${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+        bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME
+      }
+    }
+  }
+})
+```
+
+### Amazon S3
+
+For AWS S3 storage, use the S3 driver.
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    storage: {
+      BLOB: {
+        driver: 's3',
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        region: process.env.AWS_REGION,
+        bucket: process.env.AWS_S3_BUCKET
+      }
+    }
+  }
+})
+```
+
+::callout{to="https://unstorage.unjs.io/drivers"}
+For additional storage providers and configuration options, see the unstorage documentation.
+::
+
+::note
+Other unstorage drivers do not support multipart upload. If you want to upload large files, consider using one of the above providers.
+::
+
 ## Types
 
 ### `BlobObject`
@@ -752,6 +875,7 @@ interface BlobObject {
   uploadedAt: Date
   httpMetadata: Record<string, string>
   customMetadata: Record<string, string>
+  url: string | undefined
 }
 ```
 
