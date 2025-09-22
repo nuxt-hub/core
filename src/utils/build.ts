@@ -31,6 +31,11 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
   // Zero-config resources setup
   nuxt.hook('nitro:init', async (nitro) => {
     if (!nuxt.options.dev) {
+      if (nuxt.options.nitro.preset?.includes('cloudflare')) {
+        nitro.options.cloudflare ||= {}
+        nitro.options.cloudflare.nodeCompat = true
+      }
+
       await Promise.all([
         hub.blob && await configureProductionBlobDriver(nitro, hub),
         hub.cache && await configureProductionCacheDriver(nitro, hub),

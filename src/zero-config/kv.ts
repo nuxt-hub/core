@@ -37,7 +37,7 @@ export async function configureProductionKVDriver(nitro: Nitro, _hub: HubConfig)
     case 'cloudflare-durable':
     case 'cloudflare-pages': {
       kvConfig = {
-        driver: 'cloudflare-kv',
+        driver: 'cloudflare-kv-binding',
         bindingName: 'KV'
       }
       log.info('Ensure a `KV` binding is set in your Cloudflare Workers configuration')
