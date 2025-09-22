@@ -1,14 +1,14 @@
 ---
 title: Cache Pages, API & Functions
 navigation.title: Cache
-description: Learn how to cache Nuxt pages, API routes and functions in with NuxtHub cache storage.
+description: Speed up Nuxt by caching pages, API routes and functions.
 ---
 
-NuxtHub Cache is powered by [Nitro's cache storage](https://nitro.build/guide/cache#customize-cache-storage). It allows you to cache API routes, server functions, and pages in your application.
+NuxtHub Cache automatically configures [Nitro's cache storage](https://nitro.build/guide/cache#customize-cache-storage). It allows you to cache API routes, server functions, and pages in your application.
 
 ## Getting Started
 
-1. Enable the cache storage in your NuxtHub project by adding the `cache` property to the `hub` object in your `nuxt.config.ts` file.
+Enable cache storage in your project by setting `cache: true` in the NuxtHub config.
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
@@ -18,14 +18,67 @@ export default defineNuxtConfig({
 })
 ```
 
-2. Configure your production storage provider in Nitro
+### Automatic Configuration
+
+When building the Nuxt app, NuxtHub automatically configures the cache storage driver on many providers.
+
+::tabs
+  :::div{label="Vercel" icon="i-simple-icons-vercel"}
+
+    When deploying to Vercel, Nitro Storage `cache` is configured for [Vercel Runtime Cache](https://vercel.com/changelog/introducing-the-runtime-cache-api).
+
+    No configuration is necessary to enable the Vercel Runtime Cache.
+
+  :::
+
+  :::div{label="Cloudflare" icon="i-simple-icons-cloudflare"}
+
+    When deploying to Cloudflare, Nitro Storage `cache` is configured for [Cloudflare Workers KV](https://developers.cloudflare.com/kv/).
+
+    Add a `CACHE` binding to a [Cloudflare Workers KV](https://developers.cloudflare.com/kv/) namespace in your `wrangler.jsonc` config.
+
+    ```json [wrangler.jsonc]
+    {
+      "$schema": "node_modules/wrangler/config-schema.json",
+      // ...
+      "kv_namespaces": [
+        {
+          "binding": "KV",
+          "id": "<id>"
+        }
+      ]
+    }
+    ```
+
+    Learn more about adding bindings on [Cloudflare's documentation](https://developers.cloudflare.com/kv/concepts/kv-bindings/#access-kv-from-workers).
+  :::
+
+  :::div{label="Other" icon="i-simple-icons-nodedotjs"}
+
+    When deploying to other providers, Nitro Storage `cache` is configured to use the [filesystem](https://unstorage.unjs.io/drivers/fs#nodejs-filesystem-lite).
+
+    ::tip{to="#manual-configuration"}
+      You can manually configure the `cache` mount to use a different storage driver.
+    ::
+
+  :::
+::
+
+
+### Manual Configuration
+
+You can use any [unstorage](https://unstorage.unjs.io/drivers) driver by manually configuring the `cache` mount within your [Nitro Storage](https://nitro.build/guide/storage#configuration) configuration.
+
+::note
+Manually configuring the `cache` mount in Nitro Storage overrides automatic configuration.
+::
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   nitro: {
     storage: {
       cache: {
-        driver: 'vercel-runtime-cache',
+        driver: 'deno-kv',
         /* any additional connector options */
       }
     }
@@ -37,20 +90,21 @@ export default defineNuxtConfig({
 })
 ```
 
-::callout{to="https://nitro.build/guide/storage#configuration"}
+::callout{to="https://unstorage.unjs.io/drivers"}
 You can find the driver list on [unstorage documentation](https://unstorage.unjs.io/drivers) with their configuration.
 ::
 
-By default, NuxtHub will automatically use the filesystem during local development. You can modify this behaviour by specifying a different storage driver.
+### Local development
+
+NuxtHub uses the filesystem during local development. You can modify this behaviour by specifying a different storage driver.
 ::collapsible{name="local development storage driver example"}
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   nitro: {
-    // default cache driver
     devStorage: {
       cache: {
-        driver: 'fs',
-        base: join(nuxt.options.rootDir, '.data/cache')
+        driver: 'redis',
+        host: 'HOSTNAME',
       }
     }
   },

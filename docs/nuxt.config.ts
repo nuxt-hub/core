@@ -53,13 +53,17 @@ export default defineNuxtConfig({
     '/changelog/rss.xml': { prerender: true },
     // Redirects
     '/docs/features': { redirect: { statusCode: 301, to: '/docs/features/ai' } },
-    '/docs/recipes': { redirect: { statusCode: 301, to: '/docs/recipes/hooks' } },
+    '/docs/recipes': { redirect: { statusCode: 301, to: '/docs/guides/hooks' } },
     '/docs/storage/blob': { redirect: { statusCode: 301, to: '/docs/features/blob' } },
     '/docs/storage/database': { redirect: { statusCode: 301, to: '/docs/features/database' } },
     '/docs/storage/kv': { redirect: { statusCode: 301, to: '/docs/features/kv' } },
     '/docs/server/api': { redirect: { statusCode: 301, to: '/docs/features/open-api' } },
     '/docs/server/cache': { redirect: { statusCode: 301, to: '/docs/features/cache' } },
-    '/docs/server/logs': { redirect: { statusCode: 301, to: '/docs/getting-started/server-logs' } }
+    '/docs/server/logs': { redirect: { statusCode: 301, to: '/docs/getting-started/server-logs' } },
+    // Recipes
+    '/docs/recipes/hooks': { redirect: { statusCode: 301, to: '/docs/guides/hooks' } },
+    '/docs/recipes/drizzle': { redirect: { statusCode: 301, to: '/docs/guides/drizzle' } },
+    '/docs/recipes/pre-rendering': { redirect: { statusCode: 301, to: '/docs/guides/pre-rendering' } }
   },
   compatibilityDate: '2025-02-11',
   nitro: {

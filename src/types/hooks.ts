@@ -2,13 +2,13 @@
 declare module '@nuxt/schema' {
   interface NuxtHooks {
     /**
-     * Add directories to the database migrations.
-     * @param dirs - The path of the migrations directories to add.
+     * Add additional directories to scan for database migration files.
+     * @param dirs - Array of directory paths containing .sql migration files to include.
      * @returns void | Promise<void>
      */
     'hub:database:migrations:dirs': (dirs: string[]) => void | Promise<void>
     /**
-     * Add queries to run after the database migrations are applied but are not tracked in the _hub_migrations table.
+     * Add queries that are not tracked in the `_hub_migrations` table which are applied after the database migrations complete.
      * @param queries - The path of the SQL queries paths to add.
      * @returns void | Promise<void>
      */

@@ -6,7 +6,7 @@ description: Upload, store and serve images, videos, music, documents and other 
 
 ## Getting Started
 
-1. Enable the blob storage in your NuxtHub project by adding the `blob` property to the `hub` object in your `nuxt.config.ts` file.
+Enable blob storage in your project by setting `blob: true` in the NuxtHub config.
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
@@ -16,16 +16,147 @@ export default defineNuxtConfig({
 })
 ```
 
-2. Configure your production storage provider in Nitro
+### Automatic Configuration
+
+When building the Nuxt app, NuxtHub automatically configures the blob storage driver on many providers.
+
+::tabs
+  :::div{label="Vercel" icon="i-simple-icons-vercel"}
+
+    When deploying to Vercel, Nitro Storage `blob` is configured for [Vercel Blob Storage](https://vercel.com/docs/storage/vercel-blob).
+
+    1. Install the `@vercel/blob` package
+
+    :pm-install{name="@vercel/blob"}
+
+    2. Assign a Vercel Blob Store to your project from the [Vercel dashboard](https://vercel.com/) -> Project -> Storage
+
+    ::important
+      Files stored in Vercel Blob are always public. Manually configure a different storage driver if storing sensitive files.
+    ::
+
+  :::
+
+  :::div{label="Cloudflare" icon="i-simple-icons-cloudflare"}
+
+    When deploying to Cloudflare, Nitro Storage `blob` is configured for [Cloudflare R2](https://developers.cloudflare.com/r2/).
+
+    Add a `BLOB` binding to a [Cloudflare R2](https://developers.cloudflare.com/r2/) bucket in your `wrangler.jsonc` config.
+
+    ```json [wranglerc]
+    {
+      "$schema": "node_modules/wrangler/config-schema.json",
+      // ...
+      "r2_buckets": [
+        {
+          "binding": "BLOB",
+          "bucket_name": "<bucket_name>"
+        }
+      ]
+    }
+    ```
+
+    Learn more about adding bindings on [Cloudflare's documentation](https://developers.cloudflare.com/r2/api/workers/workers-api-usage/).
+
+    ::tip
+      To use Cloudflare R2 without hosting on Cloudflare Workers, use the [Cloudflare R2 via S3 API](https://developers.cloudflare.com/r2/api/s3/api/).
+    ::
+
+  :::
+
+  :::div{label="Netlify" icon="i-simple-icons-netlify"}
+
+    When deploying to Netlify, Nitro Storage `blob` is configured for [Netlify Blobs](https://docs.netlify.com/build/data-and-storage/netlify-blobs/).
+
+    1. Install the `@netlify/blobs` package
+
+    :pm-install{name="@netlify/blobs"}
+
+    2. Set the `NETLIFY_BLOB_STORE_NAME` environment variable to configure your blob store name
+
+  :::
+
+  :::div{label="Azure" icon="i-simple-icons-microsoftazure"}
+
+    When deploying to Azure Functions, Nitro Storage `blob` is configured for [Azure Blob Storage](https://azure.microsoft.com/products/storage/blobs/).
+
+    1. Install the `@azure/app-configuration` and `@azure/identity` packages
+
+    :pm-install{name="@azure/app-configuration @azure/identity"}
+
+    2. Set the `AZURE_BLOB_ACCOUNT_NAME` environment variable to configure your storage account.
+    3. Create a new Managed Identity with the Storage Blob Data Contributor role assigned to it.
+
+
+  :::
+
+  :::div{label="AWS" icon="i-simple-icons-amazons3"}
+
+    When deploying to AWS Lambda or AWS Amplify, Nitro Storage `blob` is configured for [Amazon S3](https://aws.amazon.com/s3/).
+
+
+    1. Install the `aws4fetch` package
+
+    :pm-install{name="aws4fetch"}
+
+    2. Set the following environment variables:
+    - `S3_ACCESS_KEY_ID`
+    - `S3_SECRET_ACCESS_KEY`
+    - `S3_BUCKET`
+    - `S3_REGION`
+    - `S3_ENDPOINT` (optional)
+
+  :::
+
+  :::div{label="DigitalOcean" icon="i-simple-icons-digitalocean"}
+    When deploying to DigitalOcean, Nitro Storage `blob` is configured for [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces).
+
+    1. Install the `aws4fetch` package
+
+    :pm-install{name="aws4fetch"}
+
+    2. Set the following environment variables:
+    - `SPACES_KEY`
+    - `SPACES_SECRET`
+    - `SPACES_BUCKET`
+    - `SPACES_REGION`
+
+    ::callout{to="https://docs.digitalocean.com/products/spaces/how-to/manage-access/"}
+      Learn more about creating access keys on [DigitalOcean's documentation](https://docs.digitalocean.com/products/spaces/how-to/manage-access/).
+    ::
+
+  :::
+
+  :::div{label="Other" icon="i-simple-icons-nodedotjs"}
+
+    When deploying to other providers, Nitro Storage `blob` is configured to use the [filesystem](https://unstorage.unjs.io/drivers/fs#nodejs-filesystem-lite).
+
+    ::tip{to="#manual-configuration"}
+      You can manually configure the `blob` mount to use a different storage driver.
+    ::
+
+  :::
+::
+
+### Manual Configuration
+
+If you need to apply changes to automatic configuration, or would like to use a different storage driver, you can manually configure the `blob` mount within your [Nitro Storage](https://nitro.build/guide/storage#configuration) configuration.
+
+::note
+Manually configuring the `blob` mount in Nitro Storage overrides automatic configuration.
+::
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   nitro: {
     storage: {
-      BLOB: {
-        driver: 'vercel-blob',
-        access: 'public',
-        /* any additional connector options */
+      blob: {
+        driver: 's3',
+        accessKeyId: 'your-access-key-id',
+        secretAccessKey: 'your-secret-access-key',
+        bucket: 'your-bucket-name',
+        region: 'your-region'
+        /* any additional driver options */
       }
     }
   },
@@ -36,20 +167,25 @@ export default defineNuxtConfig({
 })
 ```
 
-::callout{to="https://nitro.build/guide/storage#configuration"}
+::callout{to="https://unstorage.unjs.io/drivers"}
 You can find the driver list on [unstorage documentation](https://unstorage.unjs.io/drivers) with their configuration.
 ::
 
-By default, NuxtHub will automatically use the filesystem during local development. You can modify this behaviour by specifying a different storage driver.
+### Local Development
+
+NuxtHub uses the filesystem during local development. You can modify this behaviour by specifying a different development storage driver.
+
 ::collapsible{name="local development storage driver example"}
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   nitro: {
-    // default blob driver
     devStorage: {
-      BLOB: {
-        driver: 'fs',
-        base: join(nuxt.options.rootDir, '.data/blob')
+      blob: {
+        driver: 's3',
+        accessKeyId: 'your-access-key-id',
+        secretAccessKey: 'your-secret-access-key',
+        bucket: 'your-bucket-name',
+        region: 'your-region'
       }
     }
   },
@@ -420,6 +556,11 @@ async function uploadFile(file: File) {
 See [`useMultipartUpload()`](#usemultipartupload) on usage details.
 ::
 
+
+::important
+Multipart uploads are only supported on Vercel Blob, Cloudflare R2, S3 and filesystem drivers.
+::
+
 #### Params
 
 ::field-group
@@ -437,10 +578,10 @@ See [`useMultipartUpload()`](#usemultipartupload) on usage details.
 ### `createMultipartUpload()`
 
 ::note
-We suggest using [`handleMultipartUpload()`](#handlemultipartupload) method to handle the multipart upload request.
+We recommend using [`handleMultipartUpload()`](#handlemultipartupload) to handle the multipart upload requests.
 :br
 :br
-If you want to handle multipart uploads manually using this utility, keep in mind that you cannot use this utility for Vercel Blob due to payload size limit of Vercel functions. Consider using [Vercel Blob Client SDK](https://vercel.com/docs/vercel-blob/client-upload).
+If you want to handle multipart uploads manually using this utility, keep in mind that you cannot use this utility with Vercel Blob due to payload size limits on Vercel functions. Consider using [Vercel Blob Client SDK](https://vercel.com/docs/vercel-blob/client-upload).
 ::
 
 Start a new multipart upload.
@@ -487,7 +628,7 @@ Returns a `BlobMultipartUpload`
 ### `resumeMultipartUpload()`
 
 ::note
-We suggest using [`handleMultipartUpload()`](#handlemultipartupload) method to handle the multipart upload request.
+We recommend using [`handleMultipartUpload()`](#handlemultipartupload) to handle the multipart upload requests.
 ::
 
 Continue processing of unfinished multipart upload.
@@ -701,7 +842,7 @@ const data = await completed
 Application composable that creates a multipart upload helper.
 
 ::important
-When you configure to use Vercel Blob, this utility will automatically use [Vercel Blob Client SDK](https://vercel.com/docs/vercel-blob/client-upload) to upload the file.
+When using the Vercel Blob driver, this utility will automatically use the [Vercel Blob Client SDK](https://vercel.com/docs/vercel-blob/client-upload) to upload the file.
 ::
 
 ```ts [utils/multipart-upload.ts]
@@ -745,122 +886,6 @@ Return a `MultipartUpload` function that can be used to upload a file in parts.
 const { completed, progress, abort } = mpu(file)
 const data = await completed
 ```
-
-## Storage Providers
-
-NuxtHub supports multiple storage providers for blob storage. In development mode, NuxtHub automatically configures the filesystem (`fs`) driver for local development.
-
-### Filesystem (fs)
-
-The filesystem driver stores blobs locally on your development machine.
-
-```ts [nuxt.config.ts]
-export default defineNuxtConfig({
-  nitro: {
-    storage: {
-      BLOB: {
-        driver: 'fs',
-        base: './.data/blob'
-      }
-    }
-  }
-})
-```
-
-### Vercel Blob
-
-For production deployments on Vercel, use the Vercel Blob driver.
-
-```ts [nuxt.config.ts]
-export default defineNuxtConfig({
-  nitro: {
-    storage: {
-      BLOB: {
-        driver: 'vercel-blob',
-        access: 'public'
-      }
-    }
-  }
-})
-```
-
-### Cloudflare R2
-
-For Cloudflare deployments, you can use Cloudflare R2 with either bindings (recommended) or the S3-compatible driver.
-
-#### Using R2 Bindings (Recommended)
-
-When deploying to Cloudflare Workers, use R2 bindings for optimal performance and integration.
-
-```ts [nuxt.config.ts]
-export default defineNuxtConfig({
-  nitro: {
-    storage: {
-      BLOB: {
-        driver: 'cloudflare-r2',
-        binding: 'BLOB'
-      }
-    }
-  }
-})
-```
-
-Make sure to configure the R2 binding in your `wrangler.toml`:
-
-```toml [wrangler.toml]
-[[r2_buckets]]
-binding = "BLOB"
-bucket_name = "my-bucket"
-```
-
-#### Using S3-Compatible Driver
-
-Alternatively, you can use the S3-compatible driver with Cloudflare R2. This is useful for deploying your project in different environments while still using Cloudflare R2.
-
-```ts [nuxt.config.ts]
-export default defineNuxtConfig({
-  nitro: {
-    storage: {
-      BLOB: {
-        driver: 's3',
-        accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
-        secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
-        region: 'auto',
-        endpoint: `https://${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-        bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME
-      }
-    }
-  }
-})
-```
-
-### Amazon S3
-
-For AWS S3 storage, use the S3 driver.
-
-```ts [nuxt.config.ts]
-export default defineNuxtConfig({
-  nitro: {
-    storage: {
-      BLOB: {
-        driver: 's3',
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        region: process.env.AWS_REGION,
-        bucket: process.env.AWS_S3_BUCKET
-      }
-    }
-  }
-})
-```
-
-::callout{to="https://unstorage.unjs.io/drivers"}
-For additional storage providers and configuration options, see the unstorage documentation.
-::
-
-::note
-Other unstorage drivers do not support multipart upload. If you want to upload large files, consider using one of the above providers.
-::
 
 ## Types
 

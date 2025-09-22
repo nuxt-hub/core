@@ -1,15 +1,10 @@
 ---
 title: Key Value Storage
 navigation.title: Key Value
-description: Add a global, low-latency key-value data storage to your Nuxt application.
+description: Use a key-value data storage in Nuxt.
 ---
-NuxtHub Key Value Storage uses [Unstorage](https://unstorage.unjs.io) with [Cloudflare Workers KV](https://developers.cloudflare.com/kv) to store key-value data.
 
-
-## Use Cases
-- **Frequently Read Data** - values are cached in regional data centers closer to the user so multiple requests from the same region will be faster
-- **Per-Object Expiration** - passing a `ttl` when writing object will delete it after a certain amount of time
-- **Eventual Consistency** - cached values are eventually consistent and may take up to 60 seconds to update across all regions, allowing for improved performance when strong consistency is not required
+NuxtHub Key Value Storage automatically configures [Nitro Storage](https://nitro.build/guide/storage), which is built on [unstorage](https://unstorage.unjs.io/).
 
 ## Getting Started
 
@@ -23,36 +18,121 @@ export default defineNuxtConfig({
 })
 ```
 
-::note
-This option will use Cloudflare platform proxy in development and automatically create a [Cloudflare Workers KV](https://developers.cloudflare.com/kv) namespace for your project when you [deploy it](/docs/getting-started/deploy).
-::
+### Automatic Configuration
 
-You can inspect your KV namespace during local development in the Nuxt DevTools or after a deployment using the NuxtHub Admin Dashboard.
+When building the Nuxt app, NuxtHub automatically configures the key-value storage driver on many providers.
 
 ::tabs
-::div{label="Nuxt DevTools"}
+  :::div{label="Vercel" icon="i-simple-icons-vercel"}
+
+    When deploying to Vercel, Nitro Storage `kv` is configured for [Redis](https://redis.io/).
+
+    1. Install the `ioredis` package
+
+    :pm-install{name="ioredis"}
+
+    2. Add a Redis database to your project from the [Vercel dashboard](https://vercel.com/) -> Project -> Storage
+
+  :::
+
+  :::div{label="Cloudflare" icon="i-simple-icons-cloudflare"}
+
+    When deploying to Cloudflare, Nitro Storage `kv` is configured for [Cloudflare Workers KV](https://developers.cloudflare.com/kv/).
+
+    Add a `KV` binding to a [Cloudflare Workers KV](https://developers.cloudflare.com/kv/) namespace in your `wrangler.jsonc` config.
+
+    ```jsonc [wrangler.jsonc]
+    {
+      "$schema": "node_modules/wrangler/config-schema.json",
+      // ...
+      "kv_namespaces": [
+        {
+          "binding": "KV",
+          "id": "<id>"
+        }
+      ]
+    }
+    ```
+
+    Learn more about adding bindings on [Cloudflare's documentation](https://developers.cloudflare.com/kv/concepts/kv-bindings/#access-kv-from-workers).
+
+  :::
+
+  :::div{label="Deno" icon="i-simple-icons-deno"}
+
+    When deploying to Deno Deploy, Nitro Storage `kv` is configured for [Deno KV](https://deno.com/kv).
+
+  :::
+
+  :::div{label="Other" icon="i-simple-icons-nodedotjs"}
+
+    When deploying to other providers, Nitro Storage `kv` is configured to use the [filesystem](https://unstorage.unjs.io/drivers/fs#nodejs-filesystem-lite).
+
+    ::tip{to="#manual-configuration"}
+      You can manually configure the `kv` mount to use a different storage driver.
+    ::
+
+  :::
+::
+
+### Manual Configuration
+
+You can use any [unstorage](https://unstorage.unjs.io/drivers) driver by manually configuring the `kv` mount within your [Nitro Storage](https://nitro.build/guide/storage#configuration) configuration.
+
+::note
+Manually configuring the `kv` mount in Nitro Storage overrides automatic configuration.
+::
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    storage: {
+      kv: {
+        driver: 'redis',
+        host: 'localhost',
+        port: 6379,
+        /* any additional driver options */
+      }
+    }
+  },
+
+  hub: {
+    kv: true,
+  },
+})
+```
+
+::callout{to="https://unstorage.unjs.io/drivers"}
+You can find the driver list on [unstorage documentation](https://unstorage.unjs.io/drivers) with their configuration.
+::
+
+### Local Development
+
+NuxtHub uses the filesystem during local development. You can modify this behaviour by specifying a different storage driver.
+
+::collapsible{name="local development storage driver example"}
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    devStorage: {
+      kv: {
+        driver: 'redis',
+        host: 'localhost',
+        port: 6379,
+      }
+    }
+  },
+})
+```
+::
+
+You can inspect your KV namespace during local development in the Nuxt DevTools.
+
 :img{src="/images/landing/nuxt-devtools-kv.png" alt="Nuxt DevTools KV" width="915" height="515"}
-::
-  ::div{label="NuxtHub Admin"}
-  :img{src="/images/landing/nuxthub-admin-kv.png" alt="NuxtHub Admin KV" width="915" height="515"}
-::
-::
-
-## How KV Works
-
-NuxtHub uses [Cloudflare Workers KV](https://developers.cloudflare.com/kv) to store key-value data a few centralized data
-centers. Then, when data is requested, it will cache the responses in regional data centers closer to the user to speed up future requests coming from the same region. 
-
-This caching means that KV is optimized for high-read use cases, but it also means that changes like editing or deleting data are **eventually consistent** and may take up to 60 seconds to propagate to all regions. Even if a request is made for a key that does not exist in the KV namespace, that result will be cached for up to 60 seconds.
-
-If you need a strongly consistent data model, where changes are immediately visible to all users, a [NuxtHub database](/docs/features/database) may be a better fit. 
-
-To learn more about how KV works, check out the [Cloudflare KV documentation](https://developers.cloudflare.com/kv/concepts/how-kv-works/).
 
 ## `hubKV()`
 
-`hubKV()` is a server composable that returns an [Unstorage](https://unstorage.unjs.io) instance with [Cloudflare KV binding](https://unstorage.unjs.io/drivers/cloudflare#cloudflare-kv-binding) as the [driver](https://unstorage.unjs.io/drivers/cloudflare).
-
+`hubKV()` is a server composable that returns an [unstorage](https://unstorage.unjs.io) instance.
 
 ### Set an item
 
@@ -73,7 +153,7 @@ The maximum size of a value is 25 MiB and the maximum length of a key is 512 byt
 
 By default, items in your KV namespace will never expire. You can delete them manually using the [`del()`](#delete-an-item) method or set a TTL (time to live) in seconds.
 
-The item will be deleted after the TTL has expired. The `ttl` option maps to Cloudflare's [`expirationTtl`](https://developers.cloudflare.com/kv/api/write-key-value-pairs/#reference) option. Values that have recently been read will continue to return the cached value for up to 60 seconds and may not be immediately deleted for all regions. 
+The item will be deleted after the TTL has expired. The `ttl` option maps to Cloudflare's [`expirationTtl`](https://developers.cloudflare.com/kv/api/write-key-value-pairs/#reference) option. Values that have recently been read will continue to return the cached value for up to 60 seconds and may not be immediately deleted for all regions.
 
 ```ts
 await hubKV().set('vue:nuxt', { year: 2016 }, { ttl: 60 })
@@ -168,20 +248,18 @@ const vueKeys = await hubKV().keys('vue')
 */
 ```
 
-## Limits
+## `useStorage()`
 
-- The maximum size of a value is 25 MiB.
-- The maximum length of a key is 512 bytes.
-- The TTL must be at least 60 seconds.
-- There is a maximum of 1 write to the same key per second ([KV write rate limit](https://developers.cloudflare.com/kv/api/write-key-value-pairs/#limits-to-kv-writes-to-the-same-key)).
-<!-- - The maximum size of the metadata is 1024 bytes. -->
+Server composable that returns an [unstorage](https://unstorage.unjs.io/) instance.
 
-Learn more about [Cloudflare KV limits](https://developers.cloudflare.com/kv/platform/limits/).
+As NuxtHub configures and utilizes Nitro Storage under the hood, you can access the unstorage instance directly.
 
-## Learn More
+Learn more about `useStorage()` on the [Nitro documentation](https://nitro.build/guide/storage#usage).
 
-`hubKV()` is an instance of [unstorage](https://unstorage.unjs.io/guide#interface) with the [Cloudflare KV binding](https://unstorage.unjs.io/drivers/cloudflare#cloudflare-kv-binding) driver.
+```ts
+const kv = useStorage('kv')
+```
 
-## Pricing
-
-:pricing-table{:tabs='["KV"]'}
+::important
+Ensure that `'kv'` is specified when using `useStorage()` directly
+::

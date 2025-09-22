@@ -1,7 +1,7 @@
 ---
 title: Realtime & WebSockets
 navigation.title: Realtime
-description: Build realtime experiences with NuxtHub using Cloudflare Workers & Durable Objects.
+description: Build real-time experiences with NuxtHub.
 ---
 
 ## Getting Started
@@ -14,15 +14,21 @@ export default defineNuxtConfig({
     experimental: {
       websocket: true
     }
-  },
-  hub: {
-    workers: true
   }
 })
 ```
 
-::note
-We need to enable the `workers` option to use the WebSocket support as Durable Objects are only supported on Cloudflare Workers.
+## Supported Providers
+
+Nitro WebSocket is currently supported with the following Nitro presets:
+- Node.js
+- Deno
+- Bun
+- Cloudflare
+  - We recommend using the `cloudflare_durable` preset
+
+::callout{to='https://github.com/nitrojs/nitro/issues/2171'}
+See [nitrojs/nitro#2171](https://github.com/nitrojs/nitro/issues/2171) for platform support status.
 ::
 
 ## Example

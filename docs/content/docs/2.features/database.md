@@ -1,10 +1,10 @@
 ---
 title: SQL Database
 navigation.title: Database
-description: Access a SQL database in your Nuxt application to store and retrieve relational data.
+description: Access a SQL database in Nuxt to store and retrieve relational data.
 ---
 
-NuxtHub Database is compatible with PostgreSQL, MySQL and SQLite and is built on [db0](https://db0.unjs.io/).
+NuxtHub Database supports PostgreSQL, MySQL and SQLite, and automatically configures [Nitro Database](https://nitro.build/guide/database), which is built on [db0](https://db0.unjs.io/).
 
 ## Getting Started
 
@@ -13,23 +13,254 @@ Enable the database in NuxtHub by setting the `database` property to your dialec
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   hub: {
-    database: true
+    database: 'postgresql' // or 'mysql' or 'sqlite'
   }
 })
 ```
 
 ::tip
-Checkout our [Drizzle ORM recipe](/docs/recipes/drizzle) to get started with the database by providing a schema and migrations.
+Checkout our [Drizzle ORM recipe](/docs/guides/drizzle) to get started with the database by providing a schema and migrations.
+::
+
+### Automatic Configuration
+
+When building the Nuxt app, NuxtHub automatically configures database connectors on many providers.
+
+::tabs
+  :::div{label="Vercel" icon="i-simple-icons-vercel"}
+
+    When deploying to Vercel, Nitro Database `db` is configured for [PostgreSQL](https://www.postgresql.org/).
+
+    ::tabs
+      ::::div{label="PostgreSQL" icon="i-simple-icons-postgresql"}
+
+        1. Install the `pg` package
+
+        :pm-install{name="pg"}
+
+        2. Add a PostgreSQL database to your project from the [Vercel dashboard](https://vercel.com/) -> Project -> Storage
+
+      ::::
+    ::
+
+  :::
+
+  :::div{label="Cloudflare" icon="i-simple-icons-cloudflare"}
+
+    When deploying to Cloudflare, Nitro Database `db` is configured based on your database dialect.
+
+    ::tabs
+      ::::div{label="SQLite" icon="i-simple-icons-sqlite"}
+
+        When using SQLite, the database is configured for [Cloudflare D1](https://developers.cloudflare.com/d1/).
+
+        Add a `DB` binding to a [Cloudflare D1](https://developers.cloudflare.com/d1/) database in your `wrangler.jsonc` config.
+
+        ```json [wrangler.jsonc]
+        {
+          "$schema": "node_modules/wrangler/config-schema.json",
+          // ...
+          "d1_databases": [
+            {
+              "binding": "DB",
+              "database_name": "<database_name>",
+              "database_id": "<database_id>"
+            }
+          ]
+        }
+        ```
+
+        Learn more about adding bindings on [Cloudflare's documentation](https://developers.cloudflare.com/d1/get-started/#3-bind-your-worker-to-your-d1-database).
+
+      ::::
+
+      ::::div{label="PostgreSQL" icon="i-simple-icons-postgresql"}
+
+        1. Install the `pg` package
+
+        :pm-install{name="pg"}
+
+        ::note
+        Zero-config PostgreSQL via Hyperdrive support is not yet implemented for Cloudflare presets.
+        ::
+
+      ::::
+
+      ::::div{label="MySQL" icon="i-simple-icons-mysql"}
+
+        1. Install the `mysql2` package
+
+        :pm-install{name="mysql2"}
+
+        ::note
+        Zero-config MySQL via Hyperdrive support is not yet implemented for Cloudflare presets.
+        ::
+
+      ::::
+    ::
+
+  :::
+
+  :::div{label="Other" icon="i-simple-icons-nodedotjs"}
+
+    When deploying to other providers, Nitro Database `db` is configured based on your database dialect.
+
+    ::tabs
+      ::::div{label="PostgreSQL" icon="i-simple-icons-postgresql"}
+
+        1. Install the `pg` package
+
+        :pm-install{name="pg"}
+
+        2. Set one of the following environment variables to configure your database connection:
+        - `POSTGRES_URL`
+        - `POSTGRESQL_URL`
+        - `DATABASE_URL`
+
+      ::::
+
+      ::::div{label="MySQL" icon="i-simple-icons-mysql"}
+
+        1. Install the `mysql2` package
+
+        :pm-install{name="mysql2"}
+
+        ::note
+        MySQL connector requires manual configuration in `nitro.database.db` within `nuxt.config.ts`.
+        ::
+
+      ::::
+
+      ::::div{label="SQLite" icon="i-simple-icons-sqlite"}
+
+        1. Install the `better-sqlite3` package
+
+        :pm-install{name="better-sqlite3"}
+
+        The database file will be stored at `.data/database/sqlite/db.sqlite3`.
+
+      ::::
+    ::
+
+    ::tip{to="#manual-configuration"}
+      You can manually configure the `db` within your Nitro Database configuration to use a different database connector.
+    ::
+
+  :::
+::
+
+### Manual Configuration
+
+You can use any [db0](https://db0.unjs.io/connectors) connector by manually configuring the `db` within your [Nitro Database](https://nitro.build/guide/database) configuration.
+
+::note
+Manually configuring the `db` in Nitro Database overrides automatic configuration.
+::
+
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    database: {
+      db: {
+        connector: 'postgresql',
+        options: {
+          url: 'postgresql://username:password@host:port/database'
+          /* any additional connector options */
+        }
+      }
+    }
+  },
+
+  hub: {
+    database: true,
+  },
+})
+```
+
+::callout{to="https://db0.unjs.io/connectors"}
+You can find the connector list on [db0 documentation](https://db0.unjs.io/connectors) with their configuration.
+::
+
+### Local Development
+
+During local development, NuxtHub automatically configures the database connector based on your configured dialect (from `hub.database` or inferred from your production `nitro.database.db` connector):
+
+::tabs
+  ::::div{label="SQLite" icon="i-simple-icons-sqlite"}
+
+    Uses `better-sqlite3` connector with the database file stored at `.data/database/sqlite/db.sqlite3`.
+
+  ::::
+
+  ::::div{label="PostgreSQL" icon="i-simple-icons-postgresql"}
+
+    **With environment variables set:**
+    - Uses `postgresql` connector if `POSTGRES_URL`, `POSTGRESQL_URL`, or `DATABASE_URL` environment variables are provided
+
+    **Without environment variables:**
+    - Uses `pglite` connector (embedded PostgreSQL) with data stored at `.data/database/pglite/`
+
+  ::::
+
+  ::::div{label="MySQL" icon="i-simple-icons-mysql"}
+
+    Requires manual configuration in `nitro.devDatabase.db` within your `nuxt.config.ts`.
+
+    ```ts [nuxt.config.ts]
+    export default defineNuxtConfig({
+      nitro: {
+        devDatabase: {
+          db: {
+            connector: 'mysql2',
+            options: {
+              host: 'localhost',
+              port: 3306,
+              user: 'root',
+              password: 'password',
+              database: 'mydb'
+            }
+          }
+        }
+      },
+      hub: {
+        database: 'mysql'
+      }
+    })
+    ```
+
+    ::note
+    Zero-config MySQL database setup during local development is not supported yet.
+    ::
+
+  ::::
+::
+
+You can override the automatic local development configuration by manually specifying a different database connector:
+
+::collapsible{name="manual local development database connector example"}
+```ts [nuxt.config.ts]
+export default defineNuxtConfig({
+  nitro: {
+    devDatabase: {
+      db: {
+        connector: 'postgresql',
+        options: {
+          url: 'postgresql://username:password@localhost:5432/mydb'
+        }
+      }
+    }
+  },
+})
+```
 ::
 
 During local development, you can view and edit your database from Nuxt DevTools.
 
 :img{src="/images/landing/nuxt-devtools-database.png" alt="Nuxt DevTools Database" width="915" height="515"}
-::
 
 ## `hubDatabase()`
 
-Server composable that returns a [db0 client](https://db0.unjs.io/).
+Server composable that returns a [Cloudflare D1](https://developers.cloudflare.com/d1/worker-api/d1-database/#methods) compatible database instance.
 
 ```ts
 const db = hubDatabase()
@@ -244,9 +475,9 @@ console.log(result)
 This method can have poorer performance (prepared statements can be reused in some cases) and, more importantly, is less safe. Only use this method for maintenance and one-shot tasks (for example, migration jobs).
 ::
 
-## Working with JSON
+### Working with JSON
 
-Cloudflare D1 supports querying and parsing JSON data. This can improve performance by reducing the number of round trips to your database. Instead of querying a JSON column, extracting the data you need, and using that data to make another query, you can do all of this work in a single query by using JSON functions.
+`hubDatabase()` supports querying and parsing JSON data. This can improve performance by reducing the number of round trips to your database. Instead of querying a JSON column, extracting the data you need, and using that data to make another query, you can do all of this work in a single query by using JSON functions.
 
 JSON columns are stored as `TEXT` columns in your database.
 
@@ -283,9 +514,26 @@ console.log(framework)
 For an in-depth guide on querying JSON and a list of all supported functions, see [Cloudlare's Query JSON documentation](https://developers.cloudflare.com/d1/sql-api/query-json/#generated-columns).
 ::
 
+## `useDatabase()`
+
+Server composable that returns a [db0](https://db0.unjs.io/) instance.
+
+As NuxtHub configures and utilizes Nitro Database under the hood, you can access the db0 instance directly.
+
+Learn more about `useDatabase()` on the [Nitro documentation](https://nitro.build/guide/database#usage).
+
+```ts
+const db = useDatabase('db')
+```
+
+::important
+Ensure that `'db'` is specified when using `useDatabase()` directly
+::
+
+
 ## Using an ORM
 
-Instead of using `hubDatabase()` to make interact with your database, you can use an ORM like [Drizzle ORM](/docs/recipes/drizzle). This can improve the developer experience by providing a type-safe API, migrations, and more.
+Instead of using `hubDatabase()` to interact with your database directly using SQL, you can use an ORM like [Drizzle ORM](/docs/guides/drizzle). This can improve the developer experience by providing a type-safe API, migrations and more.
 
 ## Database Migrations
 
@@ -349,7 +597,7 @@ All `.sql` files in the database migrations directories are automatically applie
 - Start the development server (`npx nuxi dev`)
 - Build the application via CLI ([`npx nuxi build`](https://nuxt.com/docs/api/commands/build)) or during CI
 
-To apply migrations during CI with a zero-config provider, ensure the connection string environment variable is set during build time. Alternatively, manually configure `db` [Nitro database](https://nitro.build/guide/database).
+To apply migrations during CI with an automatically configured provider, ensure the connection string environment variable is set during build time. Alternatively, manually configure `db` [Nitro database](https://nitro.build/guide/database).
 - PostgreSQL: `POSTGRESQL_URL` | `POSTGRESQL_URL` | `DATABASE_URL`
 
 ::tip
@@ -389,8 +637,8 @@ CREATE TABLE `todos` (
 );
 ```
 
-::note{to="/docs/recipes/drizzle#npm-run-dbgenerate"}
-With [Drizzle ORM](/docs/recipes/drizzle), migrations are automatically created when you run `npx drizzle-kit generate`.
+::note{to="/docs/guides/drizzle#npm-run-dbgenerate"}
+With [Drizzle ORM](/docs/guides/drizzle), migrations are automatically created when you run `npx drizzle-kit generate`.
 ::
 
 ### Checking Migration Status
@@ -479,7 +727,7 @@ These queries run after all migrations are applied but are not tracked in the `_
 
 ### Foreign Key Constraints
 
-If you are using Cloudflare D1 and using [Drizzle ORM](/docs/recipes/drizzle) to generate your database migrations, your generated migration files will use `PRAGMA foreign_keys = ON | OFF;`, which is not supported by Cloudflare D1. Instead, they support [defer foreign key constraints](https://developers.cloudflare.com/d1/sql-api/foreign-keys/#defer-foreign-key-constraints).
+If you are using Cloudflare D1 and using [Drizzle ORM](/docs/guides/drizzle) to generate your database migrations, your generated migration files will use `PRAGMA foreign_keys = ON | OFF;`, which is not supported by Cloudflare D1. Instead, they support [defer foreign key constraints](https://developers.cloudflare.com/d1/sql-api/foreign-keys/#defer-foreign-key-constraints).
 
 You need to update your migration file to use `PRAGMA defer_foreign_keys = on|off;` instead:
 
