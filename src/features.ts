@@ -7,6 +7,7 @@ import { addDevToolsCustomTabs } from './utils/devtools'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir } from './runtime/database/server/utils/migrations/helpers'
 import type { ConnectorName } from 'db0'
 import type { NitroOptions } from 'nitropack'
+import { ensureDependencyInstalled } from 'nypm'
 
 const log = logger.withTag('nuxt:hub')
 const { resolve } = createResolver(import.meta.url)
@@ -181,6 +182,18 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
 
   nuxt.options.nitro.devDatabase ||= {}
   nuxt.options.nitro.devDatabase.db = defu(nuxt.options.nitro.devDatabase.db, devDatabaseConfig!) as NitroOptions['database']['default']
+
+  // Verify development database dependencies are installed
+  const developmentDriver = nuxt.options.nitro.devDatabase?.db?.connector as ConnectorName
+  if (developmentDriver === 'postgresql') {
+    await ensureDependencyInstalled('pg')
+  } else if (developmentDriver === 'pglite') {
+    await ensureDependencyInstalled('@electric-sql/pglite')
+  } else if (developmentDriver === 'mysql2') {
+    await ensureDependencyInstalled('mysql2')
+  } else if (developmentDriver === 'better-sqlite3') {
+    await ensureDependencyInstalled('better-sqlite3')
+  }
 
   // Enable Nitro database
   nuxt.options.nitro.experimental ||= {}
