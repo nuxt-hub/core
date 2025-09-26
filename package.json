@@ -25,8 +25,13 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "cli/bin"
   ],
+  "bin": {
+    "nuxthub": "./cli/bin/nuxthub.mjs",
+    "nuxt-hub": "./cli/bin/nuxthub.mjs"
+  },
   "keywords": [
     "nuxt",
     "fullstack",
@@ -37,8 +42,8 @@
     "blob"
   ],
   "scripts": {
-    "prepack": "nuxt-module-build build",
-    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
+    "prepack": "nuxt-module-build build && pnpm cli:build",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground && pnpm cli:stub",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "docs": "PORT=4000 nuxi dev docs",
@@ -48,7 +53,9 @@
     "lint:fix": "eslint . --fix",
     "test": "vitest run --test-timeout=60000",
     "test:watch": "vitest watch",
-    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
+    "cli:build": "obuild ./cli/run.ts:./dist/cli",
+    "cli:stub": "obuild ./cli/run.ts:./dist/cli --stub"
   },
   "dependencies": {
     "@cloudflare/workers-types": "^4.20250913.0",
@@ -56,6 +63,7 @@
     "@uploadthing/mime-types": "^0.3.6",
     "@vercel/blob": "^1.1.1",
     "aws4fetch": "^1.0.20",
+    "consola": "^3.4.2",
     "db0": "^0.3.2",
     "defu": "^6.1.4",
     "destr": "^2.0.5",
@@ -65,6 +73,7 @@
     "mime": "^4.1.0",
     "nitro-cloudflare-dev": "^0.2.2",
     "nypm": "^0.6.2",
+    "obuild": "^0.2.1",
     "ofetch": "^1.4.1",
     "pathe": "^2.0.3",
     "pkg-types": "^2.3.0",
@@ -90,7 +99,7 @@
     "vitest": "^3.2.4",
     "vue-tsc": "^3.0.7"
   },
-  "packageManager": "pnpm@10.16.1",
+  "packageManager": "pnpm@10.17.1",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@parcel/watcher",
