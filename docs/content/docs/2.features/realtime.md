@@ -11,6 +11,7 @@ Enable [Nitro's experimental WebSocket](https://nitro.build/guide/websocket) sup
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   nitro: {
+    preset: 'cloudflare-durable',
     experimental: {
       websocket: true
     }
