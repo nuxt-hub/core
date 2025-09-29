@@ -5,7 +5,7 @@ import { defu } from 'defu'
 import { findWorkspaceDir } from 'pkg-types'
 import type { Nuxt } from '@nuxt/schema'
 import { version } from '../package.json'
-import { setupCache, setupOpenAPI, setupDatabase, setupKV, setupBase, setupBlob, type HubConfig } from './features'
+import { setupAI, setupCache, setupOpenAPI, setupDatabase, setupKV, setupBase, setupBlob, type HubConfig } from './features'
 import type { ModuleOptions } from './types/module'
 import { addBuildHooks } from './utils/build'
 
@@ -34,13 +34,11 @@ export default defineNuxtModule<ModuleOptions>({
 
     const runtimeConfig = nuxt.options.runtimeConfig
     const databaseMigrationsDirs = nuxt.options._layers?.map(layer => join(layer.config.serverDir!, 'database/migrations')).filter(Boolean)
-    const hub = defu({
-      url: process.env.NUXT_HUB_URL,
-      userToken: process.env.NUXT_HUB_USER_TOKEN
-    }, runtimeConfig.hub || {}, options, {
+    const hub = defu(runtimeConfig.hub || {}, options, {
       // Local storage
       dir: '.data',
       // NuxtHub features
+      ai: undefined,
       blob: false,
       cache: false,
       database: false,
@@ -63,6 +61,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     await setupBase(nuxt, hub as HubConfig)
     setupOpenAPI(nuxt, hub as HubConfig)
+    hub.ai && setupAI(nuxt, hub as HubConfig)
     hub.blob && setupBlob(nuxt, hub as HubConfig)
     hub.cache && await setupCache(nuxt, hub as HubConfig)
     hub.database && await setupDatabase(nuxt, hub as HubConfig)

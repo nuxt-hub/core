@@ -1,77 +1,57 @@
-// import { createError } from 'h3'
-// import type { Ai, AiOptions, ConversionResponse } from '@cloudflare/workers-types/experimental'
-import { requireNuxtHubFeature } from '../../../utils/features'
-// import { requireNuxtHubLinkedProject } from '../../../utils/auth'
-// import { useRuntimeConfig } from '#imports'
+import { createGateway, type GatewayProvider } from '@ai-sdk/gateway'
+import { createWorkersAI, type WorkersAI } from 'workers-ai-provider'
 
-// let _ai: Ai
+import { useRuntimeConfig } from '#imports'
+import { requireNuxtHubFeature } from '../../../utils/features'
+import type { NuxtHubAIProvider } from '#build/types/nuxthub-ai'
+
+let _ai: WorkersAI | GatewayProvider
+
+type NuxtHubAI = NuxtHubAIProvider
+
+type HubAIProvider<T extends NuxtHubAI>
+  = T extends 'vercel' ? GatewayProvider
+    : T extends 'cloudflare' ? WorkersAI
+      : WorkersAI | GatewayProvider
 
 /**
- * Access Workers AI
+ * Access the configured AI SDK provider
  *
  * @example ```ts
+ * import { streamText } from 'ai';
  * const ai = hubAI()
- * await ai.run('@cf/meta/llama-3.1-8b-instruct', {
- *   prompt: "What is the origin of the phrase 'Hello, World'"
- * })
+ * const result = streamText({
+ *   model: ai('openai/gpt-5'),
+ *   prompt: 'Who created Nuxt?',
+ * });
  * ```
  *
  * @see https://hub.nuxt.com/docs/features/ai
  */
-export function hubAI(): Omit<Ai, 'autorag' | 'gateway'> {
+export function hubAI<T extends NuxtHubAI = NuxtHubAI>() {
   requireNuxtHubFeature('ai')
 
-  return {} as Omit<Ai, 'autorag' | 'gateway'>
+  if (_ai) {
+    return _ai as HubAIProvider<T>
+  }
 
-  // TODO: agnostic
+  const hub = useRuntimeConfig().hub
+  if (hub.ai === 'vercel') {
+    const isGatewayApiKeySet = process.env.AI_GATEWAY_API_KEY
+    _ai = createGateway(isGatewayApiKeySet
+      ? { apiKey: process.env.AI_GATEWAY_API_KEY }
+      : undefined)
+  }
 
-  // if (_ai) {
-  //   return _ai
-  // }
-  // const hub = useRuntimeConfig().hub
-  // // @ts-expect-error globalThis.__env__ is not defined
-  // const binding = process.env.AI || globalThis.__env__?.AI || globalThis.AI
-  // if (hub.remote && hub.projectUrl && !binding) {
-  //   const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
-  //   _ai = proxyHubAI(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
-  // } else if (import.meta.dev) {
-  //   // Mock _ai to call NuxtHub Admin API to proxy CF account & API token
-  //   _ai = {
-  //     async run(model: string, params?: Record<string, unknown>, options?: AiOptions) {
-  //       // requireNuxtHubLinkedProject(hub, 'hubAI')
-  //       // return $fetch(`/api/projects/${hub.projectKey}/ai/run`, {
-  //       //   baseURL: hub.url,
-  //       //   method: 'POST',
-  //       //   headers: {
-  //       //     authorization: `Bearer ${hub.userToken}`
-  //       //   },
-  //       //   body: { model, params, options },
-  //       //   responseType: params?.stream ? 'stream' : undefined
-  //       // }).catch(handleProxyError)
-  //     },
-  //     async models(params?: Record<string, unknown>) {
-  //       // requireNuxtHubLinkedProject(hub, 'hubAI')
-  //       // return $fetch(`/api/projects/${hub.projectKey}/ai/models`, {
-  //       //   baseURL: hub.url,
-  //       //   method: 'POST',
-  //       //   headers: {
-  //       //     authorization: `Bearer ${hub.userToken}`
-  //       //   },
-  //       //   body: { params }
-  //       // }).catch(handleProxyError)
-  //     },
-  //     async toMarkdown(_files: unknown, _options: unknown): Promise<ConversionResponse[]> {
-  //       throw createError({
-  //         statusCode: 501,
-  //         message: 'hubAI().toMarkdown() is only supported with remote storage in development mode.'
-  //       })
-  //     }
-  //   } as Ai
-  // } else if (binding) {
-  //   _ai = binding as Ai
-  // }
-  // if (!_ai) {
-  //   throw createError('Missing Cloudflare AI binding (AI)')
-  // }
-  // return _ai
+  if (hub.ai === 'cloudflare') {
+    const isAiBindingSet = !!(process.env.AI as { runtime: string } | undefined)?.runtime
+    _ai = createWorkersAI(isAiBindingSet
+      ? { binding: 'AI' }
+      : {
+          accountId: process.env.CLOUDFLARE_ACCOUNT_ID!,
+          apiKey: process.env.CLOUDFLARE_API_KEY!
+        })
+  }
+
+  return _ai as HubAIProvider<T>
 }
