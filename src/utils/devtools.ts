@@ -27,6 +27,11 @@ async function launchDrizzleStudio(nuxt: Nuxt) {
       throw new Error('No database configuration found. Please configure your database in nuxt.config.ts')
     }
 
+    // TODO: custom drizzle connector
+    if (dbConfig.connector === 'pglite') {
+      throw new Error('Database viewer currently does not support PGlite.')
+    }
+
     // Determine dialect from connector
     let dialect: string
     let dbCredentials: any
@@ -67,13 +72,15 @@ export default defineConfig({
     const drizzleConfigNuxtPath = join(nuxt.options.buildDir, 'drizzle.config.ts')
     await writeFile(drizzleConfigNuxtPath, drizzleConfig, 'utf-8')
 
+    const connectorDependency = dbConfig.connector === 'pglite' ? '@electric-sql/pglite' : dbConfig.connector
+
     const cmd = dlxCommand(packageManager.name, 'drizzle-kit', {
       args: [
         'studio',
         '--config', drizzleConfigNuxtPath,
         '--port', port.toString()
       ],
-      packages: [dbConfig.connector, 'drizzle-orm', 'drizzle-kit']
+      packages: [connectorDependency, 'drizzle-orm', 'drizzle-kit']
     })
 
     // Launch Drizzle Studio
