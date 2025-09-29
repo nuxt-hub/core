@@ -258,6 +258,22 @@ During local development, you can view and edit your database from Nuxt DevTools
 
 :img{src="/images/landing/nuxt-devtools-database.png" alt="Nuxt DevTools Database" width="915" height="515"}
 
+## `useDatabase()`
+
+Server composable that returns a [db0](https://db0.unjs.io/) instance.
+
+NuxtHub automatically configures Nitro Database.
+
+Learn more about `useDatabase()` on the [Nitro documentation](https://nitro.build/guide/database#usage).
+
+```ts
+const db = useDatabase('db')
+```
+
+::tip
+Ensure that `'db'` is specified when using `useDatabase()` directly
+::
+
 ## `hubDatabase()`
 
 Server composable that returns a [Cloudflare D1](https://developers.cloudflare.com/d1/worker-api/d1-database/#methods) compatible database instance.
@@ -265,6 +281,10 @@ Server composable that returns a [Cloudflare D1](https://developers.cloudflare.c
 ```ts
 const db = hubDatabase()
 ```
+
+::important
+We recommend new users to use [`useDatabase('db')`](#usedatabase) instead of `hubDatabase()` as `hubDatabase()` is deprecated and may be removed in the future.
+::
 
 ### `prepare()`
 
@@ -475,65 +495,9 @@ console.log(result)
 This method can have poorer performance (prepared statements can be reused in some cases) and, more importantly, is less safe. Only use this method for maintenance and one-shot tasks (for example, migration jobs).
 ::
 
-### Working with JSON
-
-`hubDatabase()` supports querying and parsing JSON data. This can improve performance by reducing the number of round trips to your database. Instead of querying a JSON column, extracting the data you need, and using that data to make another query, you can do all of this work in a single query by using JSON functions.
-
-JSON columns are stored as `TEXT` columns in your database.
-
-```ts
-const framework = {
-  name: 'Nuxt',
-  year: 2016,
-  projects: [
-    'NuxtHub',
-    'Nuxt UI'
-  ]
-}
-
-await hubDatabase()
-  .prepare('INSERT INTO frameworks (info) VALUES (?1)')
-  .bind(JSON.stringify(framework))
-  .run()
-```
-
-Then, using D1's [JSON functions](https://developers.cloudflare.com/d1/sql-api/query-json/), which are built on the [SQLite JSON extension](https://www.sqlite.org/json1.html), you can make queries using the data in your JSON column.
-
-```ts
-const framework = await db.prepare('SELECT * FROM frameworks WHERE (json_extract(info, "$.name") = "Nuxt")').first()
-console.log(framework)
-/*
-{
-  "id": 1,
-  "info": "{\"name\":\"Nuxt\",\"year\":2016,\"projects\":[\"NuxtHub\",\"Nuxt UI\"]}"
-}
-*/
-```
-
-::callout
-For an in-depth guide on querying JSON and a list of all supported functions, see [Cloudlare's Query JSON documentation](https://developers.cloudflare.com/d1/sql-api/query-json/#generated-columns).
-::
-
-## `useDatabase()`
-
-Server composable that returns a [db0](https://db0.unjs.io/) instance.
-
-As NuxtHub configures and utilizes Nitro Database under the hood, you can access the db0 instance directly.
-
-Learn more about `useDatabase()` on the [Nitro documentation](https://nitro.build/guide/database#usage).
-
-```ts
-const db = useDatabase('db')
-```
-
-::important
-Ensure that `'db'` is specified when using `useDatabase()` directly
-::
-
-
 ## Using an ORM
 
-Instead of using `hubDatabase()` to interact with your database directly using SQL, you can use an ORM like [Drizzle ORM](/docs/guides/drizzle). This can improve the developer experience by providing a type-safe API, migrations and more.
+Instead of using `useDatabase('db')` to interact with your database directly using SQL, you can use an ORM like [Drizzle ORM](/docs/guides/drizzle). This can improve the developer experience by providing a type-safe API, migrations and more.
 
 ## Database Migrations
 
