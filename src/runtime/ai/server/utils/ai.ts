@@ -19,20 +19,19 @@ type HubAIProvider<T extends NuxtHubAI>
  *
  * @example ```ts
  * import { streamText } from 'ai';
- * const ai = hubAI()
  * const result = streamText({
- *   model: ai('openai/gpt-5'),
+ *   model: hubAI('mistral/mistral-medium'),
  *   prompt: 'Who created Nuxt?',
  * });
  * ```
  *
  * @see https://hub.nuxt.com/docs/features/ai
  */
-export function hubAI<T extends NuxtHubAI = NuxtHubAI>() {
+export function hubAI<T extends NuxtHubAI = NuxtHubAI>(model: Parameters<HubAIProvider<T>>[0]) {
   requireNuxtHubFeature('ai')
 
   if (_ai) {
-    return _ai as HubAIProvider<T>
+    return (_ai as HubAIProvider<T>)(model)
   }
 
   const hub = useRuntimeConfig().hub
@@ -53,5 +52,5 @@ export function hubAI<T extends NuxtHubAI = NuxtHubAI>() {
         })
   }
 
-  return _ai as HubAIProvider<T>
+  return (_ai as HubAIProvider<T>)(model)
 }
