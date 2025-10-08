@@ -27,11 +27,11 @@ type HubAIProvider<T extends NuxtHubAI>
  *
  * @see https://hub.nuxt.com/docs/features/ai
  */
-export function hubAI<T extends NuxtHubAI = NuxtHubAI>(model: Parameters<HubAIProvider<T>>[0]) {
+export function hubAI<T extends NuxtHubAI = NuxtHubAI>(model: Parameters<HubAIProvider<T>>[0]): Omit<ReturnType<HubAIProvider<T>>, 'config' | 'getArgs'> {
   requireNuxtHubFeature('ai')
 
   if (_ai) {
-    return (_ai as HubAIProvider<T>)(model)
+    return (_ai as HubAIProvider<T>)(model) as Omit<ReturnType<HubAIProvider<T>>, 'config' | 'getArgs'>
   }
 
   const hub = useRuntimeConfig().hub
@@ -52,5 +52,5 @@ export function hubAI<T extends NuxtHubAI = NuxtHubAI>(model: Parameters<HubAIPr
         })
   }
 
-  return (_ai as HubAIProvider<T>)(model)
+  return (_ai as HubAIProvider<T>)(model) as Omit<ReturnType<HubAIProvider<T>>, 'config' | 'getArgs'>
 }
