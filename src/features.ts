@@ -1,7 +1,7 @@
 import { mkdir } from 'node:fs/promises'
 import type { Nuxt } from '@nuxt/schema'
 import { join } from 'pathe'
-import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createResolver } from '@nuxt/kit'
+import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createResolver, addTypeTemplate } from '@nuxt/kit'
 import { defu } from 'defu'
 import { addDevToolsCustomTabs } from './utils/devtools'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir } from './runtime/database/server/utils/migrations/helpers'
@@ -15,6 +15,7 @@ const { resolve } = createResolver(import.meta.url)
 export interface HubConfig {
   version?: string
 
+  ai?: 'vercel' | 'cloudflare'
   blob?: boolean
   cache?: boolean
   database?: boolean | 'postgresql' | 'sqlite' | 'mysql'
@@ -49,8 +50,53 @@ export async function setupBase(nuxt: Nuxt, hub: HubConfig) {
   nuxt.options.nitro.prerender.autoSubfolderIndex ||= false
 }
 
-export async function setupAI(_nuxt: Nuxt, _hub: HubConfig) {
-  return log.warn('hubAI() is not supported yet')
+export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
+  const providerName = hub.ai === 'vercel' ? 'Vercel AI Gateway' : 'Workers AI Provider'
+
+  if (hub.ai === 'vercel') {
+    await Promise.all([
+      ensureDependencyInstalled('@ai-sdk/gateway')
+    ])
+  } else if (hub.ai === 'cloudflare') {
+    await Promise.all([
+      ensureDependencyInstalled('workers-ai-provider')
+    ])
+  } else {
+    return log.error(`\`${hub.ai}\` is not a supported AI provider. Set \`hub.ai\` to \`'vercel'\` or \`'cloudflare'\` in your \`nuxt.config.ts\`. Learn more at https://hub.nuxt.com/docs/features/ai.`)
+  }
+
+  // Used for typing hubAI() with the correct provider
+  addTypeTemplate({
+    filename: 'types/nuxthub-ai.d.ts',
+    getContents: () => `export type NuxtHubAIProvider = ${JSON.stringify(hub.ai)}
+    `
+  })
+
+  if (hub.ai === 'cloudflare') {
+    const isCloudflareRuntime = nuxt.options.nitro.preset?.includes('cloudflare')
+    const isAiBindingSet = !!(process.env.AI as { runtime: string } | undefined)?.runtime
+
+    if (isCloudflareRuntime && !isAiBindingSet) {
+      return logger.error(`Ensure a \`AI\` binding is set in your Cloudflare Workers configuration`)
+    }
+
+    if (!process.env.CLOUDFLARE_ACCOUNT_ID || !process.env.CLOUDFLARE_API_KEY) {
+      return logger.error(`Set \`CLOUDFLARE_ACCOUNT_ID\` and \`CLOUDFLARE_API_KEY\` environment variables to enable \`hubAI()\` with ${providerName}`)
+    }
+  } else if (hub.ai === 'vercel') {
+    const isMissingEnvVars = !process.env.AI_GATEWAY_API_KEY && !process.env.VERCEL_OIDC_TOKEN
+    if (isMissingEnvVars && nuxt.options.dev) {
+      return logger.error(`Run \`npx vercel env pull .env\` to pull the environment variables, or set the \`AI_GATEWAY_API_KEY\` environment variable to enable \`hubAI()\` with ${providerName}`)
+    } else if (isMissingEnvVars) {
+      return logger.error(`Set \`AI_GATEWAY_API_KEY\` environment variable to enable \`hubAI()\` with ${providerName}`)
+    }
+  }
+
+  // Add Server scanning
+  addServerScanDir(resolve('./runtime/ai/server'))
+  addServerImportsDir(resolve('./runtime/ai/server/utils'))
+
+  log.info(`\`hubAI()\` configured for ${providerName}`)
 }
 
 export function setupBlob(nuxt: Nuxt, hub: HubConfig) {
@@ -149,7 +195,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
     if (process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL) {
       // Use postgresql if env variable is set
       const setEnvVarName = process.env.POSTGRES_URL ? 'POSTGRES_URL' : process.env.POSTGRESQL_URL ? 'POSTGRESQL_URL' : 'DATABASE_URL'
-      log.info(`Using PostgreSQL during local development using provided \`${setEnvVarName}\``)
+      log.info(`Using \`PostgreSQL\` during local development using provided \`${setEnvVarName}\``)
       devDatabaseConfig = {
         connector: 'postgresql',
         options: {
@@ -158,7 +204,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
       }
     } else {
       // Use pglite if env variable not provided
-      log.info('Using PGlite during local development')
+      log.info('Using `PGlite` during local development')
       devDatabaseConfig = {
         connector: 'pglite',
         options: {
@@ -167,7 +213,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
       }
     }
   } else if (dialect === 'sqlite') {
-    log.info('Using SQLite during local development')
+    log.info('Using `SQLite` during local development')
     devDatabaseConfig = {
       connector: 'better-sqlite3',
       options: {
@@ -176,7 +222,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
     }
   } else if (dialect === 'mysql') {
     if (!nuxt.options.nitro.devDatabase?.db?.connector) {
-      log.warn('Zero-config MySQL database setup during local development is not supported yet. Please manually configure your development database in `nitro.devDatabase.db` in `nuxt.config.ts`. Learn more at https://hub.nuxt.com/docs/features/database.')
+      log.warn('Zero-config `MySQL` database setup during local development is not supported yet. Please manually configure your development database in `nitro.devDatabase.db` in `nuxt.config.ts`. Learn more at https://hub.nuxt.com/docs/features/database.')
     }
   }
 

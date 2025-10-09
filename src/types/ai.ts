@@ -1,1 +1,1 @@
-// export type { Ai } from '@cloudflare/workers-types/experimental' // TODO: agnostic
+export type { ProviderV2 as AI } from '@ai-sdk/provider'

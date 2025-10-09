@@ -2,6 +2,10 @@ import { createError } from 'h3'
 import { useRuntimeConfig } from '#imports'
 
 const featureMessages = {
+  ai: [
+    'NuxtHub AI is not enabled, set `hub.ai` in your `nuxt.config.ts`',
+    'Read more at `https://hub.nuxt.com/docs/features/ai`'
+  ].join('\n'),
   blob: [
     'NuxtHub Blob is not enabled, set `hub.blob = true` in your `nuxt.config.ts`',
     'Read more at `https://hub.nuxt.com/docs/features/blob`'

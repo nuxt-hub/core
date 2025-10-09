@@ -1,2 +1,3 @@
 imports.autoImport=false
 typescript.includeWorkspace=true
+setups.@nuxthub/core="1.0.0-alpha.0"

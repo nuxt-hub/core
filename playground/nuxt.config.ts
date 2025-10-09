@@ -1,4 +1,3 @@
-// import { encodeHost } from 'ufo'
 import { createResolver } from 'nuxt/kit'
 import module from '../src/module'
 
@@ -28,44 +27,11 @@ export default defineNuxtConfig({
       database: true,
       openAPI: true,
       websocket: true
-    },
-
-    storage: {
-      kv: {
-        driver: 'redis',
-        base: 'unstorage',
-        host: 'HOSTNAME',
-        tls: true as any,
-        port: 6380,
-        password: 'REDIS_PASSWORD'
-      },
-      blob: {
-        driver: 'fs',
-        base: '.data/blob'
-      },
-      cache: {
-        driver: 'fs',
-        base: '.data/cache'
-      }
     }
-
-    // Production database configuration
-    // Not necessary if hub.database is set to a specific dialect
-    // database: {
-    //   db: {
-    //     connector: 'better-sqlite3'
-    //   }
-    // },
-    // Override local development database configuration
-    // By default it's automatically configured based on set hub.database dialect or production database connector
-    // devDatabase: {
-    //   db: {
-    //     connector: 'better-sqlite3'
-    //   }
-    // }
   },
 
   hub: {
+    ai: 'cloudflare',
     database: 'sqlite',
     blob: true,
     kv: true,
@@ -82,7 +48,6 @@ export default defineNuxtConfig({
 
   basicAuth: {
     enabled: process.env.NODE_ENV === 'production',
-    allowedRoutes: ['/api/_hub/'],
     users: [
       {
         username: 'admin',
