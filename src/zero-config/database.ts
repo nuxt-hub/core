@@ -50,6 +50,9 @@ export async function configureProductionDatabaseConnector(nitro: Nitro, hub: Hu
     case 'cloudflare-module':
     case 'cloudflare-durable':
     case 'cloudflare-pages': {
+      nitro.options.cloudflare ||= {}
+
+      const isPages = preset === 'cloudflare-pages'
       if (dialect === true || dialect === 'sqlite') {
         databaseConfig = {
           connector: 'cloudflare-d1',
@@ -57,7 +60,19 @@ export async function configureProductionDatabaseConnector(nitro: Nitro, hub: Hu
             bindingName: 'DB'
           }
         }
-        log.info('Ensure a `DB` binding is set in your Cloudflare Workers configuration')
+        log.info(`Ensure a \`DB\` binding is set in your Cloudflare ${isPages ? 'Pages' : 'Workers'} configuration`)
+
+        nitro.options.cloudflare.wrangler ||= {}
+        nitro.options.cloudflare.wrangler.d1_databases ||= []
+
+        let dbBinding = nitro.options.cloudflare.wrangler.d1_databases.find(db => db.binding === 'DB')
+        if (!dbBinding) {
+          dbBinding = { binding: 'DB' }
+          nitro.options.cloudflare.wrangler.d1_databases.push(dbBinding)
+        }
+
+        dbBinding.migrations_table ||= '_hub_migrations'
+        dbBinding.migrations_dir ||= 'migrations'
       } else if (dialect === 'postgresql') {
         // TODO: hyperdrive postgresql support
         log.warn('Zero-config PostgreSQL via Hyperdrive support is not yet implemented for Cloudflare presets')
