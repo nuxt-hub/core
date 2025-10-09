@@ -22,6 +22,40 @@ export default defineNuxtConfig({
 
 :pm-install{name="ai"}
 
+3. Authenticate with the AI provider.
+
+::tabs
+  :::div{label="Vercel AI Gateway" icon="i-simple-icons-vercel"}
+
+    Generate an API key from the [Vercel AI Gateway dashboard](https://vercel.com/d?to=%2F%5Bteam%5D%2F%7E%2Fai%2Fapi-keys).
+
+    Set the `AI_GATEWAY_API_KEY` environment variable to configure AI Gateway.
+
+    ```bash [.env]
+    AI_GATEWAY_API_KEY=your-api-key
+    ```
+
+    Alternatively, if you manage local environment variables on Vercel, you can run `npx vercel env pull .env` to authenticate using OIDC for 12 hours.
+
+  :::
+
+  :::div{label="Workers AI" icon="i-simple-icons-cloudflare"}
+
+    ::callout{to="https://dash.cloudflare.com/?to=/:account/api-tokens?name=NuxtHub"}
+      Generate an API key with the `Workers AI` read scope from the Cloudflare dashboard.
+    ::
+
+    Set the `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_KEY` environment variables to configure Cloudflare Workers AI.
+
+    ```bash [.env]
+    CLOUDFLARE_ACCOUNT_ID=your-account-id
+    CLOUDFLARE_API_KEY=your-api-key
+    ```
+
+  :::
+::
+
+
 ### Automatic Configuration
 
 When building the Nuxt app, NuxtHub automatically configures the specified AI provider on many providers.
