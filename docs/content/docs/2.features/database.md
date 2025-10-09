@@ -552,7 +552,7 @@ CREATE TABLE IF NOT EXISTS users (
 ::
 
 ::tip
-All migrations files are copied to the `.data/hub/database/migrations` directory when you run Nuxt. This consolidated view helps you track all migrations and enables you to use `npx nuxthub database migrations <command>` commands.
+All migrations files are copied to the `.data/hub/database/migrations` directory when you run Nuxt. This consolidated view helps you track all migrations and enables you to use `npx nuxt hub database migrations <command>` commands.
 ::
 
 ### Automatic Application
@@ -573,7 +573,7 @@ All applied migrations are tracked in the `_hub_migrations` database table.
 Generate a new migration file using:
 
 ```bash [Terminal]
-npx nuxthub database migrations create <name>
+npx nuxt hub database migrations create <name>
 ```
 
 ::important
@@ -605,7 +605,7 @@ CREATE TABLE `todos` (
 With [Drizzle ORM](/docs/guides/drizzle), migrations are automatically created when you run `npx drizzle-kit generate`.
 ::
 
-### Checking Migration Status
+<!-- ### Checking Migration Status
 
 View pending and applied migrations across environments:
 
@@ -627,30 +627,7 @@ npx nuxthub database migrations list --production
 ✔ Found 1 migration on atidone...
 ✅ ./server/database/migrations/0001_create-todos.sql 10/25/2024, 2:43:32 PM
 🕒 ./server/database/migrations/0002_create-users.sql Pending
-```
-
-### Marking Migrations as Applied
-
-For databases with existing migrations, prevent NuxtHub from rerunning them by marking them as applied:
-
-```bash [Terminal]
-# Mark applied in local environment
-npx nuxthub database migrations mark-all-applied
-
-# Mark applied in preview environment
-npx nuxthub database migrations mark-all-applied --preview
-
-# Mark applied in production environment
-npx nuxthub database migrations mark-all-applied --production
-```
-
-::collapsible{name="self-hosting docs"}
-When [self-hosting](/docs/getting-started/deploy#self-hosted), set these environment variables before running commands: :br :br
-
-```bash [Terminal]
-NUXT_HUB_PROJECT_URL=<url> NUXT_HUB_PROJECT_SECRET_KEY=<secret> nuxthub database migrations mark-all-applied
-```
-::
+``` -->
 
 ### Post-Migration Queries
 

@@ -1,4 +1,4 @@
-import { mkdir } from 'node:fs/promises'
+import { mkdir, writeFile } from 'node:fs/promises'
 import type { Nuxt } from '@nuxt/schema'
 import { join } from 'pathe'
 import { logger, addImportsDir, addServerImportsDir, addServerScanDir, createResolver, addTypeTemplate } from '@nuxt/kit'
@@ -259,6 +259,64 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
     await nuxt.callHook('hub:database:queries:paths', hub.databaseQueriesPaths!)
     await copyDatabaseQueriesToHubDir(hub)
   })
+
+  // Setup Drizzle ORM
+  let isDrizzleOrmInstalled = false
+  try {
+    require.resolve('drizzle-orm', { paths: [nuxt.options.rootDir] })
+    isDrizzleOrmInstalled = true
+  } catch {
+    // Ignore
+  }
+
+  if (isDrizzleOrmInstalled) {
+    const connector = nuxt.options.nitro.devDatabase.db.connector as ConnectorName
+    const dbConfig = nuxt.options.nitro.devDatabase.db.options
+
+    // @ts-expect-error not all connectors are supported
+    const db0ToDrizzle: Record<ConnectorName, string> = {
+      postgresql: 'node-postgres',
+      pglite: 'pglite',
+      mysql2: 'mysql2',
+      planetscale: 'planetscale-serverless',
+      'better-sqlite3': 'better-sqlite3',
+      'bun-sqlite': 'bun-sqlite',
+      bun: 'bun-sqlite',
+      sqlite3: 'better-sqlite3',
+      libsql: 'libsql/node',
+      'libsql-core': 'libsql',
+      'libsql-http': 'libsql/http',
+      'libsql-node': 'libsql/node',
+      'libsql-web': 'libsql/web',
+      'cloudflare-d1': 'd1'
+      // unsupported: sqlite & node-sqlite
+    }
+
+    // node-postgres requires connectionString instead of url
+    let connectionConfig = dbConfig
+    if (connector === 'postgresql' && dbConfig?.url) {
+      connectionConfig = { connectionString: dbConfig.url }
+    }
+
+    const drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${db0ToDrizzle[connector]}'
+import type { DrizzleConfig } from 'drizzle-orm'
+
+export function hubDrizzle<TSchema extends Record<string, unknown> = Record<string, never>>(options?: DrizzleConfig<TSchema>) {
+  return drizzle({
+    ...options,
+    connection: ${JSON.stringify(connectionConfig)}
+  })
+}`
+
+    // create hub directory in .nuxt if it doesn't exist
+    const hubBuildDir = join(nuxt.options.buildDir, 'hub')
+    await mkdir(hubBuildDir, { recursive: true })
+
+    const drizzleOrmPath = join(hubBuildDir, 'drizzle-orm.ts')
+    await writeFile(drizzleOrmPath, drizzleOrmContent, 'utf-8')
+
+    nuxt.options.alias['#hub/drizzle-orm'] = drizzleOrmPath
+  }
 }
 
 export function setupKV(nuxt: Nuxt, hub: HubConfig) {
