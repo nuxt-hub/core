@@ -74,11 +74,22 @@ export async function configureProductionDatabaseConnector(nitro: Nitro, hub: Hu
         dbBinding.migrations_table ||= '_hub_migrations'
         dbBinding.migrations_dir ||= 'migrations'
       } else if (dialect === 'postgresql') {
-        // TODO: hyperdrive postgresql support
-        log.warn('Zero-config PostgreSQL via Hyperdrive support is not yet implemented for Cloudflare presets')
+        databaseConfig = {
+          connector: 'cloudflare-hyperdrive-postgresql',
+          options: {
+            bindingName: 'DB'
+          }
+        }
+
+        log.info(`Ensure a \`DB\` binding is set in your Cloudflare ${isPages ? 'Pages' : 'Workers'} configuration`)
       } else if (dialect === 'mysql') {
-        // TODO: hyperdrive mysql support
-        log.warn('Zero-config MySQL via Hyperdrive support is not yet implemented for Cloudflare presets')
+        databaseConfig = {
+          connector: 'cloudflare-hyperdrive-mysql',
+          options: {
+            bindingName: 'DB'
+          }
+        }
+        log.info(`Ensure a \`DB\` binding is set in your Cloudflare ${isPages ? 'Pages' : 'Workers'} configuration`)
       }
 
       // TODO: D1 migrations via wrangler migrations dir
