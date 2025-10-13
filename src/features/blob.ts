@@ -15,10 +15,13 @@ const log = logger.withTag('nuxt:hub')
 export function setupBlob(nuxt: Nuxt, hub: HubConfig) {
   // Configure dev storage
   nuxt.options.nitro.devStorage ||= {}
-  nuxt.options.nitro.devStorage.blob = defu(nuxt.options.nitro.devStorage.blob, {
-    driver: 'fs-lite',
-    base: join(hub.dir!, 'blob')
-  })
+
+  if (!nuxt.options.nitro.devStorage.blob) {
+    nuxt.options.nitro.devStorage.blob = {
+      driver: 'fs-lite',
+      base: join(hub.dir!, 'blob')
+    }
+  }
 
   // Add Server scanning
   addServerScanDir(resolve('runtime/blob/server'))
@@ -43,13 +46,13 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig) {
     log.info(`\`hubBlob()\` configured with \`${nitro.options.storage.blob.driver}\` driver (defined in \`nuxt.config.ts\`)`)
     return
   }
-  let kvConfig: NitroOptions['storage']['blob']
+  let blobConfig: NitroOptions['storage']['blob']
 
   switch (preset) {
     // Does your favourite cloud provider require special configuration? Feel free to open a PR to add zero-config support for other presets
 
     case 'vercel': {
-      kvConfig = {
+      blobConfig = {
         driver: 'vercel-blob',
         access: 'public'
       }
@@ -60,7 +63,7 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig) {
     case 'cloudflare-module':
     case 'cloudflare-durable':
     case 'cloudflare-pages': {
-      kvConfig = {
+      blobConfig = {
         driver: 'cloudflare-r2-binding',
         bindingName: 'BLOB'
       }
@@ -69,7 +72,7 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig) {
     }
 
     case 'netlify': {
-      kvConfig = {
+      blobConfig = {
         driver: 'netlify-blobs',
         name: process.env.NETLIFY_BLOB_STORE_NAME
       }
@@ -80,7 +83,7 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig) {
     }
     case 'azure':
     case 'azure-functions': {
-      kvConfig = {
+      blobConfig = {
         driver: 'azure-storage-blob',
         accountName: process.env.AZURE_BLOB_ACCOUNT_NAME
       }
@@ -92,7 +95,7 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig) {
 
     case 'aws-lambda':
     case 'aws-amplify': {
-      kvConfig = {
+      blobConfig = {
         driver: 's3',
         accessKeyId: process.env.S3_ACCESS_KEY_ID,
         secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
@@ -107,7 +110,7 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig) {
     }
 
     case 'digital-ocean': {
-      kvConfig = {
+      blobConfig = {
         driver: 's3',
         accessKeyId: process.env.SPACES_KEY,
         secretAccessKey: process.env.SPACES_SECRET,
@@ -122,7 +125,7 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig) {
     }
 
     default: {
-      kvConfig = {
+      blobConfig = {
         driver: 'fs-lite',
         base: '.data/blob'
       }
@@ -130,9 +133,9 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig) {
     }
   }
 
-  if (kvConfig) {
+  if (blobConfig) {
     // check if driver dependencies are installed
-    switch (kvConfig.driver) {
+    switch (blobConfig.driver) {
       case 'vercel-blob':
         await ensureDependencyInstalled('@vercel/blob')
         break
@@ -150,7 +153,7 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig) {
 
     // set driver
     nitro.options.storage ||= {}
-    nitro.options.storage.blob = defu(nitro.options.storage?.blob, kvConfig)
-    log.info(`\`hubBlob()\` configured with \`${kvConfig.driver}\` driver`)
+    nitro.options.storage.blob = defu(nitro.options.storage?.blob, blobConfig)
+    log.info(`\`hubBlob()\` configured with \`${blobConfig.driver}\` driver`)
   }
 }
