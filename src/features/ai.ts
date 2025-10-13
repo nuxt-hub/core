@@ -1,13 +1,13 @@
-import { createResolver, addServerImportsDir, addServerScanDir, addTypeTemplate, logger } from '@nuxt/kit'
+import { addServerImportsDir, addServerScanDir, addTypeTemplate, logger } from '@nuxt/kit'
 import { ensureDependencyInstalled } from 'nypm'
 import { logWhenReady } from '../features'
+import { resolve } from '../module'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { Nitro } from 'nitropack'
 import type { HubConfig } from '../features'
 
 const log = logger.withTag('nuxt:hub')
-const { resolve } = createResolver(import.meta.url)
 
 export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
   const providerName = hub.ai === 'vercel' ? 'Vercel AI Gateway' : 'Workers AI Provider'
@@ -52,8 +52,8 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
   }
 
   // Add Server scanning
-  addServerScanDir(resolve('../runtime/ai/server'))
-  addServerImportsDir(resolve('../runtime/ai/server/utils'))
+  addServerScanDir(resolve('runtime/ai/server'))
+  addServerImportsDir(resolve('runtime/ai/server/utils'))
 
   logWhenReady(nuxt, `\`hubAI()\` configured with \`${providerName}\``)
 }

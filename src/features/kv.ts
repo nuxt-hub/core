@@ -1,15 +1,15 @@
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { ensureDependencyInstalled } from 'nypm'
-import { createResolver, addServerScanDir, addServerImportsDir, logger } from '@nuxt/kit'
+import { addServerScanDir, addServerImportsDir, logger } from '@nuxt/kit'
 import { logWhenReady } from '../features'
+import { resolve } from '../module'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { Nitro, NitroOptions } from 'nitropack'
 import type { HubConfig } from '../features'
 
 const log = logger.withTag('nuxt:hub')
-const { resolve } = createResolver(import.meta.url)
 
 export function setupKV(nuxt: Nuxt, hub: HubConfig) {
   // Configure dev storage
@@ -20,8 +20,8 @@ export function setupKV(nuxt: Nuxt, hub: HubConfig) {
   })
 
   // Add Server scanning
-  addServerScanDir(resolve('../runtime/kv/server'))
-  addServerImportsDir(resolve('../runtime/kv/server/utils'))
+  addServerScanDir(resolve('runtime/kv/server'))
+  addServerImportsDir(resolve('runtime/kv/server/utils'))
 
   const driver = nuxt.options.dev ? nuxt.options.nitro.devStorage.kv.driver : nuxt.options.nitro.storage?.kv?.driver
 

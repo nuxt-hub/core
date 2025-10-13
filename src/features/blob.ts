@@ -1,16 +1,16 @@
 import { join } from 'pathe'
 import { defu } from 'defu'
-import { createResolver, addServerScanDir, addServerImportsDir, addImportsDir, logger } from '@nuxt/kit'
+import { addServerScanDir, addServerImportsDir, addImportsDir, logger } from '@nuxt/kit'
 import { logWhenReady } from '../features'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { Nitro, NitroOptions } from 'nitropack'
 import type { HubConfig } from '../features'
+import { resolve } from '../module'
 
 import { ensureDependencyInstalled } from 'nypm'
 
 const log = logger.withTag('nuxt:hub')
-const { resolve } = createResolver(import.meta.url)
 
 export function setupBlob(nuxt: Nuxt, hub: HubConfig) {
   // Configure dev storage
@@ -21,11 +21,11 @@ export function setupBlob(nuxt: Nuxt, hub: HubConfig) {
   })
 
   // Add Server scanning
-  addServerScanDir(resolve('../runtime/blob/server'))
-  addServerImportsDir(resolve('../runtime/blob/server/utils'))
+  addServerScanDir(resolve('runtime/blob/server'))
+  addServerImportsDir(resolve('runtime/blob/server/utils'))
 
   // Add Composables
-  addImportsDir(resolve('../runtime/blob/app/composables'))
+  addImportsDir(resolve('runtime/blob/app/composables'))
 
   if (nuxt.options.nitro.storage?.blob?.driver === 'vercel-blob') {
     nuxt.options.runtimeConfig.public.hub.blobProvider = 'vercel-blob'

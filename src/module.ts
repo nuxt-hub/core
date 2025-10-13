@@ -11,7 +11,9 @@ import { addBuildHooks } from './utils/build'
 
 export * from './types'
 
-const log = logger.withTag('nuxt:hub')
+const log = logger.withTag('nuxt:hub');
+
+export const { resolve, resolvePath } = createResolver(import.meta.url)
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {

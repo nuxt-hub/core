@@ -2,9 +2,10 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { defu } from 'defu'
 import { join } from 'pathe'
 import { ensureDependencyInstalled } from 'nypm'
-import { createResolver, addServerImportsDir, addServerScanDir, logger } from '@nuxt/kit'
+import { addServerImportsDir, addServerScanDir, logger } from '@nuxt/kit'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir } from '../runtime/database/server/utils/migrations/helpers'
 import { logWhenReady } from '../features'
+import { resolve } from '../module'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { NitroOptions, Nitro } from 'nitropack'
@@ -12,7 +13,6 @@ import type { ConnectorName } from 'db0'
 import type { HubConfig } from '../features'
 
 const log = logger.withTag('nuxt:hub')
-const { resolve } = createResolver(import.meta.url)
 
 export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
   // Configure dev storage
@@ -129,8 +129,8 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
   nuxt.options.nitro.experimental.database = true
 
   // Add Server scanning
-  addServerScanDir(resolve('../runtime/database/server'))
-  addServerImportsDir(resolve('../runtime/database/server/utils'))
+  addServerScanDir(resolve('runtime/database/server'))
+  addServerImportsDir(resolve('runtime/database/server/utils'))
 
   // Handle migrations
   nuxt.hook('modules:done', async () => {

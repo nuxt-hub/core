@@ -2,15 +2,15 @@ import { pathToFileURL } from 'node:url'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { isWindows } from 'std-env'
-import { createResolver, addServerScanDir, logger, resolvePath } from '@nuxt/kit'
+import { addServerScanDir, logger } from '@nuxt/kit'
 import { logWhenReady } from '../features'
+import { resolve, resolvePath } from '../module'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { Nitro, NitroOptions } from 'nitropack'
 import type { HubConfig } from '../features'
 
 const log = logger.withTag('nuxt:hub')
-const { resolve } = createResolver(import.meta.url)
 
 export async function setupCache(nuxt: Nuxt, hub: HubConfig) {
   // Configure dev storage
@@ -21,7 +21,7 @@ export async function setupCache(nuxt: Nuxt, hub: HubConfig) {
   })
 
   // Add Server scanning
-  addServerScanDir(resolve('../runtime/cache/server'))
+  addServerScanDir(resolve('runtime/cache/server'))
 
   logWhenReady(nuxt, `Application cache configured with \`${nuxt.options.nitro.devStorage.cache.driver}\` driver`)
 }
@@ -52,7 +52,7 @@ export async function setupProductionCache(nitro: Nitro, _hub: HubConfig) {
     case 'cloudflare-durable':
     case 'cloudflare-pages': {
       // TODO: cloudflare cache binding https://github.com/unjs/unstorage/pull/603
-      let driver = await resolvePath('./runtime/cache/cloudflare-driver')
+      let driver = await resolvePath('runtime/cache/cloudflare-driver')
       if (isWindows) {
         driver = pathToFileURL(driver).href
       }
