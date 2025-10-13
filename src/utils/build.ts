@@ -3,10 +3,10 @@ import { join } from 'pathe'
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig } from '../features'
 
-import { configureProductionBlobDriver } from '../zero-config/blob'
-import { configureProductionCacheDriver } from '../zero-config/cache'
-import { configureProductionDatabaseConnector } from '../zero-config/database'
-import { configureProductionKVDriver } from '../zero-config/kv'
+import { setupProductionBlob } from '../features/blob'
+import { setupProductionCache } from '../features/cache'
+import { setupProductionDatabase } from '../features/database'
+import { setupProductionKV } from '../features/kv'
 
 import { copyDatabaseAssets, applyBuildTimeMigrations } from './database'
 
@@ -37,10 +37,10 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
     }
 
     await Promise.all([
-      hub.blob && await configureProductionBlobDriver(nitro, hub),
-      hub.cache && await configureProductionCacheDriver(nitro, hub),
-      hub.database && await configureProductionDatabaseConnector(nitro, hub),
-      hub.kv && await configureProductionKVDriver(nitro, hub)
+      hub.blob && await setupProductionBlob(nitro, hub),
+      hub.cache && await setupProductionCache(nitro, hub),
+      hub.database && await setupProductionDatabase(nitro, hub),
+      hub.kv && await setupProductionKV(nitro, hub)
     ])
   })
 }

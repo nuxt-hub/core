@@ -1,13 +1,42 @@
-import { logger } from '@nuxt/kit'
+import { join } from 'pathe'
 import { defu } from 'defu'
-import { ensureDependencyInstalled } from 'nypm'
+import { createResolver, addServerScanDir, addServerImportsDir, addImportsDir, logger } from '@nuxt/kit'
+import { logWhenReady } from '../features'
 
+import type { Nuxt } from '@nuxt/schema'
 import type { Nitro, NitroOptions } from 'nitropack'
 import type { HubConfig } from '../features'
 
-const log = logger.withTag('nuxt:hub')
+import { ensureDependencyInstalled } from 'nypm'
 
-export async function configureProductionBlobDriver(nitro: Nitro, _hub: HubConfig) {
+const log = logger.withTag('nuxt:hub')
+const { resolve } = createResolver(import.meta.url)
+
+export function setupBlob(nuxt: Nuxt, hub: HubConfig) {
+  // Configure dev storage
+  nuxt.options.nitro.devStorage ||= {}
+  nuxt.options.nitro.devStorage.blob = defu(nuxt.options.nitro.devStorage.blob, {
+    driver: 'fs-lite',
+    base: join(hub.dir!, 'blob')
+  })
+
+  // Add Server scanning
+  addServerScanDir(resolve('../runtime/blob/server'))
+  addServerImportsDir(resolve('../runtime/blob/server/utils'))
+
+  // Add Composables
+  addImportsDir(resolve('../runtime/blob/app/composables'))
+
+  if (nuxt.options.nitro.storage?.blob?.driver === 'vercel-blob') {
+    nuxt.options.runtimeConfig.public.hub.blobProvider = 'vercel-blob'
+  }
+
+  const driver = nuxt.options.dev ? nuxt.options.nitro.devStorage.blob.driver : nuxt.options.nitro.storage?.blob?.driver
+
+  logWhenReady(nuxt, `\`hubBlob()\` configured with \`${driver}\` driver`)
+}
+
+export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig) {
   const preset = nitro.options.preset
   if (!preset) return
 

@@ -1,14 +1,29 @@
-import { logger, resolvePath } from '@nuxt/kit'
+import { pathToFileURL } from 'node:url'
+import { join } from 'pathe'
 import { defu } from 'defu'
 import { isWindows } from 'std-env'
+import { createResolver, addServerScanDir, logger, resolvePath } from '@nuxt/kit'
 
+import type { Nuxt } from '@nuxt/schema'
 import type { Nitro, NitroOptions } from 'nitropack'
 import type { HubConfig } from '../features'
-import { pathToFileURL } from 'node:url'
 
 const log = logger.withTag('nuxt:hub')
+const { resolve } = createResolver(import.meta.url)
 
-export async function configureProductionCacheDriver(nitro: Nitro, _hub: HubConfig) {
+export async function setupCache(nuxt: Nuxt, hub: HubConfig) {
+  // Configure dev storage
+  nuxt.options.nitro.devStorage ||= {}
+  nuxt.options.nitro.devStorage.cache = defu(nuxt.options.nitro.devStorage.cache, {
+    driver: 'fs-lite',
+    base: join(hub.dir!, 'cache')
+  })
+
+  // Add Server scanning
+  addServerScanDir(resolve('../runtime/cache/server'))
+}
+
+export async function setupProductionCache(nitro: Nitro, _hub: HubConfig) {
   const preset = nitro.options.preset
   if (!preset) return
 

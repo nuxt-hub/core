@@ -46,9 +46,7 @@ export default defineNuxtModule<ModuleOptions>({
       // Database Migrations
       databaseMigrationsDirs,
       databaseQueriesPaths: [],
-      applyDatabaseMigrationsDuringBuild: true,
-      // Other options
-      version
+      applyDatabaseMigrationsDuringBuild: true
     })
 
     runtimeConfig.hub = hub

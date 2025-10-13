@@ -1,13 +1,34 @@
-import { logger } from '@nuxt/kit'
+import { join } from 'pathe'
 import { defu } from 'defu'
 import { ensureDependencyInstalled } from 'nypm'
+import { createResolver, addServerScanDir, addServerImportsDir, logger } from '@nuxt/kit'
+import { logWhenReady } from '../features'
 
+import type { Nuxt } from '@nuxt/schema'
 import type { Nitro, NitroOptions } from 'nitropack'
 import type { HubConfig } from '../features'
 
 const log = logger.withTag('nuxt:hub')
+const { resolve } = createResolver(import.meta.url)
 
-export async function configureProductionKVDriver(nitro: Nitro, _hub: HubConfig) {
+export function setupKV(nuxt: Nuxt, hub: HubConfig) {
+  // Configure dev storage
+  nuxt.options.nitro.devStorage ||= {}
+  nuxt.options.nitro.devStorage.kv = defu(nuxt.options.nitro.devStorage.kv, {
+    driver: 'fs',
+    base: join(hub.dir!, 'kv')
+  })
+
+  // Add Server scanning
+  addServerScanDir(resolve('../runtime/kv/server'))
+  addServerImportsDir(resolve('../runtime/kv/server/utils'))
+
+  const driver = nuxt.options.dev ? nuxt.options.nitro.devStorage.kv.driver : nuxt.options.nitro.storage?.kv?.driver
+
+  logWhenReady(nuxt, `\`hubKV()\` configured with \`${driver}\` driver`)
+}
+
+export async function setupProductionKV(nitro: Nitro, _hub: HubConfig) {
   const preset = nitro.options.preset
   if (!preset) return
 
