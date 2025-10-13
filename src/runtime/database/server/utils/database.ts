@@ -142,6 +142,7 @@ function createD1CompatibleDatabase(db: Database): HubDatabase {
  * ```
  *
  * @see https://hub.nuxt.com/docs/features/database
+ * @deprecated since version 1.0.0. Use `useDatabase('db')` instead.
  */
 export function hubDatabase(): HubDatabase {
   requireNuxtHubFeature('database')
