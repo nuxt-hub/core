@@ -55,7 +55,7 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
   addServerScanDir(resolve('../runtime/ai/server'))
   addServerImportsDir(resolve('../runtime/ai/server/utils'))
 
-  logWhenReady(nuxt, `\`hubAI()\` configured with ${providerName}`)
+  logWhenReady(nuxt, `\`hubAI()\` configured with \`${providerName}\``)
 }
 
 export async function setupProductionAI(nitro: Nitro, hub: HubConfig) {
@@ -118,6 +118,7 @@ export async function setupProductionAI(nitro: Nitro, hub: HubConfig) {
   }
 
   if (hub.ai) {
-    log.info(`Using zero-config \`${hub.ai}\` AI provider`)
+    const providerName = hub.ai === 'vercel' ? 'Vercel AI Gateway' : 'Workers AI Provider'
+    log.info(`\`hubAI()\` configured with \`${providerName}\``)
   }
 }

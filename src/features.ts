@@ -12,9 +12,11 @@ export { setupKV } from './features/kv'
 export { setupOpenAPI } from './features/openapi'
 
 export function logWhenReady(nuxt: Nuxt, message: string, type: 'info' | 'warn' | 'error' = 'info') {
-  nuxt.hooks.hookOnce('modules:done', () => {
-    log[type](message)
-  })
+  if (nuxt.options.dev) {
+    nuxt.hooks.hookOnce('modules:done', () => {
+      log[type](message)
+    })
+  }
 }
 
 export interface HubConfig {

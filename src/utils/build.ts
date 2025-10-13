@@ -3,6 +3,7 @@ import { join } from 'pathe'
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig } from '../features'
 
+import { setupProductionAI } from '../features/ai'
 import { setupProductionBlob } from '../features/blob'
 import { setupProductionCache } from '../features/cache'
 import { setupProductionDatabase } from '../features/database'
@@ -37,6 +38,7 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
     }
 
     await Promise.all([
+      hub.ai && await setupProductionAI(nitro, hub),
       hub.blob && await setupProductionBlob(nitro, hub),
       hub.cache && await setupProductionCache(nitro, hub),
       hub.database && await setupProductionDatabase(nitro, hub),

@@ -31,9 +31,7 @@ export function setupBlob(nuxt: Nuxt, hub: HubConfig) {
     nuxt.options.runtimeConfig.public.hub.blobProvider = 'vercel-blob'
   }
 
-  const driver = nuxt.options.dev ? nuxt.options.nitro.devStorage.blob.driver : nuxt.options.nitro.storage?.blob?.driver
-
-  logWhenReady(nuxt, `\`hubBlob()\` configured with \`${driver}\` driver`)
+  logWhenReady(nuxt, `\`hubBlob()\` configured with \`${nuxt.options.nitro.devStorage.blob.driver}\` driver`)
 }
 
 export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig) {
@@ -42,7 +40,7 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig) {
 
   // Only configure if blob driver is not already set
   if (nitro.options.storage?.blob?.driver) {
-    log.info(`Using user-configured \`${nitro.options.storage.blob.driver}\` blob driver`)
+    log.info(`\`hubBlob()\` configured with \`${nitro.options.storage.blob.driver}\` driver (defined in \`nuxt.config.ts\`)`)
     return
   }
   let kvConfig: NitroOptions['storage']['blob']
@@ -55,7 +53,7 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig) {
         driver: 'vercel-blob',
         access: 'public'
       }
-      log.warn('Files stored in Vercel Blob are always public. Specify a different storage driver if storing sensitive files.')
+      log.warn('Files stored in Vercel Blob are public. Manually configure a different storage driver if storing sensitive files.')
       break
     }
 
@@ -153,6 +151,6 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig) {
     // set driver
     nitro.options.storage ||= {}
     nitro.options.storage.blob = defu(nitro.options.storage?.blob, kvConfig)
-    log.info(`Using zero-config \`${kvConfig.driver}\` blob driver`)
+    log.info(`\`hubBlob()\` configured with \`${kvConfig.driver}\` driver`)
   }
 }

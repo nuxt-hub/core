@@ -3,6 +3,7 @@ import { join } from 'pathe'
 import { defu } from 'defu'
 import { isWindows } from 'std-env'
 import { createResolver, addServerScanDir, logger, resolvePath } from '@nuxt/kit'
+import { logWhenReady } from '../features'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { Nitro, NitroOptions } from 'nitropack'
@@ -21,6 +22,8 @@ export async function setupCache(nuxt: Nuxt, hub: HubConfig) {
 
   // Add Server scanning
   addServerScanDir(resolve('../runtime/cache/server'))
+
+  logWhenReady(nuxt, `Application cache configured with \`${nuxt.options.nitro.devStorage.cache.driver}\` driver`)
 }
 
 export async function setupProductionCache(nitro: Nitro, _hub: HubConfig) {
@@ -71,6 +74,6 @@ export async function setupProductionCache(nitro: Nitro, _hub: HubConfig) {
   if (cacheConfig) {
     nitro.options.storage ||= {}
     nitro.options.storage.cache = defu(nitro.options.storage?.cache, cacheConfig)
-    log.info(`Using zero-config \`${cacheConfig.driver}\` cache driver`)
+    log.info(`Application cache configured with \`${nitro.options.storage.cache.driver}\` driver`)
   }
 }

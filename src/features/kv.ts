@@ -34,7 +34,7 @@ export async function setupProductionKV(nitro: Nitro, _hub: HubConfig) {
 
   // Only configure if KV driver is not already set
   if (nitro.options.storage?.kv?.driver) {
-    log.info(`Using user-configured \`${nitro.options.storage.kv.driver}\` KV driver`)
+    log.info(`\`hubKV()\` configured with \`${nitro.options.storage.kv.driver}\` driver (defined in \`nuxt.config.ts\`)`)
     return
   }
 
@@ -93,6 +93,6 @@ export async function setupProductionKV(nitro: Nitro, _hub: HubConfig) {
     // set driver
     nitro.options.storage ||= {}
     nitro.options.storage.kv = defu(nitro.options.storage?.kv, kvConfig)
-    log.info(`Using zero-config \`${kvConfig.driver}\` KV driver`)
+    log.info(`\`hubKV()\` configured with \`${kvConfig.driver}\` driver`)
   }
 }

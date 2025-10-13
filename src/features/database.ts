@@ -78,7 +78,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
     if (process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL) {
       // Use postgresql if env variable is set
       const setEnvVarName = process.env.POSTGRES_URL ? 'POSTGRES_URL' : process.env.POSTGRESQL_URL ? 'POSTGRESQL_URL' : 'DATABASE_URL'
-      logWhenReady(nuxt, `Using \`PostgreSQL\` during local development using provided \`${setEnvVarName}\``)
+      logWhenReady(nuxt, `\`hubDatabase()\` configured with \`PostgreSQL\` using provided \`${setEnvVarName}\``)
       devDatabaseConfig = {
         connector: 'postgresql',
         options: {
@@ -87,7 +87,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
       }
     } else {
       // Use pglite if env variable not provided
-      logWhenReady(nuxt, 'Using `PGlite` during local development')
+      logWhenReady(nuxt, '`hubDatabase()` configured with `PGlite` during local development')
       devDatabaseConfig = {
         connector: 'pglite',
         options: {
@@ -96,7 +96,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
       }
     }
   } else if (dialect === 'sqlite') {
-    logWhenReady(nuxt, 'Using `SQLite` during local development')
+    logWhenReady(nuxt, '`hubDatabase()` configured with `SQLite` during local development')
     devDatabaseConfig = {
       connector: 'better-sqlite3',
       options: {
@@ -105,7 +105,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
     }
   } else if (dialect === 'mysql') {
     if (!nuxt.options.nitro.devDatabase?.db?.connector) {
-      logWhenReady(nuxt, 'Zero-config `MySQL` database setup during local development is not supported yet. Please manually configure your development database in `nitro.devDatabase.db` in `nuxt.config.ts`. Learn more at https://hub.nuxt.com/docs/features/database.', 'warn')
+      logWhenReady(nuxt, '`hubDatabase()` configured with `MySQL` during local development is not supported yet. Please manually configure your development database in `nitro.devDatabase.db` in `nuxt.config.ts`. Learn more at https://hub.nuxt.com/docs/features/database.', 'warn')
     }
   }
 
@@ -227,7 +227,7 @@ export async function setupProductionDatabase(nitro: Nitro, hub: HubConfig) {
 
   // Only configure if production database connector is not already set
   if (nitro.options.database?.db?.connector) {
-    log.info(`Using user-configured \`${nitro.options.database.db.connector}\` database connector`)
+    log.info(`\`hubDatabase()\` configured with \`${nitro.options.database.db.connector}\` driver (defined in \`nuxt.config.ts\`)`)
     return
   }
 
@@ -363,6 +363,6 @@ export async function setupProductionDatabase(nitro: Nitro, hub: HubConfig) {
     // @ts-expect-error temporarily set to empty object
     nitro.options.database ||= {}
     nitro.options.database.db = defu(nitro.options.database?.db, databaseConfig) as any
-    log.info(`Using zero-config \`${databaseConfig.connector}\` database connector`)
+    log.info(`\`hubDatabase()\` configured with \`${databaseConfig.connector}\` driver`)
   }
 }
