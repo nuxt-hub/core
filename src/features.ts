@@ -13,7 +13,7 @@ const log = logger.withTag('nuxt:hub')
 const { resolve } = createResolver(import.meta.url)
 
 function logWhenReady(nuxt: Nuxt, message: string, type: 'info' | 'warn' | 'error' = 'info') {
-  nuxt.hook('modules:done', () => {
+  nuxt.hooks.hookOnce('modules:done', () => {
     log[type](message)
   })
 }
@@ -102,14 +102,14 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
   addServerScanDir(resolve('./runtime/ai/server'))
   addServerImportsDir(resolve('./runtime/ai/server/utils'))
 
-  logWhenReady(nuxt, `\`hubAI()\` configured for ${providerName}`)
+  logWhenReady(nuxt, `\`hubAI()\` configured with \`${providerName}\``)
 }
 
 export function setupBlob(nuxt: Nuxt, hub: HubConfig) {
   // Configure dev storage
   nuxt.options.nitro.devStorage ||= {}
   nuxt.options.nitro.devStorage.blob = defu(nuxt.options.nitro.devStorage.blob, {
-    driver: 'fs',
+    driver: 'fs-lite',
     base: join(hub.dir!, 'blob')
   })
 
@@ -123,13 +123,17 @@ export function setupBlob(nuxt: Nuxt, hub: HubConfig) {
   if (nuxt.options.nitro.storage?.blob?.driver === 'vercel-blob') {
     nuxt.options.runtimeConfig.public.hub.blobProvider = 'vercel-blob'
   }
+
+  const driver = nuxt.options.dev ? nuxt.options.nitro.devStorage.blob.driver : nuxt.options.nitro.storage?.blob?.driver
+
+  logWhenReady(nuxt, `\`hubBlob()\` configured with \`${driver}\` driver`)
 }
 
 export async function setupCache(nuxt: Nuxt, hub: HubConfig) {
   // Configure dev storage
   nuxt.options.nitro.devStorage ||= {}
   nuxt.options.nitro.devStorage.cache = defu(nuxt.options.nitro.devStorage.cache, {
-    driver: 'fs',
+    driver: 'fs-lite',
     base: join(hub.dir!, 'cache')
   })
 
@@ -348,13 +352,17 @@ export function setupKV(nuxt: Nuxt, hub: HubConfig) {
   // Configure dev storage
   nuxt.options.nitro.devStorage ||= {}
   nuxt.options.nitro.devStorage.kv = defu(nuxt.options.nitro.devStorage.kv, {
-    driver: 'fs',
+    driver: 'fs-lite',
     base: join(hub.dir!, 'kv')
   })
 
   // Add Server scanning
   addServerScanDir(resolve('./runtime/kv/server'))
   addServerImportsDir(resolve('./runtime/kv/server/utils'))
+
+  const driver = nuxt.options.dev ? nuxt.options.nitro.devStorage.kv.driver : nuxt.options.nitro.storage?.kv?.driver
+
+  logWhenReady(nuxt, `\`hubKV()\` configured with \`${driver}\` driver`)
 }
 
 export function setupOpenAPI(nuxt: Nuxt, _hub: HubConfig) {

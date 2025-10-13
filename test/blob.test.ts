@@ -24,7 +24,7 @@ vi.mock('#imports', () => ({
   useRuntimeConfig: () => ({
     public: {
       hub: {
-        blobProvider: 'fs'
+        blobProvider: 'fs-lite'
       }
     }
   })

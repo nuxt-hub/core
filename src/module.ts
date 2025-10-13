@@ -61,11 +61,11 @@ export default defineNuxtModule<ModuleOptions>({
 
     await setupBase(nuxt, hub as HubConfig)
     setupOpenAPI(nuxt, hub as HubConfig)
-    hub.ai && setupAI(nuxt, hub as HubConfig)
-    hub.blob && setupBlob(nuxt, hub as HubConfig)
+    hub.ai && await setupAI(nuxt, hub as HubConfig)
+    hub.blob && await setupBlob(nuxt, hub as HubConfig)
     hub.cache && await setupCache(nuxt, hub as HubConfig)
     hub.database && await setupDatabase(nuxt, hub as HubConfig)
-    hub.kv && setupKV(nuxt, hub as HubConfig)
+    hub.kv && await setupKV(nuxt, hub as HubConfig)
 
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {
