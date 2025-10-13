@@ -12,6 +12,12 @@ import { ensureDependencyInstalled } from 'nypm'
 const log = logger.withTag('nuxt:hub')
 const { resolve } = createResolver(import.meta.url)
 
+function logWhenReady(nuxt: Nuxt, message: string, type: 'info' | 'warn' | 'error' = 'info') {
+  nuxt.hook('modules:done', () => {
+    log[type](message)
+  })
+}
+
 export interface HubConfig {
   version?: string
 
@@ -62,7 +68,7 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
       ensureDependencyInstalled('workers-ai-provider')
     ])
   } else {
-    return log.error(`\`${hub.ai}\` is not a supported AI provider. Set \`hub.ai\` to \`'vercel'\` or \`'cloudflare'\` in your \`nuxt.config.ts\`. Learn more at https://hub.nuxt.com/docs/features/ai.`)
+    return logWhenReady(nuxt, `\`${hub.ai}\` is not a supported AI provider. Set \`hub.ai\` to \`'vercel'\` or \`'cloudflare'\` in your \`nuxt.config.ts\`. Learn more at https://hub.nuxt.com/docs/features/ai.`, 'error')
   }
 
   // Used for typing hubAI() with the correct provider
@@ -77,18 +83,18 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
     const isAiBindingSet = !!(process.env.AI as { runtime: string } | undefined)?.runtime
 
     if (isCloudflareRuntime && !isAiBindingSet) {
-      return logger.error(`Ensure a \`AI\` binding is set in your Cloudflare Workers configuration`)
+      return logWhenReady(nuxt, 'Ensure a `AI` binding is set in your Cloudflare Workers configuration', 'error')
     }
 
     if (!process.env.CLOUDFLARE_ACCOUNT_ID || !process.env.CLOUDFLARE_API_KEY) {
-      return logger.error(`Set \`CLOUDFLARE_ACCOUNT_ID\` and \`CLOUDFLARE_API_KEY\` environment variables to enable \`hubAI()\` with ${providerName}`)
+      return logWhenReady(nuxt, `Set \`CLOUDFLARE_ACCOUNT_ID\` and \`CLOUDFLARE_API_KEY\` environment variables to enable \`hubAI()\` with ${providerName}`, 'error')
     }
   } else if (hub.ai === 'vercel') {
     const isMissingEnvVars = !process.env.AI_GATEWAY_API_KEY && !process.env.VERCEL_OIDC_TOKEN
     if (isMissingEnvVars && nuxt.options.dev) {
-      return logger.error(`Run \`npx vercel env pull .env\` to pull the environment variables, or set the \`AI_GATEWAY_API_KEY\` environment variable to enable \`hubAI()\` with ${providerName}`)
+      return logWhenReady(nuxt, `Missing \`AI_GATEWAY_API_KEY\` environment variable to enable \`hubAI()\` with ${providerName}\nCreate an AI Gateway API key at \`${encodeURI('https://vercel.com/d?to=/[team]/~/ai/api-keys&title=Go+to+AI+Gateway')}\` or run \`npx vercel env pull .env\` to pull the environment variables.`, 'error')
     } else if (isMissingEnvVars) {
-      return logger.error(`Set \`AI_GATEWAY_API_KEY\` environment variable to enable \`hubAI()\` with ${providerName}`)
+      return logWhenReady(nuxt, `Set \`AI_GATEWAY_API_KEY\` environment variable to enable \`hubAI()\` with ${providerName}\nCreate an AI Gateway API key at \`${encodeURI('https://vercel.com/d?to=/[team]/~/ai/api-keys&title=Go+to+AI+Gateway')}\``, 'error')
     }
   }
 
@@ -96,7 +102,7 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
   addServerScanDir(resolve('./runtime/ai/server'))
   addServerImportsDir(resolve('./runtime/ai/server/utils'))
 
-  log.info(`\`hubAI()\` configured for ${providerName}`)
+  logWhenReady(nuxt, `\`hubAI()\` configured for ${providerName}`)
 }
 
 export function setupBlob(nuxt: Nuxt, hub: HubConfig) {
@@ -134,7 +140,7 @@ export async function setupCache(nuxt: Nuxt, hub: HubConfig) {
 export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
   // Configure dev storage
   if (typeof hub.database === 'string' && !['postgresql', 'sqlite', 'mysql'].includes(hub.database)) {
-    return log.error(`Unknown database dialect set in hub.database: ${hub.database}`)
+    return logWhenReady(nuxt, `Unknown database dialect set in hub.database: ${hub.database}`, 'error')
   }
 
   let dialect: string
@@ -159,7 +165,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
       // NOTE: libSQL implements additional functionality beyond sqlite, but users can manually configure a libsql database within Nitro if they require them
       dialect = 'sqlite' // libsql is SQLite-compatible
     } else {
-      return log.error('Please specify a database dialect in `hub.database: \'<dialect>\'` or configure `nitro.database.db` within `nuxt.config.ts`. Learn more at https://hub.nuxt.com/docs/features/database.')
+      return logWhenReady(nuxt, 'Please specify a database dialect in `hub.database: \'<dialect>\'` or configure `nitro.database.db` within `nuxt.config.ts`. Learn more at https://hub.nuxt.com/docs/features/database.', 'error')
     }
   }
 
@@ -184,7 +190,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
         inferredDialect = 'unknown'
       }
 
-      log.warn(`Database dialect mismatch: \`hub.database\` is set to \`${dialect}\` but \`nitro.database.db\` is \`${inferredDialect}\` (\`${productionDriver}\`). Set \`hub.database\` to \`true\` or \`'${inferredDialect}'\` in your \`nuxt.config.ts\`.`)
+      logWhenReady(nuxt, `Database dialect mismatch: \`hub.database\` is set to \`${dialect}\` but \`nitro.database.db\` is \`${inferredDialect}\` (\`${productionDriver}\`). Set \`hub.database\` to \`true\` or \`'${inferredDialect}'\` in your \`nuxt.config.ts\`.`, 'warn')
     }
   }
 
@@ -195,7 +201,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
     if (process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL) {
       // Use postgresql if env variable is set
       const setEnvVarName = process.env.POSTGRES_URL ? 'POSTGRES_URL' : process.env.POSTGRESQL_URL ? 'POSTGRESQL_URL' : 'DATABASE_URL'
-      log.info(`Using \`PostgreSQL\` during local development using provided \`${setEnvVarName}\``)
+      logWhenReady(nuxt, `Using \`PostgreSQL\` during local development using provided \`${setEnvVarName}\``)
       devDatabaseConfig = {
         connector: 'postgresql',
         options: {
@@ -204,7 +210,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
       }
     } else {
       // Use pglite if env variable not provided
-      log.info('Using `PGlite` during local development')
+      logWhenReady(nuxt, 'Using `PGlite` during local development')
       devDatabaseConfig = {
         connector: 'pglite',
         options: {
@@ -213,7 +219,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
       }
     }
   } else if (dialect === 'sqlite') {
-    log.info('Using `SQLite` during local development')
+    logWhenReady(nuxt, 'Using `SQLite` during local development')
     devDatabaseConfig = {
       connector: 'better-sqlite3',
       options: {
@@ -222,7 +228,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
     }
   } else if (dialect === 'mysql') {
     if (!nuxt.options.nitro.devDatabase?.db?.connector) {
-      log.warn('Zero-config `MySQL` database setup during local development is not supported yet. Please manually configure your development database in `nitro.devDatabase.db` in `nuxt.config.ts`. Learn more at https://hub.nuxt.com/docs/features/database.')
+      logWhenReady(nuxt, 'Zero-config `MySQL` database setup during local development is not supported yet. Please manually configure your development database in `nitro.devDatabase.db` in `nuxt.config.ts`. Learn more at https://hub.nuxt.com/docs/features/database.', 'warn')
     }
   }
 
