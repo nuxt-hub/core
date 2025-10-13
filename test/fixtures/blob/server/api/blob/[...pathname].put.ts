@@ -1,5 +1,5 @@
 import { eventHandler, getValidatedRouterParams, getHeader, getRequestWebStream, getQuery } from 'h3'
-import { z } from 'zod'
+import * as z from 'zod'
 import { hubBlob } from '#imports'
 
 // Simple streamToArrayBuffer implementation for test fixture

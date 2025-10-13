@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import * as z from 'zod'
 import { eventHandler, getValidatedRouterParams, createError } from 'h3'
 import { hubKV } from '#imports'
 

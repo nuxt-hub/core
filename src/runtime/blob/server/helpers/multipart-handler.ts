@@ -1,4 +1,4 @@
-import z from 'zod'
+import * as z from 'zod'
 import type { H3Event } from 'h3'
 import type { BlobMultipartOptions } from '@nuxthub/core'
 import type { BlobStorage } from './blob-storage'

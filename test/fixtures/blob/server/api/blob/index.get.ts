@@ -1,5 +1,5 @@
 import { eventHandler, getValidatedQuery } from 'h3'
-import { z } from 'zod'
+import * as z from 'zod'
 import { hubBlob } from '#imports'
 
 export default eventHandler(async (event) => {

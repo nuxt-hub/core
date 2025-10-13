@@ -17,7 +17,7 @@ describe.skip('Ai', async () => {
         blob: false
       },
       features: {
-        ai: true,
+        ai: 'cloudflare',
         analytics: false,
         cache: false
       }

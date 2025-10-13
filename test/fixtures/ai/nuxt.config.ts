@@ -8,6 +8,6 @@ export default defineNuxtConfig({
     '../../../src/module'
   ],
   hub: {
-    ai: true
+    ai: 'cloudflare'
   }
 })
