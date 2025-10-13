@@ -70,7 +70,7 @@ function getMultiPartDriver(driver: Driver) {
     }
   }
 
-  if (driver.name === 'fs') {
+  if (driver.name && ['fs', 'fs-lite'].includes(driver.name)) {
     return {
       createMultipartUpload: async (pathname: string, options?: BlobMultipartOptions) => {
         return await import('./blob-fs').then(({ createMultipartUpload }) => {
