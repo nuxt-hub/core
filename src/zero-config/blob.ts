@@ -96,7 +96,7 @@ export async function configureProductionBlobDriver(nitro: Nitro, _hub: HubConfi
 
     default: {
       kvConfig = {
-        driver: 'fs-lite',
+        driver: 'fs',
         base: '.data/blob'
       }
       break
