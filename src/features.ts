@@ -295,10 +295,10 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
     // node-postgres requires connectionString instead of url
     let connectionConfig = dbConfig
     if (connector === 'postgresql' && dbConfig?.url) {
-      connectionConfig = { connectionString: dbConfig.url }
+      connectionConfig = { connectionString: dbConfig.url, ...dbConfig.options }
     }
 
-    const drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${db0ToDrizzle[connector]}'
+    let drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${db0ToDrizzle[connector]}'
 import type { DrizzleConfig } from 'drizzle-orm'
 
 export function hubDrizzle<TSchema extends Record<string, unknown> = Record<string, never>>(options?: DrizzleConfig<TSchema>) {
@@ -307,6 +307,25 @@ export function hubDrizzle<TSchema extends Record<string, unknown> = Record<stri
     connection: ${JSON.stringify(connectionConfig)}
   })
 }`
+
+    if (connector === 'pglite') {
+      drizzleOrmContent = `import { drizzle } from 'drizzle-orm/pg-proxy'
+import type { DrizzleConfig } from 'drizzle-orm'
+
+export function hubDrizzle<TSchema extends Record<string, unknown> = Record<string, never>>(options?: DrizzleConfig<TSchema>) {
+  return drizzle(async (sql, params, method) => {
+    try {
+      const rows = await $fetch<any[]>('/api/_hub/database/query', { method: 'POST', body: { sql, params, method } })
+      return { rows }
+    } catch (e: any) {
+      console.error(e.response)
+      return { rows: [] }
+    }
+  }, {
+    ...options,
+  })
+}`
+    }
 
     // create hub directory in .nuxt if it doesn't exist
     const hubBuildDir = join(nuxt.options.buildDir, 'hub')
