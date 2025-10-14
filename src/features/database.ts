@@ -94,6 +94,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
           dataDir: join(hub.dir!, 'database/pglite')
         }
       }
+      await mkdir(join(hub.dir!, 'database/pglite'), { recursive: true })
     }
   } else if (dialect === 'sqlite') {
     logWhenReady(nuxt, '`hubDatabase()` configured with `SQLite` during local development')
