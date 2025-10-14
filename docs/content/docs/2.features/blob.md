@@ -43,7 +43,7 @@ When building the Nuxt app, NuxtHub automatically configures the blob storage dr
 
     Add a `BLOB` binding to a [Cloudflare R2](https://developers.cloudflare.com/r2/) bucket in your `wrangler.jsonc` config.
 
-    ```json [wranglerc]
+    ```json [wrangler.jsonc]
     {
       "$schema": "node_modules/wrangler/config-schema.json",
       // ...
