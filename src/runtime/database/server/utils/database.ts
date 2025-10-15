@@ -136,13 +136,8 @@ function createD1CompatibleDatabase(db: Database): HubDatabase {
 /**
  * Access the NuxtHub database.
  *
- * @example ```ts
- * const db = hubDatabase()
- * const { rows } = await db.sql`SELECT * FROM users`;
- * ```
- *
+ * @deprecated Use `useDatabase('db')` instead.
  * @see https://hub.nuxt.com/docs/features/database
- * @deprecated since version 1.0.0. Use `useDatabase('db')` instead.
  */
 export function hubDatabase(): HubDatabase {
   requireNuxtHubFeature('database')

@@ -11,7 +11,7 @@ import { setupProductionKV } from '../features/kv'
 
 import { copyDatabaseAssets, applyBuildTimeMigrations } from './database'
 
-export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
+export function addBuildHooks(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>) {
   nuxt.hook('nitro:build:public-assets', async (nitro) => {
     // Write `dist/hub.config.json` after public assets are built
     const hubConfig = {
@@ -30,19 +30,20 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig) {
   })
 
   // Zero-config resources setup
+  if (nuxt.options.dev) return
+
   nuxt.hook('nitro:init', async (nitro) => {
-    if (nuxt.options.dev) return
     if (nuxt.options.nitro.preset?.includes('cloudflare')) {
       nitro.options.cloudflare ||= {}
       nitro.options.cloudflare.nodeCompat = true
     }
 
     await Promise.all([
-      hub.ai && await setupProductionAI(nitro, hub),
-      hub.blob && await setupProductionBlob(nitro, hub),
-      hub.cache && await setupProductionCache(nitro, hub),
-      hub.database && await setupProductionDatabase(nitro, hub),
-      hub.kv && await setupProductionKV(nitro, hub)
+      hub.ai && await setupProductionAI(nitro, hub, deps),
+      hub.blob && await setupProductionBlob(nitro, hub, deps),
+      hub.cache && await setupProductionCache(nitro, hub, deps),
+      hub.database && await setupProductionDatabase(nitro, hub, deps),
+      hub.kv && await setupProductionKV(nitro, hub, deps)
     ])
   })
 }

@@ -1,5 +1,4 @@
 import { addServerImportsDir, addServerScanDir, addTypeTemplate, logger } from '@nuxt/kit'
-import { ensureDependencyInstalled } from 'nypm'
 import { logWhenReady } from '../features'
 import { resolve } from '../module'
 
@@ -9,18 +8,14 @@ import type { HubConfig } from '../features'
 
 const log = logger.withTag('nuxt:hub')
 
-export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
+export async function setupAI(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>) {
   const providerName = hub.ai === 'vercel' ? 'Vercel AI Gateway' : 'Workers AI Provider'
 
-  if (hub.ai === 'vercel') {
-    await Promise.all([
-      ensureDependencyInstalled('@ai-sdk/gateway')
-    ])
-  } else if (hub.ai === 'cloudflare') {
-    await Promise.all([
-      ensureDependencyInstalled('workers-ai-provider')
-    ])
-  } else {
+  if (hub.ai === 'vercel' && !deps['@ai-sdk/gateway']) {
+    return logWhenReady(nuxt, 'Please run `npx nypm i @ai-sdk/gateway` to use Vercel AI Gateway', 'error')
+  } else if (hub.ai === 'cloudflare' && !deps['workers-ai-provider']) {
+    return logWhenReady(nuxt, 'Please run `npx nypm i workers-ai-provider` to use Workers AI Provider', 'error')
+  } else if (hub.ai && !['vercel', 'cloudflare'].includes(hub.ai)) {
     return logWhenReady(nuxt, `\`${hub.ai}\` is not a supported AI provider. Set \`hub.ai\` to \`'vercel'\` or \`'cloudflare'\` in your \`nuxt.config.ts\`. Learn more at https://hub.nuxt.com/docs/features/ai.`, 'error')
   }
 
@@ -58,7 +53,7 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
   logWhenReady(nuxt, `\`hubAI()\` configured with \`${providerName}\``)
 }
 
-export async function setupProductionAI(nitro: Nitro, hub: HubConfig) {
+export async function setupProductionAI(nitro: Nitro, hub: HubConfig, _deps: Record<string, string>) {
   const preset = nitro.options.preset
   if (!preset) return
 

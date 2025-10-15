@@ -1,7 +1,7 @@
 import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core'
 
 export default defineEventHandler(async () => {
-  const db0 = useDatabase()
+  const db0 = useDatabase('db')
 
   const _tables = await db0.sql`
     SELECT
@@ -14,10 +14,9 @@ export default defineEventHandler(async () => {
       name NOT LIKE 'sqlite_%' and name NOT LIKE '_litestream_%' and name NOT LIKE '__drizzle%'
     ;`
 
-  console.log(_tables.rows)
   const db = await useDrizzle()
 
-  const tables = await db.all(sql`
+  const drizzleTables = await db.all(sql`
     SELECT
       name,
       type
@@ -29,18 +28,14 @@ export default defineEventHandler(async () => {
     ;
   `)
 
-  const todos = sqliteTable('todos', {
-    id: integer('id').primaryKey(),
-    text: text('text')
-  })
   // const inserted = await db.insert(todos).values({ text: 'hello' }).returning().get()
   // const todo = await db.select().from(todos).where(eq(todos.id, inserted.id)).get()
   // const updated = await db.update(todos).set({ text: 'Bonjour' }).where(eq(todos.id, inserted.id)).returning()
-  const all = await db.select().from(todos).limit(3)
+  const all = await db.select().from(tables.todos).limit(3)
   // const deleted = await db.delete(todos).where(eq(todos.id, all[0].id))
 
   return {
-    tables,
+    drizzleTables,
     // todo,
     // inserted,
     // updated,

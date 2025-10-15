@@ -12,7 +12,7 @@ import type { HubConfig } from '../features'
 
 const log = logger.withTag('nuxt:hub')
 
-export async function setupCache(nuxt: Nuxt, hub: HubConfig) {
+export async function setupCache(nuxt: Nuxt, hub: HubConfig, _deps: Record<string, string>) {
   // Configure dev storage
   nuxt.options.nitro.devStorage ||= {}
   nuxt.options.nitro.devStorage.cache = defu(nuxt.options.nitro.devStorage.cache, {
@@ -23,10 +23,10 @@ export async function setupCache(nuxt: Nuxt, hub: HubConfig) {
   // Add Server scanning
   addServerScanDir(resolve('runtime/cache/server'))
 
-  logWhenReady(nuxt, `Application cache configured with \`${nuxt.options.nitro.devStorage.cache.driver}\` driver`)
+  logWhenReady(nuxt, `\`Hub cache\` configured with \`${nuxt.options.nitro.devStorage.cache.driver}\` driver`)
 }
 
-export async function setupProductionCache(nitro: Nitro, _hub: HubConfig) {
+export async function setupProductionCache(nitro: Nitro, _hub: HubConfig, _deps: Record<string, string>) {
   const preset = nitro.options.preset
   if (!preset) return
 
@@ -74,6 +74,6 @@ export async function setupProductionCache(nitro: Nitro, _hub: HubConfig) {
   if (cacheConfig) {
     nitro.options.storage ||= {}
     nitro.options.storage.cache = defu(nitro.options.storage?.cache, cacheConfig)
-    log.info(`Application cache configured with \`${nitro.options.storage.cache.driver}\` driver`)
+    log.info(`\`Hub cache\` configured with \`${nitro.options.storage.cache.driver}\` driver`)
   }
 }

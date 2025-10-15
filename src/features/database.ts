@@ -1,8 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { defu } from 'defu'
 import { join } from 'pathe'
-import { ensureDependencyInstalled } from 'nypm'
-import { addServerImportsDir, addServerScanDir, logger } from '@nuxt/kit'
+import { addServerImportsDir, addServerScanDir, addServerTemplate, addTypeTemplate, logger } from '@nuxt/kit'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir } from '../runtime/database/server/utils/migrations/helpers'
 import { logWhenReady } from '../features'
 import { resolve } from '../module'
@@ -14,7 +13,7 @@ import type { HubConfig } from '../features'
 
 const log = logger.withTag('nuxt:hub')
 
-export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
+export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>) {
   // Configure dev storage
   if (typeof hub.database === 'string' && !['postgresql', 'sqlite', 'mysql'].includes(hub.database)) {
     return logWhenReady(nuxt, `Unknown database dialect set in hub.database: ${hub.database}`, 'error')
@@ -104,7 +103,8 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
         path: join(hub.dir!, 'database/sqlite/db.sqlite3')
       }
     }
-  } else if (dialect === 'mysql') {
+      await mkdir(join(hub.dir!, 'database/sqlite'), { recursive: true })
+    } else if (dialect === 'mysql') {
     if (!nuxt.options.nitro.devDatabase?.db?.connector) {
       logWhenReady(nuxt, '`hubDatabase()` configured with `MySQL` during local development is not supported yet. Please manually configure your development database in `nitro.devDatabase.db` in `nuxt.config.ts`. Learn more at https://hub.nuxt.com/docs/features/database.', 'warn')
     }
@@ -115,14 +115,14 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
 
   // Verify development database dependencies are installed
   const developmentDriver = nuxt.options.nitro.devDatabase?.db?.connector as ConnectorName
-  if (developmentDriver === 'postgresql') {
-    await ensureDependencyInstalled('pg')
-  } else if (developmentDriver === 'pglite') {
-    await ensureDependencyInstalled('@electric-sql/pglite')
-  } else if (developmentDriver === 'mysql2') {
-    await ensureDependencyInstalled('mysql2')
-  } else if (developmentDriver === 'better-sqlite3') {
-    await ensureDependencyInstalled('better-sqlite3')
+  if (developmentDriver === 'postgresql' && !deps.pg) {
+    logWhenReady(nuxt, 'Please run `npx nypm i pg` to use PostgreSQL as database.', 'error')
+  } else if (developmentDriver === 'pglite' && !deps['@electric-sql/pglite']) {
+    logWhenReady(nuxt, 'Please run `npx nypm i @electric-sql/pglite` to use PGlite as database.', 'error')
+  } else if (developmentDriver === 'mysql2' && !deps.mysql2) {
+    logWhenReady(nuxt, 'Please run `npx nypm i mysql2` to use MySQL as database.', 'error')
+  } else if (developmentDriver === 'better-sqlite3' && !deps['better-sqlite3']) {
+    logWhenReady(nuxt, 'Please run `npx nypm i better-sqlite3` to use SQLite as database.', 'error')
   }
 
   // Enable Nitro database
@@ -145,22 +145,14 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
   })
 
   // Setup Drizzle ORM
-  let isDrizzleOrmInstalled = false
-  try {
-    require.resolve('drizzle-orm', { paths: [nuxt.options.rootDir] })
-    isDrizzleOrmInstalled = true
-  } catch {
-    // Ignore
-  }
-
-  if (isDrizzleOrmInstalled) {
+  if (deps['drizzle-orm']) {
     const connector = nuxt.options.nitro.devDatabase.db.connector as ConnectorName
     const dbConfig = nuxt.options.nitro.devDatabase.db.options
 
     // @ts-expect-error not all connectors are supported
     const db0ToDrizzle: Record<ConnectorName, string> = {
       postgresql: 'node-postgres',
-      pglite: 'pglite',
+      pglite: 'pg-proxy',
       mysql2: 'mysql2',
       planetscale: 'planetscale-serverless',
       'better-sqlite3': 'better-sqlite3',
@@ -180,23 +172,29 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig) {
     let connectionConfig = dbConfig
     if (connector === 'postgresql' && dbConfig?.url) {
       connectionConfig = { connectionString: dbConfig.url, ...dbConfig.options }
+    } else if (connector === 'better-sqlite3' && dbConfig?.path) {
+      connectionConfig = { source: dbConfig.path, ...dbConfig.options }
     }
 
     let drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${db0ToDrizzle[connector]}'
-import type { DrizzleConfig } from 'drizzle-orm'
 
-export function hubDrizzle<TSchema extends Record<string, unknown> = Record<string, never>>(options?: DrizzleConfig<TSchema>) {
+export function hubDrizzle(options) {
   return drizzle({
     ...options,
     connection: ${JSON.stringify(connectionConfig)}
   })
 }`
+    const drizzleOrmTypes = `import type { DrizzleConfig } from 'drizzle-orm'
+import { drizzle } from 'drizzle-orm/${db0ToDrizzle[connector]}'
+
+declare module '#hub/drizzle-orm' {
+  export function hubDrizzle<TSchema extends Record<string, unknown> = Record<string, never>>(options?: DrizzleConfig<TSchema>): ReturnType<typeof drizzle<TSchema>>
+}`
 
     if (connector === 'pglite') {
       drizzleOrmContent = `import { drizzle } from 'drizzle-orm/pg-proxy'
-import type { DrizzleConfig } from 'drizzle-orm'
 
-export function hubDrizzle<TSchema extends Record<string, unknown> = Record<string, never>>(options?: DrizzleConfig<TSchema>) {
+export function hubDrizzle(options) {
   return drizzle(async (sql, params, method) => {
     try {
       const rows = await $fetch<any[]>('/api/_hub/database/query', { method: 'POST', body: { sql, params, method } })
@@ -211,18 +209,19 @@ export function hubDrizzle<TSchema extends Record<string, unknown> = Record<stri
 }`
     }
 
-    // create hub directory in .nuxt if it doesn't exist
-    const hubBuildDir = join(nuxt.options.buildDir, 'hub')
-    await mkdir(hubBuildDir, { recursive: true })
-
-    const drizzleOrmPath = join(hubBuildDir, 'drizzle-orm.ts')
-    await writeFile(drizzleOrmPath, drizzleOrmContent, 'utf-8')
-
-    nuxt.options.alias['#hub/drizzle-orm'] = drizzleOrmPath
+    addServerTemplate({
+      filename: '#hub/drizzle-orm',
+      getContents: () => drizzleOrmContent
+    })
+    addTypeTemplate({
+      filename: 'types/hub/drizzle-orm.d.ts',
+      getContents: () => drizzleOrmTypes
+    })
+    addServerImportsDir(resolve('runtime/database/server/drizzle-utils'))
   }
 }
 
-export async function setupProductionDatabase(nitro: Nitro, hub: HubConfig) {
+export async function setupProductionDatabase(nitro: Nitro, hub: HubConfig, deps: Record<string, string>) {
   const preset = nitro.options.preset
   if (!preset) return
 
@@ -238,7 +237,6 @@ export async function setupProductionDatabase(nitro: Nitro, hub: HubConfig) {
 
   switch (preset) {
     // Does your favourite cloud provider require special configuration? Feel free to open a PR to add zero-config support for other presets
-
     case 'vercel': {
       if (dialect === true || dialect === 'postgresql') {
         databaseConfig = {
@@ -347,19 +345,6 @@ export async function setupProductionDatabase(nitro: Nitro, hub: HubConfig) {
   }
 
   if (databaseConfig!) {
-    // check if connector dependencies are installed
-    switch (databaseConfig.connector) {
-      case 'postgresql':
-        await ensureDependencyInstalled('pg')
-        break
-      case 'better-sqlite3':
-        await ensureDependencyInstalled('better-sqlite3')
-        break
-      case 'mysql2':
-        await ensureDependencyInstalled('mysql2')
-        break
-    }
-
     // set connector
     // @ts-expect-error temporarily set to empty object
     nitro.options.database ||= {}

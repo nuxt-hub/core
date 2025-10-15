@@ -1,6 +1,5 @@
 import { join } from 'pathe'
 import { defu } from 'defu'
-import { ensureDependencyInstalled } from 'nypm'
 import { addServerScanDir, addServerImportsDir, logger } from '@nuxt/kit'
 import { logWhenReady } from '../features'
 import { resolve } from '../module'
@@ -11,7 +10,7 @@ import type { HubConfig } from '../features'
 
 const log = logger.withTag('nuxt:hub')
 
-export function setupKV(nuxt: Nuxt, hub: HubConfig) {
+export function setupKV(nuxt: Nuxt, hub: HubConfig, _deps: Record<string, string>) {
   // Configure dev storage
   nuxt.options.nitro.devStorage ||= {}
   nuxt.options.nitro.devStorage.kv = defu(nuxt.options.nitro.devStorage.kv, {
@@ -28,7 +27,7 @@ export function setupKV(nuxt: Nuxt, hub: HubConfig) {
   logWhenReady(nuxt, `\`hubKV()\` configured with \`${driver}\` driver`)
 }
 
-export async function setupProductionKV(nitro: Nitro, _hub: HubConfig) {
+export async function setupProductionKV(nitro: Nitro, _hub: HubConfig, deps: Record<string, string>) {
   const preset = nitro.options.preset
   if (!preset) return
 
@@ -84,10 +83,8 @@ export async function setupProductionKV(nitro: Nitro, _hub: HubConfig) {
 
   if (kvConfig) {
     // check if driver dependencies are installed
-    switch (kvConfig.driver) {
-      case 'redis':
-        await ensureDependencyInstalled('ioredis')
-        break
+    if (kvConfig.driver === 'redis' && !deps['ioredis']) {
+      throw new Error('Please run `npx nypm i ioredis` to use Redis KV storage')
     }
 
     // set driver

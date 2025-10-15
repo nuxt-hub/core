@@ -1,60 +1,30 @@
-import { join } from 'pathe'
+import { logger } from '@nuxt/kit'
 import { defu } from 'defu'
-import { addServerScanDir, addServerImportsDir, addImportsDir, logger } from '@nuxt/kit'
-import { logWhenReady } from '../features'
 
-import type { Nuxt } from '@nuxt/schema'
 import type { Nitro, NitroOptions } from 'nitropack'
 import type { HubConfig } from '../features'
-import { resolve } from '../module'
 
 const log = logger.withTag('nuxt:hub')
 
-export function setupBlob(nuxt: Nuxt, hub: HubConfig, _deps: Record<string, string>) {
-  // Configure dev storage
-  nuxt.options.nitro.devStorage ||= {}
-
-  if (!nuxt.options.nitro.devStorage.blob) {
-    nuxt.options.nitro.devStorage.blob = {
-      driver: 'fs-lite',
-      base: join(hub.dir!, 'blob')
-    }
-  }
-
-  // Add Server scanning
-  addServerScanDir(resolve('runtime/blob/server'))
-  addServerImportsDir(resolve('runtime/blob/server/utils'))
-
-  // Add Composables
-  addImportsDir(resolve('runtime/blob/app/composables'))
-
-  if (nuxt.options.nitro.storage?.blob?.driver === 'vercel-blob') {
-    nuxt.options.runtimeConfig.public.hub.blobProvider = 'vercel-blob'
-  }
-
-  logWhenReady(nuxt, `\`hubBlob()\` configured with \`${nuxt.options.nitro.devStorage.blob.driver}\` driver`)
-}
-
-export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig, deps: Record<string, string>) {
+export async function configureProductionBlobDriver(nitro: Nitro, _hub: HubConfig) {
   const preset = nitro.options.preset
   if (!preset) return
 
   // Only configure if blob driver is not already set
   if (nitro.options.storage?.blob?.driver) {
-    log.info(`\`hubBlob()\` configured with \`${nitro.options.storage.blob.driver}\` driver (defined in \`nuxt.config.ts\`)`)
+    log.info(`Using user-configured \`${nitro.options.storage.blob.driver}\` blob driver`)
     return
   }
   let blobConfig: NitroOptions['storage']['blob']
 
   switch (preset) {
     // Does your favourite cloud provider require special configuration? Feel free to open a PR to add zero-config support for other presets
-
     case 'vercel': {
       blobConfig = {
         driver: 'vercel-blob',
         access: 'public'
       }
-      log.warn('Files stored in Vercel Blob are public. Manually configure a different storage driver if storing sensitive files.')
+      log.warn('Files stored in Vercel Blob are always public. Specify a different storage driver if storing sensitive files.')
       break
     }
 
@@ -146,6 +116,6 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig, deps: R
     // set driver
     nitro.options.storage ||= {}
     nitro.options.storage.blob = defu(nitro.options.storage?.blob, blobConfig)
-    log.info(`\`hubBlob()\` configured with \`${blobConfig.driver}\` driver`)
+    log.info(`Using zero-config \`${blobConfig.driver}\` blob driver`)
   }
 }

@@ -2,7 +2,7 @@ import { writeFile, readFile } from 'node:fs/promises'
 import { defineNuxtModule, createResolver, logger } from '@nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
-import { findWorkspaceDir } from 'pkg-types'
+import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
 import type { Nuxt } from '@nuxt/schema'
 import { version } from '../package.json'
 import { setupAI, setupCache, setupOpenAPI, setupDatabase, setupKV, setupBase, setupBlob, type HubConfig } from './features'
@@ -59,13 +59,15 @@ export default defineNuxtModule<ModuleOptions>({
       nuxt.options.nitro.cloudflare.nodeCompat = true
     }
 
+    const packageJSON = await readPackageJSON(nuxt.options.rootDir)
+    const deps = Object.assign({}, packageJSON.dependencies, packageJSON.devDependencies)
     await setupBase(nuxt, hub as HubConfig)
     setupOpenAPI(nuxt, hub as HubConfig)
-    hub.ai && await setupAI(nuxt, hub as HubConfig)
-    hub.blob && await setupBlob(nuxt, hub as HubConfig)
-    hub.cache && await setupCache(nuxt, hub as HubConfig)
-    hub.database && await setupDatabase(nuxt, hub as HubConfig)
-    hub.kv && await setupKV(nuxt, hub as HubConfig)
+    hub.ai && await setupAI(nuxt, hub as HubConfig, deps)
+    hub.blob && await setupBlob(nuxt, hub as HubConfig, deps)
+    hub.cache && await setupCache(nuxt, hub as HubConfig, deps)
+    hub.database && await setupDatabase(nuxt, hub as HubConfig, deps)
+    hub.kv && await setupKV(nuxt, hub as HubConfig, deps)
 
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {
