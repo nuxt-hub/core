@@ -197,10 +197,9 @@ declare module '#hub/drizzle-orm' {
 export function hubDrizzle(options) {
   return drizzle(async (sql, params, method) => {
     try {
-      const rows = await $fetch<any[]>('/api/_hub/database/query', { method: 'POST', body: { sql, params, method } })
+      const rows = await $fetch('/api/_hub/database/query', { method: 'POST', body: { sql, params, method } })
       return { rows }
-    } catch (e: any) {
-      console.error(e.response)
+    } catch (e) {
       return { rows: [] }
     }
   }, {
@@ -225,7 +224,6 @@ export function hubDrizzle(options) {
       getContents: () => drizzleOrmTypes,
     }, { nitro: true })
     addServerImportsDir(resolve('runtime/database/server/drizzle-utils'))
-    console.log(nuxt.options.nitro.alias)
   }
 }
 
