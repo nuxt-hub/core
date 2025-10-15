@@ -24,7 +24,7 @@ export default eventHandler(async (event) => {
       return Object.values(result)
     })
   } catch (e: any) {
-    console.error(e.message)
+    console.error(`[hub:database]: ${e.message}`)
     return createError({
       statusCode: 500,
       message: 'Query Error',
