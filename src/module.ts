@@ -8,10 +8,11 @@ import { version } from '../package.json'
 import { setupAI, setupCache, setupOpenAPI, setupDatabase, setupKV, setupBase, setupBlob, type HubConfig } from './features'
 import type { ModuleOptions } from './types/module'
 import { addBuildHooks } from './utils/build'
+import { generateWranglerFile, isCloudflareDev } from './utils/cloudflare'
 
 export * from './types'
 
-const log = logger.withTag('nuxt:hub');
+const log = logger.withTag('nuxt:hub')
 
 export const { resolve, resolvePath } = createResolver(import.meta.url)
 
@@ -61,6 +62,21 @@ export default defineNuxtModule<ModuleOptions>({
 
     const packageJSON = await readPackageJSON(nuxt.options.rootDir)
     const deps = Object.assign({}, packageJSON.dependencies, packageJSON.devDependencies)
+
+    // getPlatformProxy during local development
+    // https://developers.cloudflare.com/workers/wrangler/api/#getplatformproxy
+    const isCfDev = await isCloudflareDev(nuxt, deps)
+    if (isCfDev && nuxt.options.dev) {
+      await generateWranglerFile(nuxt, hub)
+
+      nuxt.options.nitro.cloudflare ||= {}
+      nuxt.options.nitro.cloudflare.dev = {
+        configPath: join(nuxt.options.rootDir, 'wrangler.jsonc'),
+        persistDir: join(nuxt.options.rootDir, hub.dir!)
+      }
+      nuxt.options.nitro.preset = 'cloudflare-dev'
+    }
+
     await setupBase(nuxt, hub as HubConfig)
     setupOpenAPI(nuxt, hub as HubConfig)
     hub.ai && await setupAI(nuxt, hub as HubConfig, deps)

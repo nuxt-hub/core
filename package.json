@@ -74,6 +74,7 @@
     "h3": "^1.15.4",
     "mime": "^4.1.0",
     "nitro-cloudflare-dev": "^0.2.2",
+    "nitropack": "link:../../../Library/pnpm/global/5/node_modules/nitropack",
     "nypm": "^0.6.2",
     "obuild": "^0.2.1",
     "ofetch": "^1.4.1",
@@ -101,7 +102,8 @@
     "typescript": "~5.9.3",
     "vitest": "^3.2.4",
     "vue-tsc": "^3.1.1",
-    "workers-ai-provider": "^2.0.0"
+    "workers-ai-provider": "^2.0.0",
+    "wrangler": "^4.42.2"
   },
   "packageManager": "pnpm@10.17.1",
   "pnpm": {
@@ -118,6 +120,7 @@
   },
   "peerDependencies": {
     "@ai-sdk/gateway": "^1.0.30",
-    "workers-ai-provider": "^2.0.0"
+    "workers-ai-provider": "^2.0.0",
+    "wrangler": "^4.42.2"
   }
 }

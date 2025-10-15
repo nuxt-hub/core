@@ -73,40 +73,82 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   // Configure dev database based on dialect
   let devDatabaseConfig: NitroOptions['database']['default']
 
-  if (dialect === 'postgresql') {
-    if (process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL) {
-      // Use postgresql if env variable is set
-      const setEnvVarName = process.env.POSTGRES_URL ? 'POSTGRES_URL' : process.env.POSTGRESQL_URL ? 'POSTGRESQL_URL' : 'DATABASE_URL'
-      logWhenReady(nuxt, `\`hubDatabase()\` configured with \`PostgreSQL\` using provided \`${setEnvVarName}\``)
+  // Cloudflare Dev
+  if (nuxt.options.nitro.preset === 'cloudflare-dev') {
+    if (dialect === 'postgresql') {
+      if (process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL) {
+        const setEnvVarName = process.env.POSTGRES_URL ? 'POSTGRES_URL' : process.env.POSTGRESQL_URL ? 'POSTGRESQL_URL' : 'DATABASE_URL'
+        logWhenReady(nuxt, `\`hubDatabase()\` configured with \`PostgreSQL\` via \`Hyperdrive\` using provided \`${setEnvVarName}\``)
+        devDatabaseConfig = {
+          connector: 'cloudflare-hyperdrive-postgresql',
+          options: {
+            bindingName: 'HYPERDRIVE'
+          }
+        }
+      } else {
+        log.error(nuxt, '`hubDatabase()` configured with `PostgreSQL` during `cloudflare-dev` emulation requires setting the `POSTGRESQL_URL` environment variable', 'error')
+      }
+    } else if (dialect === 'sqlite') {
+      log.info('`hubDatabase()` configured with `D1` during local development')
       devDatabaseConfig = {
-        connector: 'postgresql',
+        connector: 'cloudflare-d1',
         options: {
-          url: process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL
+          bindingName: 'DB'
         }
       }
-    } else {
-      // Use pglite if env variable not provided
-      logWhenReady(nuxt, '`hubDatabase()` configured with `PGlite` during local development')
+    } else if (dialect === 'mysql') {
+      if (process.env.MYSQL_URL || process.env.DATABASE_URL) {
+        // Use postgresql if env variable is set
+        const setEnvVarName = process.env.MYSQL_URL ? 'MYSQL_URL' : 'DATABASE_URL'
+        logWhenReady(nuxt, `\`hubDatabase()\` configured with \`MySQL\` via \`Hyperdrive\` using provided \`${setEnvVarName}\``)
+        devDatabaseConfig = {
+          connector: 'cloudflare-hyperdrive-mysql',
+          options: {
+            bindingName: 'HYPERDRIVE'
+          }
+        }
+      } else {
+        log.error('`hubDatabase()` configured with `MySQL` during `cloudflare-dev` emulation requires setting the `MYSQL_URL` environment variable')
+      }
+    }
+
+    // All other presets
+  } else {
+    if (dialect === 'postgresql') {
+      if (process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL) {
+        // Use postgresql if env variable is set
+        const setEnvVarName = process.env.POSTGRES_URL ? 'POSTGRES_URL' : process.env.POSTGRESQL_URL ? 'POSTGRESQL_URL' : 'DATABASE_URL'
+        logWhenReady(nuxt, `\`hubDatabase()\` configured with \`PostgreSQL\` using provided \`${setEnvVarName}\``)
+        devDatabaseConfig = {
+          connector: 'postgresql',
+          options: {
+            url: process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL
+          }
+        }
+      } else {
+        // Use pglite if env variable not provided
+        log.info('`hubDatabase()` configured with `PGlite` during local development')
+        devDatabaseConfig = {
+          connector: 'pglite',
+          options: {
+            dataDir: join(hub.dir!, 'database/pglite')
+          }
+        }
+        await mkdir(join(hub.dir!, 'database/pglite'), { recursive: true })
+      }
+    } else if (dialect === 'sqlite') {
+      logWhenReady(nuxt, '`hubDatabase()` configured with `SQLite` during local development')
       devDatabaseConfig = {
-        connector: 'pglite',
+        connector: 'better-sqlite3',
         options: {
-          dataDir: join(hub.dir!, 'database/pglite')
+          path: join(hub.dir!, 'database/sqlite/db.sqlite3')
         }
       }
-      await mkdir(join(hub.dir!, 'database/pglite'), { recursive: true })
-    }
-  } else if (dialect === 'sqlite') {
-    logWhenReady(nuxt, '`hubDatabase()` configured with `SQLite` during local development')
-    devDatabaseConfig = {
-      connector: 'better-sqlite3',
-      options: {
-        path: join(hub.dir!, 'database/sqlite/db.sqlite3')
-      }
-    }
       await mkdir(join(hub.dir!, 'database/sqlite'), { recursive: true })
     } else if (dialect === 'mysql') {
-    if (!nuxt.options.nitro.devDatabase?.db?.connector) {
-      logWhenReady(nuxt, '`hubDatabase()` configured with `MySQL` during local development is not supported yet. Please manually configure your development database in `nitro.devDatabase.db` in `nuxt.config.ts`. Learn more at https://hub.nuxt.com/docs/features/database.', 'warn')
+      if (!nuxt.options.nitro.devDatabase?.db?.connector) {
+        logWhenReady(nuxt, '`hubDatabase()` configured with `MySQL` during local development is not supported yet. Please manually configure your development database in `nitro.devDatabase.db` in `nuxt.config.ts`. Learn more at https://hub.nuxt.com/docs/features/database.', 'warn')
+      }
     }
   }
 
@@ -164,7 +206,9 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
       'libsql-http': 'libsql/http',
       'libsql-node': 'libsql/node',
       'libsql-web': 'libsql/web',
-      'cloudflare-d1': 'd1'
+      'cloudflare-d1': 'd1',
+      'cloudflare-hyperdrive-postgresql': 'node-postgres',
+      'cloudflare-hyperdrive-mysql': 'mysql2'
       // unsupported: sqlite & node-sqlite
     }
 
@@ -208,6 +252,16 @@ export function hubDrizzle(options) {
 }`
     }
 
+    if (connector.startsWith('cloudflare-')) {
+      const binding = connector.startsWith('cloudflare-hyperdrive') ? 'env.HYPERDRIVE?.connectionString' : 'env.DB'
+      drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${db0ToDrizzle[connector]}'
+import type { DrizzleConfig } from 'drizzle-orm'
+import { env } from 'cloudflare:workers'
+
+export function hubDrizzle<TSchema extends Record<string, unknown> = Record<string, never>>(options?: DrizzleConfig<TSchema>) {
+  return drizzle(${binding}, { ...options })
+}`
+    }
 
     // addServerTemplate({
     //   filename: '#hub-drizzle-orm.mjs',
@@ -221,7 +275,7 @@ export function hubDrizzle(options) {
     nuxt.options.nitro.alias!['#hub/drizzle-orm'] = template.dst
     addTypeTemplate({
       filename: 'hub/drizzle-orm.d.ts',
-      getContents: () => drizzleOrmTypes,
+      getContents: () => drizzleOrmTypes
     }, { nitro: true })
     addServerImportsDir(resolve('runtime/database/server/drizzle-utils'))
   }
