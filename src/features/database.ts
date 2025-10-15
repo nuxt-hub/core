@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { defu } from 'defu'
 import { join } from 'pathe'
-import { addServerImportsDir, addServerScanDir, addServerTemplate, addTypeTemplate, logger } from '@nuxt/kit'
+import { addServerImportsDir, addServerScanDir, addServerTemplate, addTemplate, addTypeTemplate, logger } from '@nuxt/kit'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir } from '../runtime/database/server/utils/migrations/helpers'
 import { logWhenReady } from '../features'
 import { resolve } from '../module'
@@ -209,15 +209,23 @@ export function hubDrizzle(options) {
 }`
     }
 
-    addServerTemplate({
-      filename: '#hub/drizzle-orm',
-      getContents: () => drizzleOrmContent
+
+    // addServerTemplate({
+    //   filename: '#hub-drizzle-orm.mjs',
+    //   getContents: () => drizzleOrmContent
+    // })
+    const template = addTemplate({
+      filename: 'hub/drizzle-orm.mjs',
+      getContents: () => drizzleOrmContent,
+      write: true
     })
+    nuxt.options.nitro.alias!['#hub/drizzle-orm'] = template.dst
     addTypeTemplate({
-      filename: 'types/hub/drizzle-orm.d.ts',
-      getContents: () => drizzleOrmTypes
-    })
+      filename: 'hub/drizzle-orm.d.ts',
+      getContents: () => drizzleOrmTypes,
+    }, { nitro: true })
     addServerImportsDir(resolve('runtime/database/server/drizzle-utils'))
+    console.log(nuxt.options.nitro.alias)
   }
 }
 

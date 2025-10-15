@@ -3,6 +3,7 @@ import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core'
 export default defineEventHandler(async () => {
   const db0 = useDatabase('db')
 
+
   const _tables = await db0.sql`
     SELECT
       name,
@@ -14,7 +15,7 @@ export default defineEventHandler(async () => {
       name NOT LIKE 'sqlite_%' and name NOT LIKE '_litestream_%' and name NOT LIKE '__drizzle%'
     ;`
 
-  const db = await useDrizzle()
+  const db = useDrizzle()
 
   const drizzleTables = await db.all(sql`
     SELECT

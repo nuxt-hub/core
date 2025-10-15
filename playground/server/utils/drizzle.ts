@@ -22,6 +22,6 @@ export const tables = {
   todos
 }
 
-export async function useDrizzle() {
+export function useDrizzle() {
   return hubDrizzle({ schema: tables })
 }

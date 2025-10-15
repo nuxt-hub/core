@@ -6,7 +6,7 @@ export default eventHandler(async (event) => {
   }).parse)
 
   // List todos for the current user
-  const db = await useDrizzle()
+  const db = useDrizzle()
   const deletedTodo = await db.delete(tables.todos).where(and(
     eq(tables.todos.id, Number(id))
   )).returning().then(r => r[0])
