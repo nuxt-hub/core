@@ -71,7 +71,7 @@ export default defineNuxtModule<ModuleOptions>({
 
       nuxt.options.nitro.cloudflare ||= {}
       nuxt.options.nitro.cloudflare.dev = {
-        configPath: join(nuxt.options.rootDir, 'wrangler.jsonc'),
+        configPath: join(nuxt.options.buildDir, 'hub', 'wrangler.jsonc'),
         persistDir: join(nuxt.options.rootDir, hub.dir!)
       }
       nuxt.options.nitro.preset = 'cloudflare-dev'

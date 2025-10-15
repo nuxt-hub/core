@@ -80,8 +80,8 @@ export async function generateWranglerFile(nuxt: Nuxt, hub: HubConfig) {
   }
 
   // Create the .data/hub directory
-  await mkdir(join(nuxt.options.rootDir, hub.dir!), { recursive: true })
+  await mkdir(join(nuxt.options.buildDir, 'hub'), { recursive: true })
 
   const mergedWrangler = defu(wrangler, nuxt.options.nitro.cloudflare?.wrangler)
-  await writeFile(join(nuxt.options.rootDir, hub.dir!, 'wrangler.jsonc'), JSON.stringify(mergedWrangler, null, 2), 'utf-8')
+  await writeFile(join(nuxt.options.buildDir, 'hub', 'wrangler.jsonc'), JSON.stringify(mergedWrangler, null, 2), 'utf-8')
 }
