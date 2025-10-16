@@ -3,3 +3,4 @@ CREATE TABLE IF NOT EXISTS users (
   email TEXT NOT NULL,
   password TEXT NOT NULL
 );
+

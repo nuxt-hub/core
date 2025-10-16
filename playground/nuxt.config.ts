@@ -32,7 +32,7 @@ export default defineNuxtConfig({
 
   hub: {
     ai: 'cloudflare',
-    database: 'sqlite',
+    database: process.env.TEST ? 'sqlite' : 'postgresql',
     blob: true,
     kv: true,
     cache: true

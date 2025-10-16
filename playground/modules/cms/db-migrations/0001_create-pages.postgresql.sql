@@ -3,3 +3,4 @@ CREATE TABLE IF NOT EXISTS pages (
   title TEXT NOT NULL,
   content TEXT NOT NULL
 );
+

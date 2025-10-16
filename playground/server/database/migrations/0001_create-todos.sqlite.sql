@@ -1,0 +1,9 @@
+-- Migration number: 0001 	 2024-10-24T00:25:12.371Z
+-- SQLite-specific version with AUTOINCREMENT
+CREATE TABLE IF NOT EXISTS todos (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  completed INTEGER DEFAULT 0 NOT NULL,
+  created_at INTEGER NOT NULL
+);
+

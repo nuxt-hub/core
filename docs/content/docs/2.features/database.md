@@ -601,6 +601,10 @@ CREATE TABLE `todos` (
 );
 ```
 
+::note
+You can create dialect-specific migrations by adding a `.<dialect>.sql` suffix to your migration files (e.g., `0001_create-todos.postgresql.sql` or `0001_create-todos.sqlite.sql`). This is useful when you need different SQL syntax for different database dialects.
+::
+
 ::note{to="/docs/guides/drizzle#npm-run-dbgenerate"}
 With [Drizzle ORM](/docs/guides/drizzle), migrations are automatically created when you run `npx drizzle-kit generate`.
 ::

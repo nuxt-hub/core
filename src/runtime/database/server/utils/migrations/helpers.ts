@@ -15,9 +15,38 @@ export function useDatabaseMigrationsStorage(hub: HubConfig) {
   })
 }
 
+/**
+ * Extract the base migration name and dialtect from a filename
+ * e.g., '0001_create-todos.postgresql.sql' -> '0001_create-todos'
+ * e.g., '0001_create-todos.sql' -> '0001_create-todos'
+ */
+export function getMigrationMetadata(filename: string): { filename: string, name: string, dialect: string | undefined } {
+  // Remove .sql extension
+  let name = filename.replace(/\.sql$/, '')
+  // Remove dialect suffix if present (e.g., .postgresql, .sqlite, .mysql)
+  const dialect = name.match(/\.(postgresql|sqlite|mysql)$/)?.[1]
+  if (dialect) {
+    name = name.replace(`.${dialect}`, '')
+  }
+  return {
+    filename,
+    name,
+    dialect
+  }
+}
+
 export async function getDatabaseMigrationFiles(hub: HubConfig) {
-  const fileKeys = await useDatabaseMigrationsStorage(hub).getKeys()
-  return fileKeys.filter(file => file.endsWith('.sql'))
+  const storage = useDatabaseMigrationsStorage(hub)
+  // Get migrations and exclude if dialect specified but not the current database dialect
+  const migrationsFiles = (await storage.getKeys()).map(file => getMigrationMetadata(file)).filter(migration => migration.dialect === hub.database || !migration.dialect)
+
+  return migrationsFiles.filter(migration => {
+    // if generic SQL migration file, exclude it if same migration name for current database dialect exists
+    if (!migration.dialect && migrationsFiles.findIndex(m => m.name === migration.name && m.dialect === hub.database) !== -1) {
+      return false
+    }
+    return true
+  })
 }
 
 export async function copyDatabaseMigrationsToHubDir(hub: HubConfig) {
@@ -83,16 +112,25 @@ export function getCreateMigrationsTableQuery(db: { dialect: string }): string {
 
 // #region Queries
 export function useDatabaseQueriesStorage(hub: HubConfig) {
-  // .data/hub/database/migrations
+  // .data/hub/database/queries
   return createStorage({
     driver: fsDriver({
       base: join(hub.dir!, 'database/queries')
     })
   })
 }
+
 export async function getDatabaseQueryFiles(hub: HubConfig) {
-  const fileKeys = await useDatabaseQueriesStorage(hub).getKeys()
-  return fileKeys.filter(file => file.endsWith('.sql'))
+  const storage = useDatabaseQueriesStorage(hub)
+  const queriesFiles = (await storage.getKeys()).map(file => getMigrationMetadata(file)).filter(query => query.dialect === hub.database || !query.dialect)
+
+  return queriesFiles.filter(query => {
+    // if generic SQL query file, exclude it if same query name for current database dialect exists
+    if (!query.dialect && queriesFiles.findIndex(q => q.name === query.name && q.dialect === hub.database) !== -1) {
+      return false
+    }
+    return true
+  })
 }
 
 export async function copyDatabaseQueriesToHubDir(hub: HubConfig) {
@@ -131,6 +169,9 @@ export function splitSqlQueries(sqlFileContent: string): string[] {
   for (let i = 0; i < sqlFileContent.length; i += 1) {
     const char = sqlFileContent[i]
     const nextChar = sqlFileContent[i + 1]
+
+    // Skip if char is undefined (shouldn't happen but satisfies TypeScript)
+    if (!char) continue
 
     // Handle string literals
     if ((char === '\'' || char === '"') && (i === 0 || sqlFileContent[i - 1] !== '\\')) {
