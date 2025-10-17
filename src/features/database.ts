@@ -37,7 +37,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
       dialect = 'sqlite'
     } else if (productionDriver === 'mysql2') {
       dialect = 'mysql'
-    } else if (['libsql-core', 'libsql-http', 'libsql-node', 'libsql-web'].includes(productionDriver)) {
+    } else if (['libsql', 'libsql-core', 'libsql-http', 'libsql-node', 'libsql-web'].includes(productionDriver)) {
       // NOTE: libSQL implements additional functionality beyond sqlite, but users can manually configure a libsql database within Nitro if they require them
       dialect = 'sqlite' // libsql is SQLite-compatible
     } else {
@@ -49,7 +49,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   if (isDialectConfigured && productionDriver) {
     const dialectMatchesDriver = (
       (dialect === 'postgresql' && (productionDriver === 'postgresql' || productionDriver === 'pglite'))
-      || (dialect === 'sqlite' && ['better-sqlite3', 'bun-sqlite', 'bun', 'node-sqlite', 'sqlite3', 'libsql-core', 'libsql-http', 'libsql-node', 'libsql-web'].includes(productionDriver))
+      || (dialect === 'sqlite' && ['better-sqlite3', 'bun-sqlite', 'bun', 'node-sqlite', 'sqlite3', 'libsql', 'libsql-core', 'libsql-http', 'libsql-node', 'libsql-web'].includes(productionDriver))
       || (dialect === 'mysql' && productionDriver === 'mysql2')
     )
 
@@ -58,7 +58,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
       let inferredDialect: string
       if (productionDriver === 'postgresql' || productionDriver === 'pglite') {
         inferredDialect = 'postgresql'
-      } else if (['better-sqlite3', 'bun-sqlite', 'bun', 'node-sqlite', 'sqlite3', 'libsql-core', 'libsql-http', 'libsql-node', 'libsql-web'].includes(productionDriver)) {
+      } else if (['better-sqlite3', 'bun-sqlite', 'bun', 'node-sqlite', 'sqlite3', 'libsql', 'libsql-core', 'libsql-http', 'libsql-node', 'libsql-web'].includes(productionDriver)) {
         inferredDialect = 'sqlite'
       } else if (productionDriver === 'mysql2') {
         inferredDialect = 'mysql'
@@ -66,7 +66,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
         inferredDialect = 'unknown'
       }
 
-      logWhenReady(nuxt, `Database dialect mismatch: \`hub.database\` is set to \`${dialect}\` but \`nitro.database.db\` is \`${inferredDialect}\` (\`${productionDriver}\`). Set \`hub.database\` to \`true\` or \`'${inferredDialect}'\` in your \`nuxt.config.ts\`.`, 'warn')
+      logWhenReady(nuxt, `Database dialect mismatch: \`hub.database\` is set to \`${dialect}\` but \`nitro.database.db\` is \`${inferredDialect}\` (\`${productionDriver}\`). Set \`hub.database\` to \`'${inferredDialect}'\` in your \`nuxt.config.ts\`.`, 'warn')
     }
   }
 
@@ -96,15 +96,26 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
       await mkdir(join(hub.dir!, 'database/pglite'), { recursive: true })
     }
   } else if (dialect === 'sqlite') {
-    logWhenReady(nuxt, '`hubDatabase()` configured with `SQLite` during local development')
-    devDatabaseConfig = {
-      connector: 'better-sqlite3',
-      options: {
-        path: join(hub.dir!, 'database/sqlite/db.sqlite3')
+    if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
+      logWhenReady(nuxt, `\`hubDatabase()\` configured with \`SQLite\` and \`Turso\` using provided \`TURSO_DATABASE_URL\` and \`TURSO_AUTH_TOKEN\``)
+      devDatabaseConfig = {
+        connector: 'libsql',
+        options: {
+          url: process.env.TURSO_DATABASE_URL,
+          authToken: process.env.TURSO_AUTH_TOKEN
+        }
       }
-    }
+    } else {
+      logWhenReady(nuxt, '`hubDatabase()` configured with `SQLite` during local development')
+      devDatabaseConfig = {
+        connector: 'better-sqlite3',
+        options: {
+          path: join(hub.dir!, 'database/sqlite/db.sqlite3')
+        }
+      }
       await mkdir(join(hub.dir!, 'database/sqlite'), { recursive: true })
-    } else if (dialect === 'mysql') {
+    }
+  } else if (dialect === 'mysql') {
     if (!nuxt.options.nitro.devDatabase?.db?.connector) {
       logWhenReady(nuxt, '`hubDatabase()` configured with `MySQL` during local development is not supported yet. Please manually configure your development database in `nitro.devDatabase.db` in `nuxt.config.ts`. Learn more at https://hub.nuxt.com/docs/features/database.', 'warn')
     }
@@ -123,6 +134,8 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
     logWhenReady(nuxt, 'Please run `npx nypm i mysql2` to use MySQL as database.', 'error')
   } else if (developmentDriver === 'better-sqlite3' && !deps['better-sqlite3']) {
     logWhenReady(nuxt, 'Please run `npx nypm i better-sqlite3` to use SQLite as database.', 'error')
+  } else if (developmentDriver.includes('libsql') && !deps['@libsql/client']) {
+    logWhenReady(nuxt, 'Please run `npx nypm i @libsql/client` to use libSQL as database.', 'error')
   }
 
   // Enable Nitro database

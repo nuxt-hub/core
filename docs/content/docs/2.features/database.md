@@ -139,6 +139,20 @@ When building the Nuxt app, NuxtHub automatically configures database connectors
 
         The database file will be stored at `.data/database/sqlite/db.sqlite3`.
 
+        **Using Turso Cloud:**
+
+        To use [Turso](https://turso.tech/) for SQLite during local development or production:
+
+        1. Install the `@libsql/client` package
+
+        :pm-install{name="@libsql/client"}
+
+        2. Set the following environment variables:
+        - `TURSO_DATABASE_URL` - Your Turso database URL
+        - `TURSO_AUTH_TOKEN` - Your Turso authentication token
+
+        NuxtHub will automatically detect these variables and configure the `libsql` connector.
+
       ::::
     ::
 
@@ -188,7 +202,13 @@ During local development, NuxtHub automatically configures the database connecto
 ::tabs
   ::::div{label="SQLite" icon="i-simple-icons-sqlite"}
 
-    Uses `better-sqlite3` connector with the database file stored at `.data/database/sqlite/db.sqlite3`.
+    **With Turso Cloud:**
+    - If `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` environment variables are provided, uses `libsql` connector to connect to your [Turso](https://turso.tech/) database
+    - Requires `@libsql/client` package: `npx nypm i @libsql/client`
+
+    **Without environment variables:**
+    - Uses `better-sqlite3` connector with the database file stored at `.data/database/sqlite/db.sqlite3`
+    - Requires `better-sqlite3` package: `npx nypm i better-sqlite3`
 
   ::::
 
