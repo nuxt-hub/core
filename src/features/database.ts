@@ -273,8 +273,18 @@ export async function setupProductionDatabase(nitro: Nitro, hub: HubConfig, deps
         }
       } else if (dialect === 'mysql') {
         throw new Error('MySQL connector requires manual configuration in `nitro.database.db` within `nuxt.config.ts`')
-      } else if (dialect === 'sqlite' && !process.env.TURSO_DATABASE_URL && !process.env.TURSO_AUTH_TOKEN) {
-        throw new Error('SQLite connector requires manual configuration in `nitro.database.db` within `nuxt.config.ts` or set TURSO_DATABASE_URL and TURSO_AUTH_TOKEN environment variables')
+      } else if (dialect === 'sqlite') {
+        if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
+          databaseConfig = {
+            connector: 'libsql',
+            options: {
+              url: process.env.TURSO_DATABASE_URL,
+              authToken: process.env.TURSO_AUTH_TOKEN
+            }
+          }
+        } else {
+          throw new Error('SQLite connector requires manual configuration in `nitro.database.db` within `nuxt.config.ts` or connect a Turso database')
+        }
       }
       break
     }
@@ -352,10 +362,20 @@ export async function setupProductionDatabase(nitro: Nitro, hub: HubConfig, deps
       } else if (dialect === 'mysql') {
         throw new Error('MySQL connector requires manual configuration in `nitro.database.db` within `nuxt.config.ts`')
       } else if (dialect === 'sqlite') {
-        databaseConfig = {
-          connector: 'sqlite',
-          options: {
-            path: '.data/database/sqlite/db.sqlite3'
+        if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
+          databaseConfig = {
+            connector: 'libsql',
+            options: {
+              url: process.env.TURSO_DATABASE_URL,
+              authToken: process.env.TURSO_AUTH_TOKEN
+            }
+          }
+        } else {
+          databaseConfig = {
+            connector: 'sqlite',
+            options: {
+              path: '.data/database/sqlite/db.sqlite3'
+            }
           }
         }
       }
