@@ -19,7 +19,7 @@ export async function getDb0Connector(nitro: Nitro) {
   }
 
   const connector = dbConfig.connector === 'sqlite' ? 'better-sqlite3' : dbConfig.connector
-  const connectorPath = `db0/connectors/${connector}`
+  const connectorPath = `db0/connectors/${connector.replace('-', '/')}`
 
   try {
     // Use createRequire to resolve from the consumer's context

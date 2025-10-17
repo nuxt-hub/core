@@ -99,7 +99,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
     if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
       logWhenReady(nuxt, `\`hubDatabase()\` configured with \`SQLite\` and \`Turso\` using provided \`TURSO_DATABASE_URL\` and \`TURSO_AUTH_TOKEN\``)
       devDatabaseConfig = {
-        connector: 'libsql',
+        connector: 'libsql-node',
         options: {
           url: process.env.TURSO_DATABASE_URL,
           authToken: process.env.TURSO_AUTH_TOKEN
@@ -276,7 +276,7 @@ export async function setupProductionDatabase(nitro: Nitro, hub: HubConfig, deps
       } else if (dialect === 'sqlite') {
         if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
           databaseConfig = {
-            connector: 'libsql',
+            connector: 'libsql-node',
             options: {
               url: process.env.TURSO_DATABASE_URL,
               authToken: process.env.TURSO_AUTH_TOKEN
@@ -296,10 +296,20 @@ export async function setupProductionDatabase(nitro: Nitro, hub: HubConfig, deps
 
       const isPages = preset === 'cloudflare-pages'
       if (dialect === true || dialect === 'sqlite') {
-        databaseConfig = {
-          connector: 'cloudflare-d1',
-          options: {
-            bindingName: 'DB'
+        if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
+          databaseConfig = {
+            connector: 'libsql-web',
+            options: {
+              url: process.env.TURSO_DATABASE_URL,
+              authToken: process.env.TURSO_AUTH_TOKEN
+            }
+          }
+        } else {
+          databaseConfig = {
+            connector: 'cloudflare-d1',
+            options: {
+              bindingName: 'DB'
+            }
           }
         }
         log.info(`Ensure a \`DB\` binding is set in your Cloudflare ${isPages ? 'Pages' : 'Workers'} configuration`)
@@ -364,7 +374,7 @@ export async function setupProductionDatabase(nitro: Nitro, hub: HubConfig, deps
       } else if (dialect === 'sqlite') {
         if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
           databaseConfig = {
-            connector: 'libsql',
+            connector: 'libsql-node',
             options: {
               url: process.env.TURSO_DATABASE_URL,
               authToken: process.env.TURSO_AUTH_TOKEN
