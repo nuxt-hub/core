@@ -15,10 +15,25 @@ export function setupBlob(nuxt: Nuxt, hub: HubConfig, _deps: Record<string, stri
   nuxt.options.nitro.devStorage ||= {}
 
   if (!nuxt.options.nitro.devStorage.blob) {
-    nuxt.options.nitro.devStorage.blob = {
-      driver: 'fs-lite',
-      base: join(hub.dir!, 'blob')
+    let devBlobConfig: NitroOptions['storage']['default']
+
+    // Cloudflare Dev
+    if (nuxt.options.nitro.preset === 'cloudflare-dev') {
+      log.info('`hubBlob()` configured with Cloudflare R2 during local development')
+      devBlobConfig = {
+        driver: 'cloudflare-r2-binding',
+        bindingName: 'BLOB'
+      }
+
+    // All other presets
+    } else {
+      devBlobConfig = {
+        driver: 'fs-lite',
+        base: join(hub.dir!, 'blob')
+      }
     }
+
+    nuxt.options.nitro.devStorage.blob = devBlobConfig
   }
 
   // Add Server scanning

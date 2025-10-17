@@ -13,10 +13,26 @@ const log = logger.withTag('nuxt:hub')
 export function setupKV(nuxt: Nuxt, hub: HubConfig, _deps: Record<string, string>) {
   // Configure dev storage
   nuxt.options.nitro.devStorage ||= {}
-  nuxt.options.nitro.devStorage.kv = defu(nuxt.options.nitro.devStorage.kv, {
-    driver: 'fs',
-    base: join(hub.dir!, 'kv')
-  })
+
+  let devKVConfig: NitroOptions['storage']['default']
+
+  // Cloudflare Dev
+  if (nuxt.options.nitro.preset === 'cloudflare-dev') {
+    log.info('`hubKV()` configured with Cloudflare KV during local development')
+    devKVConfig = {
+      driver: 'cloudflare-kv-binding',
+      bindingName: 'KV'
+    }
+
+  // All other presets
+  } else {
+    devKVConfig = {
+      driver: 'fs',
+      base: join(hub.dir!, 'kv')
+    }
+  }
+
+  nuxt.options.nitro.devStorage.kv = defu(nuxt.options.nitro.devStorage.kv, devKVConfig)
 
   // Add Server scanning
   addServerScanDir(resolve('runtime/kv/server'))

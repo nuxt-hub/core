@@ -56,9 +56,6 @@ importers:
       nitro-cloudflare-dev:
         specifier: ^0.2.2
         version: 0.2.2
-      nitropack:
-        specifier: link:../../../Library/pnpm/global/5/node_modules/nitropack
-        version: link:../../../Library/pnpm/global/5/node_modules/nitropack
       nypm:
         specifier: ^0.6.2
         version: 0.6.2
@@ -511,6 +508,10 @@ packages:
 
   '@cloudflare/workers-types@4.20251011.0':
     resolution: {integrity: sha512-gQpih+pbq3sP4uXltUeCSbPgZxTNp2gQd8639SaIbQMwgA6oJNHLhIART1fWy6DQACngiRzDVULA2x0ohmkGTQ==}
+
+  '@cspotcode/source-map-support@0.8.1':
+    resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
+    engines: {node: '>=12'}
 
   '@electric-sql/pglite@0.3.11':
     resolution: {integrity: sha512-FJtjnEyez8XgmgyE5Ewmx89TGVN+75ZjykFoExApRIbJBMT4dsbsuZkF/YWLuymGDfGFHDACjvENPMEqg4FoWg==}
@@ -7744,6 +7745,10 @@ snapshots:
 
   '@cloudflare/workers-types@4.20251011.0': {}
 
+  '@cspotcode/source-map-support@0.8.1':
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.9
+
   '@electric-sql/pglite@0.3.11': {}
 
   '@emnapi/core@1.5.0':
@@ -13695,6 +13700,8 @@ snapshots:
       - '@biomejs/biome'
       - '@capacitor/preferences'
       - '@deno/kv'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
       - '@netlify/blobs'
       - '@planetscale/database'
       - '@upstash/redis'
@@ -13703,8 +13710,12 @@ snapshots:
       - '@vercel/kv'
       - '@vue/compiler-sfc'
       - aws4fetch
+      - bare-abort-controller
+      - better-sqlite3
       - bufferutil
       - db0
+      - drizzle-orm
+      - encoding
       - eslint
       - idb-keyval
       - ioredis
@@ -13712,12 +13723,15 @@ snapshots:
       - lightningcss
       - magicast
       - meow
+      - mysql2
       - optionator
       - oxlint
+      - react-native-b4a
       - rolldown
       - rollup
       - sass
       - sass-embedded
+      - sqlite3
       - stylelint
       - stylus
       - sugarss
@@ -13731,6 +13745,7 @@ snapshots:
       - vls
       - vti
       - vue-tsc
+      - xml2js
       - yaml
 
   nypm@0.6.2:

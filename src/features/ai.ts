@@ -30,11 +30,19 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig, deps: Record<string, s
     const isCloudflareRuntime = nuxt.options.nitro.preset?.includes('cloudflare')
     const isAiBindingSet = !!(process.env.AI as { runtime: string } | undefined)?.runtime
 
-    if (isCloudflareRuntime && !isAiBindingSet) {
+    if (nuxt.options.nitro.preset === 'cloudflare-dev') {
+      // Fall back to env vars if binding isn't set
+      if (!isAiBindingSet) {
+        if (!process.env.CLOUDFLARE_ACCOUNT_ID || !process.env.CLOUDFLARE_API_KEY) {
+          return logWhenReady(nuxt, `Set \`CLOUDFLARE_ACCOUNT_ID\` and \`CLOUDFLARE_API_KEY\` environment variables to enable \`hubAI()\` with ${providerName}`, 'error')
+        }
+        log.info('`hubAI()` configured with Cloudflare AI via environment variables during local development')
+      } else {
+        log.info('`hubAI()` configured with Cloudflare AI binding during local development')
+      }
+    } else if (isCloudflareRuntime && !isAiBindingSet) {
       return logWhenReady(nuxt, 'Ensure a `AI` binding is set in your Cloudflare Workers configuration', 'error')
-    }
-
-    if (!process.env.CLOUDFLARE_ACCOUNT_ID || !process.env.CLOUDFLARE_API_KEY) {
+    } else if (!isCloudflareRuntime && (!process.env.CLOUDFLARE_ACCOUNT_ID || !process.env.CLOUDFLARE_API_KEY)) {
       return logWhenReady(nuxt, `Set \`CLOUDFLARE_ACCOUNT_ID\` and \`CLOUDFLARE_API_KEY\` environment variables to enable \`hubAI()\` with ${providerName}`, 'error')
     }
   } else if (hub.ai === 'vercel') {

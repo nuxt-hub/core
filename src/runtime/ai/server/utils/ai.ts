@@ -4,6 +4,7 @@ import { createWorkersAI, type WorkersAI } from 'workers-ai-provider'
 import { useRuntimeConfig } from '#imports'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import type { NuxtHubAIProvider } from '#build/types/nuxthub-ai'
+import type { Ai } from '@cloudflare/workers-types'
 
 let _ai: WorkersAI | GatewayProvider
 
@@ -43,7 +44,7 @@ export function hubAI<T extends NuxtHubAI = NuxtHubAI>(model: Parameters<HubAIPr
   }
 
   if (hub.ai === 'cloudflare') {
-    const isAiBindingSet = !!(process.env.AI as { runtime: string } | undefined)?.runtime
+    const isAiBindingSet = !!(process.env.AI as Ai | undefined)?.models
     _ai = createWorkersAI(isAiBindingSet
       ? { binding: 'AI' }
       : {

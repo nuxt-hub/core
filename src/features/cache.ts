@@ -15,10 +15,25 @@ const log = logger.withTag('nuxt:hub')
 export async function setupCache(nuxt: Nuxt, hub: HubConfig, _deps: Record<string, string>) {
   // Configure dev storage
   nuxt.options.nitro.devStorage ||= {}
-  nuxt.options.nitro.devStorage.cache = defu(nuxt.options.nitro.devStorage.cache, {
-    driver: 'fs-lite',
-    base: join(hub.dir!, 'cache')
-  })
+
+  let devCacheConfig: NitroOptions['storage']['default']
+
+  // Cloudflare Dev
+  if (nuxt.options.nitro.preset === 'cloudflare-dev') {
+    devCacheConfig = {
+      driver: 'cloudflare-kv-binding',
+      bindingName: 'CACHE'
+    }
+
+  // All other presets
+  } else {
+    devCacheConfig = {
+      driver: 'fs-lite',
+      base: join(hub.dir!, 'cache')
+    }
+  }
+
+  nuxt.options.nitro.devStorage.cache = defu(nuxt.options.nitro.devStorage.cache, devCacheConfig)
 
   // Add Server scanning
   addServerScanDir(resolve('runtime/cache/server'))

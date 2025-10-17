@@ -74,7 +74,6 @@
     "h3": "^1.15.4",
     "mime": "^4.1.0",
     "nitro-cloudflare-dev": "^0.2.2",
-    "nitropack": "link:../../../Library/pnpm/global/5/node_modules/nitropack",
     "nypm": "^0.6.2",
     "obuild": "^0.2.1",
     "ofetch": "^1.4.1",
