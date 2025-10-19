@@ -5,7 +5,7 @@ export interface ModuleOptions {
    * @default false
    * @see https://hub.nuxt.com/docs/features/ai
    */
-  ai?: false | 'vercel' | 'cloudflare'
+  ai?: 'vercel' | 'cloudflare' | false
   /**
    * Enable blob storage for the project.
    *
@@ -26,7 +26,7 @@ export interface ModuleOptions {
    * @default false
    * @see https://hub.nuxt.com/docs/features/database
    */
-  database?: false | 'postgresql' | 'sqlite' | 'mysql'
+  database?: 'postgresql' | 'sqlite' | 'mysql' | false
   /**
    * Set `true` to enable the key-value storage for the project.
    *
