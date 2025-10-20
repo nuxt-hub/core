@@ -1,8 +1,8 @@
 import { consola } from 'consola'
 import { join, relative } from 'pathe'
+import { sql } from 'drizzle-orm'
 import type { HubConfig } from '../../../../../features'
 import { AppliedDatabaseMigrationsQuery, getCreateMigrationsTableQuery, getDatabaseMigrationFiles, getDatabaseQueryFiles, splitSqlQueries, useDatabaseMigrationsStorage, useDatabaseQueriesStorage } from './helpers'
-import type { Database } from 'db0'
 
 const log = consola.withTag('nuxt:hub')
 
@@ -10,21 +10,26 @@ function getRelativePath(fullPath: string) {
   return relative(process.cwd(), fullPath)
 }
 
-export async function applyDatabaseMigrations(hub: HubConfig, db: Database) {
+export async function applyDatabaseMigrations(hub: HubConfig, db: any, dialect: 'sqlite' | 'postgresql' | 'mysql') {
   const migrationsStorage = useDatabaseMigrationsStorage(hub)
+  const execute = dialect === 'sqlite' ? 'run' : 'execute'
 
-  const createMigrationsTableQuery = getCreateMigrationsTableQuery(db)
+  const createMigrationsTableQuery = getCreateMigrationsTableQuery({ dialect })
   log.debug('Creating migrations table if not exists...')
-  await db.prepare(createMigrationsTableQuery).run()
+  await db[execute](sql.raw(createMigrationsTableQuery))
   log.debug('Successfully created migrations table if not exists')
 
-  const appliedMigrations = await db.prepare(AppliedDatabaseMigrationsQuery).all()
+  const appliedMigrations = await db[execute](sql.raw(AppliedDatabaseMigrationsQuery))
+  const appliedRows = appliedMigrations.rows || appliedMigrations || []
   if (!import.meta.dev) {
-    log.info(`Found ${appliedMigrations.length} applied migration${appliedMigrations.length === 1 ? '' : 's'}`)
+    log.info(`Found ${appliedRows.length} applied migration${appliedRows.length === 1 ? '' : 's'}`)
   }
 
   const localMigrations = await getDatabaseMigrationFiles(hub)
-  const pendingMigrations = localMigrations.filter((migration) => !appliedMigrations.find(({ name }: any) => name === migration.name))
+  const pendingMigrations = localMigrations.filter((migration) => !appliedRows.find((row: any) => {
+    const name = row.name || row[1] // Handle both object and array responses
+    return name === migration.name
+  }))
   if (!pendingMigrations.length) return log.success('Database migrations up to date')
 
   for (const migration of pendingMigrations) {
@@ -36,7 +41,7 @@ export async function applyDatabaseMigrations(hub: HubConfig, db: Database) {
     try {
       log.debug(`Applying database migration \`${getRelativePath(join(hub.dir!, 'database/migrations', migration.filename))}\`...`)
       for (const query of queries) {
-        await db.prepare(query).run()
+        await db[execute](sql.raw(query))
       }
     } catch (error: any) {
       log.error(`Failed to apply migration \`${getRelativePath(join(hub.dir!, 'database/migrations', migration.filename))}\`\n`, error?.message)
@@ -50,19 +55,19 @@ export async function applyDatabaseMigrations(hub: HubConfig, db: Database) {
   }
 }
 
-export async function applyDatabaseQueries(hub: HubConfig, db: Database) {
+export async function applyDatabaseQueries(hub: HubConfig, db: any, dialect: 'sqlite' | 'postgresql' | 'mysql') {
   const queriesStorage = useDatabaseQueriesStorage(hub)
   const queriesFiles = await getDatabaseQueryFiles(hub)
   if (!queriesFiles.length) return
 
   for (const queryFile of queriesFiles) {
-    const sql = await queriesStorage.getItem<string>(queryFile.filename)
-    if (!sql) continue
-    const queries = splitSqlQueries(sql)
+    const sqlQuery = await queriesStorage.getItem<string>(queryFile.filename)
+    if (!sqlQuery) continue
+    const queries = splitSqlQueries(sqlQuery)
     try {
       log.debug(`Applying database query \`${getRelativePath(join(hub.dir!, 'database/queries', queryFile.filename))}\`...`)
       for (const query of queries) {
-        await db.prepare(query).run()
+        await db[dialect === 'sqlite' ? 'run' : 'execute'](sql.raw(query))
       }
     } catch (error: any) {
       log.error(`Failed to apply query \`${getRelativePath(join(hub.dir!, 'database/queries', queryFile.filename))}\`\n`, error?.message)

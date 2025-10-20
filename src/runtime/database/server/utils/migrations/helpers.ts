@@ -37,12 +37,19 @@ export function getMigrationMetadata(filename: string): { filename: string, name
 
 export async function getDatabaseMigrationFiles(hub: HubConfig) {
   const storage = useDatabaseMigrationsStorage(hub)
+  // Get database dialect from hub config
+  const dialect = typeof hub.database === 'string'
+    ? hub.database
+    : (typeof hub.database === 'object' && hub.database !== null && 'dialect' in hub.database)
+      ? hub.database.dialect
+      : undefined
+
   // Get migrations and exclude if dialect specified but not the current database dialect
-  const migrationsFiles = (await storage.getKeys()).map(file => getMigrationMetadata(file)).filter(migration => migration.dialect === hub.database || !migration.dialect)
+  const migrationsFiles = (await storage.getKeys()).map(file => getMigrationMetadata(file)).filter(migration => migration.dialect === dialect || !migration.dialect)
 
   return migrationsFiles.filter(migration => {
     // if generic SQL migration file, exclude it if same migration name for current database dialect exists
-    if (!migration.dialect && migrationsFiles.findIndex(m => m.name === migration.name && m.dialect === hub.database) !== -1) {
+    if (!migration.dialect && migrationsFiles.findIndex(m => m.name === migration.name && m.dialect === dialect) !== -1) {
       return false
     }
     return true
@@ -122,11 +129,18 @@ export function useDatabaseQueriesStorage(hub: HubConfig) {
 
 export async function getDatabaseQueryFiles(hub: HubConfig) {
   const storage = useDatabaseQueriesStorage(hub)
-  const queriesFiles = (await storage.getKeys()).map(file => getMigrationMetadata(file)).filter(query => query.dialect === hub.database || !query.dialect)
+  // Get database dialect from hub config
+  const dialect = typeof hub.database === 'string'
+    ? hub.database
+    : (typeof hub.database === 'object' && hub.database !== null && 'dialect' in hub.database)
+      ? hub.database.dialect
+      : undefined
+
+  const queriesFiles = (await storage.getKeys()).map(file => getMigrationMetadata(file)).filter(query => query.dialect === dialect || !query.dialect)
 
   return queriesFiles.filter(query => {
     // if generic SQL query file, exclude it if same query name for current database dialect exists
-    if (!query.dialect && queriesFiles.findIndex(q => q.name === query.name && q.dialect === hub.database) !== -1) {
+    if (!query.dialect && queriesFiles.findIndex(q => q.name === query.name && q.dialect === dialect) !== -1) {
       return false
     }
     return true

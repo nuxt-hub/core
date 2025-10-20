@@ -5,8 +5,8 @@ import { defu } from 'defu'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
 import type { Nuxt } from '@nuxt/schema'
 import { version } from '../package.json'
-import { setupAI, setupCache, setupOpenAPI, setupDatabase, setupKV, setupBase, setupBlob, type HubConfig } from './features'
-import type { ModuleOptions } from './types/module'
+import { setupAI, setupCache, setupOpenAPI, setupDatabase, setupKV, setupBase, setupBlob, resolveDatabaseConfig, type HubConfig } from './features'
+import type { ModuleOptions, DatabaseConfig } from './types/module'
 import { addBuildHooks } from './utils/build'
 
 export * from './types'
@@ -51,7 +51,12 @@ export default defineNuxtModule<ModuleOptions>({
       applyDatabaseMigrationsDuringBuild: true
     })
 
-    runtimeConfig.hub = hub
+    // Resolve database configuration if enabled
+    if (hub.database) {
+      hub.database = resolveDatabaseConfig(hub.database as string | DatabaseConfig, nuxt.options.dev)
+    }
+
+    runtimeConfig.hub = hub as any
     runtimeConfig.public.hub = {}
 
     if (nuxt.options.nitro.preset?.includes('cloudflare')) {
@@ -74,7 +79,7 @@ export default defineNuxtModule<ModuleOptions>({
       return
     }
 
-    addBuildHooks(nuxt, hub as HubConfig)
+    addBuildHooks(nuxt, hub as HubConfig, deps)
 
     // Enable Async Local Storage
     nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}

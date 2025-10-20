@@ -1,3 +1,59 @@
+export interface DatabaseConfig {
+  /**
+   * Database dialect
+   */
+  dialect: 'sqlite' | 'postgresql' | 'mysql'
+  /**
+   * Database driver (optional, auto-detected if not provided)
+   *
+   * SQLite drivers: 'better-sqlite3', 'libsql', 'bun-sqlite', 'd1'
+   * PostgreSQL drivers: 'node-postgres', 'pglite'
+   * MySQL drivers: 'mysql2'
+   */
+  driver?: string
+  /**
+   * Database connection configuration
+   */
+  connection: {
+    /**
+     * Database connection URL
+     */
+    url?: string
+    /**
+     * Auth token (for Turso/libSQL)
+     */
+    authToken?: string
+    /**
+     * Connection string (for PostgreSQL)
+     */
+    connectionString?: string
+    /**
+     * Database host
+     */
+    host?: string
+    /**
+     * Database port
+     */
+    port?: number
+    /**
+     * Database username
+     */
+    user?: string
+    /**
+     * Database password
+     */
+    password?: string
+    /**
+     * Database name
+     */
+    database?: string
+    /**
+     * Additional connection options
+     */
+    [key: string]: any
+  }
+}
+
 export interface ModuleOptions {
   /**
    * Set `'vercel'` or `'cloudflare'` to enable the AI for the project.
@@ -22,11 +78,12 @@ export interface ModuleOptions {
   cache?: boolean
   /**
    * Set to `'postgresql'`, `'sqlite'`, or `'mysql'` to use a specific database dialect with a zero-config development database.
+   * Or provide a DatabaseConfig object with dialect and connection details.
    *
    * @default false
    * @see https://hub.nuxt.com/docs/features/database
    */
-  database?: 'postgresql' | 'sqlite' | 'mysql' | false
+  database?: 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig | false
   /**
    * Set `true` to enable the key-value storage for the project.
    *
