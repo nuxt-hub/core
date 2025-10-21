@@ -1,6 +1,6 @@
 import { applyDatabaseMigrations, applyDatabaseQueries } from '../utils/migrations/migrations'
 // @ts-expect-error - Generated at runtime
-import { drizzle } from '#hub/database'
+import { drizzle } from 'hub:database'
 
 // @ts-expect-error - Nitro global
 export default defineNitroPlugin(async (nitroApp: any) => {

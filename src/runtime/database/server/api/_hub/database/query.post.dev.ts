@@ -15,7 +15,7 @@ export default eventHandler(async (event) => {
 
   try {
     // @ts-expect-error - drizzle is generated dynamically
-    const { drizzle } = await import('#hub/database')
+    const { drizzle } = await import('hub:database')
     const db = drizzle()
 
     // Use Drizzle's sql.raw to execute the query

@@ -51,14 +51,6 @@ export default defineNuxtModule<ModuleOptions>({
       applyDatabaseMigrationsDuringBuild: true
     })
 
-    // Resolve database configuration if enabled
-    if (hub.database) {
-      hub.database = resolveDatabaseConfig(hub.database as string | DatabaseConfig)
-    }
-
-    runtimeConfig.hub = hub as any
-    runtimeConfig.public.hub = {}
-
     if (nuxt.options.nitro.preset?.includes('cloudflare')) {
       nuxt.options.nitro.cloudflare ||= {}
       nuxt.options.nitro.cloudflare.nodeCompat = true
@@ -73,6 +65,11 @@ export default defineNuxtModule<ModuleOptions>({
     hub.cache && await setupCache(nuxt, hub as HubConfig, deps)
     hub.database && await setupDatabase(nuxt, hub as HubConfig, deps)
     hub.kv && await setupKV(nuxt, hub as HubConfig, deps)
+
+    // @ts-expect-error - runtimeConfig is not typed here
+    runtimeConfig.hub = hub as HubConfig
+    runtimeConfig.public.hub ||= {}
+
 
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {

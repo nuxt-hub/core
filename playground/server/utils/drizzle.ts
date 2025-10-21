@@ -1,6 +1,6 @@
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
 // import { pgTable, text as pgText, boolean as pgBoolean, serial as pgSerial, timestamp as pgTimestamp } from 'drizzle-orm/pg-core'
-import { drizzle } from '#hub/database'
+import { drizzle } from 'hub:database'
 
 export { sql } from 'drizzle-orm'
 
