@@ -5,8 +5,8 @@ import { defu } from 'defu'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
 import type { Nuxt } from '@nuxt/schema'
 import { version } from '../package.json'
-import { setupAI, setupCache, setupOpenAPI, setupDatabase, setupKV, setupBase, setupBlob, resolveDatabaseConfig, type HubConfig } from './features'
-import type { ModuleOptions, DatabaseConfig } from './types/module'
+import { setupAI, setupCache, setupOpenAPI, setupDatabase, setupKV, setupBase, setupBlob, type HubConfig } from './features'
+import type { ModuleOptions } from './types/module'
 import { addBuildHooks } from './utils/build'
 
 export * from './types'
@@ -69,7 +69,6 @@ export default defineNuxtModule<ModuleOptions>({
     // @ts-expect-error - runtimeConfig is not typed here
     runtimeConfig.hub = hub as HubConfig
     runtimeConfig.public.hub ||= {}
-
 
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {

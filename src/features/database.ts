@@ -1,17 +1,14 @@
 import { mkdir } from 'node:fs/promises'
 import { join } from 'pathe'
-import { addServerImportsDir, addServerScanDir, addTemplate, addTypeTemplate, logger } from '@nuxt/kit'
+import { addServerImportsDir, addServerScanDir, addTemplate, addTypeTemplate } from '@nuxt/kit'
 import { provider } from 'std-env'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir } from '../runtime/database/server/utils/migrations/helpers'
 import { logWhenReady } from '../features'
 import { resolve } from '../module'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { Nitro } from 'nitropack'
 import type { HubConfig, ResolvedDatabaseConfig } from '../features'
 import type { ModuleOptions, DatabaseConfig } from '../types/module'
-
-const log = logger.withTag('nuxt:hub')
 
 /**
  * Resolve database configuration from string or object format
@@ -28,15 +25,14 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig, hosting:
 
     // Auto-detect connection based on environment variables
     if (dialect === 'sqlite') {
-      // Tursor Cloud
       if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
+        // Tursor Cloud
         connection = {
           url: process.env.TURSO_DATABASE_URL,
           authToken: process.env.TURSO_AUTH_TOKEN
         }
-      }
-      // Cloudflare D1
-      else if (hosting.includes('cloudflare')) {
+      } else if (hosting.includes('cloudflare')) {
+        // Cloudflare D1
         driver = 'd1'
         nuxt.options.nitro.cloudflare ||= {}
         nuxt.options.nitro.cloudflare.deployConfig = true
@@ -51,26 +47,22 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig, hosting:
 
         dbBinding.migrations_table ||= '_hub_migrations'
         dbBinding.migrations_dir ||= 'migrations'
-      }
-      // Local SQLite
-      else {
+      } else {
+        // Local SQLite
         connection = { url: `file:${join(hub.dir!, 'database/sqlite.db')}` }
         await mkdir(join(hub.dir!, 'database/sqlite'), { recursive: true })
       }
-    }
-    else if (dialect === 'postgresql') {
+    } else if (dialect === 'postgresql') {
       const url = process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.POSTGRESQL_URL
       driver = 'node-postgres'
       if (url) {
         connection = { connectionString: url }
-      }
-      else {
+      } else {
         driver = 'pglite'
         connection = { dataDir: join(hub.dir!, 'database/pglite') }
         await mkdir(join(hub.dir!, 'database/pglite'), { recursive: true })
       }
-    }
-    else if (dialect === 'mysql') {
+    } else if (dialect === 'mysql') {
       connection = { url: process.env.DATABASE_URL || process.env.MYSQL_URL }
       if (!connection.url) {
         throw new Error('MySQL requires DATABASE_URL or MYSQL_URL environment variable')
