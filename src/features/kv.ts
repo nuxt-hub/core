@@ -28,6 +28,7 @@ export function setupKV(nuxt: Nuxt, hub: HubConfig, _deps: Record<string, string
 }
 
 export async function setupProductionKV(nitro: Nitro, _hub: HubConfig, deps: Record<string, string>) {
+  console.log('setupProductionKV', nitro.options.preset)
   const preset = nitro.options.preset
   if (!preset) return
 
