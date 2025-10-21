@@ -12,11 +12,10 @@ const log = logger.withTag('nuxt:hub')
  * Creates a Drizzle client for the given configuration
  */
 async function createDrizzleClient(config: any) {
-  const { dialect, driver, connection } = config
+  const { driver, connection } = config
 
   if (driver === 'libsql') {
     const { drizzle } = await import('drizzle-orm/libsql')
-    // @ts-expect-error - @libsql/client is an optional dependency
     const { createClient } = await import('@libsql/client')
     const client = createClient(connection)
     return drizzle(client)

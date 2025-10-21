@@ -1,5 +1,4 @@
 import { mkdir } from 'node:fs/promises'
-import { defu } from 'defu'
 import { join } from 'pathe'
 import { addServerImportsDir, addServerScanDir, addTemplate, addTypeTemplate, logger } from '@nuxt/kit'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir } from '../runtime/database/server/utils/migrations/helpers'
@@ -16,7 +15,7 @@ const log = logger.withTag('nuxt:hub')
 /**
  * Resolve database configuration from string or object format
  */
-export function resolveDatabaseConfig(database: string | DatabaseConfig, isDev: boolean): ResolvedDatabaseConfig {
+export function resolveDatabaseConfig(database: string | DatabaseConfig): ResolvedDatabaseConfig {
   let dialect: 'sqlite' | 'postgresql' | 'mysql'
   let connection: Record<string, any> = {}
   let driver: string | undefined
@@ -181,12 +180,12 @@ export function drizzle(options) {
     nuxt.options.nitro.alias!['#hub/database'] = template.dst
     addTypeTemplate({
       filename: 'hub/database.d.ts',
-      getContents: () => drizzleOrmTypes,
+      getContents: () => drizzleOrmTypes
     }, { nitro: true })
   }
 }
 
-export async function setupProductionDatabase(nitro: Nitro, hub: HubConfig, deps: Record<string, string>) {
+export async function setupProductionDatabase(nitro: Nitro, hub: HubConfig, _deps: Record<string, string>) {
   const preset = nitro.options.preset
   if (!preset) return
 
@@ -197,7 +196,8 @@ export async function setupProductionDatabase(nitro: Nitro, hub: HubConfig, deps
     return
   }
 
-  let { dialect, driver, connection } = dbConfig
+  const { dialect } = dbConfig
+  let { driver, connection } = dbConfig
 
   // Override driver based on preset
   switch (preset) {

@@ -11,7 +11,7 @@ import { addBuildHooks } from './utils/build'
 
 export * from './types'
 
-const log = logger.withTag('nuxt:hub');
+const log = logger.withTag('nuxt:hub')
 
 export const { resolve, resolvePath } = createResolver(import.meta.url)
 
@@ -53,7 +53,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Resolve database configuration if enabled
     if (hub.database) {
-      hub.database = resolveDatabaseConfig(hub.database as string | DatabaseConfig, nuxt.options.dev)
+      hub.database = resolveDatabaseConfig(hub.database as string | DatabaseConfig)
     }
 
     runtimeConfig.hub = hub as any

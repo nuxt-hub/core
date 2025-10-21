@@ -55,10 +55,10 @@ export default defineConfig({
     // Map driver to package dependency
     const driverToPackage: Record<string, string> = {
       'better-sqlite3': 'better-sqlite3',
-      'libsql': '@libsql/client',
+      libsql: '@libsql/client',
       'node-postgres': 'pg',
-      'mysql2': 'mysql2',
-      'pglite': '@electric-sql/pglite'
+      mysql2: 'mysql2',
+      pglite: '@electric-sql/pglite'
     }
 
     const connectorDependency = driverToPackage[driver] || driver

@@ -1,6 +1,7 @@
 import { eventHandler, createError, readValidatedBody } from 'h3'
 import { sql } from 'drizzle-orm'
 import z from 'zod'
+import { useRuntimeConfig } from '#imports'
 
 const schema = z.object({
   sql: z.string(),
@@ -9,7 +10,7 @@ const schema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const { sql: sqlQuery, params, method } = await readValidatedBody(event, schema.parse)
+  const { sql: sqlQuery, method } = await readValidatedBody(event, schema.parse)
   const sqlBody = sqlQuery.replace(/;/g, '')
 
   try {
@@ -18,7 +19,8 @@ export default eventHandler(async (event) => {
     const db = drizzle()
 
     // Use Drizzle's sql.raw to execute the query
-    const result = await db.execute(sql.raw(sqlBody))
+    const execute = (useRuntimeConfig().hub.database as any).dialect === 'sqlite' ? 'run' : 'execute'
+    const result = await db[execute](sql.raw(sqlBody))
 
     // Handle different response formats based on method
     if (method === 'get') {

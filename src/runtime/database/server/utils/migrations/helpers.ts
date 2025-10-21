@@ -41,13 +41,13 @@ export async function getDatabaseMigrationFiles(hub: HubConfig) {
   const dialect = typeof hub.database === 'string'
     ? hub.database
     : (typeof hub.database === 'object' && hub.database !== null && 'dialect' in hub.database)
-      ? hub.database.dialect
-      : undefined
+        ? hub.database.dialect
+        : undefined
 
   // Get migrations and exclude if dialect specified but not the current database dialect
   const migrationsFiles = (await storage.getKeys()).map(file => getMigrationMetadata(file)).filter(migration => migration.dialect === dialect || !migration.dialect)
 
-  return migrationsFiles.filter(migration => {
+  return migrationsFiles.filter((migration) => {
     // if generic SQL migration file, exclude it if same migration name for current database dialect exists
     if (!migration.dialect && migrationsFiles.findIndex(m => m.name === migration.name && m.dialect === dialect) !== -1) {
       return false
@@ -133,12 +133,12 @@ export async function getDatabaseQueryFiles(hub: HubConfig) {
   const dialect = typeof hub.database === 'string'
     ? hub.database
     : (typeof hub.database === 'object' && hub.database !== null && 'dialect' in hub.database)
-      ? hub.database.dialect
-      : undefined
+        ? hub.database.dialect
+        : undefined
 
   const queriesFiles = (await storage.getKeys()).map(file => getMigrationMetadata(file)).filter(query => query.dialect === dialect || !query.dialect)
 
-  return queriesFiles.filter(query => {
+  return queriesFiles.filter((query) => {
     // if generic SQL query file, exclude it if same query name for current database dialect exists
     if (!query.dialect && queriesFiles.findIndex(q => q.name === query.name && q.dialect === dialect) !== -1) {
       return false

@@ -1,7 +1,7 @@
 export default defineEventHandler(async () => {
   if (useRuntimeConfig().hub.database.dialect !== 'sqlite') {
     return {
-      error: 'SQLite is not enabled',
+      error: 'SQLite is not enabled'
     }
   }
   const db = useDrizzle()
@@ -12,6 +12,6 @@ export default defineEventHandler(async () => {
 
   return {
     drizzleTables: rows,
-    todos,
+    todos
   }
 })

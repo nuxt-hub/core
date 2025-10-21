@@ -26,7 +26,7 @@ export async function applyDatabaseMigrations(hub: HubConfig, db: any, dialect: 
   }
 
   const localMigrations = await getDatabaseMigrationFiles(hub)
-  const pendingMigrations = localMigrations.filter((migration) => !appliedRows.find((row: any) => {
+  const pendingMigrations = localMigrations.filter(migration => !appliedRows.find((row: any) => {
     const name = row.name || row[1] // Handle both object and array responses
     return name === migration.name
   }))
