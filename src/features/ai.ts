@@ -31,18 +31,18 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig, deps: Record<string, s
     const isAiBindingSet = !!(process.env.AI as { runtime: string } | undefined)?.runtime
 
     if (isCloudflareRuntime && !isAiBindingSet) {
-      return logWhenReady(nuxt, 'Ensure a `AI` binding is set in your Cloudflare Workers configuration', 'error')
+      logWhenReady(nuxt, 'Ensure a `AI` binding is set in your Cloudflare Workers configuration', 'error')
     }
 
     if (!process.env.CLOUDFLARE_ACCOUNT_ID || !process.env.CLOUDFLARE_API_KEY) {
-      return logWhenReady(nuxt, `Set \`CLOUDFLARE_ACCOUNT_ID\` and \`CLOUDFLARE_API_KEY\` environment variables to enable \`hubAI()\` with ${providerName}`, 'error')
+      logWhenReady(nuxt, `Set \`CLOUDFLARE_ACCOUNT_ID\` and \`CLOUDFLARE_API_KEY\` environment variables to enable \`hubAI()\` with ${providerName}`, 'error')
     }
   } else if (hub.ai === 'vercel') {
     const isMissingEnvVars = !process.env.AI_GATEWAY_API_KEY && !process.env.VERCEL_OIDC_TOKEN
     if (isMissingEnvVars && nuxt.options.dev) {
-      return logWhenReady(nuxt, `Missing \`AI_GATEWAY_API_KEY\` environment variable to enable \`hubAI()\` with ${providerName}\nCreate an AI Gateway API key at \`${encodeURI('https://vercel.com/d?to=/[team]/~/ai/api-keys&title=Go+to+AI+Gateway')}\` or run \`npx vercel env pull .env\` to pull the environment variables.`, 'error')
+      logWhenReady(nuxt, `Missing \`AI_GATEWAY_API_KEY\` environment variable to enable \`hubAI()\` with ${providerName}\nCreate an AI Gateway API key at \`${encodeURI('https://vercel.com/d?to=/[team]/~/ai/api-keys&title=Go+to+AI+Gateway')}\` or run \`npx vercel env pull .env\` to pull the environment variables.`, 'error')
     } else if (isMissingEnvVars) {
-      return logWhenReady(nuxt, `Set \`AI_GATEWAY_API_KEY\` environment variable to enable \`hubAI()\` with ${providerName}\nCreate an AI Gateway API key at \`${encodeURI('https://vercel.com/d?to=/[team]/~/ai/api-keys&title=Go+to+AI+Gateway')}\``, 'error')
+      logWhenReady(nuxt, `Set \`AI_GATEWAY_API_KEY\` environment variable to enable \`hubAI()\` with ${providerName}\nCreate an AI Gateway API key at \`${encodeURI('https://vercel.com/d?to=/[team]/~/ai/api-keys&title=Go+to+AI+Gateway')}\``, 'error')
     }
   }
 
