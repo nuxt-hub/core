@@ -35,19 +35,6 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig, hosting:
         // Cloudflare D1
         driver = 'd1'
         hub.applyDatabaseMigrationsDuringBuild = false
-        nuxt.options.nitro.cloudflare ||= {}
-        nuxt.options.nitro.cloudflare.deployConfig = true
-        nuxt.options.nitro.cloudflare.wrangler ||= {}
-        nuxt.options.nitro.cloudflare.wrangler.d1_databases ||= []
-
-        let dbBinding = nuxt.options.nitro.cloudflare.wrangler.d1_databases!.find(db => db?.binding === 'DB')
-        if (!dbBinding) {
-          dbBinding = { binding: 'DB' }
-          nuxt.options.nitro.cloudflare.wrangler.d1_databases.push(dbBinding as any)
-        }
-
-        dbBinding.migrations_table ||= '_hub_migrations'
-        dbBinding.migrations_dir ||= 'migrations'
       } else {
         // Local SQLite
         connection = { url: `file:${join(hub.dir!, 'database/sqlite.db')}` }
