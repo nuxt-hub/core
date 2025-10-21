@@ -60,7 +60,7 @@ export async function setupProductionKV(nitro: Nitro, _hub: HubConfig, deps: Rec
     case 'cloudflare-pages': {
       kvConfig = {
         driver: 'cloudflare-kv-binding',
-        bindingName: 'KV'
+        binding: 'KV'
       }
       log.info('Ensure a `KV` binding is set in your Cloudflare Workers configuration')
       break
