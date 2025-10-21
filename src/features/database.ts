@@ -34,6 +34,7 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig, hosting:
       } else if (hosting.includes('cloudflare')) {
         // Cloudflare D1
         driver = 'd1'
+        hub.applyDatabaseMigrationsDuringBuild = false
         nuxt.options.nitro.cloudflare ||= {}
         nuxt.options.nitro.cloudflare.deployConfig = true
         nuxt.options.nitro.cloudflare.wrangler ||= {}
