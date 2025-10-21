@@ -198,6 +198,9 @@ importers:
 
   playground:
     dependencies:
+      '@ai-sdk/gateway':
+        specifier: ^1.0.39
+        version: 1.0.39(zod@4.1.12)
       '@ai-sdk/vue':
         specifier: ^2.0.76
         version: 2.0.76(vue@3.5.22(typescript@5.9.3))(zod@4.1.12)

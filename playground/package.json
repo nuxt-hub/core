@@ -9,6 +9,7 @@
     "preview": "nuxi preview"
   },
   "dependencies": {
+    "@ai-sdk/gateway": "^1.0.39",
     "@ai-sdk/vue": "^2.0.76",
     "@electric-sql/pglite": "^0.3.11",
     "@iconify-json/simple-icons": "^1.2.55",
