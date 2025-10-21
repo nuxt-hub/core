@@ -43,6 +43,7 @@ export async function setupProductionKV(nitro: Nitro, _hub: HubConfig, deps: Rec
   switch (preset) {
     // Does your favourite cloud provider require special configuration? Feel free to open a PR to add zero-config support for other presets
 
+    case 'vercel-edge':
     case 'vercel': {
       kvConfig = {
         driver: 'redis',
