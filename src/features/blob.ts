@@ -63,7 +63,7 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig, deps: R
     case 'cloudflare-pages': {
       blobConfig = {
         driver: 'cloudflare-r2-binding',
-        bindingName: 'BLOB'
+        binding: 'BLOB'
       }
       log.info('Ensure a `BLOB` binding is set in your Cloudflare Workers configuration')
       break
