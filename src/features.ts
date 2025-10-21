@@ -17,6 +17,8 @@ export function logWhenReady(nuxt: Nuxt, message: string, type: 'info' | 'warn' 
     nuxt.hooks.hookOnce('modules:done', () => {
       log[type](message)
     })
+  } else {
+    log[type](message)
   }
 }
 
