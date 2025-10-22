@@ -95,6 +95,7 @@
     "@nuxt/test-utils": "3.19.2",
     "@nuxthub/core": "link:",
     "@types/node": "^24.7.2",
+    "better-sqlite3": "^12.4.1",
     "changelogen": "^0.6.2",
     "eslint": "^9.37.0",
     "nuxt": "^4.1.3",
