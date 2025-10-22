@@ -107,13 +107,7 @@
   "packageManager": "pnpm@10.17.1",
   "pnpm": {
     "onlyBuiltDependencies": [
-      "@parcel/watcher",
-      "@tailwindcss/oxide",
-      "@tsparticles/engine",
-      "esbuild",
-      "sharp",
-      "unrs-resolver",
-      "workerd"
+      "better-sqlite3"
     ]
   },
   "peerDependencies": {
