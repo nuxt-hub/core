@@ -14,8 +14,8 @@ hero:
     to: https://github.com/nuxt-hub/core/releases
     icon: i-lucide-arrow-right
 features:
-  - title: Cloud Hosting
-    description: Deploy your application with confidence to your favorite cloud platform.
+  - title: Multi-Platform
+    description: Deploy your application with confidence to your favorite cloud provider.
     icon: i-simple-icons-nuxtdotjs
     to: /docs/getting-started/deploy
   - title: SQL Database
