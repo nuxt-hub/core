@@ -104,13 +104,6 @@
     "vue-tsc": "^3.1.1",
     "workers-ai-provider": "^2.0.0"
   },
-  "packageManager": "pnpm@10.17.1",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "better-sqlite3",
-      "sharp"
-    ]
-  },
   "peerDependencies": {
     "@ai-sdk/gateway": "^1.0.30",
     "workers-ai-provider": "^2.0.0"
