@@ -17,5 +17,13 @@ export default defineEventHandler(async (event) => {
     onError(res) {
       console.error(res.error)
     }
-  }).toUIMessageStreamResponse()
+  })
+  .toUIMessageStreamResponse({
+    headers: {
+      'Content-Type': 'text/x-unknown',
+      'content-encoding': 'identity',
+      'transfer-encoding': 'chunked',
+    },
+  })
+
 })
