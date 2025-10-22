@@ -29,6 +29,7 @@
     "feed": "^5.1.0",
     "nuxt": "^4.1.3",
     "nuxt-llms": "^0.1.2",
-    "nuxt-og-image": "^5.1.11"
+    "nuxt-og-image": "^5.1.11",
+    "tailwindcss": "^4.1.15"
   }
 }
