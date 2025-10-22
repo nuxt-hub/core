@@ -11,7 +11,7 @@ import { addBuildHooks } from './utils/build'
 
 export * from './types'
 
-const log = logger.withTag('nuxt:hub');
+const log = logger.withTag('nuxt:hub')
 
 export const { resolve, resolvePath } = createResolver(import.meta.url)
 
@@ -51,9 +51,6 @@ export default defineNuxtModule<ModuleOptions>({
       applyDatabaseMigrationsDuringBuild: true
     })
 
-    runtimeConfig.hub = hub
-    runtimeConfig.public.hub = {}
-
     if (nuxt.options.nitro.preset?.includes('cloudflare')) {
       nuxt.options.nitro.cloudflare ||= {}
       nuxt.options.nitro.cloudflare.nodeCompat = true
@@ -69,12 +66,16 @@ export default defineNuxtModule<ModuleOptions>({
     hub.database && await setupDatabase(nuxt, hub as HubConfig, deps)
     hub.kv && await setupKV(nuxt, hub as HubConfig, deps)
 
+    // @ts-expect-error - runtimeConfig is not typed here
+    runtimeConfig.hub = hub as HubConfig
+    runtimeConfig.public.hub ||= {}
+
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {
       return
     }
 
-    addBuildHooks(nuxt, hub as HubConfig)
+    addBuildHooks(nuxt, hub as HubConfig, deps)
 
     // Enable Async Local Storage
     nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}

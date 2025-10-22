@@ -175,7 +175,7 @@ sections:
       title: Database
       icon: i-lucide-database
     features:
-      - title: "hubDatabase() server helper"
+      - title: "Type-safe with Drizzle ORM"
         icon: i-lucide-square-function
       - title: "Database browser"
         icon: i-lucide-table

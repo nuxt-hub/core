@@ -1,6 +1,7 @@
 import { eventHandler, createError, readValidatedBody } from 'h3'
-import { useDatabase } from '#imports'
+import { sql } from 'drizzle-orm'
 import z from 'zod'
+import { useRuntimeConfig } from '#imports'
 
 const schema = z.object({
   sql: z.string(),
@@ -9,20 +10,28 @@ const schema = z.object({
 })
 
 export default eventHandler(async (event) => {
-  const { sql, params, method } = await readValidatedBody(event, schema.parse)
-  const sqlBody = sql.replace(/;/g, '')
+  const { sql: sqlQuery, method } = await readValidatedBody(event, schema.parse)
+  const sqlBody = sqlQuery.replace(/;/g, '')
 
   try {
-    const client = useDatabase('db')
-    const result = await client.prepare(sqlBody).bind(...params)[method === 'run' ? 'run' : method === 'get' ? 'get' : 'all']()
+    // @ts-expect-error - drizzle is generated dynamically
+    const { drizzle } = await import('hub:database')
+    const db = drizzle()
 
-    // convert methods except "get" into string[][] - see https://orm.drizzle.team/docs/connect-drizzle-proxy
+    // Use Drizzle's sql.raw to execute the query
+    const execute = (useRuntimeConfig().hub.database as any).dialect === 'sqlite' ? 'run' : 'execute'
+    const result = await db[execute](sql.raw(sqlBody))
+
+    // Handle different response formats based on method
     if (method === 'get') {
-      return Object.values(result)
+      // Return first row as array of values
+      const row = result.rows?.[0] || result[0]
+      return row ? Object.values(row) : []
     }
-    return result.map((result: any) => {
-      return Object.values(result)
-    })
+
+    // For 'all', 'run', 'values' - return rows as array of arrays
+    const rows = result.rows || result || []
+    return rows.map((row: any) => Object.values(row))
   } catch (e: any) {
     console.error(`[hub:database]: ${e.message}`)
     return createError({

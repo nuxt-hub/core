@@ -109,7 +109,6 @@
       "@parcel/watcher",
       "@tailwindcss/oxide",
       "@tsparticles/engine",
-      "better-sqlite3",
       "esbuild",
       "sharp",
       "unrs-resolver",

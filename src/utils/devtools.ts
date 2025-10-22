@@ -1,6 +1,6 @@
 import { logger } from '@nuxt/kit'
 import type { Nuxt } from 'nuxt/schema'
-import type { HubConfig } from '../features'
+import type { HubConfig, ResolvedDatabaseConfig } from '../features'
 import { checkPort, getPort } from 'get-port-please'
 import { writeFile } from 'node:fs/promises'
 import { detectPackageManager, dlxCommand } from 'nypm'
@@ -22,57 +22,46 @@ async function launchDrizzleStudio(nuxt: Nuxt) {
   port = await getPort({ port: 4983 })
 
   try {
-    const dbConfig = nuxt.options.nitro.devDatabase?.db
-    if (!dbConfig?.connector) {
-      throw new Error('No database configuration found. Please configure your database in nuxt.config.ts')
+    const dbConfig = nuxt.options.runtimeConfig?.hub?.database as unknown as ResolvedDatabaseConfig | undefined
+    if (!dbConfig || typeof dbConfig === 'boolean' || typeof dbConfig === 'string') {
+      throw new Error('Database configuration not resolved properly. Please ensure database is configured in hub.database')
     }
 
     // TODO: custom drizzle connector
-    if (dbConfig.connector === 'pglite') {
+    if (dbConfig.driver === 'pglite') {
       throw new Error('Database viewer currently does not support PGlite.')
     }
 
-    // Determine dialect from connector
-    let dialect: string
-    let dbCredentials: any
+    const { dialect, driver, connection } = dbConfig
 
-    if (dbConfig.connector === 'postgresql' || dbConfig.connector === 'pglite') {
-      dialect = 'postgresql'
-      if (dbConfig.connector === 'pglite') {
-        dbCredentials = {
-          url: dbConfig.options?.dataDir || './database/'
-        }
-      } else {
-        dbCredentials = {
-          url: dbConfig.options?.url
-        }
-      }
-    } else if (['better-sqlite3', 'bun-sqlite', 'bun', 'node-sqlite', 'sqlite3'].includes(dbConfig.connector)) {
-      dialect = 'sqlite'
-      dbCredentials = {
-        url: dbConfig.options?.path
-      }
-    } else if (dbConfig.connector === 'mysql2') {
-      dialect = 'mysql'
-      dbCredentials = {
-        url: dbConfig.options?.url || process.env.DATABASE_URL
-      }
-    } else {
-      throw new Error(`Unsupported database connector: ${dbConfig.connector}`)
+    // Prepare database credentials for Drizzle Studio
+    let dbCredentials = connection
+
+    if (driver === 'node-postgres') {
+      dbCredentials = { url: connection.connectionString }
     }
 
     // Generate drizzle config content
     const drizzleConfig = `import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
-  dialect: "${dialect}"${dbConfig.connector === 'pglite' ? ',\n  driver: "pglite"' : ''},
+  dialect: "${dialect}",
   dbCredentials: ${JSON.stringify(dbCredentials, null, 2)}
 });`
 
     const drizzleConfigNuxtPath = join(nuxt.options.buildDir, 'drizzle.config.ts')
     await writeFile(drizzleConfigNuxtPath, drizzleConfig, 'utf-8')
 
-    const connectorDependency = dbConfig.connector === 'pglite' ? '@electric-sql/pglite' : dbConfig.connector
+    // Map driver to package dependency
+    const driverToPackage: Record<string, string> = {
+      'better-sqlite3': 'better-sqlite3',
+      libsql: '@libsql/client',
+      'node-postgres': 'pg',
+      mysql2: 'mysql2',
+      pglite: '@electric-sql/pglite'
+    }
+
+    const connectorDependency = driverToPackage[driver] || driver
 
     const cmd = dlxCommand(packageManager.name, 'drizzle-kit', {
       args: [

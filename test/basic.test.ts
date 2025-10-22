@@ -5,7 +5,7 @@ import { setup, $fetch } from '@nuxt/test-utils/e2e'
 describe('ssr', async () => {
   await setup({
     rootDir: fileURLToPath(new URL('./fixtures/basic', import.meta.url)),
-    dev: true,
+    dev: true
   })
 
   it('Check all features are disabled', async () => {

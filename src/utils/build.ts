@@ -6,7 +6,6 @@ import type { HubConfig } from '../features'
 import { setupProductionAI } from '../features/ai'
 import { setupProductionBlob } from '../features/blob'
 import { setupProductionCache } from '../features/cache'
-import { setupProductionDatabase } from '../features/database'
 import { setupProductionKV } from '../features/kv'
 
 import { copyDatabaseAssets, applyBuildTimeMigrations } from './database'
@@ -42,7 +41,6 @@ export function addBuildHooks(nuxt: Nuxt, hub: HubConfig, deps: Record<string, s
       hub.ai && await setupProductionAI(nitro, hub, deps),
       hub.blob && await setupProductionBlob(nitro, hub, deps),
       hub.cache && await setupProductionCache(nitro, hub, deps),
-      hub.database && await setupProductionDatabase(nitro, hub, deps),
       hub.kv && await setupProductionKV(nitro, hub, deps)
     ])
   })

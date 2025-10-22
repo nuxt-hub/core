@@ -1,5 +1,6 @@
 import { createResolver } from 'nuxt/kit'
 import module from '../src/module'
+import { provider } from 'std-env'
 
 const resolver = createResolver(import.meta.url)
 
@@ -31,8 +32,8 @@ export default defineNuxtConfig({
   },
 
   hub: {
-    ai: 'cloudflare',
-    database: process.env.TEST ? 'sqlite' : 'postgresql',
+    ai: provider.includes('cloudflare') ? 'cloudflare' : 'vercel',
+    database: 'sqlite',
     blob: true,
     kv: true,
     cache: true

@@ -9,12 +9,20 @@ defineRouteMeta({
 
 export default defineEventHandler(async (event) => {
   const { messages } = await readBody(event)
+  const aiProvider = useRuntimeConfig().hub.ai
 
   return streamText({
-    model: hubAI('@cf/meta/llama-3.1-8b-instruct'),
+    model: hubAI(aiProvider === 'cloudflare' ? '@cf/meta/llama-3.1-8b-instruct' : 'openai/gpt-5-nano'),
     messages: convertToModelMessages(messages),
     onError(res) {
       console.error(res.error)
     }
-  }).toUIMessageStreamResponse()
+  })
+    .toUIMessageStreamResponse({
+      headers: {
+        'Content-Type': 'text/x-unknown',
+        'content-encoding': 'identity',
+        'transfer-encoding': 'chunked'
+      }
+    })
 })

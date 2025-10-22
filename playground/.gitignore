@@ -1,3 +1,4 @@
 .vercel
 
 .wrangler
+.env*.local

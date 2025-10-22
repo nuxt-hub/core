@@ -1,7 +1,6 @@
 import { cp } from 'node:fs/promises'
 import { logger } from '@nuxt/kit'
 import { resolve } from 'pathe'
-import { createDatabase } from 'db0'
 import type { Nitro } from 'nitropack'
 import type { HubConfig } from '../features'
 
@@ -10,35 +9,30 @@ import { applyDatabaseMigrations, applyDatabaseQueries } from '../runtime/databa
 const log = logger.withTag('nuxt:hub')
 
 /**
- * Dynamically imports the correct db0 connector based on the Nitro database configuration
+ * Creates a Drizzle client for the given configuration
  */
-export async function getDb0Connector(nitro: Nitro) {
-  const dbConfig = nitro.options.database?.db
-  if (!dbConfig?.connector) {
-    throw new Error('No database connector configured in nitro.options.database.db')
+async function createDrizzleClient(config: any) {
+  const { driver, connection } = config
+
+  if (driver === 'libsql') {
+    const pkg = 'drizzle-orm/libsql'
+    const { drizzle } = await import(pkg)
+    return drizzle({ connection })
+  } else if (driver === 'node-postgres') {
+    const pkg = 'drizzle-orm/node-postgres'
+    const { drizzle } = await import(pkg)
+    return drizzle({ connection })
+  } else if (driver === 'mysql2') {
+    const pkg = 'drizzle-orm/mysql2'
+    const { drizzle } = await import(pkg)
+    return drizzle({ connection })
+  } else if (driver === 'pglite') {
+    const pkg = 'drizzle-orm/pglite'
+    const { drizzle } = await import(pkg)
+    return drizzle({ connection })
   }
 
-  const connector = dbConfig.connector === 'sqlite' ? 'better-sqlite3' : dbConfig.connector
-  const connectorPath = `db0/connectors/${connector.replace('-', '/')}`
-
-  try {
-    // Use createRequire to resolve from the consumer's context
-    // This ensures that dependencies like 'pg' are found in the consumer's node_modules
-    const { createRequire } = await import('node:module')
-    const require = createRequire(process.cwd() + '/package.json')
-    const resolvedPath = require.resolve(connectorPath)
-    const connectorModule = await import(resolvedPath)
-    return connectorModule.default || connectorModule
-  } catch (error) {
-    // Fallback: try direct import (original behavior)
-    try {
-      console.debug('Fallback to direct import of db0 connector', connectorPath)
-      const connectorModule = await import(connectorPath)
-      return connectorModule.default || connectorModule
-    } catch (fallbackError) {
-      throw new Error(`Failed to import db0 connector "${connector}" from "${connectorPath}": ${error}. Fallback also failed: ${fallbackError}`)
-    }
-  }
+  throw new Error(`Unsupported driver: ${driver}`)
 }
 
 /**
@@ -89,8 +83,12 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: HubConfig) {
   if (!hub.database || !hub.applyDatabaseMigrationsDuringBuild) return
 
   try {
-    const driver = await getDb0Connector(nitro)
-    const db = createDatabase(driver(nitro.options.database.db?.options))
+    const dbConfig = nitro.options.runtimeConfig?.hub?.database
+    if (!dbConfig || typeof dbConfig === 'boolean' || typeof dbConfig === 'string') {
+      throw new Error('Database configuration not resolved properly')
+    }
+
+    const db = await createDrizzleClient(dbConfig)
 
     const buildHubConfig = {
       ...hub,
@@ -99,8 +97,8 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: HubConfig) {
 
     log.info('Applying database migrations...')
 
-    await applyDatabaseMigrations(buildHubConfig, db)
-    await applyDatabaseQueries(buildHubConfig, db)
+    await applyDatabaseMigrations(buildHubConfig, db, dbConfig.dialect)
+    await applyDatabaseQueries(buildHubConfig, db, dbConfig.dialect)
 
     log.info('Database migrations applied successfully')
   } catch (error: unknown) {

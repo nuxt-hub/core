@@ -62,7 +62,8 @@ export default defineNuxtConfig({
     '/docs/server/logs': { redirect: { statusCode: 301, to: '/docs/getting-started/server-logs' } },
     // Recipes
     '/docs/recipes/hooks': { redirect: { statusCode: 301, to: '/docs/guides/hooks' } },
-    '/docs/recipes/drizzle': { redirect: { statusCode: 301, to: '/docs/guides/drizzle' } },
+    '/docs/recipes/drizzle': { redirect: { statusCode: 301, to: '/docs/features/database' } },
+    '/docs/guides/drizzle': { redirect: { statusCode: 301, to: '/docs/features/database' } },
     '/docs/recipes/pre-rendering': { redirect: { statusCode: 301, to: '/docs/guides/pre-rendering' } }
   },
   compatibilityDate: '2025-02-11',
