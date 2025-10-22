@@ -15,27 +15,21 @@ async function createDrizzleClient(config: any) {
   const { driver, connection } = config
 
   if (driver === 'libsql') {
-    const { drizzle } = await import('drizzle-orm/libsql')
-    const { createClient } = await import('@libsql/client')
-    const client = createClient(connection)
-    return drizzle(client)
+    const pkg = 'drizzle-orm/libsql'
+    const { drizzle } = await import(pkg)
+    return drizzle({ connection })
   } else if (driver === 'node-postgres') {
-    const { drizzle } = await import('drizzle-orm/node-postgres')
-    // @ts-expect-error - pg is an optional dependency
-    const pg = await import('pg')
-    const pool = new pg.Pool(connection)
-    return drizzle(pool)
+    const pkg = 'drizzle-orm/node-postgres'
+    const { drizzle } = await import(pkg)
+    return drizzle({ connection })
   } else if (driver === 'mysql2') {
-    const { drizzle } = await import('drizzle-orm/mysql2')
-    // @ts-expect-error - mysql2 is an optional dependency
-    const mysql = await import('mysql2/promise')
-    const pool = mysql.createPool(connection)
-    return drizzle(pool)
+    const pkg = 'drizzle-orm/mysql2'
+    const { drizzle } = await import(pkg)
+    return drizzle({ connection })
   } else if (driver === 'pglite') {
-    const { drizzle } = await import('drizzle-orm/pglite')
-    const { PGlite } = await import('@electric-sql/pglite')
-    const client = new PGlite(connection.dataDir)
-    return drizzle(client)
+    const pkg = 'drizzle-orm/pglite'
+    const { drizzle } = await import(pkg)
+    return drizzle({ connection })
   }
 
   throw new Error(`Unsupported driver: ${driver}`)
