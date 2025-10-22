@@ -38,10 +38,6 @@ features:
     description: Run generative AI tasks on a global network and build full-stack AI applications.
     icon: i-lucide-wand
     to: /docs/features/ai
-  - title: Real-time & sockets
-    description: Create collaborative applications, real-time chat, multiplayer games and more.
-    icon: i-lucide-mouse-pointer-click
-    to: /docs/features/realtime
   - title: Customizable
     description: Pick and choose from a wide range of storage providers for your application.
     icon: i-lucide-puzzle
