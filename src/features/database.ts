@@ -145,13 +145,14 @@ export function drizzle(options) {
 }`
   }
   if (['node-postgres', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare')) {
+    const bindingName = driver === 'node-postgres' ? 'POSTGRES' : 'MYSQL'
     drizzleOrmContent = `import { drizzle as drizzleClient } from 'drizzle-orm/${driver}'
 
 let _drizzle = null
 export function drizzle(options) {
   if (!_drizzle) {
-    const hyperdrive = process.env.POSTGRES || globalThis.__env__?.POSTGRES || globalThis.POSTGRES
-    if (!hyperdrive?.connectionString) throw new Error('Cannot find the Hyperdrive database attached to DB binding')
+    const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
+    if (!hyperdrive?.connectionString) throw new Error('Cannot find the Hyperdrive database attached to \`${bindingName}\` binding')
     _drizzle = drizzleClient({ connection: hyperdrive.connectionString, ...options })
   }
   return _drizzle
