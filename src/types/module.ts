@@ -14,7 +14,7 @@ export interface DatabaseConfig {
   /**
    * Database connection configuration
    */
-  connection: {
+  connection?: {
     /**
      * Database connection URL
      */
@@ -52,6 +52,21 @@ export interface DatabaseConfig {
      */
     [key: string]: any
   }
+  /**
+   * The directories to scan for database migrations.
+   * @default ['server/database/migrations']
+   */
+  migrationsDirs?: string[]
+  /**
+   * The paths to the SQL queries to apply after the database migrations complete.
+   */
+  queriesPaths?: string[]
+  /**
+   * Set `false` to disable applying database migrations during production build time.
+   *
+   * @default true
+   */
+  applyMigrationsDuringBuild?: boolean
 }
 
 export interface ModuleOptions {
@@ -97,15 +112,48 @@ export interface ModuleOptions {
    */
   dir?: string
   /**
-   * The directories to scan for database migrations.
-   * @default ['server/database/migrations']
+   * The hosting provider that the project is hosted on.
+   * This is automatically determined using the NITRO_PRESET or the detected provider during the CI/CD.
    */
-  databaseMigrationsDirs?: string[]
-  /**
-   * Set `true` to apply database migrations during build time.
-   *
-   * @default true
-   * @see https://hub.nuxt.com/docs/features/database
-   */
-  applyDatabaseMigrationsDuringBuild?: boolean
+  hosting?: string
+}
+
+export interface ResolvedDatabaseConfig extends DatabaseConfig {
+  dialect: 'sqlite' | 'postgresql' | 'mysql'
+  driver: string
+  connection: DatabaseConfig['connection']
+  migrationsDirs: string[]
+  queriesPaths: string[]
+  applyMigrationsDuringBuild: boolean
+}
+
+export interface HubConfig {
+  ai: false | 'vercel' | 'cloudflare'
+  blob: boolean
+  cache: boolean
+  database: false | 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig
+  kv: boolean
+  dir: string
+  hosting: string
+}
+
+export interface ResolvedHubConfig extends HubConfig {
+  ai: false | 'vercel' | 'cloudflare'
+  blob: boolean
+  cache: boolean
+  database: ResolvedDatabaseConfig | false
+  kv: boolean
+  dir: string
+}
+
+// Declare module to extend Nuxt hooks
+declare module '@nuxt/schema' {
+  interface NuxtHooks {
+    /**
+     * Called when the NuxtHub configuration is ready.
+     * @param config - The resolved NuxtHub configuration.
+     * @returns void | Promise<void>
+     */
+    'hub:config': (config: ResolvedHubConfig) => void | Promise<void>
+  }
 }

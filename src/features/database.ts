@@ -1,87 +1,84 @@
 import { mkdir } from 'node:fs/promises'
 import { join } from 'pathe'
+import { defu } from 'defu'
 import { addServerImportsDir, addServerScanDir, addTemplate, addTypeTemplate } from '@nuxt/kit'
-import { provider } from 'std-env'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir } from '../runtime/database/server/utils/migrations/helpers'
 import { logWhenReady } from '../features'
 import { resolve } from '../module'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig, ResolvedDatabaseConfig } from '../features'
-import type { ModuleOptions, DatabaseConfig } from '../types/module'
+import type { ResolvedDatabaseConfig, HubConfig } from '../types'
 
 /**
  * Resolve database configuration from string or object format
  */
-export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig, hosting: string): Promise<ResolvedDatabaseConfig> {
-  const database = ((nuxt.options as any).hub as ModuleOptions).database
-  let dialect: 'sqlite' | 'postgresql' | 'mysql'
-  let connection: Record<string, any> = {}
-  let driver: string | undefined
+export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise<ResolvedDatabaseConfig | false> {
+  if (!hub.database) return false
 
-  // If it's a string, parse it and auto-detect connection
-  if (typeof database === 'string') {
-    dialect = database as 'sqlite' | 'postgresql' | 'mysql'
+  let config = typeof hub.database === 'string' ? { dialect: hub.database } : hub.database
+  config = defu(config, {
+    migrationsDirs: nuxt.options._layers?.map(layer => join(layer.config.serverDir!, 'database/migrations')).filter(Boolean),
+    queriesPaths: [],
+    applyMigrationsDuringBuild: true
+  })
 
-    // Auto-detect connection based on environment variables
-    if (dialect === 'sqlite') {
+  switch (config.dialect) {
+    case 'sqlite': {
+      // Turso Cloud
       if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
-        // Tursor Cloud
-        connection = {
+        config.driver = 'libsql'
+        config.connection = defu(config.connection, {
           url: process.env.TURSO_DATABASE_URL,
           authToken: process.env.TURSO_AUTH_TOKEN
-        }
-      } else if (hosting.includes('cloudflare')) {
-        // Cloudflare D1
-        driver = 'd1'
-        hub.applyDatabaseMigrationsDuringBuild = false
-      } else {
-        // Local SQLite
-        connection = { url: `file:${join(hub.dir!, 'database/sqlite.db')}` }
-        await mkdir(join(hub.dir!, 'database/sqlite'), { recursive: true })
+        })
+        break
       }
-    } else if (dialect === 'postgresql') {
-      const url = process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.POSTGRESQL_URL
-      driver = 'node-postgres'
-      if (url) {
-        connection = { connectionString: url }
-      } else {
-        driver = 'pglite'
-        connection = { dataDir: join(hub.dir!, 'database/pglite') }
-        await mkdir(join(hub.dir!, 'database/pglite'), { recursive: true })
+      // Cloudflare D1
+      if (hub.hosting.includes('cloudflare')) {
+        config.driver = 'd1'
+        break
       }
-    } else if (dialect === 'mysql') {
-      connection = { url: process.env.DATABASE_URL || process.env.MYSQL_URL }
-      if (!connection.url) {
+      // Local SQLite
+      config.driver ||= 'libsql'
+      config.connection = defu(config.connection, { url: `file:${join(hub.dir!, 'database/sqlite.db')}` })
+      await mkdir(join(hub.dir, 'database/sqlite'), { recursive: true })
+      break
+    }
+    case 'postgresql': {
+      config.connection = defu(config.connection, { url: process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || '' })
+      if (config.connection.url) {
+        config.driver ||= 'node-postgres'
+        break
+      }
+      // Local PGLite
+      config.driver ||= 'pglite'
+      config.connection = defu(config.connection, { dataDir: join(hub.dir!, 'database/pglite') })
+      await mkdir(join(hub.dir, 'database/pglite'), { recursive: true })
+      break
+    }
+    case 'mysql': {
+      config.driver ||= 'mysql2'
+      config.connection = defu(config.connection, { url: process.env.DATABASE_URL || process.env.MYSQL_URL || '' })
+      if (!config.connection.url) {
         throw new Error('MySQL requires DATABASE_URL or MYSQL_URL environment variable')
       }
-    }
-  } else {
-    // It's a DatabaseConfig object
-    dialect = (database as DatabaseConfig).dialect
-    connection = (database as DatabaseConfig).connection || {}
-    driver = (database as DatabaseConfig).driver
-  }
-
-  // Auto-detect driver if not explicitly provided
-  if (!driver) {
-    if (dialect === 'sqlite') {
-      driver = 'libsql'
-    } else if (dialect === 'postgresql') {
-      driver = 'node-postgres'
-    } else {
-      driver = 'mysql2'
+      break
     }
   }
 
-  return { dialect, driver, connection }
+  // Disable migrations if database connection is not supported in CI
+  if (config.driver === 'd1') {
+    config.applyMigrationsDuringBuild = false
+  }
+
+  return config as ResolvedDatabaseConfig
 }
 
 export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>) {
-  const hosting = process.env.NITRO_PRESET || nuxt.options.nitro.preset || provider
-  hub.database = await resolveDatabaseConfig(nuxt, hub, hosting)
+  hub.database = await resolveDatabaseConfig(nuxt, hub)
+  if (!hub.database) return
 
-  const { dialect, driver, connection } = hub.database as ResolvedDatabaseConfig
+  const { dialect, driver, connection, migrationsDirs, queriesPaths } = hub.database as ResolvedDatabaseConfig
 
   logWhenReady(nuxt, `\`drizzle()\` using \`${dialect}\` database with \`${driver}\` driver`, 'info')
 
@@ -103,11 +100,11 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   // Handle migrations
   nuxt.hook('modules:done', async () => {
     // Call hub:database:migrations:dirs hook
-    await nuxt.callHook('hub:database:migrations:dirs', hub.databaseMigrationsDirs!)
+    await nuxt.callHook('hub:database:migrations:dirs', migrationsDirs)
     // Copy all migrations files to the hub.dir directory
     await copyDatabaseMigrationsToHubDir(hub)
     // Call hub:database:queries:paths hook
-    await nuxt.callHook('hub:database:queries:paths', hub.databaseQueriesPaths!)
+    await nuxt.callHook('hub:database:queries:paths', queriesPaths)
     await copyDatabaseQueriesToHubDir(hub)
   })
 
@@ -147,7 +144,7 @@ export function drizzle(options) {
   return _drizzle
 }`
   }
-  if (['node-postgres', 'mysql2'].includes(driver) && hosting.includes('cloudflare')) {
+  if (['node-postgres', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare')) {
     drizzleOrmContent = `import { drizzle as drizzleClient } from 'drizzle-orm/${driver}'
 
 let _drizzle = null

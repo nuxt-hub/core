@@ -2,7 +2,7 @@ import { mkdir } from 'node:fs/promises'
 import { join } from 'pathe'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig } from '../features'
+import type { HubConfig } from '../types'
 import { addDevToolsCustomTabs } from '../utils/devtools'
 
 export async function setupBase(nuxt: Nuxt, hub: HubConfig) {
@@ -26,4 +26,9 @@ export async function setupBase(nuxt: Nuxt, hub: HubConfig) {
   // Remove trailing slash for prerender routes
   nuxt.options.nitro.prerender ||= {}
   nuxt.options.nitro.prerender.autoSubfolderIndex ||= false
+
+  if (hub.hosting?.includes('cloudflare')) {
+    nuxt.options.nitro.cloudflare ||= {}
+    nuxt.options.nitro.cloudflare.nodeCompat = true
+  }
 }

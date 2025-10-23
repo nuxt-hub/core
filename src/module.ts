@@ -5,9 +5,10 @@ import { defu } from 'defu'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
 import type { Nuxt } from '@nuxt/schema'
 import { version } from '../package.json'
-import { setupAI, setupCache, setupOpenAPI, setupDatabase, setupKV, setupBase, setupBlob, type HubConfig } from './features'
-import type { ModuleOptions } from './types/module'
+import { setupAI, setupCache, setupOpenAPI, setupDatabase, setupKV, setupBase, setupBlob } from './features'
+import type { ModuleOptions, HubConfig, ResolvedHubConfig } from './types'
 import { addBuildHooks } from './utils/build'
+import { provider } from 'std-env'
 
 export * from './types'
 
@@ -25,7 +26,7 @@ export default defineNuxtModule<ModuleOptions>({
   defaults: {},
   async setup(options: ModuleOptions, nuxt: Nuxt) {
     // Cannot be used with `nuxt generate`
-    if (nuxt.options.nitro.static || (nuxt.options as any)._generate /* TODO: remove in future */) {
+    if (nuxt.options.nitro.static || (nuxt.options as any)._generate) {
       log.error('NuxtHub is not compatible with `nuxt generate` as it needs a server to run.')
       log.info('To pre-render all pages: `https://hub.nuxt.com/docs/recipes/pre-rendering#pre-render-all-pages`')
       return process.exit(1)
@@ -34,27 +35,18 @@ export default defineNuxtModule<ModuleOptions>({
     const rootDir = nuxt.options.rootDir
     const { resolve } = createResolver(import.meta.url)
 
-    const runtimeConfig = nuxt.options.runtimeConfig
-    const databaseMigrationsDirs = nuxt.options._layers?.map(layer => join(layer.config.serverDir!, 'database/migrations')).filter(Boolean)
-    const hub = defu(runtimeConfig.hub || {}, options, {
+    const hosting = process.env.NITRO_PRESET || nuxt.options.nitro.preset || provider
+    const hub = defu(options, {
       // Local storage
       dir: '.data',
+      hosting,
       // NuxtHub features
-      ai: undefined,
+      ai: false,
       blob: false,
       cache: false,
       database: false,
-      kv: false,
-      // Database Migrations
-      databaseMigrationsDirs,
-      databaseQueriesPaths: [],
-      applyDatabaseMigrationsDuringBuild: true
-    })
-
-    if (nuxt.options.nitro.preset?.includes('cloudflare')) {
-      nuxt.options.nitro.cloudflare ||= {}
-      nuxt.options.nitro.cloudflare.nodeCompat = true
-    }
+      kv: false
+    }) as HubConfig
 
     const packageJSON = await readPackageJSON(nuxt.options.rootDir)
     const deps = Object.assign({}, packageJSON.dependencies, packageJSON.devDependencies)
@@ -63,11 +55,11 @@ export default defineNuxtModule<ModuleOptions>({
     hub.ai && await setupAI(nuxt, hub as HubConfig, deps)
     hub.blob && await setupBlob(nuxt, hub as HubConfig, deps)
     hub.cache && await setupCache(nuxt, hub as HubConfig, deps)
-    hub.database && await setupDatabase(nuxt, hub as HubConfig, deps)
+    await setupDatabase(nuxt, hub as HubConfig, deps)
     hub.kv && await setupKV(nuxt, hub as HubConfig, deps)
 
-    // @ts-expect-error - runtimeConfig is not typed here
-    runtimeConfig.hub = hub as HubConfig
+    const runtimeConfig = nuxt.options.runtimeConfig
+    runtimeConfig.hub = hub as ResolvedHubConfig
     runtimeConfig.public.hub ||= {}
 
     // nuxt prepare, stop here
@@ -75,7 +67,12 @@ export default defineNuxtModule<ModuleOptions>({
       return
     }
 
-    addBuildHooks(nuxt, hub as HubConfig, deps)
+    // TODO: remove
+    addBuildHooks(nuxt, hub as ResolvedHubConfig, deps)
+
+    nuxt.hook('modules:done', () => {
+      nuxt.callHook('hub:config', hub as ResolvedHubConfig)
+    })
 
     // Enable Async Local Storage
     nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}

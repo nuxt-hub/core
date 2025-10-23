@@ -304,9 +304,12 @@ To scan additional directories, specify them in your config:
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   hub: {
-    databaseMigrationsDirs: [
-      'server/database/custom-migrations/'
-    ]
+    database: {
+      dialect: 'postgresql',
+      migrationsDirs: [
+        'server/database/custom-migrations/'
+      ]
+    }
   }
 })
 ```

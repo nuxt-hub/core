@@ -3,14 +3,14 @@ import { createStorage } from 'unstorage'
 import fsDriver from 'unstorage/drivers/fs'
 import overlayDriver from 'unstorage/drivers/overlay'
 import { join } from 'pathe'
-import type { HubConfig } from '../../../../../features'
+import type { ResolvedHubConfig } from '../../../../../types'
 
 // #region Migrations
-export function useDatabaseMigrationsStorage(hub: HubConfig) {
+export function useDatabaseMigrationsStorage(hub: ResolvedHubConfig) {
   // .data/hub/database/migrations
   return createStorage({
     driver: fsDriver({
-      base: join(hub.dir!, 'database/migrations')
+      base: join(hub.dir, 'database/migrations')
     })
   })
 }
@@ -35,7 +35,7 @@ export function getMigrationMetadata(filename: string): { filename: string, name
   }
 }
 
-export async function getDatabaseMigrationFiles(hub: HubConfig) {
+export async function getDatabaseMigrationFiles(hub: ResolvedHubConfig) {
   const storage = useDatabaseMigrationsStorage(hub)
   // Get database dialect from hub config
   const dialect = typeof hub.database === 'string'
@@ -56,10 +56,11 @@ export async function getDatabaseMigrationFiles(hub: HubConfig) {
   })
 }
 
-export async function copyDatabaseMigrationsToHubDir(hub: HubConfig) {
+export async function copyDatabaseMigrationsToHubDir(hub: ResolvedHubConfig) {
+  if (!hub.database) return
   const srcStorage = createStorage({
     driver: overlayDriver({
-      layers: hub.databaseMigrationsDirs!.map(dir => fsDriver({
+      layers: hub.database.migrationsDirs.map(dir => fsDriver({
         base: dir,
         ignore: ['.DS_Store']
       }))
@@ -118,7 +119,7 @@ export function getCreateMigrationsTableQuery(db: { dialect: string }): string {
 // #endregion
 
 // #region Queries
-export function useDatabaseQueriesStorage(hub: HubConfig) {
+export function useDatabaseQueriesStorage(hub: ResolvedHubConfig) {
   // .data/hub/database/queries
   return createStorage({
     driver: fsDriver({
@@ -127,7 +128,7 @@ export function useDatabaseQueriesStorage(hub: HubConfig) {
   })
 }
 
-export async function getDatabaseQueryFiles(hub: HubConfig) {
+export async function getDatabaseQueryFiles(hub: ResolvedHubConfig) {
   const storage = useDatabaseQueriesStorage(hub)
   // Get database dialect from hub config
   const dialect = typeof hub.database === 'string'
@@ -147,11 +148,12 @@ export async function getDatabaseQueryFiles(hub: HubConfig) {
   })
 }
 
-export async function copyDatabaseQueriesToHubDir(hub: HubConfig) {
+export async function copyDatabaseQueriesToHubDir(hub: ResolvedHubConfig) {
+  if (!hub.database) return
   const destStorage = useDatabaseQueriesStorage(hub)
   await destStorage.clear()
 
-  await Promise.all(hub.databaseQueriesPaths!.map(async (path) => {
+  await Promise.all(hub.database.queriesPaths.map(async (path) => {
     try {
       const filename = path.split('/').pop()!
       const sql = await readFile(path, 'utf-8')

@@ -1,6 +1,5 @@
 import type { Nuxt } from '@nuxt/schema'
 import { logger } from '@nuxt/kit'
-import type { DatabaseConfig } from './types/module'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -20,23 +19,4 @@ export function logWhenReady(nuxt: Nuxt, message: string, type: 'info' | 'warn' 
   } else {
     log[type](message)
   }
-}
-
-export interface ResolvedDatabaseConfig {
-  dialect: 'sqlite' | 'postgresql' | 'mysql'
-  driver: string
-  connection: Record<string, any>
-}
-
-export interface HubConfig {
-  ai?: 'vercel' | 'cloudflare'
-  blob?: boolean
-  cache?: boolean
-  database?: boolean | 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig | ResolvedDatabaseConfig
-  kv?: boolean
-
-  dir?: string
-  databaseMigrationsDirs?: string[]
-  databaseQueriesPaths?: string[]
-  applyDatabaseMigrationsDuringBuild?: boolean
 }
