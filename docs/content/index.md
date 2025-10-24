@@ -9,15 +9,15 @@ description: "Build full-stack Nuxt applications, with zero configuration. NuxtH
 orientation: 'horizontal'
 ---
 #headline
-  :::u-button
+  <!-- :::u-button
   ---
   size: sm
-  to: /blob/v1
+  to: /blog/v1
   variant: outline
   trailing-icon: i-lucide-arrow-right
   ---
   NuxtHub v1
-  :::
+  ::: -->
 
 #title
 Build [full-stack]{.text-primary} Nuxt apps.
