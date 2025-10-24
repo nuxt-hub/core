@@ -1,7 +1,7 @@
 import { consola } from 'consola'
 import { join, relative } from 'pathe'
 import { sql } from 'drizzle-orm'
-import type { HubConfig } from '../../../../../features'
+import type { ResolvedHubConfig } from '../../../../../types'
 import { AppliedDatabaseMigrationsQuery, getCreateMigrationsTableQuery, getDatabaseMigrationFiles, getDatabaseQueryFiles, splitSqlQueries, useDatabaseMigrationsStorage, useDatabaseQueriesStorage } from './helpers'
 
 const log = consola.withTag('nuxt:hub')
@@ -10,11 +10,12 @@ function getRelativePath(fullPath: string) {
   return relative(process.cwd(), fullPath)
 }
 
-export async function applyDatabaseMigrations(hub: HubConfig, db: any, dialect: 'sqlite' | 'postgresql' | 'mysql') {
+export async function applyDatabaseMigrations(hub: ResolvedHubConfig, db: any) {
+  if (!hub.database) return
   const migrationsStorage = useDatabaseMigrationsStorage(hub)
-  const execute = dialect === 'sqlite' ? 'run' : 'execute'
+  const execute = hub.database.dialect === 'sqlite' ? 'run' : 'execute'
 
-  const createMigrationsTableQuery = getCreateMigrationsTableQuery({ dialect })
+  const createMigrationsTableQuery = getCreateMigrationsTableQuery({ dialect: hub.database.dialect })
   log.debug('Creating migrations table if not exists...')
   await db[execute](sql.raw(createMigrationsTableQuery))
   log.debug('Successfully created migrations table if not exists')
@@ -55,10 +56,12 @@ export async function applyDatabaseMigrations(hub: HubConfig, db: any, dialect: 
   }
 }
 
-export async function applyDatabaseQueries(hub: HubConfig, db: any, dialect: 'sqlite' | 'postgresql' | 'mysql') {
+export async function applyDatabaseQueries(hub: ResolvedHubConfig, db: any) {
+  if (!hub.database) return
   const queriesStorage = useDatabaseQueriesStorage(hub)
   const queriesFiles = await getDatabaseQueryFiles(hub)
   if (!queriesFiles.length) return
+  const execute = hub.database.dialect === 'sqlite' ? 'run' : 'execute'
 
   for (const queryFile of queriesFiles) {
     const sqlQuery = await queriesStorage.getItem<string>(queryFile.filename)
@@ -67,7 +70,7 @@ export async function applyDatabaseQueries(hub: HubConfig, db: any, dialect: 'sq
     try {
       log.debug(`Applying database query \`${getRelativePath(join(hub.dir!, 'database/queries', queryFile.filename))}\`...`)
       for (const query of queries) {
-        await db[dialect === 'sqlite' ? 'run' : 'execute'](sql.raw(query))
+        await db[execute](sql.raw(query))
       }
     } catch (error: any) {
       log.error(`Failed to apply query \`${getRelativePath(join(hub.dir!, 'database/queries', queryFile.filename))}\`\n`, error?.message)

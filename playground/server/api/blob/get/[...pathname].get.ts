@@ -5,8 +5,6 @@ export default eventHandler(async (event) => {
 
   const blob = await hubBlob().get(pathname)
 
-  console.log('blob', blob)
-
   if (!blob) {
     throw createError({
       statusCode: 404,

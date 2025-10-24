@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { joinURL } from 'ufo'
 
-definePageMeta({
-  primary: 'green',
-  heroBackground: 'opacity-30'
-})
-
 const route = useRoute()
 const { toc } = useAppConfig()
 const { url } = useSiteConfig()

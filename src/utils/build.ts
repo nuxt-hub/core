@@ -1,7 +1,5 @@
-import { writeFile } from 'node:fs/promises'
-import { join } from 'pathe'
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig } from '../features'
+import type { ResolvedHubConfig } from '../types'
 
 import { setupProductionAI } from '../features/ai'
 import { setupProductionBlob } from '../features/blob'
@@ -10,20 +8,9 @@ import { setupProductionKV } from '../features/kv'
 
 import { copyDatabaseAssets, applyBuildTimeMigrations } from './database'
 
-export function addBuildHooks(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>) {
+export function addBuildHooks(nuxt: Nuxt, hub: ResolvedHubConfig, deps: Record<string, string>) {
   nuxt.hook('nitro:build:public-assets', async (nitro) => {
-    // Write `dist/hub.config.json` after public assets are built
-    const hubConfig = {
-      // ai: hub.ai,
-      blob: hub.blob,
-      cache: hub.cache,
-      database: hub.database,
-      kv: hub.kv
-    }
-    const distDir = nitro.options.output.dir || nitro.options.output.publicDir
-    await writeFile(join(distDir, 'hub.config.json'), JSON.stringify(hubConfig, null, 2), 'utf-8')
-
-    // Database migrations
+    // Database migrations & queries
     await copyDatabaseAssets(nitro, hub)
     await applyBuildTimeMigrations(nitro, hub)
   })

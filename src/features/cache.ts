@@ -8,7 +8,7 @@ import { resolve, resolvePath } from '../module'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { Nitro, NitroOptions } from 'nitropack'
-import type { HubConfig } from '../features'
+import type { HubConfig } from '../types'
 
 const log = logger.withTag('nuxt:hub')
 

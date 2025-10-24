@@ -1,6 +1,6 @@
 import { logger } from '@nuxt/kit'
 import type { Nuxt } from 'nuxt/schema'
-import type { HubConfig, ResolvedDatabaseConfig } from '../features'
+import type { HubConfig, ResolvedDatabaseConfig } from '../types'
 import { checkPort, getPort } from 'get-port-please'
 import { writeFile } from 'node:fs/promises'
 import { detectPackageManager, dlxCommand } from 'nypm'

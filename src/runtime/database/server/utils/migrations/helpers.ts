@@ -123,7 +123,7 @@ export function useDatabaseQueriesStorage(hub: ResolvedHubConfig) {
   // .data/hub/database/queries
   return createStorage({
     driver: fsDriver({
-      base: join(hub.dir!, 'database/queries')
+      base: join(hub.dir, 'database/queries')
     })
   })
 }

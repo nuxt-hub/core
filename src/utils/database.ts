@@ -2,7 +2,7 @@ import { cp } from 'node:fs/promises'
 import { logger } from '@nuxt/kit'
 import { resolve } from 'pathe'
 import type { Nitro } from 'nitropack'
-import type { HubConfig } from '../features'
+import type { ResolvedHubConfig } from '../types'
 
 import { applyDatabaseMigrations, applyDatabaseQueries } from '../runtime/database/server/utils/migrations/migrations'
 
@@ -14,31 +14,27 @@ const log = logger.withTag('nuxt:hub')
 async function createDrizzleClient(config: any) {
   const { driver, connection } = config
 
+  let pkg = ''
   if (driver === 'libsql') {
-    const pkg = 'drizzle-orm/libsql'
-    const { drizzle } = await import(pkg)
-    return drizzle({ connection })
+    pkg = 'drizzle-orm/libsql'
   } else if (driver === 'node-postgres') {
-    const pkg = 'drizzle-orm/node-postgres'
-    const { drizzle } = await import(pkg)
-    return drizzle({ connection })
+    pkg = 'drizzle-orm/node-postgres'
   } else if (driver === 'mysql2') {
-    const pkg = 'drizzle-orm/mysql2'
-    const { drizzle } = await import(pkg)
-    return drizzle({ connection })
+    pkg = 'drizzle-orm/mysql2'
   } else if (driver === 'pglite') {
-    const pkg = 'drizzle-orm/pglite'
-    const { drizzle } = await import(pkg)
-    return drizzle({ connection })
+    pkg = 'drizzle-orm/pglite'
+  } else {
+    throw new Error(`Unsupported driver: ${driver}`)
   }
 
-  throw new Error(`Unsupported driver: ${driver}`)
+  const { drizzle } = await import(pkg)
+  return drizzle({ connection })
 }
 
 /**
  * Copies database migrations and queries to the build output directory
  */
-export async function copyDatabaseAssets(nitro: Nitro, hub: HubConfig) {
+export async function copyDatabaseAssets(nitro: Nitro, hub: ResolvedHubConfig) {
   if (!hub.database) return
 
   const migrationsPath = resolve(nitro.options.rootDir, hub.dir!, 'database/migrations')
@@ -79,26 +75,21 @@ export async function copyDatabaseAssets(nitro: Nitro, hub: HubConfig) {
 /**
  * Applies database migrations during build time
  */
-export async function applyBuildTimeMigrations(nitro: Nitro, hub: HubConfig) {
-  if (!hub.database || !hub.applyDatabaseMigrationsDuringBuild) return
+export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubConfig) {
+  if (!hub.database || !hub.database.applyMigrationsDuringBuild) return
 
   try {
-    const dbConfig = nitro.options.runtimeConfig?.hub?.database
-    if (!dbConfig || typeof dbConfig === 'boolean' || typeof dbConfig === 'string') {
-      throw new Error('Database configuration not resolved properly')
-    }
-
-    const db = await createDrizzleClient(dbConfig)
+    const db = await createDrizzleClient(hub.database)
 
     const buildHubConfig = {
       ...hub,
       dir: nitro.options.output.dir
-    }
+    } as ResolvedHubConfig
 
     log.info('Applying database migrations...')
 
-    await applyDatabaseMigrations(buildHubConfig, db, dbConfig.dialect)
-    await applyDatabaseQueries(buildHubConfig, db, dbConfig.dialect)
+    await applyDatabaseMigrations(buildHubConfig, db)
+    await applyDatabaseQueries(buildHubConfig, db)
 
     log.info('Database migrations applied successfully')
   } catch (error: unknown) {

@@ -134,6 +134,10 @@ export default defineContentConfig({
         icon: z.string().editor({ input: 'icon' }),
         hero: PageHero
       })
+    }),
+    pages: defineCollection({
+      type: 'page',
+      source: '*.md'
     })
   }
 })

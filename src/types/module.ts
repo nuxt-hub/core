@@ -1,3 +1,42 @@
+interface DatabaseConnection {
+  /**
+   * Database connection URL
+   */
+  url?: string
+  /**
+   * Auth token (for Turso/libSQL)
+   */
+  authToken?: string
+  /**
+   * Connection string (for PostgreSQL)
+   */
+  connectionString?: string
+  /**
+   * Database host
+   */
+  host?: string
+  /**
+   * Database port
+   */
+  port?: number
+  /**
+   * Database username
+   */
+  user?: string
+  /**
+   * Database password
+   */
+  password?: string
+  /**
+   * Database name
+   */
+  database?: string
+  /**
+   * Additional connection options
+   */
+  [key: string]: any
+}
+
 export interface DatabaseConfig {
   /**
    * Database dialect
@@ -14,44 +53,7 @@ export interface DatabaseConfig {
   /**
    * Database connection configuration
    */
-  connection?: {
-    /**
-     * Database connection URL
-     */
-    url?: string
-    /**
-     * Auth token (for Turso/libSQL)
-     */
-    authToken?: string
-    /**
-     * Connection string (for PostgreSQL)
-     */
-    connectionString?: string
-    /**
-     * Database host
-     */
-    host?: string
-    /**
-     * Database port
-     */
-    port?: number
-    /**
-     * Database username
-     */
-    user?: string
-    /**
-     * Database password
-     */
-    password?: string
-    /**
-     * Database name
-     */
-    database?: string
-    /**
-     * Additional connection options
-     */
-    [key: string]: any
-  }
+  connection?: DatabaseConnection
   /**
    * The directories to scan for database migrations.
    * @default ['server/database/migrations']
@@ -121,7 +123,7 @@ export interface ModuleOptions {
 export interface ResolvedDatabaseConfig extends DatabaseConfig {
   dialect: 'sqlite' | 'postgresql' | 'mysql'
   driver: string
-  connection: DatabaseConfig['connection']
+  connection: DatabaseConnection
   migrationsDirs: string[]
   queriesPaths: string[]
   applyMigrationsDuringBuild: boolean

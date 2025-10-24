@@ -77,11 +77,12 @@ const logoContextMenuItems = [
     <UNavigationMenu :items="links.map(({ icon, ...link }) => link)" variant="link" :ui="{ link: 'text-highlighted hover:text-primary data-active:text-primary' }" />
 
     <template #right>
-      <div class="flex items-center gap-2 transition-opacity duration-300">
+      <div class="flex items-center gap-2">
         <UTooltip text="Search" :kbds="['meta', 'K']" :popper="{ strategy: 'absolute' }">
-          <UContentSearchButton :label="null" size="sm" />
+          <UContentSearchButton :label="null" />
         </UTooltip>
-        <UButton size="sm" label="Get started" color="neutral" to="/docs/getting-started" class="hidden sm:inline-flex" external />
+        <UColorModeButton />
+        <UButton to="https://github.com/nuxt-hub/core" target="_blank" icon="i-simple-icons-github" variant="ghost" color="neutral" />
       </div>
     </template>
 
@@ -90,7 +91,7 @@ const logoContextMenuItems = [
 
       <div class="flex flex-col gap-y-2 mt-4">
         <USeparator class="mb-4" />
-        <UButton label="Get started" color="neutral" to="/docs/getting-started" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
+        <UButton label="Get started" color="neutral" to="/docs/getting-started/installation" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
       </div>
     </template>
   </UHeader>

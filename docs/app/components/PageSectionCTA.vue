@@ -15,14 +15,14 @@ defineProps({
     }"
     :links="[
       {
-        label: 'Deploy now',
-        to: 'https://admin.hub.nuxt.com',
+        label: 'Get started',
+        to: '/docs/getting-started/installation',
         trailingIcon: 'i-lucide-arrow-right'
       },
       {
-        label: 'Read the docs',
-        to: '/docs/getting-started',
-        variant: 'ghost',
+        label: 'Full-stack templates',
+        to: '/templates',
+        variant: 'outline',
         color: 'neutral'
       }
     ]"

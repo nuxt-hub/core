@@ -29,7 +29,7 @@ defineOgImageComponent('Docs', {
 
 <template>
   <UContainer>
-    <UPageHero v-bind="page?.hero" :ui="{ root: 'z-10' }">
+    <UPageHero v-bind="page?.hero">
       <template #description>
         {{ page.description }}
       </template>

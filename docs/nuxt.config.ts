@@ -32,12 +32,16 @@ export default defineNuxtConfig({
     build: {
       markdown: {
         highlight: {
-          langs: ['sql', 'diff']
+          langs: ['bash', 'diff', 'json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml']
+        },
+        remarkPlugins: {
+          'remark-mdc': {
+            options: {
+              autoUnwrap: true
+            }
+          }
         }
       }
-    },
-    preview: {
-      api: 'https://api.nuxt.studio'
     }
   },
   ui: {
@@ -52,6 +56,7 @@ export default defineNuxtConfig({
     '/blog/rss.xml': { prerender: true },
     '/changelog/rss.xml': { prerender: true },
     // Redirects
+    '/docs/getting-started/remote-storage': { redirect: { statusCode: 301, to: '/' } },
     '/docs/features': { redirect: { statusCode: 301, to: '/docs/features/ai' } },
     '/docs/recipes': { redirect: { statusCode: 301, to: '/docs/guides/hooks' } },
     '/docs/storage/blob': { redirect: { statusCode: 301, to: '/docs/features/blob' } },

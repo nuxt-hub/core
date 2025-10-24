@@ -1,8 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-  primary: 'green'
-})
-
 interface Template {
   title: string
   description: string

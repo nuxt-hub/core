@@ -1,10 +1,11 @@
 ---
 title: SQL Database
 navigation.title: Database
+seo.title: Nuxt SQL Database
 description: Access a SQL database with Drizzle ORM in Nuxt to store and retrieve relational data with full type-safety.
 ---
 
-NuxtHub Database provides a type-safe SQL database powered by [Drizzle ORM](https://orm.drizzle.team), supporting PostgreSQL, MySQL, and SQLite with automatic configuration and zero-config development setup.
+NuxtHub Database provides a type-safe SQL database powered by [Drizzle ORM](https://orm.drizzle.team), supporting PostgreSQL, MySQL, and SQLite with smart detection and automatic migrations at build time.
 
 ## Getting started
 
@@ -14,13 +15,35 @@ NuxtHub Database provides a type-safe SQL database powered by [Drizzle ORM](http
 
 Enable the database in your `nuxt.config.ts` by setting the `database` property to your desired SQL dialect:
 
-```ts [nuxt.config.ts]
-export default defineNuxtConfig({
-  hub: {
-    database: 'postgresql' // or 'mysql' or 'sqlite'
-  }
-})
-```
+::tabs{sync="database-dialect"}
+  :::tabs-item{label="PostgreSQL" icon="i-simple-icons-postgresql"}
+  ```ts [nuxt.config.ts]
+  export default defineNuxtConfig({
+    hub: {
+      database: 'postgresql'
+    }
+  })
+  ```
+  :::
+  :::tabs-item{label="MySQL" icon="i-simple-icons-mysql"}
+  ```ts [nuxt.config.ts]
+  export default defineNuxtConfig({
+    hub: {
+      database: 'mysql'
+    }
+  })
+  ```
+  :::
+  :::tabs-item{label="SQLite" icon="i-simple-icons-sqlite"}
+  ```ts [nuxt.config.ts]
+  export default defineNuxtConfig({
+    hub: {
+      database: 'sqlite'
+    }
+  })
+  ```
+  :::
+::
 
 ### Install dependencies
 
@@ -51,7 +74,7 @@ NuxtHub automatically detects your database connection using environment variabl
   :::
   :::tabs-item{label="SQLite" icon="i-simple-icons-sqlite" class="text-sm"}
     - Uses `libsql` driver for [Turso](https://turso.tech) if you set `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` environment variables.
-    - Uses `libsql` locally with file at `.data/database/sqlite/db.sqlite` if no environment variables are set.
+    - Uses `libsql` locally with file at `.data/database/sqlite.db` if no environment variables are set.
   :::
 ::
 
@@ -65,6 +88,21 @@ Create your database schema with full TypeScript support using Drizzle ORM:
     import { pgTable, text, serial, timestamp } from 'drizzle-orm/pg-core'
 
     export const users = pgTable('users', {
+      id: serial().primaryKey(),
+      name: text().notNull(),
+      email: text().notNull().unique(),
+      password: text().notNull(),
+      avatar: text().notNull(),
+      createdAt: timestamp().notNull().defaultNow(),
+    })
+    ```
+  :::
+
+  :::tabs-item{label="MySQL" icon="i-simple-icons-mysql"}
+    ```ts [server/database/schema.ts]
+    import { mysqlTable, text, serial, timestamp } from 'drizzle-orm/mysql-core'
+
+    export const users = mysqlTable('users', {
       id: serial().primaryKey(),
       name: text().notNull(),
       email: text().notNull().unique(),
@@ -89,21 +127,6 @@ Create your database schema with full TypeScript support using Drizzle ORM:
     })
     ```
   :::
-
-  :::tabs-item{label="MySQL" icon="i-simple-icons-mysql"}
-    ```ts [server/database/schema.ts]
-    import { mysqlTable, text, serial, timestamp } from 'drizzle-orm/mysql-core'
-
-    export const users = mysqlTable('users', {
-      id: serial().primaryKey(),
-      name: text().notNull(),
-      email: text().notNull().unique(),
-      password: text().notNull(),
-      avatar: text().notNull(),
-      createdAt: timestamp().notNull().defaultNow(),
-    })
-    ```
-  :::
 ::
 
 ::callout{to="https://orm.drizzle.team/docs/sql-schema-declaration" external}
@@ -115,6 +138,7 @@ Learn more about [Drizzle ORM schema](https://orm.drizzle.team/docs/sql-schema-d
 Create a server util to access your database with type-safety:
 
 ```ts [server/utils/drizzle.ts]
+import { drizzle } from 'hub:database' // optional as auto-imported
 import * as schema from '../database/schema'
 
 export { sql, eq, and, or } from 'drizzle-orm'
@@ -204,7 +228,7 @@ This creates SQL migration files in `server/database/migrations/` which are auto
 That's it! You can now start your development server and your database will be automatically migrated.
 ::
 
-## Query Database
+## Query database
 
 Now that you have your database schema and migrations set up, you can start querying your database.
 
@@ -291,7 +315,7 @@ export default eventHandler(async (event) => {
 Learn more about [Drizzle ORM delete](https://orm.drizzle.team/docs/delete) on the Drizzle documentation.
 ::
 
-## Database Migrations
+## Database migrations
 
 Database migrations provide version control for your database schema. NuxtHub supports SQL migration files (`.sql`) and automatically applies them during development and deployment. Making them fully compatible with Drizzle Kit generated migrations.
 
@@ -343,7 +367,7 @@ CREATE TABLE IF NOT EXISTS users (
 ::
 
 ::tip
-All migration files are copied to `.data/hub/database/migrations` when you run Nuxt, giving you a consolidated view.
+All migration files are copied to `.data/database/migrations` when you run Nuxt, giving you a consolidated view.
 ::
 
 ### Automatic Application
@@ -421,6 +445,10 @@ INSERT OR IGNORE INTO admin_users (id, email, password) VALUES (1, 'admin@nuxt.c
 ```
 ::
 
+::tip
+All migrations queries are copied to `.data/database/queries` when you run Nuxt, giving you a consolidated view.
+::
+
 ### Foreign Key Constraints
 
 For Cloudflare D1 with Drizzle ORM migrations, replace:
@@ -439,7 +467,7 @@ ALTER TABLE ...
 Learn more about [defer foreign key constraints](https://developers.cloudflare.com/d1/sql-api/foreign-keys/#defer-foreign-key-constraints) in Cloudflare D1.
 ::
 
-## Database Seed
+## Database seed
 
 You can populate your database with initial data using [Nitro Tasks](https://nitro.build/guide/tasks):
 
@@ -498,7 +526,7 @@ Open the `Tasks` tab in Nuxt DevTools and click on the `db:seed` task.
 
 ::
 
-## Local Development
+## Local development
 
 During local development, view and edit your database from [Nuxt DevTools](https://devtools.nuxt.com) using the [Drizzle Studio](https://orm.drizzle.team/drizzle-studio/overview):
 
@@ -526,15 +554,16 @@ export default defineNuxtConfig({
 })
 ```
 
-## Migration Guide
+## Migration guide
 
 ::important
-**Breaking Changes in NuxtHub v1:** If you're upgrading from a previous version that used `hubDatabase()`, follow this migration guide.
+**Breaking changes in NuxtHub v1:** If you're upgrading from a previous version that used `hubDatabase()`, follow this migration guide.
 ::
 
-### Configuration Changes
+### Configuration changes
 
-**Before:**
+The `database` option now accepts a SQL dialect instead of a boolean to enable it.
+
 ```diff [nuxt.config.ts]
 export default defineNuxtConfig({
   hub: {
@@ -544,7 +573,9 @@ export default defineNuxtConfig({
 })
 ```
 
-### API Changes
+Valid dialects are `sqlite`, `postgresql` and `mysql`.
+
+### API changes
 
 The old `hubDatabase()` function has been removed. You must now use Drizzle ORM.
 
@@ -561,6 +592,6 @@ const db = useDrizzle()
 const result = await db.select().from(tables.users)
 ```
 
-### Migration Files
+### Migration files
 
 Your existing SQL migration files continue to work! No changes needed.

@@ -1,5 +1,5 @@
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig } from '../features'
+import type { HubConfig } from '../types'
 
 export function setupOpenAPI(nuxt: Nuxt, _hub: HubConfig) {
   // Enable Nitro database

@@ -2,8 +2,7 @@
 import { joinURL } from 'ufo'
 
 definePageMeta({
-  primary: 'green',
-  heroBackground: 'opacity-30'
+  primary: 'green'
 })
 
 const route = useRoute()

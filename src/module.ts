@@ -70,10 +70,6 @@ export default defineNuxtModule<ModuleOptions>({
     // TODO: remove
     addBuildHooks(nuxt, hub as ResolvedHubConfig, deps)
 
-    nuxt.hook('modules:done', () => {
-      nuxt.callHook('hub:config', hub as ResolvedHubConfig)
-    })
-
     // Enable Async Local Storage
     nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}
     nuxt.options.nitro.experimental.asyncContext = true

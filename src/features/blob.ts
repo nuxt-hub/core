@@ -5,7 +5,7 @@ import { logWhenReady } from '../features'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { Nitro, NitroOptions } from 'nitropack'
-import type { HubConfig } from '../features'
+import type { HubConfig } from '../types'
 import { resolve } from '../module'
 
 const log = logger.withTag('nuxt:hub')

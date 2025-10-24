@@ -41,7 +41,7 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
       // Local SQLite
       config.driver ||= 'libsql'
       config.connection = defu(config.connection, { url: `file:${join(hub.dir!, 'database/sqlite.db')}` })
-      await mkdir(join(hub.dir, 'database/sqlite'), { recursive: true })
+      await mkdir(join(hub.dir, 'database'), { recursive: true })
       break
     }
     case 'postgresql': {
