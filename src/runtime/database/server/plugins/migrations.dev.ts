@@ -2,8 +2,9 @@ import type { ResolvedHubConfig } from '../../../../types'
 import { applyDatabaseMigrations, applyDatabaseQueries } from '../utils/migrations/migrations'
 // @ts-expect-error - Generated at runtime
 import { drizzle } from 'hub:database'
+// @ts-expect-error - Generated at runtime
+import { defineNitroPlugin } from '#imports'
 
-// @ts-expect-error - Nitro global
 export default defineNitroPlugin(async (nitroApp: any) => {
   if (!import.meta.dev) return
 
