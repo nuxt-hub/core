@@ -127,6 +127,32 @@ export function drizzle(options) {
   return _drizzle
 }`
 
+  if (driver === 'pglite' && nuxt.options.dev) {
+    // PGlite instance exported for use in devtools Drizzle Studio
+    drizzleOrmContent = `import { PGlite } from '@electric-sql/pglite'
+import { drizzle as drizzleClient } from 'drizzle-orm/pglite'
+
+let _client = null
+let _drizzle = null
+
+export function getClient() {
+  if (!_client) {
+    _client = new PGlite(${JSON.stringify(connection.dataDir)})
+  }
+  return _client
+}
+
+export function drizzle(options) {
+  if (!_drizzle) {
+    const client = getClient()
+    _drizzle = drizzleClient({ client, ...options })
+  }
+  return _drizzle
+}`
+
+    addServerScanDir(resolve('runtime/database/pglite-server'))
+  }
+
   if (driver === 'd1') {
     // D1 requires binding from environment
     drizzleOrmContent = `import { drizzle as drizzleClient } from 'drizzle-orm/d1'
@@ -164,6 +190,7 @@ export function drizzle(options) {
     getContents: () => drizzleOrmContent,
     write: true
   })
+  nuxt.options.nitro.alias ??= {}
   nuxt.options.nitro.alias!['hub:database'] = template.dst
   addTypeTemplate({
     filename: 'hub/database.d.ts',
