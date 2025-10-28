@@ -23,11 +23,11 @@ export async function setupBase(nuxt: Nuxt, hub: HubConfig) {
     addDevToolsCustomTabs(nuxt, hub)
   }
 
-  // Remove trailing slash for prerender routes
-  nuxt.options.nitro.prerender ||= {}
-  nuxt.options.nitro.prerender.autoSubfolderIndex ||= false
-
-  if (hub.hosting?.includes('cloudflare')) {
+  if (hub.hosting.includes('cloudflare')) {
+    // Remove trailing slash for prerender routes
+    nuxt.options.nitro.prerender ||= {}
+    nuxt.options.nitro.prerender.autoSubfolderIndex ||= false
+    // Enable Cloudflare Node.js compatibility
     nuxt.options.nitro.cloudflare ||= {}
     nuxt.options.nitro.cloudflare.nodeCompat = true
   }
