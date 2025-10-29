@@ -1,5 +1,4 @@
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
-import { drizzle } from 'hub:database'
 
 export { sql } from 'drizzle-orm'
 

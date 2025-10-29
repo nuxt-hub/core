@@ -1,7 +1,7 @@
 import { mkdir } from 'node:fs/promises'
 import { join } from 'pathe'
 import { defu } from 'defu'
-import { addServerImportsDir, addServerScanDir, addTemplate, addTypeTemplate } from '@nuxt/kit'
+import { addServerImports, addServerImportsDir, addServerScanDir, addTemplate, addTypeTemplate } from '@nuxt/kit'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir } from '../runtime/database/server/utils/migrations/helpers'
 import { logWhenReady } from '../features'
 import { resolve } from '../module'
@@ -196,4 +196,5 @@ export function drizzle(options) {
     filename: 'hub/database.d.ts',
     getContents: () => drizzleOrmTypes
   }, { nitro: true })
+  addServerImports({ name: 'drizzle', from: 'hub:database' })
 }
