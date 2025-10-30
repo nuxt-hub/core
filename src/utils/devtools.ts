@@ -19,7 +19,7 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
 
   try {
     const { dialect, driver, connection } = dbConfig
-    const schema = {} // Empty schema for now, could be extended to support custom schemas
+    const { schema } = await import(nuxt.options.nitro.alias!['hub:database'] as string)
 
     // Launch Drizzle Studio based on dialect and driver
     if (dialect === 'postgresql') {
