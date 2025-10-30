@@ -147,15 +147,3 @@ export interface ResolvedHubConfig extends HubConfig {
   kv: boolean
   dir: string
 }
-
-// Declare module to extend Nuxt hooks
-declare module '@nuxt/schema' {
-  interface NuxtHooks {
-    /**
-     * Called when the NuxtHub configuration is ready.
-     * @param config - The resolved NuxtHub configuration.
-     * @returns void | Promise<void>
-     */
-    'hub:config': (config: ResolvedHubConfig) => void | Promise<void>
-  }
-}

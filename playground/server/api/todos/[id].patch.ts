@@ -1,3 +1,4 @@
+import { db, schema } from 'hub:database'
 import { eq } from 'drizzle-orm'
 
 export default eventHandler(async (event) => {
@@ -9,10 +10,9 @@ export default eventHandler(async (event) => {
   }).parse)
 
   // List todos for the current user
-  const db = useDrizzle()
-  const todo = await db.update(tables.todos).set({
+  const todo = await db.update(schema.todos).set({
     completed
-  }).where(eq(tables.todos.id, Number(id))).returning().then(r => r[0])
+  }).where(eq(schema.todos.id, Number(id))).returning().then(r => r[0])
 
   return todo
 })

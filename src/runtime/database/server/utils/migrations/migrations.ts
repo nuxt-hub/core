@@ -45,10 +45,8 @@ export async function applyDatabaseMigrations(hub: ResolvedHubConfig, db: any) {
         await db[execute](sql.raw(query))
       }
     } catch (error: any) {
-      log.error(`Failed to apply migration \`${getRelativePath(join(hub.dir!, 'database/migrations', migration.filename))}\`\n`, error?.message)
-      if (error?.message?.includes('already exists')) {
-        log.info('If your database already contains the migration, run `npx nuxthub database migrations mark-all-applied` to mark all migrations as applied.')
-      }
+      log.error(`Failed to apply migration \`${getRelativePath(join(hub.dir!, 'database/migrations', migration.filename))}\``)
+      console.log(error)
       break
     }
 

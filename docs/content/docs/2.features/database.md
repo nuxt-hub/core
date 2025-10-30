@@ -10,6 +10,36 @@ NuxtHub Database provides a type-safe SQL database powered by [Drizzle ORM](http
 ## Getting started
 
 ::steps{level="3"}
+### Install dependencies
+
+Install Drizzle ORM, Drizzle Kit, and the appropriate driver(s) for the database you are using:
+
+::tabs{sync="database-dialect"}
+  :::tabs-item{label="PostgreSQL" icon="i-simple-icons-postgresql"}
+    :pm-install{name="drizzle-orm drizzle-kit pg @electric-sql/pglite"}
+    ::callout
+    NuxtHub automatically detects your database connection using environment variables:
+    - Uses `PGlite` (embedded PostgreSQL) if no environment variables are set.
+    - Uses `node-postgres` driver if you set `DATABASE_URL`, `POSTGRES_URL`, or `POSTGRESQL_URL` environment variable.
+    ::
+  :::
+  :::tabs-item{label="MySQL" icon="i-simple-icons-mysql"}
+    :pm-install{name="drizzle-orm drizzle-kit mysql2"}
+    ::callout
+    NuxtHub automatically detects your database connection using environment variables:
+    - Uses `mysql2` driver if you set `DATABASE_URL` or `MYSQL_URL` environment variable.
+    - Requires environment variable (no local fallback)
+    ::
+  :::
+  :::tabs-item{label="SQLite" icon="i-simple-icons-sqlite"}
+    :pm-install{name="drizzle-orm drizzle-kit @libsql/client"}
+    ::callout
+    NuxtHub automatically detects your database connection using environment variables:
+    - Uses `libsql` driver for [Turso](https://turso.tech) if you set `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` environment variables.
+    - Uses `libsql` locally with file at `.data/database/sqlite.db` if no environment variables are set.
+    ::
+  :::
+::
 
 ### Set SQL dialect
 
@@ -42,39 +72,6 @@ Enable the database in your `nuxt.config.ts` by setting the `database` property 
     }
   })
   ```
-  :::
-::
-
-### Install dependencies
-
-Install Drizzle ORM, Drizzle Kit, and the appropriate driver(s):
-
-::tabs{sync="database-dialect"}
-  :::tabs-item{label="PostgreSQL" icon="i-simple-icons-postgresql"}
-    :pm-install{name="drizzle-orm drizzle-kit pg @electric-sql/pglite"}
-  :::
-  :::tabs-item{label="MySQL" icon="i-simple-icons-mysql"}
-    :pm-install{name="drizzle-orm drizzle-kit mysql2"}
-  :::
-  :::tabs-item{label="SQLite" icon="i-simple-icons-sqlite"}
-    :pm-install{name="drizzle-orm drizzle-kit @libsql/client"}
-  :::
-::
-
-NuxtHub automatically detects your database connection using environment variables:
-
-::tabs{sync="database-dialect"}
-  :::tabs-item{label="PostgreSQL" icon="i-simple-icons-postgresql" class="text-sm"}
-    - Uses `PGlite` (embedded PostgreSQL) if no environment variables are set.
-    - Uses `node-postgres` driver if you set `DATABASE_URL`, `POSTGRES_URL`, or `POSTGRESQL_URL` environment variable.
-  :::
-  :::tabs-item{label="MySQL" icon="i-simple-icons-mysql" class="text-sm"}
-    - Uses `mysql2` driver if you set `DATABASE_URL` or `MYSQL_URL` environment variable.
-    - Requires environment variable (no local fallback)
-  :::
-  :::tabs-item{label="SQLite" icon="i-simple-icons-sqlite" class="text-sm"}
-    - Uses `libsql` driver for [Turso](https://turso.tech) if you set `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` environment variables.
-    - Uses `libsql` locally with file at `.data/database/sqlite.db` if no environment variables are set.
   :::
 ::
 
@@ -129,104 +126,65 @@ Create your database schema with full TypeScript support using Drizzle ORM:
   :::
 ::
 
+::callout
+Database schema can be defined in a single file or in multiple files, these files are scanned and automatically imported for each [Nuxt layer](https://nuxt.com/docs/getting-started/layers):
+- `server/database/schema.ts`
+- `server/database/schema/*.ts`
+
+NuxtHub support filtering files by dialect by using the `.{dialect}.ts` suffix, e.g. `server/database/schema.postgresql.ts` will be only imported if `hub.database` is `postgresql`.
+::
+
+The merged schema is exported in `hub:database:schema` or via the `schema` object in the `hub:database` namespace:
+
+```ts
+import * as schema from 'hub:database:schema'
+// or
+import { schema } from 'hub:database'
+```
+
+::note
+If you are a Nuxt module developer, you can also extend the database schema by using the `hub:database:schema:extend` hook:
+
+```ts [modules/cms/index.ts]
+import { defineNuxtModule, createResolver } from 'nuxt/kit'
+
+export default defineNuxtModule({
+  setup(options, nuxt) {
+    const { resolvePath } = createResolver(import.meta.url)
+    nuxt.hook('hub:database:schema:extend', async ({ dialect, paths }) => {
+      // Add your module drizzle schema files for the given dialect
+      // e.g. ./schema/pages.postgresql.ts if hub.database is 'postgresql'
+      paths.push(await resolvePath(`./schema/pages.${dialect}`))
+    })
+  }
+})
+```
+::
+
 ::callout{to="https://orm.drizzle.team/docs/sql-schema-declaration" external}
 Learn more about [Drizzle ORM schema](https://orm.drizzle.team/docs/sql-schema-declaration) on the Drizzle documentation.
 ::
 
-### `useDrizzle()`
-
-Create a server util to access your database with type-safety:
-
-```ts [server/utils/drizzle.ts]
-import { drizzle } from 'hub:database' // optional as auto-imported
-import * as schema from '../database/schema'
-
-export { sql, eq, and, or } from 'drizzle-orm'
-
-export const tables = schema
-
-export function useDrizzle() {
-  return drizzle({ schema })
-}
-
-export type User = typeof schema.users.$inferSelect
-```
-
-::note
-NuxtHub automatically configures the database connection and provides a pre-configured and auto-imported `drizzle()` function for you.
-::
-
-::tip
-Export also your schema as `tables` and Drizzle helpers like `sql`, `eq`, `and`, `or` to use them throughout your application without importing them manually.
-::
-
-### `drizzle.config.ts`
-
-Create a `drizzle.config.ts` file in your project root:
-
-::tabs{sync="database-dialect"}
-  :::tabs-item{label="PostgreSQL" icon="i-simple-icons-postgresql"}
-    ```ts [drizzle.config.ts]
-    import { defineConfig } from 'drizzle-kit'
-
-    export default defineConfig({
-      dialect: 'postgresql',
-      schema: './server/database/schema.ts',
-      out: './server/database/migrations'
-    })
-    ```
-  :::
-  :::tabs-item{label="MySQL" icon="i-simple-icons-mysql"}
-    ```ts [drizzle.config.ts]
-    import { defineConfig } from 'drizzle-kit'
-
-    export default defineConfig({
-      dialect: 'mysql',
-      schema: './server/database/schema.ts',
-      out: './server/database/migrations'
-    })
-    ```
-  :::
-  :::tabs-item{label="SQLite" icon="i-simple-icons-sqlite"}
-    ```ts [drizzle.config.ts]
-    import { defineConfig } from 'drizzle-kit'
-
-    export default defineConfig({
-      dialect: 'sqlite',
-      schema: './server/database/schema.ts',
-      out: './server/database/migrations'
-    })
-    ```
-  :::
-::
-
-### Add `db:generate` script
-
-Add a script to your `package.json`:
-
-```json [package.json]
-{
-  "scripts": {
-    "db:generate": "drizzle-kit generate"
-  }
-}
-```
-
 ### Generate migrations
 
-Generate migrations from your schema:
+Generate the database migrations from your schema:
 
 ```bash [Terminal]
-npm run db:generate
+npx nuxthub database generate
 ```
 
 This creates SQL migration files in `server/database/migrations/` which are automatically applied during deployment and development.
 
+::tip{icon="i-lucide-rocket"}
+That's it! You can now start your development server and query your database using the `db` instance from `hub:database`.
 ::
 
-::tip{icon="i-lucide-rocket"}
-That's it! You can now start your development server and your database will be automatically migrated.
+::important
+Make sure to run `npx nuxthub database generate` to generate the database migrations each time you change your database schema and restart the development server.
 ::
+
+::
+
 
 ## Query database
 
@@ -235,10 +193,12 @@ Now that you have your database schema and migrations set up, you can start quer
 ### SQL Select
 
 ```ts [server/api/users.get.ts]
-export default eventHandler(async (event) => {
-  const db = useDrizzle()
+import { db, schema } from 'hub:database'
 
-  return await db.select().from(tables.users)
+export default eventHandler(async (event) => {
+  return await db.query.users.findMany()
+  // or
+  return await db.select().from(schema.users)
 })
 ```
 
@@ -249,12 +209,13 @@ Learn more about [Drizzle ORM select](https://orm.drizzle.team/docs/select) on t
 ### SQL Insert
 
 ```ts [server/api/users.post.ts]
+import { db, schema } from 'hub:database'
+
 export default eventHandler(async (event) => {
   const { name, email } = await readBody(event)
-  const db = useDrizzle()
 
   return await db
-    .insert(tables.users)
+    .insert(schema.users)
     .values({
       name,
       email,
@@ -271,13 +232,14 @@ Learn more about [Drizzle ORM insert](https://orm.drizzle.team/docs/insert) on t
 ### SQL Update
 
 ```ts [server/api/users/[id\\].patch.ts]
+import { db, schema } from 'hub:database'
+
 export default eventHandler(async (event) => {
   const { id } = getRouterParams(event)
   const { name } = await readBody(event)
-  const db = useDrizzle()
 
   return await db
-    .update(tables.users)
+    .update(schema.users)
     .set({ name })
     .where(eq(tables.users.id, Number(id)))
     .returning()
@@ -291,13 +253,14 @@ Learn more about [Drizzle ORM update](https://orm.drizzle.team/docs/update) on t
 ### SQL Delete
 
 ```ts [server/api/users/[id\\].delete.ts]
+import { db, schema } from 'hub:database'
+
 export default eventHandler(async (event) => {
   const { id } = getRouterParams(event)
-  const db = useDrizzle()
     
   const deletedUser = await db
-    .delete(tables.users)
-    .where(eq(tables.users.id, Number(id)))
+    .delete(schema.users)
+    .where(eq(schema.users.id, Number(id)))
     .returning()
 
   if (!deletedUser) {
@@ -318,6 +281,10 @@ Learn more about [Drizzle ORM delete](https://orm.drizzle.team/docs/delete) on t
 ## Database migrations
 
 Database migrations provide version control for your database schema. NuxtHub supports SQL migration files (`.sql`) and automatically applies them during development and deployment. Making them fully compatible with Drizzle Kit generated migrations.
+
+::note
+Create dialect-specific migrations with `.<dialect>.sql` suffix (e.g., `0001_create-todos.postgresql.sql`).
+::
 
 ### Migrations Directories
 
@@ -411,10 +378,6 @@ CREATE TABLE `todos` (
 );
 ```
 
-::note
-Create dialect-specific migrations with `.<dialect>.sql` suffix (e.g., `0001_create-todos.postgresql.sql`).
-::
-
 ### Post-Migration Queries
 
 ::important
@@ -434,8 +397,8 @@ export default defineNuxtModule({
   setup(options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
 
-    nuxt.hook('hub:database:queries:paths', (queries) => {
-      queries.push(resolve('./db-queries/seed-admin.sql'))
+    nuxt.hook('hub:database:queries:paths', (paths) => {
+      paths.push(resolve('./db-queries/seed-admin.sql'))
     })
   }
 })

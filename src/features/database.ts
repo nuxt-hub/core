@@ -1,13 +1,19 @@
 import { mkdir } from 'node:fs/promises'
-import { join } from 'pathe'
+import chokidar from 'chokidar'
+import { glob } from 'tinyglobby'
+import { join, resolve as resolvePath } from 'pathe'
 import { defu } from 'defu'
-import { addServerImports, addServerImportsDir, addServerScanDir, addTemplate, addTypeTemplate } from '@nuxt/kit'
+import { addServerImports, addServerImportsDir, addServerScanDir, addTemplate, addTypeTemplate, getLayerDirectories, updateTemplates, logger } from '@nuxt/kit'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir } from '../runtime/database/server/utils/migrations/helpers'
 import { logWhenReady } from '../features'
 import { resolve } from '../module'
+import { getDatabasePathMetadata } from '../utils/database'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { ResolvedDatabaseConfig, HubConfig } from '../types'
+import type { ResolvedDatabaseConfig, HubConfig, ResolvedHubConfig } from '../types'
+import { relative } from 'node:path'
+
+const log = logger.withTag('nuxt:hub')
 
 /**
  * Resolve database configuration from string or object format
@@ -79,10 +85,14 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   if (!hub.database) return
 
   const { dialect, driver, connection, migrationsDirs, queriesPaths } = hub.database as ResolvedDatabaseConfig
+  nuxt.options.nitro.alias ||= {}
 
-  logWhenReady(nuxt, `\`drizzle()\` using \`${dialect}\` database with \`${driver}\` driver`, 'info')
+  logWhenReady(nuxt, `\`hub:database\` using \`${dialect}\` database with \`${driver}\` driver`, 'info')
 
   // Verify development database dependencies are installed
+  if (!deps['drizzle-orm'] || !deps['drizzle-kit']) {
+    logWhenReady(nuxt, 'Please run `npx nypm i drizzle-orm drizzle-kit` to properly setup Drizzle ORM with NuxtHub.', 'error')
+  }
   if (driver === 'node-postgres' && !deps.pg) {
     logWhenReady(nuxt, 'Please run `npx nypm i pg` to use PostgreSQL as database.', 'error')
   } else if (driver === 'pglite' && !deps['@electric-sql/pglite']) {
@@ -99,102 +109,173 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
 
   // Handle migrations
   nuxt.hook('modules:done', async () => {
+    // generate database schema
+    await generateDatabaseSchema(nuxt, hub as ResolvedHubConfig)
     // Call hub:database:migrations:dirs hook
     await nuxt.callHook('hub:database:migrations:dirs', migrationsDirs)
     // Copy all migrations files to the hub.dir directory
-    await copyDatabaseMigrationsToHubDir(hub)
+    await copyDatabaseMigrationsToHubDir(hub as ResolvedHubConfig)
     // Call hub:database:queries:paths hook
     await nuxt.callHook('hub:database:queries:paths', queriesPaths)
-    await copyDatabaseQueriesToHubDir(hub)
+    await copyDatabaseQueriesToHubDir(hub as ResolvedHubConfig)
   })
 
-  // Setup Drizzle ORM
-  const drizzleOrmTypes = `import type { DrizzleConfig } from 'drizzle-orm'
+  await setupDatabaseClient(nuxt, hub as ResolvedHubConfig)
+  await setupDatabaseConfig(nuxt, hub as ResolvedHubConfig)
+}
+
+async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
+  if (!hub.database) return
+  const dialect = hub.database.dialect
+
+  const getSchemaPaths = async () => {
+    const schemaPatterns = getLayerDirectories().map(layer => [
+      resolvePath(layer.server, 'database/schema.ts'),
+      resolvePath(layer.server, `database/schema.${dialect}.ts`),
+      resolvePath(layer.server, 'database/schema/*.ts')
+    ]).flat()
+    let schemaPaths = await glob(schemaPatterns, { absolute: true, onlyFiles: true })
+
+    await nuxt.callHook('hub:database:schema:extend', { dialect, paths: schemaPaths })
+
+    schemaPaths = schemaPaths.filter(path => {
+      const meta = getDatabasePathMetadata(path)
+      return !meta.dialect || meta.dialect === dialect
+    })
+    return schemaPaths
+  }
+
+  // Export Drizzle global schema object including all schema files
+
+  let schemaPaths = await getSchemaPaths()
+
+  // Watch schema files for changes
+  if (nuxt.options.dev && !nuxt.options._prepare) {
+    // chokidar doesn't support glob patterns, so we need to watch the server/database directories
+    const watchDirs = getLayerDirectories().map(layer => resolvePath(layer.server, 'database'))
+    const watcher = chokidar.watch(watchDirs, {
+      ignoreInitial: true
+    })
+    watcher.on('all', async (event, path) => {
+      if (!path.endsWith('database/schema.ts') && !path.endsWith(`database/schema.${dialect}.ts`) && !path.includes('/database/schema/')) return
+      if (['add', 'unlink'].includes(event) === false) return
+      const meta = getDatabasePathMetadata(path)
+      if (meta.dialect && meta.dialect !== dialect) return
+      log.info(`Database schema ${event === 'add' ? 'added' : 'removed'}: \`${relative(nuxt.options.rootDir, path)}\``)
+      // log.info('Make sure to run `npx nuxt hub database generate` to generate the database migrations.')
+      schemaPaths = await getSchemaPaths()
+      await updateTemplates({ filter: (template) => template.filename.includes('hub/database/schema.mjs') })
+    })
+    nuxt.hook('close', () => watcher.close())
+  }
+
+  // Add schema template into .nuxt/hub/database/schema.mjs
+  const schemaTemplate = addTemplate({
+    filename: 'hub/database/schema.mjs',
+    getContents: () => `${schemaPaths.map(path => `export * from '${path}'`).join('\n')}`,
+    write: true
+  })
+  addTypeTemplate({
+    filename: 'hub/database/schema.d.ts',
+    write: true,
+    getContents: () => `export * from './schema.mjs'`
+  }, { nitro: true })
+
+  nuxt.options.nitro.alias ||= {}
+  nuxt.options.nitro.alias['hub:database:schema'] = schemaTemplate.dst
+}
+
+async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
+  const { driver, connection } = hub.database as ResolvedDatabaseConfig
+
+  // Setup Database Types
+  const databaseTypes = `import type { DrizzleConfig } from 'drizzle-orm'
 import { drizzle as drizzleCore } from 'drizzle-orm/${driver}'
+import * as schema from './database/schema.mjs'
 
 declare module 'hub:database' {
-  export function drizzle<TSchema extends Record<string, unknown> = Record<string, never>>(options?: DrizzleConfig<TSchema>): ReturnType<typeof drizzleCore<TSchema>>
+  /**
+   * The database schema object
+   * Defined in server/database/schema.ts and server/database/schema/*.ts
+   */
+  export * as schema from './database/schema.mjs'
+  /**
+   * The ${driver} database client.
+   */
+  export const db: ReturnType<typeof drizzleCore<typeof schema>>
 }`
+
+  addTypeTemplate({
+    filename: 'hub/database.d.ts',
+    getContents: () => databaseTypes
+  }, { nitro: true })
+
+  // Setup Drizzle ORM
 
   // Generate simplified drizzle() implementation
-  let drizzleOrmContent = `import { drizzle as drizzleClient } from 'drizzle-orm/${driver}'
+  let drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
+import * as schema from './database/schema.mjs'
 
-let _drizzle = null
-export function drizzle(options) {
-  if (!_drizzle) {
-    _drizzle = drizzleClient({ connection: ${JSON.stringify(connection)}, ...options })
-  }
-  return _drizzle
-}`
+const db = drizzle({ connection: ${JSON.stringify(connection)}, schema })
+export { db, schema }
+`
 
   if (driver === 'pglite' && nuxt.options.dev) {
     // PGlite instance exported for use in devtools Drizzle Studio
-    drizzleOrmContent = `import { PGlite } from '@electric-sql/pglite'
-import { drizzle as drizzleClient } from 'drizzle-orm/pglite'
+    drizzleOrmContent = `import { drizzle } from 'drizzle-orm/pglite'
+import { PGlite } from '@electric-sql/pglite'
+import * as schema from './database/schema.mjs'
 
-let _client = null
-let _drizzle = null
-
-export function getClient() {
-  if (!_client) {
-    _client = new PGlite(${JSON.stringify(connection.dataDir)})
-  }
-  return _client
-}
-
-export function drizzle(options) {
-  if (!_drizzle) {
-    const client = getClient()
-    _drizzle = drizzleClient({ client, ...options })
-  }
-  return _drizzle
-}`
+const client = new PGlite(${JSON.stringify(connection.dataDir)})
+const db = drizzle({ client, schema })
+export { db, schema, client }
+`
 
     addServerScanDir(resolve('runtime/database/pglite-server'))
   }
 
   if (driver === 'd1') {
     // D1 requires binding from environment
-    drizzleOrmContent = `import { drizzle as drizzleClient } from 'drizzle-orm/d1'
-// import { env } from 'cloudflare:workers'
+    drizzleOrmContent = `import { drizzle } from 'drizzle-orm/d1'
+import * as schema from './database/schema.mjs'
 
-let _drizzle = null
-export function drizzle(options) {
-  // if (!env.DB) throw new Error('Cannot find the D1 database attached to DB binding')
-  if (!_drizzle) {
-    // _drizzle = drizzleClient(env.DB, options)
-    const binding = process.env.DB || globalThis.DB
-    if (!binding) throw new Error('Cannot find the D1 database attached to DB binding')
-    _drizzle = drizzleClient(binding, options)
-  }
-  return _drizzle
-}`
+const binding = process.env.DB || globalThis.DB
+const db = drizzle(binding, { schema })
+export { db, schema }
+`
   }
   if (['node-postgres', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare')) {
     const bindingName = driver === 'node-postgres' ? 'POSTGRES' : 'MYSQL'
-    drizzleOrmContent = `import { drizzle as drizzleClient } from 'drizzle-orm/${driver}'
+    drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
+import * as schema from './database/schema.mjs'
 
-let _drizzle = null
-export function drizzle(options) {
-  if (!_drizzle) {
-    const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
-    if (!hyperdrive?.connectionString) throw new Error('Cannot find the Hyperdrive database attached to \`${bindingName}\` binding')
-    _drizzle = drizzleClient({ connection: hyperdrive.connectionString, ...options })
-  }
-  return _drizzle
-}`
+const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
+const db = drizzle({ connection: hyperdrive.connectionString, schema })
+export { db, schema }
+`
   }
 
-  const template = addTemplate({
+  const databaseTemplate = addTemplate({
     filename: 'hub/database.mjs',
     getContents: () => drizzleOrmContent,
     write: true
   })
-  nuxt.options.nitro.alias ??= {}
-  nuxt.options.nitro.alias!['hub:database'] = template.dst
-  addTypeTemplate({
-    filename: 'hub/database.d.ts',
-    getContents: () => drizzleOrmTypes
-  }, { nitro: true })
-  addServerImports({ name: 'drizzle', from: 'hub:database' })
+  nuxt.options.nitro.alias!['hub:database'] = databaseTemplate.dst
+  addServerImports({ name: 'db', from: 'hub:database', meta: { description: `The ${driver} database client.` } })
+  addServerImports({ name: 'schema', from: 'hub:database', meta: { description: `The database schema object` } })
+}
+
+async function setupDatabaseConfig(nuxt: Nuxt, hub: ResolvedHubConfig) {
+  // generate drizzle.config.ts in .nuxt/hub/database/drizzle.config.ts
+  const { dialect } = hub.database as ResolvedDatabaseConfig
+  addTemplate({
+    filename: 'hub/database/drizzle.config.ts',
+    write: true,
+    getContents: () => `import { defineConfig } from 'drizzle-kit'
+
+export default defineConfig({
+  dialect: '${dialect}',
+  schema: '${relative(nuxt.options.rootDir, resolve(nuxt.options.buildDir, 'hub/database/schema.mjs'))}',
+  out: '${relative(nuxt.options.rootDir, resolve(nuxt.options.rootDir, `server/database/migrations/${dialect}`))}'
+});`})
 }

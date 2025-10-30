@@ -8,6 +8,18 @@ import { applyDatabaseMigrations, applyDatabaseQueries } from '../runtime/databa
 
 const log = logger.withTag('nuxt:hub')
 
+export function getDatabasePathMetadata(path: string): { name: string, dialect: string | undefined, path: string } {
+  // remove .ts, .js, .mjs and .sql extensions
+  let name = path.replace(/\.(ts|js|mjs|sql)$/, '')
+  // Remove dialect suffix if present (e.g., .postgresql, .sqlite, .mysql)
+  const dialect = name.match(/\.(postgresql|sqlite|mysql)$/)?.[1]
+  if (dialect) {
+    name = name.replace(`.${dialect}`, '')
+  }
+
+  return { name, dialect, path }
+}
+
 /**
  * Creates a Drizzle client for the given configuration
  */

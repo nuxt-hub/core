@@ -2,6 +2,12 @@
 declare module '@nuxt/schema' {
   interface NuxtHooks {
     /**
+     * Add additional schema files to scan for database schema files.
+     * @param paths - Array of schema file paths to include.
+     * @returns void | Promise<void>
+     */
+    'hub:database:schema:extend': ({ dialect, paths }: { dialect: string, paths: string[] }) => void | Promise<void>
+    /**
      * Add additional directories to scan for database migration files.
      * @param dirs - Array of directory paths containing .sql migration files to include.
      * @returns void | Promise<void>

@@ -24,9 +24,14 @@ export function getMigrationMetadata(filename: string): { filename: string, name
   // Remove .sql extension
   let name = filename.replace(/\.sql$/, '')
   // Remove dialect suffix if present (e.g., .postgresql, .sqlite, .mysql)
-  const dialect = name.match(/\.(postgresql|sqlite|mysql)$/)?.[1]
+  let dialect = name.match(/\.(postgresql|sqlite|mysql)$/)?.[1]
   if (dialect) {
     name = name.replace(`.${dialect}`, '')
+  } else if (/^(postgresql|sqlite|mysql):/.test(filename)) {
+    // if using directory structure, e.g. postgresql/0001_create-todos.sql, we need to extract the dialect and name
+    dialect = filename.split(':')[0]
+    name = filename.split(':')[1] as string
+    filename = filename.replace(/:/g, '/')
   }
   return {
     filename,
@@ -36,13 +41,9 @@ export function getMigrationMetadata(filename: string): { filename: string, name
 }
 
 export async function getDatabaseMigrationFiles(hub: ResolvedHubConfig) {
+  if (!hub.database) return []
+  const dialect = hub.database.dialect
   const storage = useDatabaseMigrationsStorage(hub)
-  // Get database dialect from hub config
-  const dialect = typeof hub.database === 'string'
-    ? hub.database
-    : (typeof hub.database === 'object' && hub.database !== null && 'dialect' in hub.database)
-        ? hub.database.dialect
-        : undefined
 
   // Get migrations and exclude if dialect specified but not the current database dialect
   const migrationsFiles = (await storage.getKeys()).map(file => getMigrationMetadata(file)).filter(migration => migration.dialect === dialect || !migration.dialect)
