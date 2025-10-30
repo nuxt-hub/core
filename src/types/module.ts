@@ -46,7 +46,7 @@ export interface DatabaseConfig {
    * Database driver (optional, auto-detected if not provided)
    *
    * SQLite drivers: 'better-sqlite3', 'libsql', 'bun-sqlite', 'd1'
-   * PostgreSQL drivers: 'node-postgres', 'pglite'
+   * PostgreSQL drivers: 'postgres-js', 'pglite'
    * MySQL drivers: 'mysql2'
    */
   driver?: string

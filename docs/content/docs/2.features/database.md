@@ -20,7 +20,7 @@ Install Drizzle ORM, Drizzle Kit, and the appropriate driver(s) for the database
     ::callout
     NuxtHub automatically detects your database connection using environment variables:
     - Uses `PGlite` (embedded PostgreSQL) if no environment variables are set.
-    - Uses `node-postgres` driver if you set `DATABASE_URL`, `POSTGRES_URL`, or `POSTGRESQL_URL` environment variable.
+    - Uses `postgres` driver if you set `DATABASE_URL`, `POSTGRES_URL`, or `POSTGRESQL_URL` environment variable.
     ::
   :::
   :::tabs-item{label="MySQL" icon="i-simple-icons-mysql"}
@@ -257,7 +257,7 @@ import { db, schema } from 'hub:database'
 
 export default eventHandler(async (event) => {
   const { id } = getRouterParams(event)
-    
+
   const deletedUser = await db
     .delete(schema.users)
     .where(eq(schema.users.id, Number(id)))
@@ -449,7 +449,7 @@ export default defineTask({
   },
   async run() {
     console.log('Seeding database...')
-    
+
     const users = [
       {
         name: 'John Doe',
@@ -466,9 +466,9 @@ export default defineTask({
         createdAt: new Date()
       }
     ]
-    
+
     await useDrizzle().insert(tables.users).values(users)
-    
+
     return { result: 'Database seeded successfully' }
   }
 })
@@ -499,7 +499,7 @@ export default defineNuxtConfig({
   hub: {
     database: {
       dialect: 'postgresql',
-      driver: 'node-postgres', // Optional: explicitly choose driver
+      driver: 'postgres-js', // Optional: explicitly choose driver
       connection: {
         connectionString: process.env.DATABASE_URL
       }

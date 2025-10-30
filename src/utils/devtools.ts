@@ -33,7 +33,7 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
         })
       } else {
         const { startStudioPostgresServer } = await import('drizzle-kit/api')
-        // For node-postgres and other PostgreSQL drivers
+        // For postgres-js and other PostgreSQL drivers
         log.info(`Launching Drizzle Studio with PostgreSQL...`)
         await startStudioPostgresServer(schema, connection, { port })
       }

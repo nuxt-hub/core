@@ -154,7 +154,7 @@ describe('resolveDatabaseConfig', () => {
   })
 
   describe('PostgreSQL dialect', () => {
-    it('should use node-postgres driver when DATABASE_URL is set', async () => {
+    it('should use postgres-js driver when DATABASE_URL is set', async () => {
       process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/db'
 
       const nuxt = createMockNuxt()
@@ -164,14 +164,14 @@ describe('resolveDatabaseConfig', () => {
 
       expect(result).toMatchObject({
         dialect: 'postgresql',
-        driver: 'node-postgres',
+        driver: 'postgres-js',
         connection: {
           url: 'postgresql://user:pass@localhost:5432/db'
         }
       })
     })
 
-    it('should use node-postgres driver when POSTGRES_URL is set', async () => {
+    it('should use postgres-js driver when POSTGRES_URL is set', async () => {
       process.env.POSTGRES_URL = 'postgresql://user:pass@localhost:5432/db'
 
       const nuxt = createMockNuxt()
@@ -181,14 +181,14 @@ describe('resolveDatabaseConfig', () => {
 
       expect(result).toMatchObject({
         dialect: 'postgresql',
-        driver: 'node-postgres',
+        driver: 'postgres-js',
         connection: {
           url: 'postgresql://user:pass@localhost:5432/db'
         }
       })
     })
 
-    it('should use node-postgres driver when POSTGRESQL_URL is set', async () => {
+    it('should use postgres-js driver when POSTGRESQL_URL is set', async () => {
       process.env.POSTGRESQL_URL = 'postgresql://user:pass@localhost:5432/db'
 
       const nuxt = createMockNuxt()
@@ -198,7 +198,7 @@ describe('resolveDatabaseConfig', () => {
 
       expect(result).toMatchObject({
         dialect: 'postgresql',
-        driver: 'node-postgres',
+        driver: 'postgres-js',
         connection: {
           url: 'postgresql://user:pass@localhost:5432/db'
         }
