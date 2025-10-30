@@ -35,7 +35,7 @@ NuxtHub is a Nuxt module giving you all the features required to ship full-stack
   Get started
   :::
 
-  :u-input-copy{value="npx nuxt modue add hub"}
+  :u-input-copy{value="npx nuxt module add hub"}
 
 
 #default
