@@ -16,11 +16,11 @@ Install Drizzle ORM, Drizzle Kit, and the appropriate driver(s) for the database
 
 ::tabs{sync="database-dialect"}
   :::tabs-item{label="PostgreSQL" icon="i-simple-icons-postgresql"}
-    :pm-install{name="drizzle-orm drizzle-kit pg @electric-sql/pglite"}
+    :pm-install{name="drizzle-orm drizzle-kit postgres @electric-sql/pglite"}
     ::callout
     NuxtHub automatically detects your database connection using environment variables:
     - Uses `PGlite` (embedded PostgreSQL) if no environment variables are set.
-    - Uses `postgres` driver if you set `DATABASE_URL`, `POSTGRES_URL`, or `POSTGRESQL_URL` environment variable.
+    - Uses `postgres-js` driver if you set `DATABASE_URL`, `POSTGRES_URL`, or `POSTGRESQL_URL` environment variable.
     ::
   :::
   :::tabs-item{label="MySQL" icon="i-simple-icons-mysql"}
