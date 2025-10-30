@@ -1,5 +1,5 @@
 import { writeFile, readFile } from 'node:fs/promises'
-import { defineNuxtModule, createResolver, logger } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, logger, addTemplate } from '@nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
@@ -9,6 +9,8 @@ import { setupAI, setupCache, setupOpenAPI, setupDatabase, setupKV, setupBase, s
 import type { ModuleOptions, HubConfig, ResolvedHubConfig } from './types'
 import { addBuildHooks } from './utils/build'
 import { provider } from 'std-env'
+export { applyDatabaseMigrations, applyDatabaseQueries } from './runtime/database/server/utils/migrations/migrations'
+export { createDrizzleClient } from './utils/database'
 
 export * from './types'
 
@@ -61,6 +63,13 @@ export default defineNuxtModule<ModuleOptions>({
     const runtimeConfig = nuxt.options.runtimeConfig
     runtimeConfig.hub = hub as ResolvedHubConfig
     runtimeConfig.public.hub ||= {}
+    if (nuxt.options._prepare) {
+      addTemplate({
+        filename: 'hub/database/config.json',
+        write: true,
+        getContents: () => JSON.stringify(hub, null, 2)
+      })
+    }
 
     // nuxt prepare, stop here
     if (nuxt.options._prepare) {

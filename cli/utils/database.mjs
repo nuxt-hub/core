@@ -1,8 +1,8 @@
 import { join } from 'pathe'
-import { createStorage, type Storage } from 'unstorage'
+import { createStorage } from 'unstorage'
 import fsDriver from 'unstorage/drivers/fs'
 
-let _storage: Storage
+let _storage
 export function useMigrationsStorage() {
   if (!_storage) {
     const cwd = process.cwd()
@@ -26,7 +26,7 @@ export async function getNextMigrationNumber() {
   const files = await getMigrationFiles()
   const lastSequentialMigrationNumber = files
     .map(file => file.split('_')[0])
-    .map(num => Number.parseInt(num!))
+    .map(num => Number.parseInt(num, 10))
     .sort((a, b) => a - b)
     .pop() ?? 0
 

@@ -45,7 +45,7 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
       const { startStudioSQLiteServer } = await import('drizzle-kit/api')
       log.info(`Launching Drizzle Studio with SQLite...`)
       // @ts-expect-error - SQLite credentials typed incorrectly
-      await startStudioSQLiteServer(schema, { url: connection.url.replace('file:', '') }, { port })
+      await startStudioSQLiteServer(schema, connection, { port })
     } else {
       throw new Error(`Unsupported database dialect: ${dialect}`)
     }

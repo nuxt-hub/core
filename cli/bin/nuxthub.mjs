@@ -1,4 +1,5 @@
 #!/usr/bin/env node
-import { runMain } from '../../dist/cli/cli/run.mjs'
+import { runMain } from 'citty'
+import { main } from '../main.mjs'
 
-runMain()
+runMain(main)

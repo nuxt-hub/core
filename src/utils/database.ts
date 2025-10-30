@@ -2,7 +2,7 @@ import { cp } from 'node:fs/promises'
 import { logger } from '@nuxt/kit'
 import { resolve } from 'pathe'
 import type { Nitro } from 'nitropack'
-import type { ResolvedHubConfig } from '../types'
+import type { ResolvedDatabaseConfig, ResolvedHubConfig } from '../types'
 
 import { applyDatabaseMigrations, applyDatabaseQueries } from '../runtime/database/server/utils/migrations/migrations'
 
@@ -23,7 +23,7 @@ export function getDatabasePathMetadata(path: string): { name: string, dialect: 
 /**
  * Creates a Drizzle client for the given configuration
  */
-async function createDrizzleClient(config: any) {
+export async function createDrizzleClient(config: ResolvedDatabaseConfig) {
   const { driver, connection } = config
 
   let pkg = ''

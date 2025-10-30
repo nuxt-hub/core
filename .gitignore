@@ -1,7 +1,6 @@
 # Dependencies
 node_modules
 
-
 # Temp directories
 .temp
 .tmp
@@ -13,6 +12,7 @@ node_modules
 
 # Generated dirs
 dist
+cli/dist
 
 # Nuxt
 .nuxt

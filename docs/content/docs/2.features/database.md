@@ -173,7 +173,7 @@ Generate the database migrations from your schema:
 npx nuxthub database generate
 ```
 
-This creates SQL migration files in `server/database/migrations/` which are automatically applied during deployment and development.
+This creates SQL migration files in `server/database/migrations/{dialect}/` which are automatically applied during deployment and development.
 
 ::tip{icon="i-lucide-rocket"}
 That's it! You can now start your development server and query your database using the `db` instance from `hub:database`.
@@ -337,7 +337,7 @@ CREATE TABLE IF NOT EXISTS users (
 All migration files are copied to `.data/database/migrations` when you run Nuxt, giving you a consolidated view.
 ::
 
-### Automatic Application
+### Automatic migrations
 
 Migrations are automatically applied when you:
 - Start the development server (`npx nuxi dev`)
@@ -345,40 +345,31 @@ Migrations are automatically applied when you:
 
 Applied migrations are tracked in the `_hub_migrations` database table.
 
-### Creating Migrations
+### Generating migrations
 
-If you want to create migrations manually without using Drizzle Kit, you can use the following command:
+Once you have updates your database schema, you can generate new migrations using the following command:
 
 ```bash [Terminal]
-npx nuxt hub database migrations create <name>
+npx nuxthub database generate
 ```
 
-::important
-Migration names must only contain alphanumeric characters and `-` (spaces are converted to `-`).
+This will generate new migrations files in `server/database/migrations/{dialect}/` which are automatically applied during development and deployment.
+
+### Applying migrations
+
+Once you have generated new migrations, you can apply them using the following command:
+
+```bash [Terminal]
+npx nuxthub database migrate
+```
+
+This will apply the new migrations to your database.
+
+::tip
+When running the development server, NuxtHub will automatically apply the migrations for you.
 ::
 
-Example:
-
-```bash [Example]
-> npx nuxthub database migrations create create-todos
-✔ Created ./server/database/migrations/0001_create-todos.sql
-```
-
-Then add your SQL query to the migration file:
-
-```sql [0001_create-todos.sql]
--- Migration number: 0001 	 2025-01-30T17:17:37.252Z
-
-CREATE TABLE `todos` (
-  `id` integer PRIMARY KEY NOT NULL,
-  `user_id` integer NOT NULL,
-  `title` text NOT NULL,
-  `completed` integer DEFAULT 0 NOT NULL,
-  `created_at` integer NOT NULL
-);
-```
-
-### Post-Migration Queries
+### Post-migration queries
 
 ::important
 Advanced use case: These queries run after migrations but aren't tracked in `_hub_migrations`. Ensure they're idempotent.
@@ -412,7 +403,7 @@ INSERT OR IGNORE INTO admin_users (id, email, password) VALUES (1, 'admin@nuxt.c
 All migrations queries are copied to `.data/database/queries` when you run Nuxt, giving you a consolidated view.
 ::
 
-### Foreign Key Constraints
+### Foreign-key constraints
 
 For Cloudflare D1 with Drizzle ORM migrations, replace:
 
