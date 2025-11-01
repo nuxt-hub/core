@@ -25,7 +25,7 @@ export default defineCommand({
   },
   async run({ args }) {
     if (args.verbose) {
-      process.env.CONSOLA_LEVEL = 'debug'
+      consola.level = 'debug'
     }
     const cwd = args.cwd || process.cwd()
     consola.info('Ensuring database schema is generated...')
