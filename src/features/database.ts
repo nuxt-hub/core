@@ -84,7 +84,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   hub.database = await resolveDatabaseConfig(nuxt, hub)
   if (!hub.database) return
 
-  const { dialect, driver, connection, migrationsDirs, queriesPaths } = hub.database as ResolvedDatabaseConfig
+  const { dialect, driver, migrationsDirs, queriesPaths } = hub.database as ResolvedDatabaseConfig
   nuxt.options.nitro.alias ||= {}
 
   logWhenReady(nuxt, `\`hub:database\` using \`${dialect}\` database with \`${driver}\` driver`, 'info')
@@ -138,7 +138,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
 
     await nuxt.callHook('hub:database:schema:extend', { dialect, paths: schemaPaths })
 
-    schemaPaths = schemaPaths.filter(path => {
+    schemaPaths = schemaPaths.filter((path) => {
       const meta = getDatabasePathMetadata(path)
       return !meta.dialect || meta.dialect === dialect
     })
@@ -164,7 +164,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
       log.info(`Database schema ${event === 'add' ? 'added' : 'removed'}: \`${relative(nuxt.options.rootDir, path)}\``)
       // log.info('Make sure to run `npx nuxt hub database generate` to generate the database migrations.')
       schemaPaths = await getSchemaPaths()
-      await updateTemplates({ filter: (template) => template.filename.includes('hub/database/schema.mjs') })
+      await updateTemplates({ filter: template => template.filename.includes('hub/database/schema.mjs') })
     })
     nuxt.hook('close', () => watcher.close())
   }
@@ -277,5 +277,5 @@ export default defineConfig({
   dialect: '${dialect}',
   schema: '${relative(nuxt.options.rootDir, resolve(nuxt.options.buildDir, 'hub/database/schema.mjs'))}',
   out: '${relative(nuxt.options.rootDir, resolve(nuxt.options.rootDir, `server/database/migrations/${dialect}`))}'
-});`})
+});` })
 }

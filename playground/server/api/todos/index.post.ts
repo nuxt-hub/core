@@ -1,4 +1,4 @@
-import { db, schema } from "hub:database"
+import { db, schema } from 'hub:database'
 
 export default eventHandler(async (event) => {
   const { title } = await readValidatedBody(event, z.object({
