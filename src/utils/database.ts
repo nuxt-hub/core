@@ -29,8 +29,8 @@ export async function createDrizzleClient(config: ResolvedDatabaseConfig) {
   let pkg = ''
   if (driver === 'libsql') {
     pkg = 'drizzle-orm/libsql'
-  } else if (driver === 'node-postgres') {
-    pkg = 'drizzle-orm/node-postgres'
+  } else if (driver === 'postgres-js') {
+    pkg = 'drizzle-orm/postgres-js'
   } else if (driver === 'mysql2') {
     pkg = 'drizzle-orm/mysql2'
   } else if (driver === 'pglite') {

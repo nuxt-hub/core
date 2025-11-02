@@ -53,7 +53,7 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
     case 'postgresql': {
       config.connection = defu(config.connection, { url: process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || '' })
       if (config.connection.url) {
-        config.driver ||= 'node-postgres'
+        config.driver ||= 'postgres-js'
         break
       }
       // Local PGLite
@@ -93,7 +93,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   if (!deps['drizzle-orm'] || !deps['drizzle-kit']) {
     logWhenReady(nuxt, 'Please run `npx nypm i drizzle-orm drizzle-kit` to properly setup Drizzle ORM with NuxtHub.', 'error')
   }
-  if (driver === 'node-postgres' && !deps.pg) {
+  if (driver === 'postgres-js' && !deps.pg) {
     logWhenReady(nuxt, 'Please run `npx nypm i pg` to use PostgreSQL as database.', 'error')
   } else if (driver === 'pglite' && !deps['@electric-sql/pglite']) {
     logWhenReady(nuxt, 'Please run `npx nypm i @electric-sql/pglite` to use PGlite as database.', 'error')
@@ -244,8 +244,8 @@ const db = drizzle(binding, { schema })
 export { db, schema }
 `
   }
-  if (['node-postgres', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare')) {
-    const bindingName = driver === 'node-postgres' ? 'POSTGRES' : 'MYSQL'
+  if (['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare')) {
+    const bindingName = driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL'
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
 import * as schema from './database/schema.mjs'
 
