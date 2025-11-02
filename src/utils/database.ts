@@ -104,12 +104,10 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubCon
     if (migrationsApplied === false) {
       process.exit(1)
     }
-    log.info('Database migrations applied successfully')
     const queriesApplied = await applyDatabaseQueries(buildHubConfig, db)
     if (queriesApplied === false) {
       process.exit(1)
     }
-    log.info('Database queries applied successfully')
   } catch (error: unknown) {
     log.error('Failed to apply database migrations during build:', error)
     throw error

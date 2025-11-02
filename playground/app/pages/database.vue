@@ -1,10 +1,10 @@
-<script setup>
+<script setup lang="ts">
 const loading = ref(false)
 const newTodo = ref('')
 const newTodoInput = ref(null)
 
 const toast = useToast()
-const { data: todos } = await useFetch('/api/todos', {
+const { data: todos } = await useFetch<Todo[]>('/api/todos', {
   deep: true
 })
 

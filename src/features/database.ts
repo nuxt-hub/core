@@ -179,10 +179,10 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
     filename: 'hub/database/schema.d.ts',
     write: true,
     getContents: () => `export * from './schema.mjs'`
-  }, { nitro: true })
+  }, { shared: true })
 
-  nuxt.options.nitro.alias ||= {}
-  nuxt.options.nitro.alias['hub:database:schema'] = schemaTemplate.dst
+  nuxt.options.alias ||= {}
+  nuxt.options.alias['hub:database:schema'] = schemaTemplate.dst
 }
 
 async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
