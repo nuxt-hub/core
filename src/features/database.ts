@@ -233,6 +233,18 @@ export { db, schema, client }
 
     addServerScanDir(resolve('runtime/database/pglite-server'))
   }
+  if (driver === 'postgres-js' && nuxt.options.dev) {
+    // disable notice logger for postgres-js in dev
+    drizzleOrmContent = `import { drizzle } from 'drizzle-orm/postgres-js'
+import postgres from 'postgres'
+
+const client = postgres('${connection.url}', {
+  onnotice: () => {}
+})
+const db = drizzle({ client });
+export { db, schema }
+`
+  }
 
   if (driver === 'd1') {
     // D1 requires binding from environment
