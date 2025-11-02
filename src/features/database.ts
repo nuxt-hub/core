@@ -93,8 +93,8 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   if (!deps['drizzle-orm'] || !deps['drizzle-kit']) {
     logWhenReady(nuxt, 'Please run `npx nypm i drizzle-orm drizzle-kit` to properly setup Drizzle ORM with NuxtHub.', 'error')
   }
-  if (driver === 'postgres-js' && !deps.pg) {
-    logWhenReady(nuxt, 'Please run `npx nypm i pg` to use PostgreSQL as database.', 'error')
+  if (driver === 'postgres-js' && !deps['postgres']) {
+    logWhenReady(nuxt, 'Please run `npx nypm i postgres` to use PostgreSQL as database.', 'error')
   } else if (driver === 'pglite' && !deps['@electric-sql/pglite']) {
     logWhenReady(nuxt, 'Please run `npx nypm i @electric-sql/pglite` to use PGlite as database.', 'error')
   } else if (driver === 'mysql2' && !deps.mysql2) {
