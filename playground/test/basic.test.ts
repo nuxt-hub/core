@@ -8,12 +8,7 @@ describe('ssr', async () => {
 
   await setup({
     rootDir: fileURLToPath(new URL('..', import.meta.url)),
-    dev: true,
-    nuxtConfig: {
-      hub: {
-        database: 'sqlite'
-      }
-    }
+    dev: true
   })
 
   it('List todos', async () => {

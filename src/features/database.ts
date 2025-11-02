@@ -84,7 +84,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   hub.database = await resolveDatabaseConfig(nuxt, hub)
   if (!hub.database) return
 
-  const { dialect, driver, connection, migrationsDirs, queriesPaths } = hub.database as ResolvedDatabaseConfig
+  const { dialect, driver, migrationsDirs, queriesPaths } = hub.database as ResolvedDatabaseConfig
   nuxt.options.nitro.alias ||= {}
 
   logWhenReady(nuxt, `\`hub:database\` using \`${dialect}\` database with \`${driver}\` driver`, 'info')

@@ -3,14 +3,20 @@ import { consola } from 'consola'
 import { execa } from 'execa'
 import { readFile } from 'node:fs/promises'
 import { join } from 'pathe'
-import { applyDatabaseMigrations, applyDatabaseQueries, createDrizzleClient } from '../../../dist/module.mjs'
+import { createDrizzleClient } from '../../../dist/module.mjs'
+import { sql } from 'drizzle-orm'
 
 export default defineCommand({
   meta: {
-    name: 'migrate',
-    description: 'Apply database migrations to the database.'
+    name: 'drop',
+    description: 'Drop a table from the database.'
   },
   args: {
+    table: {
+      type: 'positional',
+      description: 'The name of the table to drop.',
+      required: true
+    },
     cwd: {
       type: 'option',
       description: 'The directory to run the command in.',
@@ -28,22 +34,17 @@ export default defineCommand({
       consola.level = 'debug'
     }
     const cwd = args.cwd || process.cwd()
-    consola.info('Ensuring database schema is generated...')
+    consola.info('Preparing database configuration...')
     await execa({
       stdout: 'pipe',
       preferLocal: true,
       cwd
     })`nuxt prepare`
-    consola.info('Applying database migrations...')
     const hubConfig = JSON.parse(await readFile(join(cwd, '.nuxt/hub/database/config.json'), 'utf-8'))
+    consola.info(`Database dialect: \`${hubConfig.database.dialect}\``)
     const db = await createDrizzleClient(hubConfig.database)
-    const migrationsApplied = await applyDatabaseMigrations(hubConfig, db)
-    if (migrationsApplied === false) {
-      process.exit(1)
-    }
-    const queriesApplied = await applyDatabaseQueries(hubConfig, db)
-    if (queriesApplied === false) {
-      process.exit(1)
-    }
+    const execute = hubConfig.database.dialect === 'sqlite' ? 'run' : 'execute'
+    await db[execute](sql.raw(`DROP TABLE IF EXISTS "${args.table}";`))
+    consola.success(`Table \`${args.table}\` dropped successfully.`)
   }
 })

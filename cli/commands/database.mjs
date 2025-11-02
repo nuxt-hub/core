@@ -1,6 +1,8 @@
 import { defineCommand } from 'citty'
 import generate from './database/generate.mjs'
 import migrate from './database/migrate.mjs'
+import markAsMigrated from './database/mark-as-migrated.mjs'
+import drop from './database/drop.mjs'
 
 export default defineCommand({
   meta: {
@@ -10,6 +12,8 @@ export default defineCommand({
   },
   subCommands: {
     generate,
-    migrate
+    migrate,
+    'mark-as-migrated': markAsMigrated,
+    drop
   }
 })

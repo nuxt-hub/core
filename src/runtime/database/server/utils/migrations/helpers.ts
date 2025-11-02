@@ -27,10 +27,10 @@ export function getMigrationMetadata(filename: string): { filename: string, name
   let dialect = name.match(/\.(postgresql|sqlite|mysql)$/)?.[1]
   if (dialect) {
     name = name.replace(`.${dialect}`, '')
-  } else if (/^(postgresql|sqlite|mysql):/.test(filename)) {
+  } else if (/^(?:postgresql|sqlite|mysql):/.test(filename)) {
     // if using directory structure, e.g. postgresql/0001_create-todos.sql, we need to extract the dialect and name
     dialect = filename.split(':')[0]
-    name = filename.split(':')[1] as string
+    name = name.split(':')[1] as string
     filename = filename.replace(/:/g, '/')
   }
   return {

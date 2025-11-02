@@ -1,5 +1,5 @@
 // import { pages } from 'hub:database:schema'
-import { integer, pgTable, text, timestamp, serial } from "drizzle-orm/pg-core";
+import { integer, pgTable, text, timestamp, serial } from 'drizzle-orm/pg-core'
 
 export const comments = pgTable('comments', {
   id: serial().primaryKey(),
@@ -7,5 +7,5 @@ export const comments = pgTable('comments', {
   pageId: integer().notNull(),
   content: text().notNull(),
   createdAt: timestamp().notNull().defaultNow(),
-  updatedAt: timestamp().notNull().defaultNow(),
+  updatedAt: timestamp().notNull().defaultNow()
 })

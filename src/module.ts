@@ -9,7 +9,9 @@ import { setupAI, setupCache, setupOpenAPI, setupDatabase, setupKV, setupBase, s
 import type { ModuleOptions, HubConfig, ResolvedHubConfig } from './types'
 import { addBuildHooks } from './utils/build'
 import { provider } from 'std-env'
+
 export { applyDatabaseMigrations, applyDatabaseQueries } from './runtime/database/server/utils/migrations/migrations'
+export { getDatabaseMigrationFiles, AppliedDatabaseMigrationsQuery } from './runtime/database/server/utils/migrations/helpers'
 export { createDrizzleClient } from './utils/database'
 
 export * from './types'
