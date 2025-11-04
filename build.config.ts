@@ -5,6 +5,6 @@ export default defineBuildConfig({
     'nitropack',
     'drizzle-orm',
     'drizzle-kit',
-    'consola'
+    'tsdown'
   ]
 })
