@@ -31,12 +31,13 @@ export default defineCommand({
   },
   async run({ args }) {
     if (args.verbose) {
-      consola.level = 'debug'
+      // Set log level to debug
+      consola.level = 4
     }
     const cwd = args.cwd || process.cwd()
-    consola.info('Ensuring database schema is generated...')
+    consola.info('Ensuring database migrations are available...')
     await execa({
-      stdout: 'pipe',
+      stdio: 'pipe',
       preferLocal: true,
       cwd
     })`nuxt prepare`
@@ -54,26 +55,31 @@ export default defineCommand({
       process.exit(1)
     }
     const db = await createDrizzleClient(hubConfig.database)
-    const execute = hubConfig.database.dialect === 'sqlite' ? 'run' : 'execute'
-    const { rows: appliedMigrations } = await db[execute](sql.raw(AppliedDatabaseMigrationsQuery))
+    let appliedMigrations = []
+    if (hubConfig.database.dialect === 'sqlite') {
+      appliedMigrations = (await db.run(sql.raw(AppliedDatabaseMigrationsQuery))).rows
+    } else {
+      appliedMigrations = await db.execute(sql.raw(AppliedDatabaseMigrationsQuery))
+    }
     consola.info(`Database has \`${appliedMigrations.length}\` applied migration${appliedMigrations.length === 1 ? '' : 's'}`)
     consola.debug(`Applied migrations:\n${appliedMigrations.map(migration => `- ${migration.name} (\`${migration.applied_at}\`)`).join('\n')}`)
     // If a specific migration is provided, check if it is already applied
     if (args.name && appliedMigrations.find(appliedMigration => appliedMigration.name === args.name)) {
       consola.success(`Local migration \`${args.name}\` is already applied.`)
-      return
+      process.exit(0)
     }
+    const execute = hubConfig.database.dialect === 'sqlite' ? 'run' : 'execute'
     // If a specific migration is provided, mark it as applied
     if (args.name) {
       await db[execute](sql.raw(`INSERT INTO "_hub_migrations" (name) values ('${args.name}');`))
       consola.success(`Local migration \`${args.name}\` marked as applied.`)
-      return
+      process.exit(0)
     }
     // If no specific migration is provided, mark all pending migrations as applied
     const pendingMigrations = localMigrations.filter(migration => !appliedMigrations.find(appliedMigration => appliedMigration.name === migration.name))
     if (pendingMigrations.length === 0) {
       consola.success('All migrations are already applied.')
-      return
+      process.exit(0)
     }
     consola.info(`Found \`${pendingMigrations.length}\` pending migration${pendingMigrations.length === 1 ? '' : 's'}`)
     let migrationsMarkedAsApplied = 0
@@ -93,8 +99,9 @@ export default defineCommand({
     }
     if (migrationsMarkedAsApplied === 0) {
       consola.info('No migrations marked as applied.')
-      return
+      process.exit(0)
     }
     consola.success(`${migrationsMarkedAsApplied} migration${migrationsMarkedAsApplied === 1 ? '' : 's'} marked as applied.`)
+    process.exit(0)
   }
 })

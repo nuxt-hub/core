@@ -13,6 +13,7 @@ import { provider } from 'std-env'
 export { applyDatabaseMigrations, applyDatabaseQueries } from './runtime/database/server/utils/migrations/migrations'
 export { getDatabaseMigrationFiles, AppliedDatabaseMigrationsQuery } from './runtime/database/server/utils/migrations/helpers'
 export { createDrizzleClient } from './utils/database'
+export { buildDatabaseSchema } from './features/database'
 
 export * from './types'
 

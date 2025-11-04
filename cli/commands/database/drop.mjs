@@ -31,12 +31,13 @@ export default defineCommand({
   },
   async run({ args }) {
     if (args.verbose) {
-      consola.level = 'debug'
+      // Set log level to debug
+      consola.level = 4
     }
     const cwd = args.cwd || process.cwd()
     consola.info('Preparing database configuration...')
     await execa({
-      stdout: 'pipe',
+      stdio: 'pipe',
       preferLocal: true,
       cwd
     })`nuxt prepare`
@@ -46,5 +47,6 @@ export default defineCommand({
     const execute = hubConfig.database.dialect === 'sqlite' ? 'run' : 'execute'
     await db[execute](sql.raw(`DROP TABLE IF EXISTS "${args.table}";`))
     consola.success(`Table \`${args.table}\` dropped successfully.`)
+    process.exit(0)
   }
 })

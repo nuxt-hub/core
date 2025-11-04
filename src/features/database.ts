@@ -1,4 +1,6 @@
 import { mkdir } from 'node:fs/promises'
+import { consola } from 'consola'
+import { build } from 'tsdown'
 import chokidar from 'chokidar'
 import { glob } from 'tinyglobby'
 import { join, resolve as resolvePath } from 'pathe'
@@ -158,31 +160,32 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
     })
     watcher.on('all', async (event, path) => {
       if (!path.endsWith('database/schema.ts') && !path.endsWith(`database/schema.${dialect}.ts`) && !path.includes('/database/schema/')) return
-      if (['add', 'unlink'].includes(event) === false) return
+      if (['add', 'unlink', 'change'].includes(event) === false) return
       const meta = getDatabasePathMetadata(path)
       if (meta.dialect && meta.dialect !== dialect) return
-      log.info(`Database schema ${event === 'add' ? 'added' : 'removed'}: \`${relative(nuxt.options.rootDir, path)}\``)
-      // log.info('Make sure to run `npx nuxt hub database generate` to generate the database migrations.')
+      log.info(`Database schema ${event === 'add' ? 'added' : event === 'unlink' ? 'removed' : 'changed'}: \`${relative(nuxt.options.rootDir, path)}\``)
+      log.info('Make sure to run `npx nuxt hub database generate` to generate the database migrations.')
       schemaPaths = await getSchemaPaths()
-      await updateTemplates({ filter: template => template.filename.includes('hub/database/schema.mjs') })
+      await updateTemplates({ filter: template => template.filename.includes('hub/database/schema.entry.ts')})
+      await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir })
     })
     nuxt.hook('close', () => watcher.close())
   }
 
-  // Add schema template into .nuxt/hub/database/schema.mjs
-  const schemaTemplate = addTemplate({
-    filename: 'hub/database/schema.mjs',
+  // Generate final database schema file at .nuxt/hub/database/schema.js
+  addTemplate({
+    filename: 'hub/database/schema.entry.ts',
     getContents: () => `${schemaPaths.map(path => `export * from '${path}'`).join('\n')}`,
     write: true
   })
-  addTypeTemplate({
-    filename: 'hub/database/schema.d.ts',
-    write: true,
-    getContents: () => `export * from './schema.mjs'`
-  }, { shared: true })
+  if (!nuxt.options._prepare) {
+    nuxt.hooks.hookOnce('app:templatesGenerated', async () => {
+      await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir })
+    })
+  }
 
   nuxt.options.alias ||= {}
-  nuxt.options.alias['hub:database:schema'] = schemaTemplate.dst
+  nuxt.options.alias['hub:database:schema'] = join(nuxt.options.buildDir, 'hub/database/schema.js')
 }
 
 async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
@@ -191,14 +194,14 @@ async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
   // Setup Database Types
   const databaseTypes = `import type { DrizzleConfig } from 'drizzle-orm'
 import { drizzle as drizzleCore } from 'drizzle-orm/${driver}'
-import * as schema from './database/schema.mjs'
+import * as schema from './database/schema.js'
 
 declare module 'hub:database' {
   /**
    * The database schema object
    * Defined in server/database/schema.ts and server/database/schema/*.ts
    */
-  export * as schema from './database/schema.mjs'
+  export * as schema from './database/schema.js'
   /**
    * The ${driver} database client.
    */
@@ -214,7 +217,7 @@ declare module 'hub:database' {
 
   // Generate simplified drizzle() implementation
   let drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
-import * as schema from './database/schema.mjs'
+import * as schema from './database/schema.js'
 
 const db = drizzle({ connection: ${JSON.stringify(connection)}, schema })
 export { db, schema }
@@ -224,7 +227,7 @@ export { db, schema }
     // PGlite instance exported for use in devtools Drizzle Studio
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/pglite'
 import { PGlite } from '@electric-sql/pglite'
-import * as schema from './database/schema.mjs'
+import * as schema from './database/schema.js'
 
 const client = new PGlite(${JSON.stringify(connection.dataDir)})
 const db = drizzle({ client, schema })
@@ -237,11 +240,12 @@ export { db, schema, client }
     // disable notice logger for postgres-js in dev
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
+import * as schema from './database/schema.js'
 
 const client = postgres('${connection.url}', {
   onnotice: () => {}
 })
-const db = drizzle({ client });
+const db = drizzle({ client, schema });
 export { db, schema }
 `
   }
@@ -249,7 +253,7 @@ export { db, schema }
   if (driver === 'd1') {
     // D1 requires binding from environment
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/d1'
-import * as schema from './database/schema.mjs'
+import * as schema from './database/schema.js'
 
 const binding = process.env.DB || globalThis.DB
 const db = drizzle(binding, { schema })
@@ -259,7 +263,7 @@ export { db, schema }
   if (['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare')) {
     const bindingName = driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL'
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
-import * as schema from './database/schema.mjs'
+import * as schema from './database/schema.js'
 
 const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
 const db = drizzle({ connection: hyperdrive.connectionString, schema })
@@ -287,7 +291,32 @@ async function setupDatabaseConfig(nuxt: Nuxt, hub: ResolvedHubConfig) {
 
 export default defineConfig({
   dialect: '${dialect}',
-  schema: '${relative(nuxt.options.rootDir, resolve(nuxt.options.buildDir, 'hub/database/schema.mjs'))}',
+  schema: '${relative(nuxt.options.rootDir, resolve(nuxt.options.buildDir, 'hub/database/schema.js'))}',
   out: '${relative(nuxt.options.rootDir, resolve(nuxt.options.rootDir, `server/database/migrations/${dialect}`))}'
 });` })
+}
+
+export async function buildDatabaseSchema(buildDir: string, { relativeDir }: { relativeDir?: string } = {}) {
+  relativeDir = relativeDir || buildDir
+  const entry = join(buildDir, 'hub/database/schema.entry.ts')
+  await build({
+    entry: {
+      schema: entry
+    },
+    outDir: join(buildDir, 'hub/database'),
+    alias: {
+      'hub:database:schema': entry
+    },
+    platform: 'neutral',
+    format: 'esm',
+    skipNodeModulesBundle: true,
+    dts: {
+      build: false,
+      tsconfig: join(buildDir, 'tsconfig.shared.json'),
+      newContext: true
+    },
+    clean: false,
+    logLevel: 'warn',
+  })
+  consola.debug(`Database schema built successfully at \`${relative(relativeDir, join(buildDir, 'hub/database/schema.js'))}\``)
 }

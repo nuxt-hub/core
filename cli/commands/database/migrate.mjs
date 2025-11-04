@@ -25,12 +25,13 @@ export default defineCommand({
   },
   async run({ args }) {
     if (args.verbose) {
-      consola.level = 'debug'
+      // Set log level to debug
+      consola.level = 4
     }
     const cwd = args.cwd || process.cwd()
-    consola.info('Ensuring database schema is generated...')
+    consola.info('Ensuring database migrations are available...')
     await execa({
-      stdout: 'pipe',
+      stdio: 'pipe',
       preferLocal: true,
       cwd
     })`nuxt prepare`
@@ -45,5 +46,6 @@ export default defineCommand({
     if (queriesApplied === false) {
       process.exit(1)
     }
+    process.exit(0)
   }
 })

@@ -39,8 +39,8 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig, deps: Record<string, s
     }
   } else if (hub.ai === 'vercel') {
     const isMissingEnvVars = !process.env.AI_GATEWAY_API_KEY && !process.env.VERCEL_OIDC_TOKEN
-    if (isMissingEnvVars && nuxt.options.dev) {
-      logWhenReady(nuxt, `Missing \`AI_GATEWAY_API_KEY\` environment variable to enable \`hubAI()\` with ${providerName}\nCreate an AI Gateway API key at \`${encodeURI('https://vercel.com/d?to=/[team]/~/ai/api-keys&title=Go+to+AI+Gateway')}\` or run \`npx vercel env pull .env\` to pull the environment variables.`, 'error')
+    if (isMissingEnvVars && (nuxt.options.dev || nuxt.options._prepare)) {
+      logWhenReady(nuxt, `Missing \`AI_GATEWAY_API_KEY\` environment variable to enable \`hubAI()\` with ${providerName}\nCreate an AI Gateway API key at \`${encodeURI('https://vercel.com/d?to=/[team]/~/ai/api-keys&title=Go+to+AI+Gateway')}\` or run \`npx vercel env pull .env\` to pull the environment variables.`, 'warn')
     } else if (isMissingEnvVars) {
       logWhenReady(nuxt, `Set \`AI_GATEWAY_API_KEY\` environment variable to enable \`hubAI()\` with ${providerName}\nCreate an AI Gateway API key at \`${encodeURI('https://vercel.com/d?to=/[team]/~/ai/api-keys&title=Go+to+AI+Gateway')}\``, 'error')
     }

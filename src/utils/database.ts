@@ -25,12 +25,20 @@ export function getDatabasePathMetadata(path: string): { name: string, dialect: 
  */
 export async function createDrizzleClient(config: ResolvedDatabaseConfig) {
   const { driver, connection } = config
+  let client
 
   let pkg = ''
-  if (driver === 'libsql') {
-    pkg = 'drizzle-orm/libsql'
-  } else if (driver === 'postgres-js') {
+  if (driver === 'postgres-js') {
+    let clientPkg = 'postgres'
+    const { default: postgres } = await import(clientPkg)
+    client = postgres(connection.url, {
+      onnotice: () => {}
+    })
     pkg = 'drizzle-orm/postgres-js'
+    const { drizzle } = await import(pkg)
+    return drizzle({ client })
+  } else if (driver === 'libsql') {
+    pkg = 'drizzle-orm/libsql'
   } else if (driver === 'mysql2') {
     pkg = 'drizzle-orm/mysql2'
   } else if (driver === 'pglite') {

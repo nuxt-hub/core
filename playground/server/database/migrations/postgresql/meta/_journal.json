@@ -8,6 +8,13 @@
       "when": 1761788519975,
       "tag": "0000_left_magdalene",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1762269606032,
+      "tag": "0001_exotic_hellcat",
+      "breakpoints": true
     }
   ]
 }
