@@ -4,7 +4,6 @@ export default defineBuildConfig({
   externals: [
     'nitropack',
     'drizzle-orm',
-    'drizzle-kit',
-    'tsdown'
+    'drizzle-kit'
   ]
 })
