@@ -166,7 +166,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
       log.info(`Database schema ${event === 'add' ? 'added' : event === 'unlink' ? 'removed' : 'changed'}: \`${relative(nuxt.options.rootDir, path)}\``)
       log.info('Make sure to run `npx nuxt hub database generate` to generate the database migrations.')
       schemaPaths = await getSchemaPaths()
-      await updateTemplates({ filter: template => template.filename.includes('hub/database/schema.entry.ts')})
+      await updateTemplates({ filter: template => template.filename.includes('hub/database/schema.entry.ts') })
       await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir })
     })
     nuxt.hook('close', () => watcher.close())
@@ -316,7 +316,7 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir }: { r
       newContext: true
     },
     clean: false,
-    logLevel: 'warn',
+    logLevel: 'warn'
   })
   consola.debug(`Database schema built successfully at \`${relative(relativeDir, join(buildDir, 'hub/database/schema.js'))}\``)
 }

@@ -29,7 +29,7 @@ export async function createDrizzleClient(config: ResolvedDatabaseConfig) {
 
   let pkg = ''
   if (driver === 'postgres-js') {
-    let clientPkg = 'postgres'
+    const clientPkg = 'postgres'
     const { default: postgres } = await import(clientPkg)
     client = postgres(connection.url, {
       onnotice: () => {}
