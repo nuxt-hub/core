@@ -47,6 +47,6 @@ export default defineCommand({
     const execute = hubConfig.database.dialect === 'sqlite' ? 'run' : 'execute'
     await db[execute](sql.raw(`DROP TABLE IF EXISTS "${args.table}";`))
     consola.success(`Table \`${args.table}\` dropped successfully.`)
-    process.exit(0)
+    await db.$client?.close?.()
   }
 })

@@ -46,6 +46,6 @@ export default defineCommand({
     if (queriesApplied === false) {
       process.exit(1)
     }
-    process.exit(0)
+    await db.$client?.close?.()
   }
 })

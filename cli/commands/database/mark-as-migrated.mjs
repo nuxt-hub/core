@@ -55,6 +55,7 @@ export default defineCommand({
       process.exit(1)
     }
     const db = await createDrizzleClient(hubConfig.database)
+    const closeDb = async () => await db.$client?.close?.()
     let appliedMigrations = []
     if (hubConfig.database.dialect === 'sqlite') {
       appliedMigrations = (await db.run(sql.raw(AppliedDatabaseMigrationsQuery))).rows
@@ -66,20 +67,20 @@ export default defineCommand({
     // If a specific migration is provided, check if it is already applied
     if (args.name && appliedMigrations.find(appliedMigration => appliedMigration.name === args.name)) {
       consola.success(`Local migration \`${args.name}\` is already applied.`)
-      process.exit(0)
+      return closeDb()
     }
     const execute = hubConfig.database.dialect === 'sqlite' ? 'run' : 'execute'
     // If a specific migration is provided, mark it as applied
     if (args.name) {
       await db[execute](sql.raw(`INSERT INTO "_hub_migrations" (name) values ('${args.name}');`))
       consola.success(`Local migration \`${args.name}\` marked as applied.`)
-      process.exit(0)
+      return closeDb()
     }
     // If no specific migration is provided, mark all pending migrations as applied
     const pendingMigrations = localMigrations.filter(migration => !appliedMigrations.find(appliedMigration => appliedMigration.name === migration.name))
     if (pendingMigrations.length === 0) {
       consola.success('All migrations are already applied.')
-      process.exit(0)
+      return closeDb()
     }
     consola.info(`Found \`${pendingMigrations.length}\` pending migration${pendingMigrations.length === 1 ? '' : 's'}`)
     let migrationsMarkedAsApplied = 0
@@ -99,9 +100,9 @@ export default defineCommand({
     }
     if (migrationsMarkedAsApplied === 0) {
       consola.info('No migrations marked as applied.')
-      process.exit(0)
+      return closeDb()
     }
     consola.success(`${migrationsMarkedAsApplied} migration${migrationsMarkedAsApplied === 1 ? '' : 's'} marked as applied.`)
-    process.exit(0)
+    return closeDb()
   }
 })
