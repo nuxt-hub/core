@@ -172,7 +172,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
     nuxt.hook('close', () => watcher.close())
   }
 
-  // Generate final database schema file at .nuxt/hub/database/schema.js
+  // Generate final database schema file at .nuxt/hub/database/schema.mjs
   addTemplate({
     filename: 'hub/database/schema.entry.ts',
     getContents: () => `${schemaPaths.map(path => `export * from '${path}'`).join('\n')}`,
@@ -185,7 +185,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
   }
 
   nuxt.options.alias ||= {}
-  nuxt.options.alias['hub:database:schema'] = join(nuxt.options.buildDir, 'hub/database/schema.js')
+  nuxt.options.alias['hub:database:schema'] = join(nuxt.options.buildDir, 'hub/database/schema.mjs')
 }
 
 async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
@@ -194,14 +194,14 @@ async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
   // Setup Database Types
   const databaseTypes = `import type { DrizzleConfig } from 'drizzle-orm'
 import { drizzle as drizzleCore } from 'drizzle-orm/${driver}'
-import * as schema from './database/schema.js'
+import * as schema from './database/schema.mjs'
 
 declare module 'hub:database' {
   /**
    * The database schema object
    * Defined in server/database/schema.ts and server/database/schema/*.ts
    */
-  export * as schema from './database/schema.js'
+  export * as schema from './database/schema.mjs'
   /**
    * The ${driver} database client.
    */
@@ -217,7 +217,7 @@ declare module 'hub:database' {
 
   // Generate simplified drizzle() implementation
   let drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
-import * as schema from './database/schema.js'
+import * as schema from './database/schema.mjs'
 
 const db = drizzle({ connection: ${JSON.stringify(connection)}, schema })
 export { db, schema }
@@ -227,7 +227,7 @@ export { db, schema }
     // PGlite instance exported for use in devtools Drizzle Studio
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/pglite'
 import { PGlite } from '@electric-sql/pglite'
-import * as schema from './database/schema.js'
+import * as schema from './database/schema.mjs'
 
 const client = new PGlite(${JSON.stringify(connection.dataDir)})
 const db = drizzle({ client, schema })
@@ -240,7 +240,7 @@ export { db, schema, client }
     // disable notice logger for postgres-js in dev
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
-import * as schema from './database/schema.js'
+import * as schema from './database/schema.mjs'
 
 const client = postgres('${connection.url}', {
   onnotice: () => {}
@@ -253,7 +253,7 @@ export { db, schema }
   if (driver === 'd1') {
     // D1 requires binding from environment
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/d1'
-import * as schema from './database/schema.js'
+import * as schema from './database/schema.mjs'
 
 const binding = process.env.DB || globalThis.DB
 const db = drizzle(binding, { schema })
@@ -263,7 +263,7 @@ export { db, schema }
   if (['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare')) {
     const bindingName = driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL'
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
-import * as schema from './database/schema.js'
+import * as schema from './database/schema.mjs'
 
 const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
 const db = drizzle({ connection: hyperdrive.connectionString, schema })
@@ -291,7 +291,7 @@ async function setupDatabaseConfig(nuxt: Nuxt, hub: ResolvedHubConfig) {
 
 export default defineConfig({
   dialect: '${dialect}',
-  schema: '${relative(nuxt.options.rootDir, resolve(nuxt.options.buildDir, 'hub/database/schema.js'))}',
+  schema: '${relative(nuxt.options.rootDir, resolve(nuxt.options.buildDir, 'hub/database/schema.mjs'))}',
   out: '${relative(nuxt.options.rootDir, resolve(nuxt.options.rootDir, `server/database/migrations/${dialect}`))}'
 });` })
 }
@@ -309,6 +309,7 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir }: { r
     },
     platform: 'neutral',
     format: 'esm',
+    fixedExtension: true,
     skipNodeModulesBundle: true,
     dts: {
       build: false,
@@ -318,5 +319,5 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir }: { r
     clean: false,
     logLevel: 'warn'
   })
-  consola.debug(`Database schema built successfully at \`${relative(relativeDir, join(buildDir, 'hub/database/schema.js'))}\``)
+  consola.debug(`Database schema built successfully at \`${relative(relativeDir, join(buildDir, 'hub/database/schema.mjs'))}\``)
 }
