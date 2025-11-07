@@ -251,7 +251,7 @@ describe('resolveDatabaseConfig', () => {
         dialect: 'mysql',
         driver: 'mysql2',
         connection: {
-          url: 'mysql://user:pass@localhost:3306/db'
+          uri: 'mysql://user:pass@localhost:3306/db'
         }
       })
     })
@@ -268,7 +268,7 @@ describe('resolveDatabaseConfig', () => {
         dialect: 'mysql',
         driver: 'mysql2',
         connection: {
-          url: 'mysql://user:pass@localhost:3306/db'
+          uri: 'mysql://user:pass@localhost:3306/db'
         }
       })
     })
@@ -451,9 +451,9 @@ describe('resolveDatabaseConfig', () => {
       })
     })
 
-    it('should prioritize DATABASE_URL over POSTGRES_URL', async () => {
-      process.env.DATABASE_URL = 'postgresql://priority@localhost:5432/db'
-      process.env.POSTGRES_URL = 'postgresql://fallback@localhost:5432/db'
+    it('should prioritize POSTGRES_URL over DATABASE_URL', async () => {
+      process.env.DATABASE_URL = 'postgresql://fallback@localhost:5432/db'
+      process.env.POSTGRES_URL = 'postgresql://priority@localhost:5432/db'
 
       const nuxt = createMockNuxt()
       const hub = createBaseHubConfig('postgresql')
@@ -466,9 +466,9 @@ describe('resolveDatabaseConfig', () => {
       }
     })
 
-    it('should prioritize DATABASE_URL over MYSQL_URL', async () => {
-      process.env.DATABASE_URL = 'mysql://priority@localhost:3306/db'
-      process.env.MYSQL_URL = 'mysql://fallback@localhost:3306/db'
+    it('should prioritize MYSQL_URL over DATABASE_URL', async () => {
+      process.env.DATABASE_URL = 'mysql://fallback@localhost:3306/db'
+      process.env.MYSQL_URL = 'mysql://priority@localhost:3306/db'
 
       const nuxt = createMockNuxt()
       const hub = createBaseHubConfig('mysql')
@@ -477,7 +477,7 @@ describe('resolveDatabaseConfig', () => {
 
       expect(result).not.toBe(false)
       if (result !== false) {
-        expect(result.connection?.url).toBe('mysql://priority@localhost:3306/db')
+        expect(result.connection?.uri).toBe('mysql://priority@localhost:3306/db')
       }
     })
 

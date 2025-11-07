@@ -66,7 +66,7 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
     }
     case 'mysql': {
       config.driver ||= 'mysql2'
-      config.connection = defu(config.connection, { uri: process.env.DATABASE_URL || process.env.MYSQL_URL || '' })
+      config.connection = defu(config.connection, { uri: process.env.MYSQL_URL || process.env.DATABASE_URL || '' })
       if (!config.connection.uri) {
         throw new Error('MySQL requires DATABASE_URL or MYSQL_URL environment variable')
       }
