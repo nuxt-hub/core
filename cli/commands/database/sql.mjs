@@ -15,8 +15,8 @@ export default defineCommand({
   args: {
     query: {
       type: 'positional',
-      description: 'The SQL query to execute.',
-      required: true
+      description: 'The SQL query to execute. If not provided, reads from stdin.',
+      required: false
     },
     cwd: {
       type: 'option',
@@ -48,7 +48,27 @@ export default defineCommand({
     const url = hubConfig.database.connection.uri || hubConfig.database.connection.url
     consola.debug(`Database connection: \`${url}\``)
     const db = await createDrizzleClient(hubConfig.database)
-    const queries = splitSqlQueries(args.query)
+
+    // Read query from stdin if not provided as argument
+    let queryInput = args.query
+    if (!queryInput) {
+      if (process.stdin.isTTY) {
+        consola.error('No query provided. Please provide a query as an argument or pipe SQL from stdin.')
+        process.exit(1)
+      }
+      consola.debug('Reading SQL from stdin...')
+      const chunks = []
+      for await (const chunk of process.stdin) {
+        chunks.push(chunk)
+      }
+      queryInput = Buffer.concat(chunks).toString('utf-8').trim()
+      if (!queryInput) {
+        consola.error('No SQL content received from stdin.')
+        process.exit(1)
+      }
+    }
+
+    const queries = splitSqlQueries(queryInput)
     const execute = dialect === 'sqlite' ? 'run' : 'execute'
     const getRows = result => (dialect === 'mysql' ? result[0] : result.rows || result)
     for (const query of queries) {
