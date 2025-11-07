@@ -42,8 +42,8 @@ export default defineNuxtConfig({
     'hub:database:migrations:dirs': (dirs) => {
       dirs.push('my-module/database/migrations')
     },
-    'hub:database:queries:paths': (queries) => {
-      queries.push(resolver.resolve('server/database/queries/admin.sql'))
+    'hub:database:queries:paths': (queries, dialect) => {
+      queries.push(resolver.resolve(`server/database/queries/admin.${dialect}.sql`))
     }
   },
 

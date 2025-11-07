@@ -14,15 +14,29 @@ export async function applyDatabaseMigrations(hub: ResolvedHubConfig, db: any) {
   const log = consola.withTag('nuxt:hub')
 
   const migrationsStorage = useDatabaseMigrationsStorage(hub)
-  const execute = hub.database.dialect === 'sqlite' ? 'run' : 'execute'
+  const dialect = hub.database.dialect
+  const execute = dialect === 'sqlite' ? 'run' : 'execute'
+  const getRows = (result: any) => (dialect === 'mysql' ? result[0] : result.rows || result)
 
   const createMigrationsTableQuery = getCreateMigrationsTableQuery({ dialect: hub.database.dialect })
   log.debug('Creating migrations table if not exists...')
-  await db[execute](sql.raw(createMigrationsTableQuery))
+  try {
+    await db[execute](sql.raw(createMigrationsTableQuery))
+  } catch (error: any) {
+    const message = error.cause?.message || error.message
+    log.error(`Failed to create migrations table\n${message}`)
+    return false
+  }
   log.debug('Successfully created migrations table if not exists')
 
-  const appliedMigrations = await db[execute](sql.raw(AppliedDatabaseMigrationsQuery))
-  const appliedRows = appliedMigrations.rows || appliedMigrations || []
+  let appliedRows = []
+  try {
+    appliedRows = getRows(await db[execute](sql.raw(AppliedDatabaseMigrationsQuery)))
+  } catch (error: any) {
+    const message = error.cause?.message || error.message
+    log.error(`Failed to fetch applied migrations\n${message}`)
+    return false
+  }
   if (!import.meta.dev) {
     log.info(`Found ${appliedRows.length} applied migration${appliedRows.length === 1 ? '' : 's'}`)
   }
@@ -83,7 +97,8 @@ export async function applyDatabaseQueries(hub: ResolvedHubConfig, db: any) {
         await db[execute](sql.raw(query))
       }
     } catch (error: any) {
-      log.error(`Failed to apply query \`${getRelativePath(join(hub.dir!, 'database/queries', queryFile.filename))}\`\n`, error?.message)
+      const message = error.cause?.message || error.message
+      log.error(`Failed to apply query \`${getRelativePath(join(hub.dir!, 'database/queries', queryFile.filename))}\`\n${message}`)
       return false
     }
 

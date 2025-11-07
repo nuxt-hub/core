@@ -18,7 +18,7 @@ declare module '@nuxt/schema' {
      * @param queries - The path of the SQL queries paths to add.
      * @returns void | Promise<void>
      */
-    'hub:database:queries:paths': (queries: string[]) => void | Promise<void>
+    'hub:database:queries:paths': (queries: string[], dialect: 'sqlite' | 'postgresql' | 'mysql') => void | Promise<void>
   }
 }
 

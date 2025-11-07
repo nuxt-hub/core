@@ -3,6 +3,7 @@ import generate from './database/generate.mjs'
 import migrate from './database/migrate.mjs'
 import markAsMigrated from './database/mark-as-migrated.mjs'
 import drop from './database/drop.mjs'
+import sql from './database/sql.mjs'
 
 export default defineCommand({
   meta: {
@@ -14,6 +15,7 @@ export default defineCommand({
     generate,
     migrate,
     'mark-as-migrated': markAsMigrated,
-    drop
+    drop,
+    sql
   }
 })

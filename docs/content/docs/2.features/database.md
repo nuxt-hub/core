@@ -388,8 +388,8 @@ export default defineNuxtModule({
   setup(options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
 
-    nuxt.hook('hub:database:queries:paths', (paths) => {
-      paths.push(resolve('./db-queries/seed-admin.sql'))
+    nuxt.hook('hub:database:queries:paths', (paths, dialect) => {
+      paths.push(resolve(`./db-queries/seed-admin.${dialect}.sql`))
     })
   }
 })

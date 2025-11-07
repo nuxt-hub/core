@@ -96,7 +96,7 @@ export const CreateDatabaseMigrationsTableQueryMysql = `CREATE TABLE IF NOT EXIS
 
 export const CreateDatabaseMigrationsTableQueryLibsql = CreateDatabaseMigrationsTableQuerySqlite
 
-export const AppliedDatabaseMigrationsQuery = 'select "id", "name", "applied_at" from "_hub_migrations" order by "_hub_migrations"."id"'
+export const AppliedDatabaseMigrationsQuery = 'select id, name, applied_at from _hub_migrations order by id'
 
 /**
  * Get the appropriate create table query for the migrations table based on the database dialect

@@ -42,7 +42,10 @@ export default defineCommand({
       cwd
     })`nuxt prepare`
     const hubConfig = JSON.parse(await readFile(join(cwd, '.nuxt/hub/database/config.json'), 'utf-8'))
-    consola.info(`Database dialect: \`${hubConfig.database.dialect}\``)
+    const dialect = hubConfig.database.dialect
+    consola.info(`Database: \`${dialect}\` with \`${hubConfig.database.driver}\` driver`)
+    const url = hubConfig.database.connection.uri || hubConfig.database.connection.url
+    consola.debug(`Database connection: \`${url}\``)
     const localMigrations = await getDatabaseMigrationFiles(hubConfig)
     if (localMigrations.length === 0) {
       consola.info('No local migrations found.')
@@ -55,13 +58,10 @@ export default defineCommand({
       process.exit(1)
     }
     const db = await createDrizzleClient(hubConfig.database)
-    const closeDb = async () => await db.$client?.close?.()
-    let appliedMigrations = []
-    if (hubConfig.database.dialect === 'sqlite') {
-      appliedMigrations = (await db.run(sql.raw(AppliedDatabaseMigrationsQuery))).rows
-    } else {
-      appliedMigrations = await db.execute(sql.raw(AppliedDatabaseMigrationsQuery))
-    }
+    const execute = dialect === 'sqlite' ? 'run' : 'execute'
+    const getRows = result => (dialect === 'mysql' ? result[0] : result.rows || result)
+    const closeDb = async () => await db.$client?.end?.()
+    const appliedMigrations = getRows(await db[execute](sql.raw(AppliedDatabaseMigrationsQuery)))
     consola.info(`Database has \`${appliedMigrations.length}\` applied migration${appliedMigrations.length === 1 ? '' : 's'}`)
     consola.debug(`Applied migrations:\n${appliedMigrations.map(migration => `- ${migration.name} (\`${migration.applied_at}\`)`).join('\n')}`)
     // If a specific migration is provided, check if it is already applied
@@ -69,7 +69,6 @@ export default defineCommand({
       consola.success(`Local migration \`${args.name}\` is already applied.`)
       return closeDb()
     }
-    const execute = hubConfig.database.dialect === 'sqlite' ? 'run' : 'execute'
     // If a specific migration is provided, mark it as applied
     if (args.name) {
       await db[execute](sql.raw(`INSERT INTO "_hub_migrations" (name) values ('${args.name}');`))

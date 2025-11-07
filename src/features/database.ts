@@ -53,7 +53,7 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
       break
     }
     case 'postgresql': {
-      config.connection = defu(config.connection, { url: process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || '' })
+      config.connection = defu(config.connection, { url: process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL || '' })
       if (config.connection.url) {
         config.driver ||= 'postgres-js'
         break
@@ -66,8 +66,8 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
     }
     case 'mysql': {
       config.driver ||= 'mysql2'
-      config.connection = defu(config.connection, { url: process.env.DATABASE_URL || process.env.MYSQL_URL || '' })
-      if (!config.connection.url) {
+      config.connection = defu(config.connection, { uri: process.env.DATABASE_URL || process.env.MYSQL_URL || '' })
+      if (!config.connection.uri) {
         throw new Error('MySQL requires DATABASE_URL or MYSQL_URL environment variable')
       }
       break
@@ -118,7 +118,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
     // Copy all migrations files to the hub.dir directory
     await copyDatabaseMigrationsToHubDir(hub as ResolvedHubConfig)
     // Call hub:database:queries:paths hook
-    await nuxt.callHook('hub:database:queries:paths', queriesPaths)
+    await nuxt.callHook('hub:database:queries:paths', queriesPaths, dialect)
     await copyDatabaseQueriesToHubDir(hub as ResolvedHubConfig)
   })
 
@@ -304,12 +304,14 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir }: { r
       schema: entry
     },
     outDir: join(buildDir, 'hub/database'),
+    outExtensions: () => ({
+      js: '.mjs'
+    }),
     alias: {
       'hub:database:schema': entry
     },
     platform: 'neutral',
     format: 'esm',
-    fixedExtension: true,
     skipNodeModulesBundle: true,
     dts: {
       build: false,
