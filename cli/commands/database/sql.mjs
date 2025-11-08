@@ -81,12 +81,8 @@ export default defineCommand({
       if (q.startsWith('select')) {
         consola.success(`${rows.length} row${rows.length === 1 ? '' : 's'} selected by \`${query}\``)
         consola.log(inspect(rows, { depth: null, colors: true, compact: true }))
-      } else if (q.startsWith('insert')) {
-        consola.success(rows?.length ? `${rows.length} row${rows.length === 1 ? '' : 's'} inserted by \`${query}\`` : `\`${query}\``)
-      } else if (q.startsWith('update')) {
-        consola.success(rows?.length ? `${rows.length} row${rows.length === 1 ? '' : 's'} updated by \`${query}\`` : `\`${query}\``)
-      } else if (q.startsWith('delete')) {
-        consola.success(rows?.length ? `${rows.length} row${rows.length === 1 ? '' : 's'} deleted by \`${query}\`` : `\`${query}\``)
+      } else if (q.startsWith('insert') || q.startsWith('update') || q.startsWith('delete')) {
+        consola.success(`\`${query}\``)
       } else if (q.startsWith('create table')) {
         consola.success(`Table created by \`${query}\``)
       } else if (q.startsWith('alter table')) {

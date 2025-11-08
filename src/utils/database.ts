@@ -59,7 +59,7 @@ export async function copyDatabaseAssets(nitro: Nitro, hub: ResolvedHubConfig) {
 
   const migrationsPath = resolve(nitro.options.rootDir, hub.dir!, 'database/migrations')
   const queriesPath = resolve(nitro.options.rootDir, hub.dir!, 'database/queries')
-  const outputDir = nitro.options.output.dir
+  const outputDir = nitro.options.output.serverDir
 
   const bundledItems = []
 
@@ -103,7 +103,7 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubCon
 
     const buildHubConfig = {
       ...hub,
-      dir: nitro.options.output.dir
+      dir: nitro.options.output.serverDir
     } as ResolvedHubConfig
 
     log.info('Applying database migrations...')
