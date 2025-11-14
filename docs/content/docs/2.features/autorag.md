@@ -57,7 +57,6 @@ export default defineEventHandler(async () => {
   const autorag = hubAutoRAG("my-autorag") // access AutoRAG instance
   return await autorag.aiSearch({
     query: "How do I create a modal with Nuxt UI?",
-    model: "@cf/meta/llama-3.3-70b-instruct-sd",
     rewrite_query: true,
     max_num_results: 2,
     ranking_options: {
