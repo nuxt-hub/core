@@ -73,10 +73,6 @@ export default defineEventHandler(async () => {
     The input query.
   ::
 
-  ::field{name="model" type="string"}
-    The text-generation model that is used to generate the response for the query. For a list of valid options, check the AutoRAG Generation model Settings. Defaults to the generation model selected in the AutoRAG Settings.
-  ::
-
   ::field{name="rewrite_query" type="boolean"}
     Rewrites the original query into a search optimized query to improve retrieval accuracy. Defaults to `false`.
   ::
