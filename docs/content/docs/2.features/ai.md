@@ -46,7 +46,21 @@ This option will enable [Workers AI](https://developers.cloudflare.com/workers-a
 
 ### Local Development
 
-During development, `hubAI()` will call the Cloudflare API. Make sure to run `npx nuxthub link` to create/link a NuxtHub project (even if the project is empty). This project is where your AI models will run.
+During development, `hubAI()` will call the Cloudflare API. You have two options:
+
+1. **Using NuxtHub Admin (deprecated)**: Run `npx nuxthub link` to create/link a NuxtHub project (even if the project is empty).
+
+2. **Direct Cloudflare API (self-hosted)**: Set the following environment variables in your `.env` file:
+   ```bash
+   NUXT_HUB_CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
+   NUXT_HUB_CLOUDFLARE_API_TOKEN=your-cloudflare-api-token
+   ```
+
+   To get these values:
+   - **Account ID**: Found in your [Cloudflare dashboard](https://dash.cloudflare.com/) in the right sidebar
+   - **API Token**: Create one at [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens) with the `Workers AI:Read` permission
+
+   This method allows you to run AI models without linking to NuxtHub Admin, useful for self-hosted setups.
 
 NuxtHub AI will always run AI models on your Cloudflare account, including during local development. [See pricing and included free quotas on Cloudflare's documentation](https://developers.cloudflare.com/workers-ai/platform/pricing/).
 

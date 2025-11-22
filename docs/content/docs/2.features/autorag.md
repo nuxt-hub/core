@@ -32,7 +32,21 @@ Go to [AutoRAG](https://dash.cloudflare.com/?to=/:account/ai/autorag) in the [Cl
 
 ## Local Development
 
-During development, `hubAutoRAG()` will call the Cloudflare API. Make sure to run `npx nuxthub link` to create/link a NuxtHub project (even if the project is empty). This project is where your AutoRAG requests will run.
+During development, `hubAutoRAG()` will call the Cloudflare API. You have two options:
+
+1. **Using NuxtHub Admin (deprecated)**: Run `npx nuxthub link` to create/link a NuxtHub project (even if the project is empty).
+
+2. **Direct Cloudflare API (self-hosted)**: Set the following environment variables in your `.env` file:
+   ```bash
+   NUXT_HUB_CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
+   NUXT_HUB_CLOUDFLARE_API_TOKEN=your-cloudflare-api-token
+   ```
+
+   To get these values:
+   - **Account ID**: Found in your [Cloudflare dashboard](https://dash.cloudflare.com/) in the right sidebar
+   - **API Token**: Create one at [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens) with the `Workers AI:Read` permission
+
+   This method allows you to run AutoRAG requests without linking to NuxtHub Admin, useful for self-hosted setups.
 
 AutoRAG will always run on your Cloudflare account, including during local development. [See pricing on Cloudflare's documentation](https://developers.cloudflare.com/autorag/platform/limits-pricing/).
 

@@ -6,6 +6,7 @@ import type { Ai, AutoRAG, AutoRagSearchRequest, AutoRagSearchResponse } from '@
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
 import { requireNuxtHubLinkedProject } from '../../../utils/auth'
+import { createCloudflareAutoRAG } from './cloudflare'
 import { useRuntimeConfig } from '#imports'
 
 let _autorag: AutoRAG
@@ -26,6 +27,7 @@ export function hubAutoRAG(instance: string): AutoRAG {
   if (_autorag) {
     return _autorag
   }
+
   const hub = useRuntimeConfig().hub
   // @ts-expect-error globalThis.__env__ is not defined
   const aiBinding: Ai | undefined = process.env.AI || globalThis.__env__?.AI || globalThis.AI
@@ -34,32 +36,37 @@ export function hubAutoRAG(instance: string): AutoRAG {
     const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
     _autorag = proxyHubAutoRAG(instance, hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
   } else if (import.meta.dev) {
-    // Mock _autorag to call NuxtHub Admin API to proxy CF account & API token
-    _autorag = {
-      async aiSearch(params: AutoRagSearchRequest & { stream?: boolean }) {
-        requireNuxtHubLinkedProject(hub, 'hubAutoRAG')
-        return $fetch(`/api/projects/${hub.projectKey}/ai/autorag/${instance}/ai-search`, {
-          baseURL: hub.url,
-          method: 'POST',
-          headers: {
-            authorization: `Bearer ${hub.userToken}`
-          },
-          body: params,
-          responseType: params?.stream ? 'stream' : undefined
-        }).catch(handleProxyError)
-      },
-      async search(params: AutoRagSearchRequest) {
-        requireNuxtHubLinkedProject(hub, 'hubAutoRAG')
-        return $fetch(`/api/projects/${hub.projectKey}/ai/autorag/${instance}/search`, {
-          baseURL: hub.url,
-          method: 'POST',
-          headers: {
-            authorization: `Bearer ${hub.userToken}`
-          },
-          body: params
-        }).catch(handleProxyError)
-      }
-    } as AutoRAG
+    // If Cloudflare credentials are provided, use direct API calls
+    if (hub.cloudflare?.accountId && hub.cloudflare?.apiToken) {
+      _autorag = createCloudflareAutoRAG(instance, hub.cloudflare.accountId, hub.cloudflare.apiToken)
+    } else {
+      // Fallback: Mock _autorag to call NuxtHub Admin API to proxy CF account & API token
+      _autorag = {
+        async aiSearch(params: AutoRagSearchRequest & { stream?: boolean }) {
+          requireNuxtHubLinkedProject(hub, 'hubAutoRAG')
+          return $fetch(`/api/projects/${hub.projectKey}/ai/autorag/${instance}/ai-search`, {
+            baseURL: hub.url,
+            method: 'POST',
+            headers: {
+              authorization: `Bearer ${hub.userToken}`
+            },
+            body: params,
+            responseType: params?.stream ? 'stream' : undefined
+          }).catch(handleProxyError)
+        },
+        async search(params: AutoRagSearchRequest) {
+          requireNuxtHubLinkedProject(hub, 'hubAutoRAG')
+          return $fetch(`/api/projects/${hub.projectKey}/ai/autorag/${instance}/search`, {
+            baseURL: hub.url,
+            method: 'POST',
+            headers: {
+              authorization: `Bearer ${hub.userToken}`
+            },
+            body: params
+          }).catch(handleProxyError)
+        }
+      } as AutoRAG
+    }
   } else if (aiBinding) {
     _autorag = aiBinding.autorag(instance) as AutoRAG
   }

@@ -11,6 +11,7 @@ import { joinURL } from 'ufo'
 import { streamToArrayBuffer } from '../../../utils/stream'
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
+import { createCloudflareR2Credentials } from './cloudflare'
 import type { BlobType, FileSizeUnit, BlobUploadedPart, BlobListResult, BlobMultipartUpload, BlobMultipartOptions, BlobUploadOptions, BlobPutOptions, BlobEnsureOptions, BlobObject, BlobListOptions, BlobCredentialsOptions, BlobCredentials, HubBlob } from '@nuxthub/core'
 import { useRuntimeConfig } from '#imports'
 
@@ -208,6 +209,18 @@ export function hubBlob(): HubBlob {
       if (import.meta.dev) {
         throw createError('hubBlob().createCredentials() is only available in production or in development with `--remote` flag.')
       }
+
+      // Use Cloudflare API directly if credentials are provided
+      if (hub.cloudflare?.accountId && hub.cloudflare?.apiToken && hub.cloudflare?.bucketId) {
+        return await createCloudflareR2Credentials(
+          hub.cloudflare.accountId,
+          hub.cloudflare.apiToken,
+          hub.cloudflare.bucketId,
+          options
+        )
+      }
+
+      // Fallback to NuxtHub Admin API
       if (!process.env.NUXT_HUB_PROJECT_DEPLOY_TOKEN) {
         throw createError('Missing `NUXT_HUB_PROJECT_DEPLOY_TOKEN` environment variable, make sure to deploy with `npx nuxthub deploy` or with the NuxtHub Admin.')
       }

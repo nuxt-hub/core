@@ -593,6 +593,26 @@ const credentials = await hubBlob().createCredentials({
 
 Read more about [creating presigned URLs to upload files to R2](#create-presigned-urls-to-upload-files-to-r2).
 
+#### Self-hosted
+
+When self-hosting your application, you can use your own Cloudflare credentials to create temporary R2 credentials without going through NuxtHub Admin.
+
+Set the following environment variables in your project:
+
+```bash
+NUXT_HUB_CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
+NUXT_HUB_CLOUDFLARE_API_TOKEN=your-cloudflare-api-token
+NUXT_HUB_CLOUDFLARE_BUCKET_ID=your-r2-bucket-id
+```
+
+::tip
+You can find your R2 bucket ID in the [Cloudflare Dashboard](https://dash.cloudflare.com) under **R2** → Your Bucket → **Settings** → **Bucket Details**.
+::
+
+::note
+The API token needs to have **R2 Read and Write** permissions for the bucket.
+::
+
 #### Params
 
 ::field-group

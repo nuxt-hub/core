@@ -28,6 +28,11 @@ export interface HubConfig {
     clientId: string
     clientSecret: string
   }
+  cloudflare: {
+    accountId?: string
+    apiToken?: string
+    bucketId?: string
+  }
   workers?: boolean | undefined
 
   ai?: boolean
@@ -107,13 +112,14 @@ export async function setupBase(nuxt: Nuxt, hub: HubConfig) {
 }
 
 export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
-  // If we are in dev mode and the project is not linked, disable it
-  if (nuxt.options.dev && !hub.remote && !hub.projectKey) {
-    return log.warn('`hubAI()` and `hubAutoRAG()` are disabled: link a project with `npx nuxthub link` to run AI models in development mode.')
+  // If we are in dev mode and the project is not linked and no Cloudflare credentials, disable it
+  if (nuxt.options.dev && !hub.remote && !hub.projectKey && (!hub.cloudflare?.accountId || !hub.cloudflare?.apiToken)) {
+    return log.warn('`hubAI()` and `hubAutoRAG()` are disabled: link a project with `npx nuxthub link` or set `NUXT_HUB_CLOUDFLARE_ACCOUNT_ID` and `NUXT_HUB_CLOUDFLARE_API_TOKEN` environment variables to run AI models in development mode.')
   }
 
   // Register auto-imports first so types are correct even when not running remotely
   addServerImportsDir(resolve('./runtime/ai/server/utils'))
+
   // If we are in dev mode and the project is linked, verify it
   if (nuxt.options.dev && !hub.remote && hub.projectKey) {
     try {
@@ -323,6 +329,8 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
     if (hub.projectSecretKey) {
       log.warn('Ignoring `NUXT_HUB_PROJECT_SECRET_KEY` as `NUXT_HUB_PROJECT_KEY` is set.')
     }
+
+    log.warn('NuxtHub Admin is being sunset on 31st December 2025. To continue using remote storage, please switch to self hosting. Learn more at https://hub.nuxt.com/blog/nuxthub-v0-10-0')
 
     const project = await $fetch<any>(`/api/projects/${hub.projectKey}`, {
       baseURL: hub.url,

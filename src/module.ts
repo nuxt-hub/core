@@ -88,6 +88,12 @@ export default defineNuxtModule<ModuleOptions>({
       cloudflareAccess: {
         clientId: process.env.NUXT_HUB_CLOUDFLARE_ACCESS_CLIENT_ID || null,
         clientSecret: process.env.NUXT_HUB_CLOUDFLARE_ACCESS_CLIENT_SECRET || null
+      },
+      // Cloudflare credentials
+      cloudflare: {
+        accountId: process.env.NUXT_HUB_CLOUDFLARE_ACCOUNT_ID || null,
+        apiToken: process.env.NUXT_HUB_CLOUDFLARE_API_TOKEN || null,
+        bucketId: process.env.NUXT_HUB_CLOUDFLARE_BUCKET_ID || null
       }
     })
 
