@@ -2,6 +2,7 @@ import { eventHandler, readValidatedBody, sendNoContent, getHeader } from 'h3'
 import { z } from 'zod'
 import { requireNuxtHubAuthorization } from '../../../../../utils/auth'
 import { requireNuxtHubFeature } from '../../../../../utils/features'
+import { bulkDeleteCacheKeys } from '../../../utils/cloudflare'
 import { useStorage, useRuntimeConfig } from '#imports'
 
 export default eventHandler(async (event) => {
@@ -21,14 +22,25 @@ export default eventHandler(async (event) => {
       await Promise.all(keysToDelete.map(key => storage.removeItem(key)))
     } while (keys.length)
   } else {
-    await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY || hub.projectKey}/cache/${process.env.NUXT_HUB_ENV || hub.env}/batch-delete`, {
-      baseURL: process.env.NUXT_HUB_URL || hub.url,
-      method: 'POST',
-      body: { keys },
-      headers: new Headers({
-        authorization: getHeader(event, 'authorization') || ''
+    // Use Cloudflare API directly if credentials are provided
+    if (hub.cloudflare?.accountId && hub.cloudflare?.apiToken && hub.cloudflare?.cacheNamespaceId) {
+      await bulkDeleteCacheKeys(
+        hub.cloudflare.accountId,
+        hub.cloudflare.apiToken,
+        hub.cloudflare.cacheNamespaceId,
+        keys
+      )
+    } else {
+      // Fallback to NuxtHub Admin API
+      await $fetch(`/api/projects/${process.env.NUXT_HUB_PROJECT_KEY || hub.projectKey}/cache/${process.env.NUXT_HUB_ENV || hub.env}/batch-delete`, {
+        baseURL: process.env.NUXT_HUB_URL || hub.url,
+        method: 'POST',
+        body: { keys },
+        headers: new Headers({
+          authorization: getHeader(event, 'authorization') || ''
+        })
       })
-    })
+    }
   }
   return sendNoContent(event)
 })

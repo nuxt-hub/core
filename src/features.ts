@@ -32,6 +32,7 @@ export interface HubConfig {
     accountId?: string
     apiToken?: string
     bucketId?: string
+    cacheNamespaceId?: string
   }
   workers?: boolean | undefined
 

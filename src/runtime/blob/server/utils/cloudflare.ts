@@ -1,5 +1,4 @@
-import { ofetch } from 'ofetch'
-import { createError } from 'h3'
+import { createCloudflareAPI, handleCloudflareError } from '../../../utils/cloudflare'
 import type { BlobCredentials, BlobCredentialsOptions } from '@nuxthub/core'
 
 /**
@@ -17,25 +16,11 @@ export async function createCloudflareR2Credentials(
   bucketId: string,
   options: BlobCredentialsOptions = {}
 ): Promise<BlobCredentials> {
-  const $api = ofetch.create({
-    baseURL: `https://api.cloudflare.com/client/v4/accounts/${accountId}`,
-    headers: {
-      Authorization: `Bearer ${apiToken}`
-    },
-    async onResponseError({ response }) {
-      if (response.status >= 400) {
-        const data = response._data
-        throw createError({
-          statusCode: response.status || 500,
-          statusMessage: 'Cloudflare API error',
-          message: data?.errors?.[0]?.message || data?.error?.[0]?.message || 'Failed to create temporary credentials',
-          data: data?.errors || data?.error
-        })
-      }
-    }
-  })
+  const $api = createCloudflareAPI(accountId, apiToken)
 
-  const accessKeyId = await $api<any>(`/tokens/verify`).then(res => res?.result?.id).catch(() => null)
+  const accessKeyId = await $api<any>(`/tokens/verify`)
+    .then(res => res?.result?.id)
+    .catch(() => null)
 
   const res = await $api<any>(`/r2/buckets/${bucketId}/temporary-credentials`, {
     method: 'POST',
@@ -45,8 +30,8 @@ export async function createCloudflareR2Credentials(
       permission: options.permission || 'admin-read-write',
       prefixes: options.prefixes,
       objects: options.pathnames
-
-    }
+    },
+    onResponseError: ({ response }) => handleCloudflareError({ data: response._data, status: response.status }, 'Failed to create temporary R2 credentials')
   })
 
   const result = res?.result || res

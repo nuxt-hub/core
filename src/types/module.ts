@@ -291,6 +291,11 @@ export interface ModuleOptions {
      * @default process.env.NUXT_HUB_CLOUDFLARE_BUCKET_ID
      */
     bucketId?: string
+    /**
+     * The Cloudflare KV namespace ID for cache storage (used for batch operations).
+     * @default process.env.NUXT_HUB_CLOUDFLARE_CACHE_NAMESPACE_ID
+     */
+    cacheNamespaceId?: string
   }
 }
 

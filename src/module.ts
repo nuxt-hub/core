@@ -93,7 +93,8 @@ export default defineNuxtModule<ModuleOptions>({
       cloudflare: {
         accountId: process.env.NUXT_HUB_CLOUDFLARE_ACCOUNT_ID || null,
         apiToken: process.env.NUXT_HUB_CLOUDFLARE_API_TOKEN || null,
-        bucketId: process.env.NUXT_HUB_CLOUDFLARE_BUCKET_ID || null
+        bucketId: process.env.NUXT_HUB_CLOUDFLARE_BUCKET_ID || null,
+        cacheNamespaceId: process.env.NUXT_HUB_CLOUDFLARE_CACHE_NAMESPACE_ID || null
       }
     })
 

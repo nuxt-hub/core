@@ -1,6 +1,6 @@
-import { ofetch } from 'ofetch'
 import { createError } from 'h3'
 import type { Ai, AiOptions, AutoRAG, AutoRagSearchRequest } from '@cloudflare/workers-types/experimental'
+import { createCloudflareAPI, handleCloudflareError } from '../../../utils/cloudflare'
 
 /**
  * Create a Cloudflare AI client that calls the Cloudflare API directly
@@ -10,52 +10,28 @@ import type { Ai, AiOptions, AutoRAG, AutoRagSearchRequest } from '@cloudflare/w
  * @param apiToken - The Cloudflare API token with Workers AI permissions
  */
 export function createCloudflareAI(accountId: string, apiToken: string): Omit<Ai, 'autorag' | 'gateway'> {
-  const $api = ofetch.create({
-    baseURL: `https://api.cloudflare.com/client/v4/accounts/${accountId}`,
-    headers: {
-      Authorization: `Bearer ${apiToken}`
-    },
-    async onResponseError({ response }) {
-      if (response.status >= 400) {
-        const data = response._data
-        throw createError({
-          statusCode: response.status || 500,
-          statusMessage: 'Cloudflare API error',
-          message: data?.errors?.[0]?.message || data?.error?.[0]?.message || 'Detailed error not returned',
-          data: data?.errors || data?.error
-        })
-      }
-    }
-  })
+  const $api = createCloudflareAPI(accountId, apiToken)
 
   return {
-    async run(model: string, params?: Record<string, unknown>, options?: AiOptions) {
+    aiGatewayLogId: null,
+    async run(model: string, params?: Record<string, unknown>, _options?: AiOptions) {
       const path = `/ai/run/${model}`
 
       // Handle streaming
       if (params?.stream) {
-        return ofetch(path, {
-          baseURL: `https://api.cloudflare.com/client/v4/accounts/${accountId}`,
+        return $api<any>(path, {
           method: 'POST',
-          headers: {
-            Authorization: `Bearer ${apiToken}`
-          },
+          body: params,
+          // @ts-expect-error - responseType 'stream' is valid but not in ofetch types
           responseType: 'stream',
-          body: params
-        }).catch(async (err) => {
-          const data = await err.response?.json?.() || {}
-          throw createError({
-            statusCode: err.status || 500,
-            statusMessage: 'Cloudflare AI API error',
-            message: data?.errors?.[0]?.message || data?.error?.[0]?.message || 'Detailed error not returned',
-            data: data?.errors || data?.error
-          })
+          onResponseError: ({ response }) => handleCloudflareError({ data: response._data, status: response.status }, 'Cloudflare AI API error')
         })
       }
 
       const res = await $api<any>(path, {
         method: 'POST',
-        body: params
+        body: params,
+        onResponseError: ({ response }) => handleCloudflareError({ data: response._data, status: response.status }, 'Cloudflare AI API error')
       })
 
       return res?.result || res
@@ -64,7 +40,8 @@ export function createCloudflareAI(accountId: string, apiToken: string): Omit<Ai
     async models(params?: Record<string, unknown>) {
       const res = await $api<any>('/ai/models/search', {
         method: 'POST',
-        body: params
+        body: params,
+        onResponseError: ({ response }) => handleCloudflareError({ data: response._data, status: response.status }, 'Cloudflare AI API error')
       })
 
       return res.result
@@ -87,50 +64,25 @@ export function createCloudflareAI(accountId: string, apiToken: string): Omit<Ai
  * @param apiToken - The Cloudflare API token with Workers AI permissions
  */
 export function createCloudflareAutoRAG(instance: string, accountId: string, apiToken: string): AutoRAG {
-  const $api = ofetch.create({
-    baseURL: `https://api.cloudflare.com/client/v4/accounts/${accountId}/autorag/rags/${instance}`,
-    headers: {
-      Authorization: `Bearer ${apiToken}`
-    },
-    async onResponseError({ response }) {
-      if (response.status >= 400) {
-        const data = response._data
-        throw createError({
-          statusCode: response.status || 500,
-          statusMessage: 'Cloudflare API error',
-          message: data?.errors?.[0]?.message || data?.error?.[0]?.message || 'Detailed error not returned',
-          data: data?.errors || data?.error
-        })
-      }
-    }
-  })
+  const $api = createCloudflareAPI(accountId, apiToken, `/autorag/rags/${instance}`)
 
   return {
     async aiSearch(params: AutoRagSearchRequest & { stream?: boolean }) {
       // Handle streaming
       if (params?.stream) {
-        return ofetch('/ai-search', {
-          baseURL: `https://api.cloudflare.com/client/v4/accounts/${accountId}/autorag/rags/${instance}`,
+        return $api<any>('/ai-search', {
           method: 'POST',
-          headers: {
-            Authorization: `Bearer ${apiToken}`
-          },
+          body: params,
+          // @ts-expect-error - responseType 'stream' is valid but not in ofetch types
           responseType: 'stream',
-          body: params
-        }).catch(async (err) => {
-          const data = await err.response?.json?.() || {}
-          throw createError({
-            statusCode: err.status || 500,
-            statusMessage: 'Cloudflare AutoRAG API error',
-            message: data?.errors?.[0]?.message || data?.error?.[0]?.message || 'Detailed error not returned',
-            data: data?.errors || data?.error
-          })
+          onResponseError: ({ response }) => handleCloudflareError({ data: response._data, status: response.status }, 'Cloudflare AutoRAG API error')
         })
       }
 
       const res = await $api<any>('/ai-search', {
         method: 'POST',
-        body: params
+        body: params,
+        onResponseError: ({ response }) => handleCloudflareError({ data: response._data, status: response.status }, 'Cloudflare AutoRAG API error')
       })
 
       return res.result
@@ -139,7 +91,8 @@ export function createCloudflareAutoRAG(instance: string, accountId: string, api
     async search(params: AutoRagSearchRequest) {
       const res = await $api<any>('/search', {
         method: 'POST',
-        body: params
+        body: params,
+        onResponseError: ({ response }) => handleCloudflareError({ data: response._data, status: response.status }, 'Cloudflare AutoRAG API error')
       })
 
       return res.result
