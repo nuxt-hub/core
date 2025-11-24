@@ -11,7 +11,8 @@ export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
       icon: 'i-lucide-database',
       view: {
         type: 'iframe',
-        src: `https://admin.hub.nuxt.com/embed/database?url=${url}`
+        src: `https://admin.hub.nuxt.com/embed/database?url=${url}`,
+        permissions: ['local-network-access https://admin.hub.nuxt.com']
       }
     })
 
@@ -22,7 +23,8 @@ export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
       icon: 'i-lucide-list',
       view: {
         type: 'iframe',
-        src: `https://admin.hub.nuxt.com/embed/kv?url=${url}`
+        src: `https://admin.hub.nuxt.com/embed/kv?url=${url}`,
+        permissions: ['local-network-access https://admin.hub.nuxt.com']
       }
     })
 
@@ -33,7 +35,8 @@ export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
       icon: 'i-lucide-shapes',
       view: {
         type: 'iframe',
-        src: `https://admin.hub.nuxt.com/embed/blob?url=${url}`
+        src: `https://admin.hub.nuxt.com/embed/blob?url=${url}`,
+        permissions: ['local-network-access https://admin.hub.nuxt.com']
       }
     })
 
@@ -44,7 +47,8 @@ export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
       icon: 'i-lucide-database-zap',
       view: {
         type: 'iframe',
-        src: `https://admin.hub.nuxt.com/embed/cache?url=${url}`
+        src: `https://admin.hub.nuxt.com/embed/cache?url=${url}`,
+        permissions: ['local-network-access https://admin.hub.nuxt.com']
       }
     })
 
