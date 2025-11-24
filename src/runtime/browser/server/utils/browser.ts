@@ -37,6 +37,7 @@ let _browser: Browser | null = null
  * ```
  *
  * @see https://hub.nuxt.com/docs/features/browser
+ * @deprecated See https://hub.nuxt.com/docs/features/browser#migration for more information.
  */
 export async function hubBrowser(options: HubBrowserOptions = {}): Promise<HubBrowser> {
   const puppeteer = await getPuppeteer()

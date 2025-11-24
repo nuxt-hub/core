@@ -113,6 +113,8 @@ export async function setupBase(nuxt: Nuxt, hub: HubConfig) {
 }
 
 export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
+  log.warn('`hubAI()` and `hubAutoRAG()` are deprecated. See https://hub.nuxt.com/docs/features/ai#migration for more information.')
+
   // If we are in dev mode and the project is not linked and no Cloudflare credentials, disable it
   if (nuxt.options.dev && !hub.remote && !hub.projectKey && (!hub.cloudflare?.accountId || !hub.cloudflare?.apiToken)) {
     return log.warn('`hubAI()` and `hubAutoRAG()` are disabled: link a project with `npx nuxthub link` or set `NUXT_HUB_CLOUDFLARE_ACCOUNT_ID` and `NUXT_HUB_CLOUDFLARE_API_TOKEN` environment variables to run AI models in development mode.')
@@ -147,6 +149,8 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
 }
 
 export function setupAnalytics(_nuxt: Nuxt) {
+  log.warn('`hubAnalytics()` is deprecated. See https://hub.nuxt.com/docs/features/analytics#migration for more information.')
+
   // Add Server scanning
   addServerScanDir(resolve('./runtime/analytics/server'))
   addServerImportsDir(resolve('./runtime/analytics/server/utils'))
@@ -162,6 +166,8 @@ export function setupBlob(_nuxt: Nuxt) {
 }
 
 export async function setupBrowser(nuxt: Nuxt) {
+  log.warn('`hubBrowser()` is deprecated. See https://hub.nuxt.com/docs/features/browser#migration for more information.')
+
   // Register auto-imports first so types are correct even when not running remotely
   addServerImportsDir(resolve('./runtime/browser/server/utils'))
   // Check if dependencies are installed
@@ -253,6 +259,8 @@ export function setupKV(_nuxt: Nuxt) {
 }
 
 export function setupVectorize(nuxt: Nuxt, hub: HubConfig) {
+  log.warn('`hubVectorize()` is deprecated. See https://hub.nuxt.com/docs/features/vectorize#migration for more information.')
+
   // Register auto-imports first so types are correct even when not running remotely
   addServerImportsDir(resolve('./runtime/vectorize/server/utils'))
   if (nuxt.options.dev && !hub.remote) {

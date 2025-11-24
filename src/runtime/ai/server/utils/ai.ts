@@ -22,6 +22,7 @@ let _ai: Ai
  * ```
  *
  * @see https://hub.nuxt.com/docs/features/ai
+ * @deprecated See https://hub.nuxt.com/docs/features/ai#migration for more information.
  */
 export function hubAI(): Omit<Ai, 'autorag' | 'gateway'> {
   requireNuxtHubFeature('ai')

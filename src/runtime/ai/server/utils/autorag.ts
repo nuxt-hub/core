@@ -20,6 +20,7 @@ let _autorag: AutoRAG
  * ```
  *
  * @see https://hub.nuxt.com/docs/features/autorag
+ * @deprecated See https://hub.nuxt.com/docs/features/autorag#migration for more information.
  */
 export function hubAutoRAG(instance: string): AutoRAG {
   requireNuxtHubFeature('ai')
