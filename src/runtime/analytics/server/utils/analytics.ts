@@ -39,7 +39,7 @@ function _useDataset(name: string = 'ANALYTICS'): AnalyticsEngineDataset {
  * ```
  *
  * @see https://developers.cloudflare.com/analytics/analytics-engine/get-started/
- * @deprecated See https://hub.nuxt.com/docs/features/analytics#migration for more information.
+ * @deprecated See https://hub.nuxt.com/docs/features/analytics#migration-guide for more information.
  */
 export function hubAnalytics() {
   requireNuxtHubFeature('analytics')

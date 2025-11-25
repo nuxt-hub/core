@@ -113,7 +113,7 @@ export async function setupBase(nuxt: Nuxt, hub: HubConfig) {
 }
 
 export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
-  log.warn('`hubAI()` and `hubAutoRAG()` are deprecated. See https://hub.nuxt.com/docs/features/ai#migration for more information.')
+  log.warn('`hubAI()` and `hubAutoRAG()` are deprecated. See https://hub.nuxt.com/docs/features/ai#migration-guide for more information.')
 
   // If we are in dev mode and the project is not linked and no Cloudflare credentials, disable it
   if (nuxt.options.dev && !hub.remote && !hub.projectKey && (!hub.cloudflare?.accountId || !hub.cloudflare?.apiToken)) {
@@ -149,7 +149,7 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
 }
 
 export function setupAnalytics(_nuxt: Nuxt) {
-  log.warn('`hubAnalytics()` is deprecated. See https://hub.nuxt.com/docs/features/analytics#migration for more information.')
+  log.warn('`hubAnalytics()` is deprecated. See https://hub.nuxt.com/docs/features/analytics#migration-guide for more information.')
 
   // Add Server scanning
   addServerScanDir(resolve('./runtime/analytics/server'))
@@ -166,7 +166,7 @@ export function setupBlob(_nuxt: Nuxt) {
 }
 
 export async function setupBrowser(nuxt: Nuxt) {
-  log.warn('`hubBrowser()` is deprecated. See https://hub.nuxt.com/docs/features/browser#migration for more information.')
+  log.warn('`hubBrowser()` is deprecated. See https://hub.nuxt.com/docs/features/browser#migration-guide for more information.')
 
   // Register auto-imports first so types are correct even when not running remotely
   addServerImportsDir(resolve('./runtime/browser/server/utils'))

@@ -1,6 +1,7 @@
 ---
 title: Run AI Models
 navigation.title: AI
+navigation.badge: { size: 'sm', color: 'neutral', variant: 'outline', label: 'Deprecated' }
 description: Run machine learning models, such as LLMs, in Nuxt.
 ---
 
@@ -26,6 +27,25 @@ const embeddings = await hubAI().run("@cf/baai/bge-base-en-v1.5", {
   text: "NuxtHub AI uses `hubAI()` to run models."
 });
 ```
+::
+
+## Migration guide
+
+::warning
+`hubAI()` is deprecated and will be removed in NuxtHub v0.10.0.
+::
+
+NuxtHub v0.10.0 is introducing support for deploying to multiple cloud providers. As `hubAI()` is only available on Cloudflare, we are removing it from the core package.
+
+To continue using `hubAI()` during runtime, you can directly use the Cloudflare `AI` binding directly.
+
+```diff
+- const autorag = await hubAutoRAG('my-autorag')
++ const autorag = process.env.AI.autorag('my-autorag')
+```
+
+::note
+We recommend using [AI SDK](https://ai-sdk.dev/) for additional features. Workers AI is available through the [Workers AI Provider](https://ai-sdk.dev/providers/community-providers/cloudflare-workers-ai).
 ::
 
 ## Getting Started

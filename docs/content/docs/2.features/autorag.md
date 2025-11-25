@@ -1,12 +1,28 @@
 ---
 title: AutoRAG
 navigation.title: AutoRAG
+navigation.badge: { size: 'sm', color: 'neutral', variant: 'outline', label: 'Deprecated' }
 description: Create fully-managed RAG pipelines to power your AI applications with accurate and up-to-date information.
 ---
 
 [AutoRAG](https://developers.cloudflare.com/autorag/) lets you create fully-managed, retrieval-augmented generation (RAG) pipelines that continuously updates and scales on Cloudflare. With AutoRAG, you can integrate context-aware AI into your Nuxt applications without managing infrastructure.
 
 Cloudflare AutoRAG automatically indexes your data into vector embeddings optimized for semantic search. Once a data source is connected, indexing runs continuously in the background to keep your knowledge base fresh and queryable.
+
+## Migration guide
+
+::warning
+`hubAutoRAG()` is deprecated and will be removed in NuxtHub v0.10.0.
+::
+
+NuxtHub v0.10.0 is introducing support for deploying to multiple cloud providers. As `hubAutoRAG()` is only available on Cloudflare, we are removing it from the core package.
+
+To continue using `hubAutoRAG()` during runtime, you can directly use Cloudflare AutoRAG through the `AI` binding directly.
+
+```diff
+- const autorag = await hubAutoRAG('my-autorag')
++ const autorag = process.env.AI.autorag('my-autorag')
+```
 
 ## Getting Started
 

@@ -29,7 +29,7 @@ type VectorizeIndexes = keyof RuntimeConfig['hub']['vectorize'] & string
  * Vectorize is currently only supported with `--remote`.
  *
  * @see https://hub.nuxt.com/docs/features/vectorize
- * @deprecated See https://hub.nuxt.com/docs/features/vectorize#migration for more information.
+ * @deprecated See https://hub.nuxt.com/docs/features/vectorize#migration-guide for more information.
  */
 export function hubVectorize(index: VectorizeIndexes): Vectorize | undefined {
   requireNuxtHubFeature('vectorize')

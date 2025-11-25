@@ -1,8 +1,24 @@
 ---
 title: Browser Rendering
 navigation.title: Browser
+navigation.badge: { size: 'sm', color: 'neutral', variant: 'outline', label: 'Deprecated' }
 description: Control and interact with a headless browser instance in your Nuxt application using Puppeteer.
 ---
+
+## Migration guide
+
+::warning
+`hubBrowser()` is deprecated and will be removed in NuxtHub v0.10.0.
+::
+
+NuxtHub v0.10.0 is introducing support for deploying to multiple cloud providers. As `hubBrowser()` is only available on Cloudflare, we are removing it from the core package.
+
+To continue using `hubBrowser()` during runtime, you can directly use the Cloudflare `BROWSER` binding directly.
+
+```diff
+- const browser = await hubBrowser()
++ const browser = process.env.BROWSER
+```
 
 ## Getting Started
 
