@@ -15,7 +15,6 @@ const CloudflareTokenPermissions = [
   { key: 'rag', type: 'edit' }
 ]
 
-
 export default eventHandler(async (event) => {
   return sendRedirect(
     event,
