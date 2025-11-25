@@ -23,6 +23,8 @@ let _autorag: AutoRAG
  * @deprecated See https://hub.nuxt.com/docs/features/autorag#migration-guide for more information.
  */
 export function hubAutoRAG(instance: string): AutoRAG {
+  console.warn('`hubAutoRAG()` is deprecated and will be removed in NuxtHub v0.10. Please use `process.env.AI.autorag()` instead. See https://hub.nuxt.com/docs/features/autorag#migration-guide for more information.')
+
   requireNuxtHubFeature('ai')
 
   if (_autorag) {

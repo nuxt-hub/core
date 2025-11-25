@@ -40,6 +40,8 @@ let _browser: Browser | null = null
  * @deprecated See https://hub.nuxt.com/docs/features/browser#migration-guide for more information.
  */
 export async function hubBrowser(options: HubBrowserOptions = {}): Promise<HubBrowser> {
+  console.warn('`hubBrowser()` is deprecated and will be removed in NuxtHub v0.10. Please use `process.env.BROWSER` instead. See https://hub.nuxt.com/docs/features/browser#migration-guide for more information.')
+
   const puppeteer = await getPuppeteer()
   const nitroApp = useNitroApp()
   const event = useEvent()

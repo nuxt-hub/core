@@ -113,11 +113,11 @@ export async function setupBase(nuxt: Nuxt, hub: HubConfig) {
 }
 
 export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
-  log.warn('`hubAI()` and `hubAutoRAG()` are deprecated. See https://hub.nuxt.com/docs/features/ai#migration-guide for more information.')
-
   // If we are in dev mode and the project is not linked and no Cloudflare credentials, disable it
   if (nuxt.options.dev && !hub.remote && !hub.projectKey && (!hub.cloudflare?.accountId || !hub.cloudflare?.apiToken)) {
-    return log.warn('`hubAI()` and `hubAutoRAG()` are disabled: link a project with `npx nuxthub link` or set `NUXT_HUB_CLOUDFLARE_ACCOUNT_ID` and `NUXT_HUB_CLOUDFLARE_API_TOKEN` environment variables to run AI models in development mode.')
+    log.warn('`hubAI()` and `hubAutoRAG()` are disabled in development mode: set `NUXT_HUB_CLOUDFLARE_ACCOUNT_ID` and `NUXT_HUB_CLOUDFLARE_API_TOKEN` environment variables to run AI models in development mode.')
+    log.info(`Create a Cloudflare API token with required permissions using \`https://hub.nuxt.com/cloudflare-token\``)
+    return
   }
 
   // Register auto-imports first so types are correct even when not running remotely
@@ -149,8 +149,6 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
 }
 
 export function setupAnalytics(_nuxt: Nuxt) {
-  log.warn('`hubAnalytics()` is deprecated. You can continue using it by directly using the Cloudflare Analytics Engine binding `process.env.ANALYTICS`.')
-
   // Add Server scanning
   addServerScanDir(resolve('./runtime/analytics/server'))
   addServerImportsDir(resolve('./runtime/analytics/server/utils'))
@@ -166,8 +164,6 @@ export function setupBlob(_nuxt: Nuxt) {
 }
 
 export async function setupBrowser(nuxt: Nuxt) {
-  log.warn('`hubBrowser()` is deprecated. See https://hub.nuxt.com/docs/features/browser#migration-guide for more information.')
-
   // Register auto-imports first so types are correct even when not running remotely
   addServerImportsDir(resolve('./runtime/browser/server/utils'))
   // Check if dependencies are installed
@@ -259,8 +255,6 @@ export function setupKV(_nuxt: Nuxt) {
 }
 
 export function setupVectorize(nuxt: Nuxt, hub: HubConfig) {
-  log.warn('`hubVectorize()` is deprecated. See https://hub.nuxt.com/docs/features/vectorize#migration for more information.')
-
   // Register auto-imports first so types are correct even when not running remotely
   addServerImportsDir(resolve('./runtime/vectorize/server/utils'))
   if (nuxt.options.dev && !hub.remote) {
@@ -339,7 +333,7 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
       log.warn('Ignoring `NUXT_HUB_PROJECT_SECRET_KEY` as `NUXT_HUB_PROJECT_KEY` is set.')
     }
 
-    log.warn('NuxtHub Admin is being sunset on 31st December 2025. To continue using remote storage, please switch to self hosting. Learn more at https://hub.nuxt.com/blog/nuxthub-v0-10-0')
+    log.warn('NuxtHub Admin is being sunset on 31st December 2025. To continue using remote storage, please switch to self hosting. Learn more at https://hub.nuxt.com/docs/getting-started/remote-storage#local-development')
 
     const project = await $fetch<any>(`/api/projects/${hub.projectKey}`, {
       baseURL: hub.url,
@@ -395,7 +389,7 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
 
   // Make sure we have a projectUrl when using the remote option
   if (!hub.projectUrl) {
-    log.error('No project URL defined, make sure to link your project with `npx nuxthub link` or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable (if self-hosted).')
+    log.error('No project URL defined, make sure to set the `hub.projectUrl` option in your `nuxt.config.ts` file or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable.')
     process.exit(1)
   }
 
@@ -403,6 +397,10 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
   if (!hub.projectKey && !hub.projectSecretKey && !hub.userToken) {
     log.error('No project secret key found, make sure to add the `NUXT_HUB_PROJECT_SECRET_KEY` environment variable.')
     process.exit(1)
+  }
+
+  if (hub.projectUrl && hub.userToken && !hub.projectSecretKey) {
+    log.warn('NuxtHub Admin is being sunset on 31st December 2025. To continue using remote storage, please switch to self hosting and set the `NUXT_HUB_PROJECT_SECRET_KEY` environment variable. Learn more at https://hub.nuxt.com/docs/getting-started/remote-storage#local-development')
   }
 
   // If using the remote option with a projectUrl and a projectSecretKey

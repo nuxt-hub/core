@@ -32,6 +32,8 @@ type VectorizeIndexes = keyof RuntimeConfig['hub']['vectorize'] & string
  * @deprecated See https://hub.nuxt.com/docs/features/vectorize#migration-guide for more information.
  */
 export function hubVectorize(index: VectorizeIndexes): Vectorize | undefined {
+  console.warn(`\`hubVectorize()\` is deprecated and will be removed in NuxtHub v0.10. Please use \`process.env.VECTORIZE_${index.toUpperCase()}\` instead. See https://hub.nuxt.com/docs/features/vectorize#migration-guide for more information.`)
+
   requireNuxtHubFeature('vectorize')
 
   if (_vectorize[index]) {

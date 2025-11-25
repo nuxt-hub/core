@@ -25,6 +25,7 @@ let _ai: Ai
  * @deprecated See https://hub.nuxt.com/docs/features/ai#migration-guide for more information.
  */
 export function hubAI(): Omit<Ai, 'autorag' | 'gateway'> {
+  console.warn('`hubAI()` is deprecated and will be removed in NuxtHub v0.10. Please use `process.env.AI` instead. See https://hub.nuxt.com/docs/features/ai#migration-guide for more information.')
   requireNuxtHubFeature('ai')
 
   if (_ai) {
