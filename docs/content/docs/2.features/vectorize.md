@@ -28,10 +28,10 @@ Vectorize can be used for:
 ## Migration guide
 
 ::warning
-`hubVectorize()` is deprecated and will be removed in NuxtHub v0.10.0.
+`hubVectorize()` is deprecated and will be removed in NuxtHub v0.10.
 ::
 
-NuxtHub v0.10.0 is introducing support for deploying to multiple cloud providers. As `hubVectorize()` is only available on Cloudflare, we are removing it from the core package.
+NuxtHub v0.10 is introducing support for deploying to multiple cloud providers. As `hubVectorize()` is only available on Cloudflare, we are removing it from the core package.
 
 To continue using `hubVectorize()` during runtime, you can directly use the Cloudflare Vectorize binding directly.
 

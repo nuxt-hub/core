@@ -10,21 +10,21 @@ NuxtHub AI lets you integrate machine learning models into your Nuxt application
 ::code-group
 
 ```ts [text.ts]
-const response = await hubAI().run('@cf/meta/llama-3.1-8b-instruct', {
+const response = await process.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
   prompt: 'Who is the author of Nuxt?'
 })
 ```
 
 ```ts [image.ts]
-const response = await hubAI().run('@cf/runwayml/stable-diffusion-v1-5-img2img', {
+const response = await process.env.AI.run('@cf/runwayml/stable-diffusion-v1-5-img2img', {
   prompt: 'A sunset over the ocean.',
 })
 ```
 
 ```ts [embeddings.ts]
 // returns embeddings that can be used for vector searches in tools like Vectorize
-const embeddings = await hubAI().run("@cf/baai/bge-base-en-v1.5", {
-  text: "NuxtHub AI uses `hubAI()` to run models."
+const embeddings = await process.env.AI.run("@cf/baai/bge-base-en-v1.5", {
+  text: "NuxtHub AI uses `process.env.AI` to run models."
 });
 ```
 ::
@@ -32,16 +32,16 @@ const embeddings = await hubAI().run("@cf/baai/bge-base-en-v1.5", {
 ## Migration guide
 
 ::warning
-`hubAI()` is deprecated and will be removed in NuxtHub v0.10.0.
+`hubAI()` is deprecated and will be removed in NuxtHub v0.10.
 ::
 
-NuxtHub v0.10.0 is introducing support for deploying to multiple cloud providers. As `hubAI()` is only available on Cloudflare, we are removing it from the core package.
+NuxtHub v0.10 is introducing support for deploying to multiple cloud providers. As `hubAI()` is only available on Cloudflare, we are removing it from the core package.
 
 To continue using `hubAI()` during runtime, you can directly use the Cloudflare `AI` binding directly.
 
 ```diff
-- const autorag = await hubAutoRAG('my-autorag')
-+ const autorag = process.env.AI.autorag('my-autorag')
+- const ai = hubAI()
++ const ai = process.env.AI
 ```
 
 ::note
@@ -99,6 +99,10 @@ Workers AI comes with a curated set of popular open-source models that enable yo
 const ai = hubAI()
 ```
 
+::warning
+`hubAI()` is deprecated and will be removed in NuxtHub v0.10. Please use `process.env.AI` instead.
+::
+
 ::callout
 This documentation is a small reflection of the [Cloudflare Workers AI documentation](https://developers.cloudflare.com/workers-ai/configuration/bindings/#methods). We recommend reading it to understand the full potential of Workers AI.
 ::
@@ -109,7 +113,7 @@ Runs a model. Takes a model as the first parameter, and an object as the second 
 
 ```ts [server/api/ai-test.ts]
 export default defineEventHandler(async () => {
-  const ai = hubAI() // access AI bindings
+  const ai = process.env.AI // access AI bindings
   return await ai.run('@cf/meta/llama-3.1-8b-instruct', {
     prompt: 'Who is the author of Nuxt?'
   })
@@ -144,7 +148,7 @@ List all available models programatically.
 
 ```ts [server/api/models-test.ts]
 export default defineEventHandler(async () => {
-  const ai = hubAI() // access AI bindings
+  const ai = process.env.AI // access AI bindings
   return await ai.models({ page: 2 })
 })
 ```
@@ -256,13 +260,13 @@ The [`@cloudflare/ai-utils`](https://github.com/cloudflare/ai-utils) package pro
 npx nypm i @cloudflare/ai-utils
 ```
 
-`runWithTools` works with multi-tool calls, handles errors, and has the same return type as `hubAI().run()` so any code relying on the response from a model can remain the same.
+`runWithTools` works with multi-tool calls, handles errors, and has the same return type as `process.env.AI.run()` so any code relying on the response from a model can remain the same.
 
 ```ts
 import { runWithTools } from '@cloudflare/ai-utils'
 
 export default defineEventHandler(async (event) => {
-  return await runWithTools(hubAI(), '@cf/meta/llama-3.1-8b-instruct',
+  return await runWithTools(process.env.AI, '@cf/meta/llama-3.1-8b-instruct',
     {
       messages: [
         { role: 'user', content: 'What is the weather in New York?' },
@@ -301,7 +305,7 @@ export default defineEventHandler(async (event) => {
 
 ::field-group
   ::field{name="AI Binding" type="Ai" required}
-    Your AI Binding (`hubAI()`)
+    Your AI Binding (`process.env.AI`)
   ::
 
   ::field{name="model" type="string" required}
@@ -344,11 +348,11 @@ Workers AI is compatible with AI Gateway, which enables caching responses, analy
 
 ### Options
 
-Configure options for AI Gateway by passing an additional object to `hubAI().run()`, [learn more on Cloudflare's docs](https://developers.cloudflare.com/ai-gateway/providers/workersai/#worker).
+Configure options for AI Gateway by passing an additional object to `process.env.AI.run()`, [learn more on Cloudflare's docs](https://developers.cloudflare.com/ai-gateway/providers/workersai/#worker).
 
 ```ts [server/api/who-created-nuxt.get.ts]
 export default defineEventHandler(async () => {
-  const ai = hubAI()
+  const ai = process.env.AI
   return await ai.run('@cf/meta/llama-3-8b-instruct',
     {
       prompt: 'Who is the creator of Nuxt?'
@@ -398,7 +402,7 @@ export default defineEventHandler(async (event) => {
     { role: 'user', content: 'What is the origin of the phrase Hello, World?' }
   ]
 
-  const ai = hubAI()
+  const ai = process.env.AI
   const stream = await ai.run('@cf/meta/llama-3.1-8b-instruct', {
     stream: true,
     messages
@@ -439,7 +443,7 @@ while (true) {
 
 ## Vercel AI SDK
 
-Another way to handle streaming responses is to use [Vercel's AI SDK](https://sdk.vercel.ai/) with `hubAI()`.
+Another way to handle streaming responses is to use [Vercel's AI SDK](https://sdk.vercel.ai/) with `process.env.AI`.
 
 This uses the [Workers AI Provider](https://sdk.vercel.ai/providers/community-providers/cloudflare-workers-ai), which supports a subset of Vercel AI features.
 
@@ -461,7 +465,7 @@ npx nypm i ai @ai-sdk/vue workers-ai-provider
 
 `useChat()` is a Vue composable provided by the Vercel AI SDK that handles streaming responses, API calls, state for your chat.
 
-It requires a `POST /api/chat` endpoint that uses the `hubAI()` server composable and returns a compatible stream for the Vercel AI SDK.
+It requires a `POST /api/chat` endpoint that uses the `process.env.AI` server composable and returns a compatible stream for the Vercel AI SDK.
 
 ```ts [server/api/chat.post.ts]
 import { streamText } from 'ai'
@@ -470,7 +474,7 @@ import { createWorkersAI } from 'workers-ai-provider'
 export default defineEventHandler(async (event) => {
   const { messages } = await readBody(event)
 
-  const workersAI = createWorkersAI({ binding: hubAI() })
+  const workersAI = createWorkersAI({ binding: process.env.AI })
 
   return streamText({
     model: workersAI('@cf/meta/llama-3.1-8b-instruct'),

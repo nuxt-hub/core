@@ -12,10 +12,10 @@ Cloudflare AutoRAG automatically indexes your data into vector embeddings optimi
 ## Migration guide
 
 ::warning
-`hubAutoRAG()` is deprecated and will be removed in NuxtHub v0.10.0.
+`hubAutoRAG()` is deprecated and will be removed in NuxtHub v0.10.
 ::
 
-NuxtHub v0.10.0 is introducing support for deploying to multiple cloud providers. As `hubAutoRAG()` is only available on Cloudflare, we are removing it from the core package.
+NuxtHub v0.10 is introducing support for deploying to multiple cloud providers. As `hubAutoRAG()` is only available on Cloudflare, we are removing it from the core package.
 
 To continue using `hubAutoRAG()` during runtime, you can directly use Cloudflare AutoRAG through the `AI` binding directly.
 

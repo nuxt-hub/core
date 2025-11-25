@@ -1,7 +1,7 @@
 ---
 title: Improved self-hosting experience
 description: "Enable usage of more features without relying on NuxtHub Admin"
-date: 2025-11-24
+date: 2025-11-25
 image: '/images/changelog/nuxthub-admin-sunset.png'
 authors:
   - name: Rihan Arfan

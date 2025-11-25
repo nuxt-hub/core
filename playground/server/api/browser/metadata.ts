@@ -4,7 +4,7 @@ export default cachedEventHandler(async (event) => {
   }).parse)
 
   // Get a browser instance and navigate to the url
-  const { page } = await hubBrowser()
+  const { page } = await useBrowser()
   await page.goto(url, { waitUntil: 'networkidle0' })
 
   // Extract metadata from the page
