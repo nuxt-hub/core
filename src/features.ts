@@ -149,7 +149,7 @@ export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
 }
 
 export function setupAnalytics(_nuxt: Nuxt) {
-  log.warn('`hubAnalytics()` is deprecated. See https://hub.nuxt.com/docs/features/analytics#migration-guide for more information.')
+  log.warn('`hubAnalytics()` is deprecated. You can continue using it by directly using the Cloudflare Analytics Engine binding `process.env.ANALYTICS`.')
 
   // Add Server scanning
   addServerScanDir(resolve('./runtime/analytics/server'))
