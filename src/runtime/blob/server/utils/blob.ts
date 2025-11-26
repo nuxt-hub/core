@@ -153,7 +153,7 @@ export function hubBlob(): HubBlob {
 
       // Convert keys to blob objects
       const blobs: BlobObject[] = []
-      for (const key of listed) {
+      await Promise.all(listed.map(async (key) => {
         try {
           const meta = await storage.getMeta(key)
           blobs.push({
@@ -166,9 +166,9 @@ export function hubBlob(): HubBlob {
             customMetadata: (meta || {}) as Record<string, string>
           })
         } catch (error) {
-          continue
+          return
         }
-      }
+      }))
 
       // Handle folders if folded option is enabled
       const folders: string[] = []
