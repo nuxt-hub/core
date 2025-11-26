@@ -2,15 +2,8 @@ import cfPuppeteer, { PuppeteerWorkers } from '@cloudflare/puppeteer'
 import type { Puppeteer, Browser, Page, BrowserWorker, ActiveSession } from '@cloudflare/puppeteer'
 import { createError } from 'h3'
 import type { H3Event } from 'h3'
-// @ts-expect-error useNitroApp not yet typed
-import { useNitroApp, useEvent } from '#imports'
 
-function getBrowserBinding(name: string = 'BROWSER'): BrowserWorker | undefined {
-  // @ts-expect-error globalThis.__env__ is not typed
-  return process.env[name] || globalThis.__env__?.[name] || globalThis[name]
-}
-
-interface HubBrowserOptions {
+interface BrowserOptions {
   /**
    * Keep the browser instance alive for the given number of seconds.
    * Maximum value is 600 seconds (10 minutes).
@@ -20,34 +13,21 @@ interface HubBrowserOptions {
   keepAlive?: number
 }
 
-interface HubBrowser {
+interface BrowserInstance {
   browser: Browser
   page: Page
 }
 
 let _browserPromise: Promise<Browser> | null = null
 let _browser: Browser | null = null
-/**
- * Get a browser instance (puppeteer)
- *
- * @example ```ts
- * const { page } = await hubBrowser()
- * await page.goto('https://hub.nuxt.com')
- * const img = await page.screenshot()
- * ```
- *
- * @see https://hub.nuxt.com/docs/features/browser
- * @deprecated See https://hub.nuxt.com/docs/features/browser#migration-guide for more information.
- */
-export async function hubBrowser(options: HubBrowserOptions = {}): Promise<HubBrowser> {
-  console.warn('`hubBrowser()` is deprecated and will be removed in NuxtHub v0.10. Please use `process.env.BROWSER` instead. See https://hub.nuxt.com/docs/features/browser#migration-guide for more information.')
 
+export async function useBrowser(options: BrowserOptions = {}): Promise<BrowserInstance> {
   const puppeteer = await getPuppeteer()
   const nitroApp = useNitroApp()
   const event = useEvent()
   // If in production, use Cloudflare Puppeteer
   if (puppeteer instanceof PuppeteerWorkers) {
-    const binding = getBrowserBinding()
+    const binding = process.env.BROWSER as BrowserWorker | undefined
     if (!binding) {
       throw createError('Missing Cloudflare Browser binding (BROWSER)')
     }
@@ -75,7 +55,7 @@ export async function hubBrowser(options: HubBrowserOptions = {}): Promise<HubBr
       if (event !== closingEvent) return
       unregister()
       await page?.close().catch(() => {})
-      browser?.disconnect()
+      browser?.disconnect().catch(() => {})
     })
     return {
       browser,

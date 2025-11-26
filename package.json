@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@cloudflare/workers-types": "^4.20250529.0",
-    "@nuxt/devtools-kit": "^2.4.0",
+    "@nuxt/devtools-kit": "^3.1.1",
     "@nuxt/kit": "^3.17.4",
     "@uploadthing/mime-types": "^0.3.4",
     "citty": "^0.1.6",
@@ -71,7 +71,7 @@
     "zod": "^3.25.34"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^2.4.0",
+    "@nuxt/devtools": "^3.1.1",
     "@nuxt/eslint-config": "^1.4.1",
     "@nuxt/module-builder": "^1.0.1",
     "@nuxt/schema": "^3.17.4",

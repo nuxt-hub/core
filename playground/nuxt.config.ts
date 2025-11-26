@@ -1,4 +1,4 @@
-// import { encodeHost } from 'ufo'
+import { encodeHost } from 'ufo'
 import { createResolver } from 'nuxt/kit'
 import module from '../src/module'
 
@@ -65,8 +65,8 @@ export default defineNuxtConfig({
       //     dataset: 'testing'
       //   }
       // }
-    }
-    // projectUrl: ({ branch }) => branch === 'main' ? 'https://playground.nuxt.dev' : `https://${encodeHost(branch).replace(/\//g, '-')}.playground-to39.pages.dev`
+    },
+    projectUrl: ({ branch }) => branch === 'main' ? 'https://playground.nuxt.dev' : `https://${encodeHost(branch).replace(/\//g, '-')}.playground-bhb.pages.dev`
   },
   hooks: {
     'hub:database:migrations:dirs': (dirs) => {

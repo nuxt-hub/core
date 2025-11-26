@@ -28,6 +28,12 @@ export interface HubConfig {
     clientId: string
     clientSecret: string
   }
+  cloudflare: {
+    accountId?: string
+    apiToken?: string
+    bucketId?: string
+    cacheNamespaceId?: string
+  }
   workers?: boolean | undefined
 
   ai?: boolean
@@ -107,13 +113,16 @@ export async function setupBase(nuxt: Nuxt, hub: HubConfig) {
 }
 
 export async function setupAI(nuxt: Nuxt, hub: HubConfig) {
-  // If we are in dev mode and the project is not linked, disable it
-  if (nuxt.options.dev && !hub.remote && !hub.projectKey) {
-    return log.warn('`hubAI()` and `hubAutoRAG()` are disabled: link a project with `npx nuxthub link` to run AI models in development mode.')
+  // If we are in dev mode and the project is not linked and no Cloudflare credentials, disable it
+  if (nuxt.options.dev && !hub.remote && !hub.projectKey && (!hub.cloudflare?.accountId || !hub.cloudflare?.apiToken)) {
+    log.warn('`hubAI()` and `hubAutoRAG()` are disabled in development mode: set `NUXT_HUB_CLOUDFLARE_ACCOUNT_ID` and `NUXT_HUB_CLOUDFLARE_API_TOKEN` environment variables to run AI models in development mode.')
+    log.info(`Create a Cloudflare API token with required permissions using \`https://hub.nuxt.com/cloudflare-token\``)
+    return
   }
 
   // Register auto-imports first so types are correct even when not running remotely
   addServerImportsDir(resolve('./runtime/ai/server/utils'))
+
   // If we are in dev mode and the project is linked, verify it
   if (nuxt.options.dev && !hub.remote && hub.projectKey) {
     try {
@@ -301,7 +310,7 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
   let branch = 'main'
   if (String(env) === 'true') {
     try {
-      branch = execSync('git branch --show-current', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+      branch = process.env.VERCEL_GIT_COMMIT_REF || process.env.BRANCH || process.env.CF_PAGES_BRANCH || execSync('git branch --show-current', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
       env = (branch === 'main' ? 'production' : 'preview')
     } catch {
       // ignore
@@ -323,6 +332,8 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
     if (hub.projectSecretKey) {
       log.warn('Ignoring `NUXT_HUB_PROJECT_SECRET_KEY` as `NUXT_HUB_PROJECT_KEY` is set.')
     }
+
+    log.warn('NuxtHub Admin is being sunset on 31st December 2025. To continue using remote storage, please switch to self hosting. Learn more at https://hub.nuxt.com/docs/getting-started/remote-storage#local-development')
 
     const project = await $fetch<any>(`/api/projects/${hub.projectKey}`, {
       baseURL: hub.url,
@@ -378,7 +389,7 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
 
   // Make sure we have a projectUrl when using the remote option
   if (!hub.projectUrl) {
-    log.error('No project URL defined, make sure to link your project with `npx nuxthub link` or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable (if self-hosted).')
+    log.error('No project URL defined, make sure to set the `hub.projectUrl` option in your `nuxt.config.ts` file or add the deployed URL as `NUXT_HUB_PROJECT_URL` environment variable.')
     process.exit(1)
   }
 
@@ -386,6 +397,10 @@ export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
   if (!hub.projectKey && !hub.projectSecretKey && !hub.userToken) {
     log.error('No project secret key found, make sure to add the `NUXT_HUB_PROJECT_SECRET_KEY` environment variable.')
     process.exit(1)
+  }
+
+  if (hub.projectUrl && hub.userToken && !hub.projectSecretKey) {
+    log.warn('NuxtHub Admin is being sunset on 31st December 2025. To continue using remote storage, please switch to self hosting and set the `NUXT_HUB_PROJECT_SECRET_KEY` environment variable. Learn more at https://hub.nuxt.com/docs/getting-started/remote-storage#local-development')
   }
 
   // If using the remote option with a projectUrl and a projectSecretKey

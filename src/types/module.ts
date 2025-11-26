@@ -271,6 +271,32 @@ export interface ModuleOptions {
      */
     clientSecret?: string
   }
+
+  /**
+   * Self hosting Cloudflare credentials.
+   */
+  cloudflare: {
+    /**
+     * The Cloudflare account ID used for direct API calls (AI, AutoRAG, etc).
+     * @default process.env.NUXT_HUB_CLOUDFLARE_ACCOUNT_ID
+     */
+    accountId?: string
+    /**
+     * The Cloudflare API token used for direct API calls.
+     * @default process.env.NUXT_HUB_CLOUDFLARE_API_TOKEN
+     */
+    apiToken?: string
+    /**
+     * The Cloudflare R2 bucket ID used for generating temporary credentials.
+     * @default process.env.NUXT_HUB_CLOUDFLARE_BUCKET_ID
+     */
+    bucketId?: string
+    /**
+     * The Cloudflare KV namespace ID for cache storage (used for batch operations).
+     * @default process.env.NUXT_HUB_CLOUDFLARE_CACHE_NAMESPACE_ID
+     */
+    cacheNamespaceId?: string
+  }
 }
 
 /**

@@ -39,8 +39,11 @@ function _useDataset(name: string = 'ANALYTICS'): AnalyticsEngineDataset {
  * ```
  *
  * @see https://developers.cloudflare.com/analytics/analytics-engine/get-started/
+ * @deprecated See https://hub.nuxt.com/docs/features/analytics#migration-guide for more information.
  */
 export function hubAnalytics() {
+  console.warn('`hubAnalytics()` is deprecated. You can continue using it by directly using the Cloudflare Analytics Engine binding `process.env.ANALYTICS`.')
+
   requireNuxtHubFeature('analytics')
 
   const hub = useRuntimeConfig().hub

@@ -6,6 +6,7 @@ import type { Ai, AiOptions, ConversionResponse } from '@cloudflare/workers-type
 import { requireNuxtHubFeature } from '../../../utils/features'
 import { getCloudflareAccessHeaders } from '../../../utils/cloudflareAccess'
 import { requireNuxtHubLinkedProject } from '../../../utils/auth'
+import { createCloudflareAI } from './cloudflare'
 import { useRuntimeConfig } from '#imports'
 
 let _ai: Ai
@@ -21,8 +22,10 @@ let _ai: Ai
  * ```
  *
  * @see https://hub.nuxt.com/docs/features/ai
+ * @deprecated See https://hub.nuxt.com/docs/features/ai#migration-guide for more information.
  */
 export function hubAI(): Omit<Ai, 'autorag' | 'gateway'> {
+  console.warn('`hubAI()` is deprecated and will be removed in NuxtHub v0.10. Please use `process.env.AI` instead. See https://hub.nuxt.com/docs/features/ai#migration-guide for more information.')
   requireNuxtHubFeature('ai')
 
   if (_ai) {
@@ -35,38 +38,44 @@ export function hubAI(): Omit<Ai, 'autorag' | 'gateway'> {
     const cfAccessHeaders = getCloudflareAccessHeaders(hub.cloudflareAccess)
     _ai = proxyHubAI(hub.projectUrl, hub.projectSecretKey || hub.userToken, cfAccessHeaders)
   } else if (import.meta.dev) {
-    // Mock _ai to call NuxtHub Admin API to proxy CF account & API token
-    _ai = {
-      async run(model: string, params?: Record<string, unknown>, options?: AiOptions) {
-        requireNuxtHubLinkedProject(hub, 'hubAI')
-        return $fetch(`/api/projects/${hub.projectKey}/ai/run`, {
-          baseURL: hub.url,
-          method: 'POST',
-          headers: {
-            authorization: `Bearer ${hub.userToken}`
-          },
-          body: { model, params, options },
-          responseType: params?.stream ? 'stream' : undefined
-        }).catch(handleProxyError)
-      },
-      async models(params?: Record<string, unknown>) {
-        requireNuxtHubLinkedProject(hub, 'hubAI')
-        return $fetch(`/api/projects/${hub.projectKey}/ai/models`, {
-          baseURL: hub.url,
-          method: 'POST',
-          headers: {
-            authorization: `Bearer ${hub.userToken}`
-          },
-          body: { params }
-        }).catch(handleProxyError)
-      },
-      async toMarkdown(_files: unknown, _options: unknown): Promise<ConversionResponse[]> {
-        throw createError({
-          statusCode: 501,
-          message: 'hubAI().toMarkdown() is only supported with remote storage in development mode.'
-        })
-      }
-    } as Ai
+    // If Cloudflare credentials are provided, use direct API calls
+    if (hub.cloudflare.accountId && hub.cloudflare.apiToken) {
+      // @ts-expect-error cloudflare is not defined in HubConfig yet
+      _ai = createCloudflareAI(hub.cloudflare.accountId, hub.cloudflare.apiToken)
+    } else {
+      // Fallback: Mock _ai to call NuxtHub Admin API to proxy CF account & API token
+      _ai = {
+        async run(model: string, params?: Record<string, unknown>, options?: AiOptions) {
+          requireNuxtHubLinkedProject(hub, 'hubAI')
+          return $fetch(`/api/projects/${hub.projectKey}/ai/run`, {
+            baseURL: hub.url,
+            method: 'POST',
+            headers: {
+              authorization: `Bearer ${hub.userToken}`
+            },
+            body: { model, params, options },
+            responseType: params?.stream ? 'stream' : undefined
+          }).catch(handleProxyError)
+        },
+        async models(params?: Record<string, unknown>) {
+          requireNuxtHubLinkedProject(hub, 'hubAI')
+          return $fetch(`/api/projects/${hub.projectKey}/ai/models`, {
+            baseURL: hub.url,
+            method: 'POST',
+            headers: {
+              authorization: `Bearer ${hub.userToken}`
+            },
+            body: { params }
+          }).catch(handleProxyError)
+        },
+        async toMarkdown(_files: unknown, _options: unknown): Promise<ConversionResponse[]> {
+          throw createError({
+            statusCode: 501,
+            message: 'hubAI().toMarkdown() is only supported with remote storage in development mode.'
+          })
+        }
+      } as Ai
+    }
   } else if (binding) {
     _ai = binding as Ai
   }
