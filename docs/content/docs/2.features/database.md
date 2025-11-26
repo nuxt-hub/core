@@ -442,6 +442,8 @@ export default defineNuxtConfig({
 ### Create a seed task
 
 ```ts [server/tasks/seed.ts]
+import { db, schema } from 'hub:database'
+
 export default defineTask({
   meta: {
     name: 'db:seed',
@@ -467,7 +469,7 @@ export default defineTask({
       }
     ]
 
-    await useDrizzle().insert(tables.users).values(users)
+    await db.insert(schema.users).values(users)
 
     return { result: 'Database seeded successfully' }
   }
