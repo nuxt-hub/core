@@ -21,7 +21,6 @@
     "@nuxt/image": "^1.11.0",
     "@nuxt/scripts": "^0.13.0",
     "@nuxt/ui": "^4.1.0",
-    "@rollup/plugin-yaml": "^4.1.2",
     "@tsparticles/engine": "^3.9.1",
     "@tsparticles/slim": "^3.9.1",
     "@vueuse/core": "^14.0.0",

@@ -31,7 +31,7 @@ useSeoMeta({
   ogTitle: `${title} · NuxtHub Blog`
 })
 
-if (post.value.image) {
+if (post.value.image && import.meta.server) {
   defineOgImage({ url: joinURL(url, post.value.image) })
 }
 

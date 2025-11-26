@@ -26,6 +26,7 @@ type HubAIProvider<T extends NuxtHubAI>
  * ```
  *
  * @see https://hub.nuxt.com/docs/features/ai
+ * @deprecated See https://hub.nuxt.com/docs/features/ai#migration-guide for more information.
  */
 export function hubAI<T extends NuxtHubAI = NuxtHubAI>(model: Parameters<HubAIProvider<T>>[0]): Omit<ReturnType<HubAIProvider<T>>, 'config' | 'getArgs'> {
   requireNuxtHubFeature('ai')

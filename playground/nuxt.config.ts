@@ -1,3 +1,4 @@
+import { encodeHost } from 'ufo'
 import { createResolver } from 'nuxt/kit'
 import module from '../src/module'
 import { provider } from 'std-env'

@@ -1,7 +1,7 @@
 {
   "name": "@nuxthub/core",
   "private": false,
-  "version": "1.0.0-alpha.0",
+  "version": "0.10.0",
   "description": "Build full-stack Nuxt applications, with zero configuration.",
   "repository": {
     "type": "git",
