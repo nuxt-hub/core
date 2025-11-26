@@ -1,6 +1,43 @@
 # Changelog
 
 
+## v0.9.1
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.9.0...v0.9.1)
+
+### 🚀 Enhancements
+
+- Use prose-img from `@nuxt/ui-pro` ([#573](https://github.com/nuxt-hub/core/pull/573))
+- **types:** Export `HubBlob` interface for external use ([#658](https://github.com/nuxt-hub/core/pull/658))
+- Self hosting first ([#686](https://github.com/nuxt-hub/core/pull/686))
+
+### 🩹 Fixes
+
+- Prefer `nitro.static` over `_generate` ([#601](https://github.com/nuxt-hub/core/pull/601))
+- **types:** Add missing type definition for databaseMigrationsDirs ([#635](https://github.com/nuxt-hub/core/pull/635))
+- **migrations:** Do not return after first successful migrate ([#659](https://github.com/nuxt-hub/core/pull/659))
+
+### 📖 Documentation
+
+- Update changelog date ([9e9d6fe](https://github.com/nuxt-hub/core/commit/9e9d6fe))
+- Add image in changelog ([94aee1c](https://github.com/nuxt-hub/core/commit/94aee1c))
+- **cache:** Add note on cache key normalization and escapeKey usage ([#632](https://github.com/nuxt-hub/core/pull/632))
+
+### 🏡 Chore
+
+- Update banner ([b3709d9](https://github.com/nuxt-hub/core/commit/b3709d9))
+
+### ❤️ Contributors
+
+- Rihan Arfan ([@RihanArfan](https://github.com/RihanArfan))
+- Daniel ([@Dantescur](https://github.com/Dantescur))
+- Farnabaz <farnabaz@gmail.com>
+- Muntasir Mahmud ([@MuntasirSZN](https://github.com/MuntasirSZN))
+- Mr Kaashee <mrkaashee@gmail.com>
+- Hugo Richard <hugo.richard@epitech.eu>
+- Daniel Roe ([@danielroe](https://github.com/danielroe))
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+
 ## v0.9.0
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.8.27...v0.9.0)
