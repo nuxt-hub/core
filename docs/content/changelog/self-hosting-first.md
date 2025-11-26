@@ -1,7 +1,7 @@
 ---
 title: Self-Hosting First & Cloud-Agnostic Future
 description: "We are evolving NuxtHub to become a truly multi-cloud platform. This transition requires us to move away from features tightly coupled to a single cloud provider and adopt a more flexible, cloud-agnostic approach."
-date: 2025-11-25
+date: 2025-11-26
 image: '/images/changelog/self-hosting-first.png'
 authors:
   - name: Rihan Arfan
