@@ -307,10 +307,10 @@ export function setupOpenAPI(nuxt: Nuxt, hub: HubConfig) {
 export async function setupRemote(_nuxt: Nuxt, hub: HubConfig) {
   let env = hub.remote
   // Guess the environment from the branch name if env is 'true'
-  let branch = process.env.VERCEL_GIT_COMMIT_REF || process.env.BRANCH || process.env.CF_PAGES_BRANCH || 'main'
+  let branch = 'main'
   if (String(env) === 'true') {
     try {
-      branch = execSync('git branch --show-current', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+      branch = process.env.VERCEL_GIT_COMMIT_REF || process.env.BRANCH || process.env.CF_PAGES_BRANCH || execSync('git branch --show-current', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
       env = (branch === 'main' ? 'production' : 'preview')
     } catch {
       // ignore
