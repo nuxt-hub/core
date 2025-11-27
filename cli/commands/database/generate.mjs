@@ -38,7 +38,11 @@ export default defineCommand({
     await execa(options)`nuxt prepare`
     await buildDatabaseSchema(join(options.cwd, '.nuxt'), { relativeDir: cwd })
     consola.info('Generating database migrations...')
-    const { stderr } = await execa({ ...options, stdout: 'inherit' })`drizzle-kit generate --config=./.nuxt/hub/database/drizzle.config.ts`
+    const { stderr } = await execa({
+      ...options,
+      stdin: 'inherit',
+      stdout: 'inherit'
+    })`drizzle-kit generate --config=./.nuxt/hub/database/drizzle.config.ts`
     // Drizzle-kit does not exit with an error code when there is an error, so we need to check the stderr
     if (stderr) {
       consola.error(stderr)
