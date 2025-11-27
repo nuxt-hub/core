@@ -25,7 +25,7 @@ useSeoMeta({
   ogDescription: page.value.seo.description
 })
 
-defineOgImageComponent('Docs', {
+import.meta.server && defineOgImageComponent('Docs', {
   category: 'Docs'
 })
 </script>

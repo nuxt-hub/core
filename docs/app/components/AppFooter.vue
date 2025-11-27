@@ -15,7 +15,7 @@ const links = [
 <template>
   <UFooter>
     <template #left>
-      <span class="inline text-sm">© {{ new Date().getFullYear() }} <a href="https://nuxtlabs.com" target="_blank" class="text-highlighted hover:underline underline-offset-4">NuxtLabs</a></span>
+      <span class="inline text-sm">Published under <a href="https://github.com/nuxt-hub/core/tree/main/LICENSE" target="_blank" class="text-highlighted hover:underline underline-offset-4">MIT license</a></span>
     </template>
 
     <UNavigationMenu :items="links" variant="link" />

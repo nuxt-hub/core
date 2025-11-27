@@ -17,7 +17,6 @@ useSeoMeta({
 
 const links = [
   { label: 'Home', to: '/' },
-  { label: 'AI', to: '/ai' },
   { label: 'Blob', to: '/blob' },
   { label: 'Chat', to: '/chat' },
   { label: 'Database', to: '/database' },

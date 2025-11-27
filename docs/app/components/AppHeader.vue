@@ -18,10 +18,6 @@ const links = computed(() => [
     label: 'Changelog',
     to: '/changelog',
     icon: 'i-lucide-megaphone'
-  }, {
-    label: 'Blog',
-    to: '/blog',
-    icon: 'i-lucide-newspaper'
   }
 ])
 

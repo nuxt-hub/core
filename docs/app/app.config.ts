@@ -11,11 +11,6 @@ export default defineAppConfig({
         itemLeadingIcon: 'size-4'
       }
     },
-    tabs: {
-      slots: {
-        list: 'overflow-x-auto'
-      }
-    },
     contentNavigation: {
       slots: {
         linkLeadingIcon: 'size-4',
@@ -27,6 +22,14 @@ export default defineAppConfig({
         deno: 'vscode-icons:file-type-deno',
         auto: 'vscode-icons:file-type-js',
         jsonc: 'i-vscode-icons-file-type-json'
+      },
+      tabs: {
+        slots: {
+          root: 'rounded border border-default'
+        }
+      },
+      tabsItem: {
+        base: 'p-4 *:my-3 pt-2 text-sm'
       }
     }
   },

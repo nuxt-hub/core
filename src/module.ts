@@ -5,7 +5,7 @@ import { defu } from 'defu'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
 import type { Nuxt } from '@nuxt/schema'
 import { version } from '../package.json'
-import { setupAI, setupCache, setupOpenAPI, setupDatabase, setupKV, setupBase, setupBlob } from './features'
+import { setupCache, setupDatabase, setupKV, setupBase, setupBlob } from './features'
 import type { ModuleOptions, HubConfig, ResolvedHubConfig } from './types'
 import { addBuildHooks } from './utils/build'
 import { provider } from 'std-env'
@@ -56,8 +56,6 @@ export default defineNuxtModule<ModuleOptions>({
     const packageJSON = await readPackageJSON(nuxt.options.rootDir)
     const deps = Object.assign({}, packageJSON.dependencies, packageJSON.devDependencies)
     await setupBase(nuxt, hub as HubConfig)
-    setupOpenAPI(nuxt, hub as HubConfig)
-    hub.ai && await setupAI(nuxt, hub as HubConfig, deps)
     hub.blob && await setupBlob(nuxt, hub as HubConfig, deps)
     hub.cache && await setupCache(nuxt, hub as HubConfig, deps)
     await setupDatabase(nuxt, hub as HubConfig, deps)

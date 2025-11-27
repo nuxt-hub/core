@@ -73,13 +73,6 @@ export interface DatabaseConfig {
 
 export interface ModuleOptions {
   /**
-   * Set `'vercel'` or `'cloudflare'` to enable the AI for the project.
-   *
-   * @default false
-   * @see https://hub.nuxt.com/docs/features/ai
-   */
-  ai?: 'vercel' | 'cloudflare' | false
-  /**
    * Enable blob storage for the project.
    *
    * @default false

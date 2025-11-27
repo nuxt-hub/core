@@ -43,7 +43,6 @@ NuxtHub is a Nuxt module giving you all the features required to ship full-stack
 export default defineNuxtConfig({
   modules: ['@nuxthub/core'],
   hub: {
-    ai: true,
     blob: true,
     cache: true,
     database: 'postgresql',
@@ -97,10 +96,10 @@ export default defineNuxtConfig({
     :::
     :::landing-feature
     ---
-    title: AI
-    description: Run generative AI tasks on a global network and build full-stack AI applications.
-    icon: i-lucide-wand
-    to: /docs/features/ai
+    title: DevTools
+    description: Access your application's data and storage in the Nuxt DevTools.
+    icon: i-lucide-monitor
+    to: /docs/getting-started#nuxt-devtools
     ---
     :::
   :::

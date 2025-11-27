@@ -6,7 +6,7 @@ import { createError } from 'h3'
  *
  * @param accountId - The Cloudflare account ID
  * @param apiToken - The Cloudflare API token
- * @param basePath - Optional path to append to the base URL (e.g., '/ai', '/autorag/rags/instance')
+ * @param basePath - Optional path to append to the base URL (e.g., '/autorag/rags/instance')
  */
 export function createCloudflareAPI(
   accountId: string,

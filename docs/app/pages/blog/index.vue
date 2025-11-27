@@ -63,7 +63,7 @@ useSeoMeta({
   ogDescription: page.description,
   ogTitle: `${page.title} · NuxtHub`
 })
-defineOgImageComponent('Docs', {
+import.meta.server && defineOgImageComponent('Docs', {
   title: 'Blog'
 })
 </script>

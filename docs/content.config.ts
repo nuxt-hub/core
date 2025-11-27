@@ -115,16 +115,6 @@ export default defineContentConfig({
         date: z.string().date()
       })
     }),
-    blog: defineCollection({
-      type: 'page',
-      source: 'blog/**/*',
-      schema: z.object({
-        image: z.string().editor({ input: 'media' }),
-        authors: z.array(Author),
-        date: z.string().date(),
-        category: z.enum(['Release', 'Tutorial'])
-      })
-    }),
     templates: defineCollection({
       type: 'data',
       source: 'templates.yml',

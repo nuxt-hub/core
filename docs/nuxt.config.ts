@@ -46,7 +46,7 @@ export default defineNuxtConfig({
   ui: {
     theme: {
       colors: ['primary', 'secondary', 'info', 'success', 'warning', 'error', 'important']
-    }
+    },
   },
   routeRules: {
     '/': { prerender: true },
@@ -56,8 +56,9 @@ export default defineNuxtConfig({
     '/changelog/rss.xml': { prerender: true },
     // Redirects
     '/docs/getting-started/remote-storage': { redirect: { statusCode: 301, to: '/' } },
-    '/docs/features': { redirect: { statusCode: 301, to: '/docs/features/ai' } },
-    '/docs/recipes': { redirect: { statusCode: 301, to: '/docs/guides/hooks' } },
+    '/docs/features': { redirect: { statusCode: 301, to: '/docs/features/blob' } },
+    '/docs/features/realtime': { redirect: { statusCode: 301, to: '/docs/guides/realtime' } },
+    '/docs/recipes': { redirect: { statusCode: 301, to: '/docs/guides/pre-rendering' } },
     '/docs/storage/blob': { redirect: { statusCode: 301, to: '/docs/features/blob' } },
     '/docs/storage/database': { redirect: { statusCode: 301, to: '/docs/features/database' } },
     '/docs/storage/kv': { redirect: { statusCode: 301, to: '/docs/features/kv' } },

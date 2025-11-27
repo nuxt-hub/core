@@ -27,7 +27,6 @@ export default defineNuxtConfig({
     // preset: 'cloudflare-durable',
     experimental: {
       database: true,
-      openAPI: true,
       websocket: true
     }
   },
