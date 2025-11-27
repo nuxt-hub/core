@@ -4,7 +4,6 @@ const { seo } = useAppConfig()
 const { data: navigation } = await useAsyncData('navigation', () => {
   return Promise.all([
     queryCollectionNavigation('docs'),
-    queryCollectionNavigation('blog'),
     queryCollectionNavigation('changelog')
   ])
 }, {
@@ -13,7 +12,6 @@ const { data: navigation } = await useAsyncData('navigation', () => {
 const { data: files } = useLazyAsyncData('search', () => {
   return Promise.all([
     queryCollectionSearchSections('docs'),
-    queryCollectionSearchSections('blog'),
     queryCollectionSearchSections('changelog')
   ])
 }, {

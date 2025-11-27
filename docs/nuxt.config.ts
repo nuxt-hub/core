@@ -52,7 +52,6 @@ export default defineNuxtConfig({
     '/': { prerender: true },
     '/api/templates.json': { prerender: true },
     '/api/changelog.json': { prerender: true },
-    '/blog/rss.xml': { prerender: true },
     '/changelog/rss.xml': { prerender: true },
     // Redirects
     '/docs/getting-started/remote-storage': { redirect: { statusCode: 301, to: '/' } },
