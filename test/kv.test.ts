@@ -20,15 +20,9 @@ describe('KV', async () => {
 
   it('Check KV is enabled', async () => {
     const manifest = await $fetch('/api/manifest')
-    expect(manifest).toMatchObject({
-      storage: {
-        db: false,
-        kv: true,
-        blob: false
-      },
-      features: {
-        cache: false
-      }
+    expect(manifest.kv).include({
+      driver: 'fs-lite',
+      base: '.data/kv'
     })
   })
 

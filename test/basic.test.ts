@@ -10,15 +10,11 @@ describe('ssr', async () => {
 
   it('Check all features are disabled', async () => {
     const manifest = await $fetch('/api/manifest')
-    expect(manifest).toMatchObject({
-      storage: {
-        db: false,
-        kv: false,
-        blob: false
-      },
-      features: {
-        cache: false
-      }
+    expect(manifest).includes({
+      db: false,
+      kv: false,
+      blob: false,
+      cache: false
     })
   })
 })

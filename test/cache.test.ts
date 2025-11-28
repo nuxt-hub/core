@@ -13,15 +13,11 @@ describe('KV', async () => {
 
   it('Check cache is enabled', async () => {
     const manifest = await $fetch('/api/manifest')
-    expect(manifest).toMatchObject({
-      storage: {
-        db: false,
-        kv: false,
-        blob: false
-      },
-      features: {
-        cache: true
-      }
+    expect(manifest).includes({
+      db: false,
+      kv: false,
+      blob: false,
+      cache: true
     })
   })
 

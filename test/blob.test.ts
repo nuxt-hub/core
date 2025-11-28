@@ -43,15 +43,11 @@ describe('Blob', async () => {
 
   it('Check Blob is enabled', async () => {
     const manifest = await $fetch('/api/manifest')
-    expect(manifest).toMatchObject({
-      storage: {
-        db: false,
-        kv: false,
-        blob: true
-      },
-      features: {
-        cache: false
-      }
+    expect(manifest).includes({
+      db: false,
+      kv: false,
+      blob: true,
+      cache: false
     })
   })
 
