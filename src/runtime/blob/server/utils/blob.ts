@@ -328,11 +328,11 @@ export function hubBlob(): HubBlob {
           ])
         }
       } else {
-          const key = decodeURIComponent(pathnames).replace(/\//g, ':')
-          await Promise.all([
-            storage.removeItem(key),
-            storage.removeMeta?.(key)
-          ])
+        const key = decodeURIComponent(pathnames).replace(/\//g, ':')
+        await Promise.all([
+          storage.removeItem(key),
+          storage.removeMeta?.(key)
+        ])
       }
     },
     async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}): Promise<BlobMultipartUpload> {
