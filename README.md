@@ -31,32 +31,13 @@ If you are looking for the legacy version of NuxtHub (0.9), checkout the [0.9 br
 
 ## 🚀 Quickstart
 
-Head over to our [Getting Started](https://hub.nuxt.com/docs/getting-started/installation) guide to learn more.
-
-Duplicate our [`nuxt-hub/hello-edge`](https://github.com/nuxt-hub/hello-edge) template or create a new NuxtHub project with:
-
-```bash
-npx nuxthub init my-app
-cd my-app
-npm run dev
-```
-
-Open http://localhost:3000 with your browser.
-
-Deploy your app to production with:
-
-```bash
-npm build
-```
-
-Learn more on [how to deploy a Nuxt app with NuxtHub](https://hub.nuxt.com/docs/getting-started/deploy).
+Head over to our [Installation](https://hub.nuxt.com/docs/getting-started/installation) guide to learn more.
 
 ## 🤝 Community
 
 - 💡 [Feature request](https://github.com/nuxt-hub/core/issues/new?assignees=&labels=enhancement&projects=&template=%F0%9F%92%A1-feature-request.md&title=): Suggest an idea or improvement.
 - 🐞 [Bug report](https://github.com/nuxt-hub/core/issues/new?assignees=&labels=bug&projects=&template=%F0%9F%90%9E-bug-report.md&title=): Create a report to help us improve the platform.
 - 🏞️ [New Template](https://github.com/nuxt-hub/core/issues/new?assignees=&labels=template&projects=&template=%F0%9F%8F%9E%EF%B8%8F-new-template.md&title=): Share a template you made based on NuxtHub.
-
 
 ## 💚 Contributing
 

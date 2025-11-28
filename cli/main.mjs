@@ -7,7 +7,7 @@ const { version } = JSON.parse(readFileSync(new URL('../package.json', import.me
 
 export const main = defineCommand({
   meta: {
-    name: 'nuxthub',
+    name: 'hub',
     description: 'NuxtHub CLI',
     version: version
   },

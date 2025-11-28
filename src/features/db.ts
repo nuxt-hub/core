@@ -176,7 +176,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
       const meta = getDatabasePathMetadata(path)
       if (meta.dialect && meta.dialect !== dialect) return
       log.info(`Database schema ${event === 'add' ? 'added' : event === 'unlink' ? 'removed' : 'changed'}: \`${relative(nuxt.options.rootDir, path)}\``)
-      log.info('Make sure to run `npx nuxt hub db generate` to generate the database migrations.')
+      log.info('Make sure to run `npx nuxt db generate` to generate the database migrations.')
       schemaPaths = await getSchemaPaths()
       await updateTemplates({ filter: template => template.filename.includes('hub/db/schema.entry.ts') })
       await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir })

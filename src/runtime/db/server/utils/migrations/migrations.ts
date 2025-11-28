@@ -66,8 +66,8 @@ export async function applyDatabaseMigrations(hub: ResolvedHubConfig, db: any) {
       const message = error.cause?.message || error.message
       log.error(`Failed to apply migration \`${getRelativePath(join(hub.dir!, 'db/migrations', migration.filename))}\`\n${message}`)
       if (message?.includes('already exists')) {
-        log.info(`To mark this migration as applied, run \`npx nuxt hub db mark-as-migrated ${migration.name}\``)
-        log.info('To drop a table, run `npx nuxt hub db drop <table-name>`')
+        log.info(`To mark this migration as applied, run \`npx nuxt db mark-as-migrated ${migration.name}\``)
+        log.info('To drop a table, run `npx nuxt db drop <table-name>`')
       }
       return false
     }
