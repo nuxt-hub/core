@@ -21,6 +21,7 @@
     "@vercel/blob": "^2.0.0",
     "@vueuse/core": "^14.1.0",
     "@vueuse/nuxt": "^14.1.0",
+    "aws4fetch": "^1.0.20",
     "drizzle-kit": "^0.31.7",
     "drizzle-orm": "^0.44.7",
     "ioredis": "^5.8.2",
