@@ -4,20 +4,20 @@ import { logWhenReady } from '../features'
 import { resolve } from '../module'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig, KVConfig } from '../types'
+import type { HubConfig, KVConfig, ResolvedKVConfig } from '../types'
 
 /**
  * Resolve KV configuration from boolean or object format
  */
-export function resolveKVConfig(hub: HubConfig): KVConfig | false {
+export function resolveKVConfig(hub: HubConfig): ResolvedKVConfig | false {
   if (!hub.kv) return false
 
   // Start with user-provided config if it's an object
-  const userConfig = typeof hub.kv === 'object' ? hub.kv : {}
+  const userConfig = typeof hub.kv === 'object' ? hub.kv : {} as KVConfig
 
   // If driver is already specified by user, use it with their options
   if (userConfig.driver) {
-    return userConfig as KVConfig
+    return userConfig as ResolvedKVConfig
   }
 
   // Redis (Vercel, Upstash, etc.)
@@ -25,11 +25,7 @@ export function resolveKVConfig(hub: HubConfig): KVConfig | false {
     return defu(userConfig, {
       driver: 'redis',
       url: process.env.REDIS_URL
-    }) as KVConfig
-  }
-
-  if (hub.hosting.includes('vercel') && !userConfig.driver) {
-    throw new Error('Vercel hosting requires a Redis connection. Please set the `REDIS_URL` environment variable. See https://vercel.com/marketplace/category/database')
+    }) as ResolvedKVConfig
   }
 
   // Cloudflare KV
@@ -37,21 +33,21 @@ export function resolveKVConfig(hub: HubConfig): KVConfig | false {
     return defu(userConfig, {
       driver: 'cloudflare-kv-binding',
       binding: 'KV'
-    }) as KVConfig
+    }) as ResolvedKVConfig
   }
 
   // Deno KV
   if (hub.hosting.includes('deno')) {
     return defu(userConfig, {
       driver: 'deno-kv'
-    }) as KVConfig
+    }) as ResolvedKVConfig
   }
 
   // Default: local file storage
   return defu(userConfig, {
     driver: 'fs-lite',
     base: '.data/kv'
-  }) as KVConfig
+  }) as ResolvedKVConfig
 }
 
 export function setupKV(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>) {
@@ -63,6 +59,9 @@ export function setupKV(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>
   // Verify dependencies
   if (kvConfig.driver === 'redis' && !deps['ioredis']) {
     logWhenReady(nuxt, 'Please run `npx nypm i ioredis` to use Redis KV storage', 'error')
+  }
+  if (hub.hosting.includes('vercel') && kvConfig.driver === 'fs-lite') {
+    logWhenReady(nuxt, 'Vercel hosting requires a Redis connection. Please set the `REDIS_URL` environment variable. See https://vercel.com/marketplace/category/database', 'error')
   }
 
   // Configure production storage

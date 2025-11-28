@@ -1,8 +1,12 @@
 import type { BuiltinDriverName } from 'unstorage'
 
 export interface KVConfig {
-  driver: BuiltinDriverName
+  driver?: BuiltinDriverName
   [key: string]: any
+}
+
+export interface ResolvedKVConfig extends KVConfig {
+  driver: BuiltinDriverName
 }
 
 interface DatabaseConnection {
