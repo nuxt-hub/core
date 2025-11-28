@@ -41,6 +41,18 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
         })
         break
       }
+      // Cloudflare D1 over HTTP
+      if (config.driver === 'd1-http') {
+        config.connection = defu(config.connection, {
+          accountId: process.env.NUXT_HUB_CLOUDFLARE_ACCOUNT_ID || undefined,
+          apiToken: process.env.NUXT_HUB_CLOUDFLARE_API_TOKEN || undefined,
+          databaseId: process.env.NUXT_HUB_CLOUDFLARE_DATABASE_ID || undefined
+        })
+        if (!config.connection?.accountId || !config.connection?.apiToken || !config.connection?.databaseId) {
+          throw new Error('D1 HTTP driver requires NUXT_HUB_CLOUDFLARE_ACCOUNT_ID, NUXT_HUB_CLOUDFLARE_API_TOKEN, and NUXT_HUB_CLOUDFLARE_DATABASE_ID environment variables')
+        }
+        break
+      }
       // Cloudflare D1
       if (hub.hosting.includes('cloudflare')) {
         config.driver = 'd1'
@@ -191,9 +203,12 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
 async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
   const { driver, connection } = hub.database as ResolvedDatabaseConfig
 
+  // For types, d1-http uses sqlite-proxy
+  const driverForTypes = driver === 'd1-http' ? 'sqlite-proxy' : driver
+
   // Setup Database Types
   const databaseTypes = `import type { DrizzleConfig } from 'drizzle-orm'
-import { drizzle as drizzleCore } from 'drizzle-orm/${driver}'
+import { drizzle as drizzleCore } from 'drizzle-orm/${driverForTypes}'
 import * as schema from './database/schema.mjs'
 
 declare module 'hub:database' {
@@ -257,6 +272,62 @@ import * as schema from './database/schema.mjs'
 
 const binding = process.env.DB || globalThis.DB
 const db = drizzle(binding, { schema })
+export { db, schema }
+`
+  }
+  if (driver === 'd1-http') {
+    // D1 over HTTP using sqlite-proxy
+    drizzleOrmContent = `import { drizzle } from 'drizzle-orm/sqlite-proxy'
+import * as schema from './database/schema.mjs'
+
+const accountId = ${JSON.stringify(connection.accountId)}
+const databaseId = ${JSON.stringify(connection.databaseId)}
+const apiToken = ${JSON.stringify(connection.apiToken)}
+
+async function d1HttpDriver(sql, params, method) {
+  if (method === 'values') method = 'all'
+
+  const { errors, success, result } = await $fetch(\`https://api.cloudflare.com/client/v4/accounts/\${accountId}/d1/database/\${databaseId}/raw\`, {
+    method: 'POST',
+    headers: {
+      Authorization: \`Bearer \${apiToken}\`,
+      'Content-Type': 'application/json'
+    },
+    async onResponseError({ request, response, options }) {
+      console.error(
+        "D1 HTTP Error:",
+        request,
+        options.body,
+        response.status,
+        response._data,
+      )
+    },
+    body: { sql, params }
+  })
+
+  if (errors?.length > 0 || !success) {
+    throw new Error(\`D1 HTTP error: \${JSON.stringify({ errors, success, result })}\`)
+  }
+
+  const queryResult = result?.[0]
+  if (!queryResult?.success) {
+    throw new Error(\`D1 HTTP error: \${JSON.stringify({ errors, success, result })}\`)
+  }
+
+  const rows = queryResult.results?.rows || []
+
+  if (method === 'get') {
+    if (rows.length === 0) {
+      return { rows: [] }
+    }
+    return { rows: rows[0] }
+  }
+
+  return { rows }
+}
+
+const db = drizzle(d1HttpDriver, { schema })
+
 export { db, schema }
 `
   }

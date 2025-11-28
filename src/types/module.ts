@@ -32,6 +32,18 @@ interface DatabaseConnection {
    */
   database?: string
   /**
+   * Cloudflare Account ID (for D1 HTTP driver)
+   */
+  accountId?: string
+  /**
+   * Cloudflare API Token (for D1 HTTP driver)
+   */
+  apiToken?: string
+  /**
+   * Cloudflare D1 Database ID (for D1 HTTP driver)
+   */
+  databaseId?: string
+  /**
    * Additional connection options
    */
   [key: string]: any
@@ -45,7 +57,7 @@ export interface DatabaseConfig {
   /**
    * Database driver (optional, auto-detected if not provided)
    *
-   * SQLite drivers: 'better-sqlite3', 'libsql', 'bun-sqlite', 'd1'
+   * SQLite drivers: 'better-sqlite3', 'libsql', 'bun-sqlite', 'd1', 'd1-http'
    * PostgreSQL drivers: 'postgres-js', 'pglite'
    * MySQL drivers: 'mysql2'
    */
@@ -123,7 +135,6 @@ export interface ResolvedDatabaseConfig extends DatabaseConfig {
 }
 
 export interface HubConfig {
-  ai: false | 'vercel' | 'cloudflare'
   blob: boolean
   cache: boolean
   database: false | 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig
@@ -133,7 +144,6 @@ export interface HubConfig {
 }
 
 export interface ResolvedHubConfig extends HubConfig {
-  ai: false | 'vercel' | 'cloudflare'
   blob: boolean
   cache: boolean
   database: ResolvedDatabaseConfig | false
