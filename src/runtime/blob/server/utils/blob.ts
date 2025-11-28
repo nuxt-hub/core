@@ -321,10 +321,18 @@ export function hubBlob(): HubBlob {
     async del(pathnames: string | string[]) {
       if (Array.isArray(pathnames)) {
         for (const pathname of pathnames) {
-          await storage.removeItem(decodeURIComponent(pathname).replace(/\//g, ':'))
+          const key = decodeURIComponent(pathname).replace(/\//g, ':')
+          await Promise.all([
+            storage.removeItem(key),
+            storage.removeMeta?.(key)
+          ])
         }
       } else {
-        await storage.removeItem(decodeURIComponent(pathnames).replace(/\//g, ':'))
+          const key = decodeURIComponent(pathnames).replace(/\//g, ':')
+          await Promise.all([
+            storage.removeItem(key),
+            storage.removeMeta?.(key)
+          ])
       }
     },
     async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}): Promise<BlobMultipartUpload> {
