@@ -3,7 +3,6 @@ import type { ResolvedHubConfig } from '../types'
 
 import { setupProductionBlob } from '../features/blob'
 import { setupProductionCache } from '../features/cache'
-import { setupProductionKV } from '../features/kv'
 
 import { copyDatabaseAssets, applyBuildTimeMigrations } from './database'
 
@@ -25,8 +24,7 @@ export function addBuildHooks(nuxt: Nuxt, hub: ResolvedHubConfig, deps: Record<s
 
     await Promise.all([
       hub.blob && await setupProductionBlob(nitro, hub, deps),
-      hub.cache && await setupProductionCache(nitro, hub, deps),
-      hub.kv && await setupProductionKV(nitro, hub, deps)
+      hub.cache && await setupProductionCache(nitro, hub, deps)
     ])
   })
 }
