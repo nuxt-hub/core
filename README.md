@@ -12,14 +12,16 @@ NuxtHub supercharges your Nuxt development workflow so you can focus on shipping
 ## ✨ Key Features
 
 NuxtHub provides optional features to help you build full-stack applications:
+- [**SQL database**](https://hub.nuxt.com/docs/features/database) to store your application's data with [automatic migrations](https://hub.nuxt.com/docs/features/database#database-migrations)
 - [**Files storage**](https://hub.nuxt.com/docs/features/blob) to store static assets, such as images, videos and more
 - [**Caching system**](https://hub.nuxt.com/docs/features/cache) for your Nuxt pages, API routes or server functions
-- [**SQL database**](https://hub.nuxt.com/docs/features/database) to store your application's data with [automatic migrations](https://hub.nuxt.com/docs/features/database#database-migrations)
 - [**Key-Value**](https://hub.nuxt.com/docs/features/kv) to store JSON data accessible globally with low-latency
-- [**Open API**](https://hub.nuxt.com/docs/features/open-api) to generate your API documentation with [Scalar](https://scalar.com)
-- [**Remote Storage**](https://hub.nuxt.com/docs/getting-started/remote-storage) to connect to your project's resources from your local environment, allowing you to work with your remote storage as if it was local.
 
 Read more on https://hub.nuxt.com
+
+## Legacy version
+
+If you are looking for the legacy version of NuxtHub (0.9), checkout the [0.9 branch](https://github.com/nuxt-hub/core/tree/0.9) and visit [https://legacy.hub.nuxt.com](https://legacy.hub.nuxt.com) for its documentation.
 
 ## 📚 Resources
 
