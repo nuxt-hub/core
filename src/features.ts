@@ -7,7 +7,7 @@ export { setupBase } from './features/base'
 export { setupBlob } from './features/blob'
 export { setupCache } from './features/cache'
 export { setupDatabase, resolveDatabaseConfig } from './features/database'
-export { setupKV } from './features/kv'
+export { setupKV, resolveKVConfig } from './features/kv'
 
 export function logWhenReady(nuxt: Nuxt, message: string, type: 'info' | 'warn' | 'error' = 'info') {
   if (nuxt.options._prepare) {

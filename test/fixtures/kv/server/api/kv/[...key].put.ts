@@ -1,6 +1,6 @@
 import * as z from 'zod'
 import { eventHandler, getValidatedRouterParams, readBody } from 'h3'
-import { hubKV } from '#imports'
+import { kv } from 'hub:kv'
 
 export default eventHandler(async (event) => {
   const { key } = await getValidatedRouterParams(event, z.object({
@@ -9,7 +9,7 @@ export default eventHandler(async (event) => {
 
   const body = await readBody(event)
 
-  await hubKV().set(key, body)
+  await kv.set(key, body)
 
   return 'OK'
 })

@@ -1,6 +1,6 @@
 import * as z from 'zod'
 import { eventHandler, getValidatedRouterParams, createError } from 'h3'
-import { hubKV } from '#imports'
+import { kv } from 'hub:kv'
 
 export default eventHandler(async (event) => {
   const { key } = await getValidatedRouterParams(event, z.object({
@@ -9,10 +9,10 @@ export default eventHandler(async (event) => {
 
   // Handle the special case for listing keys (key ends with ':')
   if (key === ':') {
-    return hubKV().keys()
+    return kv.keys()
   }
 
-  const value = await hubKV().get(key)
+  const value = await kv.get(key)
   if (value === null) {
     throw createError({
       statusCode: 404,

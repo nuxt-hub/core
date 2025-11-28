@@ -42,4 +42,26 @@ export interface HubKV extends Storage {
    * @see https://hub.nuxt.com/docs/features/kv#delete-an-item
    */
   del: Storage['removeItem']
+  /**
+   * Clear the storage.
+   *
+   * @see https://hub.nuxt.com/docs/features/kv#clear-the-kv-namespace
+   */
+  clear: Storage['clear']
+}
+
+declare module 'hub:kv' {
+  /**
+   * The KV storage instance.
+   *
+   * @example ```ts
+   * import { kv } from 'hub:kv'
+   *
+   * await kv.set('key', 'value')
+   * const value = await kv.get('key')
+   * ```
+   *
+   * @see https://hub.nuxt.com/docs/features/kv
+   */
+  export const kv: HubKV
 }

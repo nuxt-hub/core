@@ -1,6 +1,6 @@
-export default eventHandler(async () => {
-  const kv = hubKV()
+import { kv } from 'hub:kv'
 
+export default eventHandler(async () => {
   await kv.set('vue', { year: 2014 })
   await kv.set('vue:nuxt', { year: 2016 })
   await kv.set('vue:quasar', { version: 2015 })

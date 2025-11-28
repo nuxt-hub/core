@@ -1,6 +1,7 @@
+import { kv } from 'hub:kv'
+
 export default eventHandler(async (event) => {
   // List entries for the current user
-  const kv = hubKV()
   const { prefix = '' } = getQuery(event)
 
   const keys = await kv.keys(prefix as string)

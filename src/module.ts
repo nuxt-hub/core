@@ -59,7 +59,7 @@ export default defineNuxtModule<ModuleOptions>({
     hub.blob && await setupBlob(nuxt, hub as HubConfig, deps)
     hub.cache && await setupCache(nuxt, hub as HubConfig, deps)
     await setupDatabase(nuxt, hub as HubConfig, deps)
-    hub.kv && await setupKV(nuxt, hub as HubConfig, deps)
+    await setupKV(nuxt, hub as HubConfig, deps)
 
     const runtimeConfig = nuxt.options.runtimeConfig
     runtimeConfig.hub = hub as ResolvedHubConfig

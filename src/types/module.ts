@@ -1,3 +1,10 @@
+import type { BuiltinDriverName } from 'unstorage'
+
+export interface KVConfig {
+  driver: BuiltinDriverName
+  [key: string]: any
+}
+
 interface DatabaseConnection {
   /**
    * Database connection URL
@@ -107,12 +114,13 @@ export interface ModuleOptions {
    */
   database?: 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig | false
   /**
-   * Set `true` to enable the key-value storage for the project.
+   * Set `true` to enable the key-value storage with auto-configuration.
+   * Or provide a KVConfig object with driver and connection details.
    *
    * @default false
    * @see https://hub.nuxt.com/docs/features/kv
    */
-  kv?: boolean
+  kv?: boolean | KVConfig
   /**
    * The directory used for storage (database, kv, etc.) during local development.
    * @default '.data'
@@ -138,7 +146,7 @@ export interface HubConfig {
   blob: boolean
   cache: boolean
   database: false | 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig
-  kv: boolean
+  kv: boolean | KVConfig
   dir: string
   hosting: string
 }
@@ -147,6 +155,6 @@ export interface ResolvedHubConfig extends HubConfig {
   blob: boolean
   cache: boolean
   database: ResolvedDatabaseConfig | false
-  kv: boolean
+  kv: KVConfig | false
   dir: string
 }

@@ -183,7 +183,7 @@ sections:
       title: Key-Value
       icon: i-lucide-list
     features:
-      - title: "hubKV() server helper"
+      - title: "import { kv } from 'hub:kv'"
         icon: i-lucide-square-function
       - title: "Auto configure the provider based on environment"
         icon: i-lucide-sliders-vertical
