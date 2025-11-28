@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   return {
     storage: {
       blob: config.hub.blob,
-      database: config.hub.database,
+      db: config.hub.db,
       kv: config.hub.kv
     },
     features: {

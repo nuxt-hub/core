@@ -26,5 +26,5 @@ describe('ssr', async () => {
 })
 
 async function cleanUp() {
-  await fs.rm(fileURLToPath(new URL('./../.data/database', import.meta.url)), { force: true, recursive: true })
+  await fs.rm(fileURLToPath(new URL('./../.data/db', import.meta.url)), { force: true, recursive: true })
 }

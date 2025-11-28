@@ -1,5 +1,5 @@
 export * from './blob'
-export * from './database'
+export * from './db'
 export * from './kv'
 export * from './module'
 export * from './hooks'

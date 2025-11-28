@@ -10,16 +10,16 @@ let port = 4983
 const log = logger.withTag('nuxt:hub')
 
 async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
-  const dbConfig = hub.database as ResolvedDatabaseConfig
+  const dbConfig = hub.db as ResolvedDatabaseConfig
   if (!dbConfig || typeof dbConfig === 'boolean' || typeof dbConfig === 'string') {
-    throw new Error('Database configuration not resolved properly. Please ensure database is configured in hub.database')
+    throw new Error('Database configuration not resolved properly. Please ensure database is configured in hub.db')
   }
 
   port = await getPort({ port: 4983 })
 
   try {
     const { dialect, driver, connection } = dbConfig
-    const { schema } = await import(nuxt.options.nitro.alias!['hub:database'] as string)
+    const { schema } = await import(nuxt.options.nitro.alias!['hub:db'] as string)
 
     // Launch Drizzle Studio based on dialect and driver
     if (dialect === 'postgresql') {
@@ -28,7 +28,7 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
 
         // Trigger studio launch in the Nitro process for PGlite instance
         const nitroDevUrl = `http://localhost:${nuxt.options.devServer.port || 3000}`
-        await fetch(`${nitroDevUrl}/api/_hub/database/launch-studio?port=${port}`, {
+        await fetch(`${nitroDevUrl}/api/_hub/db/launch-studio?port=${port}`, {
           method: 'POST'
         })
       } else {
@@ -70,9 +70,9 @@ export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
       }
     })
 
-    if (hub.database) tabs.push({
+    if (hub.db) tabs.push({
       category: 'server',
-      name: 'hub-database',
+      name: 'hub-db',
       title: 'Database',
       icon: 'i-lucide-database',
       view: isReady && port

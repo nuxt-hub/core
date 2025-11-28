@@ -41,10 +41,10 @@ export default defineCommand({
       preferLocal: true,
       cwd
     })`nuxt prepare`
-    const hubConfig = JSON.parse(await readFile(join(cwd, '.nuxt/hub/database/config.json'), 'utf-8'))
-    const dialect = hubConfig.database.dialect
-    consola.info(`Database: \`${dialect}\` with \`${hubConfig.database.driver}\` driver`)
-    const url = hubConfig.database.connection.uri || hubConfig.database.connection.url
+    const hubConfig = JSON.parse(await readFile(join(cwd, '.nuxt/hub/db/config.json'), 'utf-8'))
+    const dialect = hubConfig.db.dialect
+    consola.info(`Database: \`${dialect}\` with \`${hubConfig.db.driver}\` driver`)
+    const url = hubConfig.db.connection.uri || hubConfig.db.connection.url
     consola.debug(`Database connection: \`${url}\``)
     const localMigrations = await getDatabaseMigrationFiles(hubConfig)
     if (localMigrations.length === 0) {
@@ -57,7 +57,7 @@ export default defineCommand({
       consola.error(`Local migration \`${args.name}\` not found.`)
       process.exit(1)
     }
-    const db = await createDrizzleClient(hubConfig.database)
+    const db = await createDrizzleClient(hubConfig.db)
     const execute = dialect === 'sqlite' ? 'run' : 'execute'
     const getRows = result => (dialect === 'mysql' ? result[0] : result.rows || result)
     const closeDb = async () => await db.$client?.end?.()

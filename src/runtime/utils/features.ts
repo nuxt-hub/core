@@ -9,8 +9,8 @@ const featureMessages = {
   cache: [
     'NuxtHub Cache is not enabled, set `hub.cache = true` in your `nuxt.config.ts`'
   ].join('\n'),
-  database: [
-    'NuxtHub Database is not enabled, set `hub.database = true` in your `nuxt.config.ts`',
+  db: [
+    'NuxtHub Database is not enabled, set `hub.db = true` in your `nuxt.config.ts`',
     'Read more at `https://hub.nuxt.com/docs/features/database`'
   ].join('\n'),
   kv: [

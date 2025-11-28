@@ -1,7 +1,7 @@
-import { db, schema } from 'hub:database'
+import { db, schema } from 'hub:db'
 
 export default defineEventHandler(async () => {
-  if (useRuntimeConfig().hub.database.dialect !== 'sqlite') {
+  if (useRuntimeConfig().hub.db.dialect !== 'sqlite') {
     return {
       error: 'SQLite is not enabled'
     }

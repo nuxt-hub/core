@@ -4,7 +4,7 @@ import type { ResolvedHubConfig } from '../types'
 import { setupProductionBlob } from '../features/blob'
 import { setupProductionCache } from '../features/cache'
 
-import { copyDatabaseAssets, applyBuildTimeMigrations } from './database'
+import { copyDatabaseAssets, applyBuildTimeMigrations } from './db'
 
 export function addBuildHooks(nuxt: Nuxt, hub: ResolvedHubConfig, deps: Record<string, string>) {
   nuxt.hook('nitro:build:public-assets', async (nitro) => {

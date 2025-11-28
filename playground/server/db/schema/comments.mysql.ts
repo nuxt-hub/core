@@ -1,4 +1,4 @@
-import { pages } from 'hub:database:schema'
+import { pages } from 'hub:db:schema'
 import { int, mysqlTable, text, timestamp } from 'drizzle-orm/mysql-core'
 
 export { glasses } from '../glasses'

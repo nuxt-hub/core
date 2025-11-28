@@ -1,4 +1,4 @@
-import { pages } from 'hub:database:schema'
+import { pages } from 'hub:db:schema'
 import { integer, pgTable, text, timestamp, serial } from 'drizzle-orm/pg-core'
 
 export { glasses } from '../glasses'

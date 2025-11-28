@@ -6,7 +6,7 @@ let _storage
 export function useMigrationsStorage() {
   if (!_storage) {
     const cwd = process.cwd()
-    const migrationsDir = join(cwd, 'server/database/migrations')
+    const migrationsDir = join(cwd, 'server/db/migrations')
     _storage = createStorage({
       driver: fsDriver({
         base: migrationsDir,

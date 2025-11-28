@@ -1,15 +1,14 @@
 import { defineCommand } from 'citty'
-import generate from './database/generate.mjs'
-import migrate from './database/migrate.mjs'
-import markAsMigrated from './database/mark-as-migrated.mjs'
-import drop from './database/drop.mjs'
-import sql from './database/sql.mjs'
+import generate from './db/generate.mjs'
+import migrate from './db/migrate.mjs'
+import markAsMigrated from './db/mark-as-migrated.mjs'
+import drop from './db/drop.mjs'
+import sql from './db/sql.mjs'
 
 export default defineCommand({
   meta: {
-    name: 'database',
-    description: 'Manage database migrations.',
-    aliases: ['db']
+    name: 'db',
+    description: 'Manage database migrations and run SQL queries.'
   },
   subCommands: {
     generate,

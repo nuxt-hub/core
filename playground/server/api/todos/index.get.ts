@@ -1,4 +1,4 @@
-import { db } from 'hub:database'
+import { db } from 'hub:db'
 
 export default eventHandler(async () => {
   // List todos for the current user

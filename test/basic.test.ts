@@ -12,7 +12,7 @@ describe('ssr', async () => {
     const manifest = await $fetch('/api/manifest')
     expect(manifest).toMatchObject({
       storage: {
-        database: false,
+        db: false,
         kv: false,
         blob: false
       },

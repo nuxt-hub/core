@@ -9,16 +9,16 @@ function getRelativePath(fullPath: string) {
 }
 
 export async function applyDatabaseMigrations(hub: ResolvedHubConfig, db: any) {
-  if (!hub.database) return
+  if (!hub.db) return
   // Create a logger for this function (at runtime so we can have the debug level when run by the CLI)
   const log = consola.withTag('nuxt:hub')
 
   const migrationsStorage = useDatabaseMigrationsStorage(hub)
-  const dialect = hub.database.dialect
+  const dialect = hub.db.dialect
   const execute = dialect === 'sqlite' ? 'run' : 'execute'
   const getRows = (result: any) => (dialect === 'mysql' ? result[0] : result.rows || result)
 
-  const createMigrationsTableQuery = getCreateMigrationsTableQuery({ dialect: hub.database.dialect })
+  const createMigrationsTableQuery = getCreateMigrationsTableQuery({ dialect: hub.db.dialect })
   log.debug('Creating migrations table if not exists...')
   try {
     await db[execute](sql.raw(createMigrationsTableQuery))
@@ -58,51 +58,51 @@ export async function applyDatabaseMigrations(hub: ResolvedHubConfig, db: any) {
     const queries = splitSqlQueries(query)
 
     try {
-      log.debug(`Applying database migration \`${getRelativePath(join(hub.dir!, 'database/migrations', migration.filename))}\`...`)
+      log.debug(`Applying database migration \`${getRelativePath(join(hub.dir!, 'db/migrations', migration.filename))}\`...`)
       for (const query of queries) {
         await db[execute](sql.raw(query))
       }
     } catch (error: any) {
       const message = error.cause?.message || error.message
-      log.error(`Failed to apply migration \`${getRelativePath(join(hub.dir!, 'database/migrations', migration.filename))}\`\n${message}`)
+      log.error(`Failed to apply migration \`${getRelativePath(join(hub.dir!, 'db/migrations', migration.filename))}\`\n${message}`)
       if (message?.includes('already exists')) {
-        log.info(`To mark this migration as applied, run \`npx nuxthub database mark-as-migrated ${migration.name}\``)
-        log.info('To drop a table, run `npx nuxthub database drop <table-name>`')
+        log.info(`To mark this migration as applied, run \`npx nuxt hub db mark-as-migrated ${migration.name}\``)
+        log.info('To drop a table, run `npx nuxt hub db drop <table-name>`')
       }
       return false
     }
 
-    log.success(`Database migration \`${getRelativePath(join(hub.dir!, 'database/migrations', migration.filename))}\` applied`)
+    log.success(`Database migration \`${getRelativePath(join(hub.dir!, 'db/migrations', migration.filename))}\` applied`)
   }
   !import.meta.dev && log.success('Database migrations applied successfully.')
   return true
 }
 
 export async function applyDatabaseQueries(hub: ResolvedHubConfig, db: any) {
-  if (!hub.database) return
+  if (!hub.db) return
   // Create a logger for this function (at runtime so we can have the debug level when run by the CLI)
   const log = consola.withTag('nuxt:hub')
   const queriesStorage = useDatabaseQueriesStorage(hub)
   const queriesFiles = await getDatabaseQueryFiles(hub)
   if (!queriesFiles.length) return
-  const execute = hub.database.dialect === 'sqlite' ? 'run' : 'execute'
+  const execute = hub.db.dialect === 'sqlite' ? 'run' : 'execute'
 
   for (const queryFile of queriesFiles) {
     const sqlQuery = await queriesStorage.getItem<string>(queryFile.filename)
     if (!sqlQuery) continue
     const queries = splitSqlQueries(sqlQuery)
     try {
-      log.debug(`Applying database query \`${getRelativePath(join(hub.dir!, 'database/queries', queryFile.filename))}\`...`)
+      log.debug(`Applying database query \`${getRelativePath(join(hub.dir!, 'db/queries', queryFile.filename))}\`...`)
       for (const query of queries) {
         await db[execute](sql.raw(query))
       }
     } catch (error: any) {
       const message = error.cause?.message || error.message
-      log.error(`Failed to apply query \`${getRelativePath(join(hub.dir!, 'database/queries', queryFile.filename))}\`\n${message}`)
+      log.error(`Failed to apply query \`${getRelativePath(join(hub.dir!, 'db/queries', queryFile.filename))}\`\n${message}`)
       return false
     }
 
-    !import.meta.dev && log.success(`Database query \`${getRelativePath(join(hub.dir!, 'database/queries', queryFile.filename))}\` applied`)
+    !import.meta.dev && log.success(`Database query \`${getRelativePath(join(hub.dir!, 'db/queries', queryFile.filename))}\` applied`)
   }
   !import.meta.dev && log.success('Database queries applied successfully.')
   return true

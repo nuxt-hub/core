@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
-import { resolveDatabaseConfig } from '../src/features/database'
+import { resolveDatabaseConfig } from '../src/features/db'
 import type { HubConfig } from '../src/types'
 
 // Mock the mkdir function from node:fs/promises
@@ -24,18 +24,17 @@ describe('resolveDatabaseConfig', () => {
     }
   }) as any
 
-  const createBaseHubConfig = (database: HubConfig['database']): HubConfig => ({
-    ai: false,
+  const createBaseHubConfig = (db: HubConfig['db']): HubConfig => ({
     blob: false,
     cache: false,
-    database,
+    db,
     kv: false,
     dir: '/tmp/test-hub',
     hosting: ''
   })
 
-  describe('database disabled', () => {
-    it('should return false when database is false', async () => {
+  describe('db disabled', () => {
+    it('should return false when db is false', async () => {
       const nuxt = createMockNuxt()
       const hub = createBaseHubConfig(false)
 
@@ -58,13 +57,13 @@ describe('resolveDatabaseConfig', () => {
         dialect: 'sqlite',
         driver: 'libsql',
         connection: {
-          url: 'file:/tmp/test-hub/database/sqlite.db'
+          url: 'file:/tmp/test-hub/db/sqlite.db'
         },
         applyMigrationsDuringBuild: true
       })
       expect(result).not.toBe(false)
       if (result !== false) {
-        expect(result.migrationsDirs).toEqual(['/app/server/database/migrations'])
+        expect(result.migrationsDirs).toEqual(['/app/server/db/migrations'])
         expect(result.queriesPaths).toEqual([])
       }
     })
@@ -79,7 +78,7 @@ describe('resolveDatabaseConfig', () => {
         dialect: 'sqlite',
         driver: 'libsql',
         connection: {
-          url: 'file:/tmp/test-hub/database/sqlite.db'
+          url: 'file:/tmp/test-hub/db/sqlite.db'
         }
       })
     })
@@ -215,7 +214,7 @@ describe('resolveDatabaseConfig', () => {
         dialect: 'postgresql',
         driver: 'pglite',
         connection: {
-          dataDir: '/tmp/test-hub/database/pglite'
+          dataDir: '/tmp/test-hub/db/pglite'
         }
       })
     })
@@ -315,7 +314,7 @@ describe('resolveDatabaseConfig', () => {
       // defu merges arrays, so custom dirs come first, then layer defaults
       expect(result).not.toBe(false)
       if (result !== false) {
-        expect(result.migrationsDirs).toEqual(['/custom/migrations', '/app/server/database/migrations'])
+        expect(result.migrationsDirs).toEqual(['/custom/migrations', '/app/server/db/migrations'])
       }
     })
 
@@ -362,9 +361,9 @@ describe('resolveDatabaseConfig', () => {
       expect(result).not.toBe(false)
       if (result !== false) {
         expect(result.migrationsDirs).toEqual([
-          '/app/server/database/migrations',
-          '/layer1/server/database/migrations',
-          '/layer2/server/database/migrations'
+          '/app/server/db/migrations',
+          '/layer1/server/db/migrations',
+          '/layer2/server/db/migrations'
         ])
       }
     })
@@ -427,7 +426,7 @@ describe('resolveDatabaseConfig', () => {
       expect(result).not.toBe(false)
       if (result !== false) {
         expect(result.migrationsDirs?.length).toBeGreaterThanOrEqual(1)
-        expect(result.migrationsDirs?.[0]).toBe('/app/server/database/migrations')
+        expect(result.migrationsDirs?.[0]).toBe('/app/server/db/migrations')
       }
     })
 
@@ -528,7 +527,7 @@ describe('resolveDatabaseConfig', () => {
         dialect: 'sqlite',
         driver: 'libsql',
         connection: {
-          url: 'file:/tmp/test-hub/database/sqlite.db'
+          url: 'file:/tmp/test-hub/db/sqlite.db'
         }
       })
     })
@@ -547,7 +546,7 @@ describe('resolveDatabaseConfig', () => {
         dialect: 'sqlite',
         driver: 'libsql',
         connection: {
-          url: 'file:/tmp/test-hub/database/sqlite.db'
+          url: 'file:/tmp/test-hub/db/sqlite.db'
         }
       })
     })
@@ -568,7 +567,7 @@ describe('resolveDatabaseConfig', () => {
       })
     })
 
-    it('should handle empty string as database connection URL', async () => {
+    it('should handle empty string as db connection URL', async () => {
       process.env.DATABASE_URL = ''
 
       const nuxt = createMockNuxt()

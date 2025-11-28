@@ -23,7 +23,7 @@ export async function setupCache(nuxt: Nuxt, hub: HubConfig, _deps: Record<strin
   // Add Server scanning
   addServerScanDir(resolve('runtime/cache/server'))
 
-  logWhenReady(nuxt, `\`Hub cache\` configured with \`${nuxt.options.nitro.devStorage.cache.driver}\` driver`)
+  logWhenReady(nuxt, `\`hub:cache\` using \`${nuxt.options.nitro.devStorage.cache.driver}\` driver`)
 }
 
 export async function setupProductionCache(nitro: Nitro, _hub: HubConfig, _deps: Record<string, string>) {
@@ -74,6 +74,6 @@ export async function setupProductionCache(nitro: Nitro, _hub: HubConfig, _deps:
   if (cacheConfig) {
     nitro.options.storage ||= {}
     nitro.options.storage.cache = defu(nitro.options.storage?.cache, cacheConfig)
-    log.info(`\`Hub cache\` configured with \`${nitro.options.storage.cache.driver}\` driver`)
+    log.info(`\`hub:cache\` using \`${nitro.options.storage.cache.driver}\` driver`)
   }
 }

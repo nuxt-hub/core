@@ -36,11 +36,11 @@ export default defineCommand({
       cwd
     })`nuxt prepare`
     consola.info('Applying database migrations...')
-    const hubConfig = JSON.parse(await readFile(join(cwd, '.nuxt/hub/database/config.json'), 'utf-8'))
-    consola.info(`Database: \`${hubConfig.database.dialect}\` with \`${hubConfig.database.driver}\` driver`)
-    const url = hubConfig.database.connection.uri || hubConfig.database.connection.url
+    const hubConfig = JSON.parse(await readFile(join(cwd, '.nuxt/hub/db/config.json'), 'utf-8'))
+    consola.info(`Database: \`${hubConfig.db.dialect}\` with \`${hubConfig.db.driver}\` driver`)
+    const url = hubConfig.db.connection.uri || hubConfig.db.connection.url
     consola.debug(`Database connection: \`${url}\``)
-    const db = await createDrizzleClient(hubConfig.database)
+    const db = await createDrizzleClient(hubConfig.db)
     const migrationsApplied = await applyDatabaseMigrations(hubConfig, db)
     if (migrationsApplied === false) {
       process.exit(1)

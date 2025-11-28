@@ -39,17 +39,44 @@ NuxtHub is a Nuxt module giving you all the features required to ship full-stack
 
 
 #default
+::code-group
+```ts [server/api/todos.ts]
+import { db } from 'hub:db'
+import { kv } from 'hub:kv'
+import { blob } from 'hub:blob'
+
+// Access SQL database
+const todos = await db.query.todos.findMany()
+// Access Key-Value storage
+const value = await kv.get('my-key')
+// Upload a file to the blob storage
+const file = await blob.put('my-file.txt', 'file-content')
+// Cache a function
+const cachedAPICall = defineCachedFunction(async () => {
+  return $fetch('https://api.example.com/todos')
+}, { maxAge: 60 * 60 })
+```
+```ts [server/db/schema.ts]
+import { pgTable, integer, text, boolean } from 'drizzle-orm/pg-core'
+
+export const todos = pgTable('todos', {
+  id: integer().primaryKey(),
+  title: text().notNull(),
+  completed: boolean().notNull().default(false),
+})
+```
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
   modules: ['@nuxthub/core'],
   hub: {
     blob: true,
     cache: true,
-    database: 'postgresql',
+    db: 'postgresql',
     kv: true,
   }
 })
 ```
+::
 ::
 
 ::u-container
@@ -65,7 +92,7 @@ export default defineNuxtConfig({
     :::landing-feature
     ---
     title: SQL Database
-    description: Add SQL databases to your app and build any kind of full-stack applications.
+    description: Query your database with a type-safe ORM and automated migrations.
     icon: i-lucide-database
     to: /docs/features/database
     ---

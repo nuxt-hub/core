@@ -41,12 +41,12 @@ export default defineCommand({
       preferLocal: true,
       cwd
     })`nuxt prepare`
-    const hubConfig = JSON.parse(await readFile(join(cwd, '.nuxt/hub/database/config.json'), 'utf-8'))
-    consola.info(`Database: \`${hubConfig.database.dialect}\` with \`${hubConfig.database.driver}\` driver`)
-    const url = hubConfig.database.connection.uri || hubConfig.database.connection.url
+    const hubConfig = JSON.parse(await readFile(join(cwd, '.nuxt/hub/db/config.json'), 'utf-8'))
+    consola.info(`Database: \`${hubConfig.db.dialect}\` with \`${hubConfig.db.driver}\` driver`)
+    const url = hubConfig.db.connection.uri || hubConfig.db.connection.url
     consola.debug(`Database connection: \`${url}\``)
-    const db = await createDrizzleClient(hubConfig.database)
-    const execute = hubConfig.database.dialect === 'sqlite' ? 'run' : 'execute'
+    const db = await createDrizzleClient(hubConfig.db)
+    const execute = hubConfig.db.dialect === 'sqlite' ? 'run' : 'execute'
     await db[execute](sql.raw(`DROP TABLE IF EXISTS "${args.table}";`))
     consola.success(`Table \`${args.table}\` dropped successfully.`)
     await db.$client?.end?.()

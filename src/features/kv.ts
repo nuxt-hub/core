@@ -76,5 +76,5 @@ export function setupKV(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>
   nuxt.options.nitro.alias ||= {}
   nuxt.options.nitro.alias['hub:kv'] = resolve('runtime/kv/server/utils/kv.ts')
 
-  logWhenReady(nuxt, `\`hub:kv\` configured with \`${kvConfig.driver}\` driver`)
+  logWhenReady(nuxt, `\`hub:kv\` using \`${kvConfig.driver}\` driver`)
 }

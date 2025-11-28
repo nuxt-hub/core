@@ -10,10 +10,10 @@ import type { ModuleOptions, HubConfig, ResolvedHubConfig } from './types'
 import { addBuildHooks } from './utils/build'
 import { provider } from 'std-env'
 
-export { applyDatabaseMigrations, applyDatabaseQueries } from './runtime/database/server/utils/migrations/migrations'
-export { getDatabaseMigrationFiles, AppliedDatabaseMigrationsQuery, splitSqlQueries } from './runtime/database/server/utils/migrations/helpers'
-export { createDrizzleClient } from './utils/database'
-export { buildDatabaseSchema } from './features/database'
+export { applyDatabaseMigrations, applyDatabaseQueries } from './runtime/db/server/utils/migrations/migrations'
+export { getDatabaseMigrationFiles, AppliedDatabaseMigrationsQuery, splitSqlQueries } from './runtime/db/server/utils/migrations/helpers'
+export { createDrizzleClient } from './utils/db'
+export { buildDatabaseSchema } from './features/db'
 
 export * from './types'
 
@@ -46,10 +46,9 @@ export default defineNuxtModule<ModuleOptions>({
       dir: '.data',
       hosting,
       // NuxtHub features
-      ai: false,
       blob: false,
       cache: false,
-      database: false,
+      db: false,
       kv: false
     }) as HubConfig
 
@@ -66,7 +65,7 @@ export default defineNuxtModule<ModuleOptions>({
     runtimeConfig.public.hub ||= {}
     if (nuxt.options._prepare) {
       addTemplate({
-        filename: 'hub/database/config.json',
+        filename: 'hub/db/config.json',
         write: true,
         getContents: () => JSON.stringify(hub, null, 2)
       })

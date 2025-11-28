@@ -32,7 +32,7 @@ export function setupBlob(nuxt: Nuxt, hub: HubConfig, _deps: Record<string, stri
     nuxt.options.runtimeConfig.public.hub.blobProvider = 'vercel-blob'
   }
 
-  logWhenReady(nuxt, `\`hubBlob()\` configured with \`${nuxt.options.nitro.devStorage.blob.driver}\` driver`)
+  logWhenReady(nuxt, `\`hubBlob()\` using \`${nuxt.options.nitro.devStorage.blob.driver}\` driver`)
 }
 
 export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig, deps: Record<string, string>) {
@@ -41,7 +41,7 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig, deps: R
 
   // Only configure if blob driver is not already set
   if (nitro.options.storage?.blob?.driver) {
-    log.info(`\`hubBlob()\` configured with \`${nitro.options.storage.blob.driver}\` driver (defined in \`nuxt.config.ts\`)`)
+    log.info(`\`hubBlob()\` using \`${nitro.options.storage.blob.driver}\` driver (defined in \`nuxt.config.ts\`)`)
     return
   }
   let blobConfig: NitroOptions['storage']['blob']
@@ -146,6 +146,6 @@ export async function setupProductionBlob(nitro: Nitro, _hub: HubConfig, deps: R
     // set driver
     nitro.options.storage ||= {}
     nitro.options.storage.blob = defu(nitro.options.storage?.blob, blobConfig)
-    log.info(`\`hubBlob()\` configured with \`${blobConfig.driver}\` driver`)
+    log.info(`\`hubBlob()\` using \`${blobConfig.driver}\` driver`)
   }
 }

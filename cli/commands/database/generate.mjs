@@ -42,7 +42,7 @@ export default defineCommand({
       ...options,
       stdin: 'inherit',
       stdout: 'inherit'
-    })`drizzle-kit generate --config=./.nuxt/hub/database/drizzle.config.ts`
+    })`drizzle-kit generate --config=./.nuxt/hub/db/drizzle.config.ts`
     // Drizzle-kit does not exit with an error code when there is an error, so we need to check the stderr
     if (stderr) {
       consola.error(stderr)

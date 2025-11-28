@@ -6,7 +6,7 @@ const log = logger.withTag('nuxt:hub')
 export { setupBase } from './features/base'
 export { setupBlob } from './features/blob'
 export { setupCache } from './features/cache'
-export { setupDatabase, resolveDatabaseConfig } from './features/database'
+export { setupDatabase, resolveDatabaseConfig } from './features/db'
 export { setupKV, resolveKVConfig } from './features/kv'
 
 export function logWhenReady(nuxt: Nuxt, message: string, type: 'info' | 'warn' | 'error' = 'info') {

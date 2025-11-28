@@ -30,17 +30,17 @@ export default defineNuxtConfig({
   },
 
   hub: {
-    database: 'sqlite',
+    db: 'sqlite',
     blob: true,
     kv: true,
     cache: true
   },
   hooks: {
-    'hub:database:migrations:dirs': (dirs) => {
-      dirs.push('my-module/database/migrations')
+    'hub:db:migrations:dirs': (dirs) => {
+      dirs.push('my-module/db/migrations')
     },
-    'hub:database:queries:paths': (queries, dialect) => {
-      queries.push(resolver.resolve(`server/database/queries/admin.${dialect}.sql`))
+    'hub:db:queries:paths': (queries, dialect) => {
+      queries.push(resolver.resolve(`server/db/queries/admin.${dialect}.sql`))
     }
   },
 

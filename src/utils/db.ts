@@ -4,7 +4,7 @@ import { resolve } from 'pathe'
 import type { Nitro } from 'nitropack'
 import type { ResolvedDatabaseConfig, ResolvedHubConfig } from '../types'
 
-import { applyDatabaseMigrations, applyDatabaseQueries } from '../runtime/database/server/utils/migrations/migrations'
+import { applyDatabaseMigrations, applyDatabaseQueries } from '../runtime/db/server/utils/migrations/migrations'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -55,17 +55,17 @@ export async function createDrizzleClient(config: ResolvedDatabaseConfig) {
  * Copies database migrations and queries to the build output directory
  */
 export async function copyDatabaseAssets(nitro: Nitro, hub: ResolvedHubConfig) {
-  if (!hub.database) return
+  if (!hub.db) return
 
-  const migrationsPath = resolve(nitro.options.rootDir, hub.dir!, 'database/migrations')
-  const queriesPath = resolve(nitro.options.rootDir, hub.dir!, 'database/queries')
+  const migrationsPath = resolve(nitro.options.rootDir, hub.dir!, 'db/migrations')
+  const queriesPath = resolve(nitro.options.rootDir, hub.dir!, 'db/queries')
   const outputDir = nitro.options.output.serverDir
 
   const bundledItems = []
 
   // Copy migrations if they exist
   try {
-    await cp(migrationsPath, resolve(outputDir, 'database/migrations'), { recursive: true })
+    await cp(migrationsPath, resolve(outputDir, 'db/migrations'), { recursive: true })
     bundledItems.push('migrations')
   } catch (error: unknown) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
@@ -77,7 +77,7 @@ export async function copyDatabaseAssets(nitro: Nitro, hub: ResolvedHubConfig) {
 
   // Copy queries if they exist
   try {
-    await cp(queriesPath, resolve(outputDir, 'database/queries'), { recursive: true })
+    await cp(queriesPath, resolve(outputDir, 'db/queries'), { recursive: true })
     bundledItems.push('queries')
   } catch (error: unknown) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
@@ -96,10 +96,10 @@ export async function copyDatabaseAssets(nitro: Nitro, hub: ResolvedHubConfig) {
  * Applies database migrations during build time
  */
 export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubConfig) {
-  if (!hub.database || !hub.database.applyMigrationsDuringBuild) return
+  if (!hub.db || !hub.db.applyMigrationsDuringBuild) return
 
   try {
-    const db = await createDrizzleClient(hub.database)
+    const db = await createDrizzleClient(hub.db)
 
     const buildHubConfig = {
       ...hub,

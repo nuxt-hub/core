@@ -75,7 +75,7 @@ export interface DatabaseConfig {
   connection?: DatabaseConnection
   /**
    * The directories to scan for database migrations.
-   * @default ['server/database/migrations']
+   * @default ['server/db/migrations']
    */
   migrationsDirs?: string[]
   /**
@@ -112,7 +112,7 @@ export interface ModuleOptions {
    * @default false
    * @see https://hub.nuxt.com/docs/features/database
    */
-  database?: 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig | false
+  db?: 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig | false
   /**
    * Set `true` to enable the key-value storage with auto-configuration.
    * Or provide a KVConfig object with driver and connection details.
@@ -145,7 +145,7 @@ export interface ResolvedDatabaseConfig extends DatabaseConfig {
 export interface HubConfig {
   blob: boolean
   cache: boolean
-  database: false | 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig
+  db: false | 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig
   kv: boolean | KVConfig
   dir: string
   hosting: string
@@ -154,7 +154,7 @@ export interface HubConfig {
 export interface ResolvedHubConfig extends HubConfig {
   blob: boolean
   cache: boolean
-  database: ResolvedDatabaseConfig | false
+  db: ResolvedDatabaseConfig | false
   kv: KVConfig | false
   dir: string
 }

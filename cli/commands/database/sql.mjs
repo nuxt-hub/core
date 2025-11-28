@@ -42,12 +42,12 @@ export default defineCommand({
       preferLocal: true,
       cwd
     })`nuxt prepare`
-    const hubConfig = JSON.parse(await readFile(join(cwd, '.nuxt/hub/database/config.json'), 'utf-8'))
-    const dialect = hubConfig.database.dialect
-    consola.info(`Database: \`${dialect}\` with \`${hubConfig.database.driver}\` driver`)
-    const url = hubConfig.database.connection.uri || hubConfig.database.connection.url
+    const hubConfig = JSON.parse(await readFile(join(cwd, '.nuxt/hub/db/config.json'), 'utf-8'))
+    const dialect = hubConfig.db.dialect
+    consola.info(`Database: \`${dialect}\` with \`${hubConfig.db.driver}\` driver`)
+    const url = hubConfig.db.connection.uri || hubConfig.db.connection.url
     consola.debug(`Database connection: \`${url}\``)
-    const db = await createDrizzleClient(hubConfig.database)
+    const db = await createDrizzleClient(hubConfig.db)
 
     // Read query from stdin if not provided as argument
     let queryInput = args.query
