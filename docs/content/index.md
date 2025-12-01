@@ -45,13 +45,12 @@ import { db } from 'hub:db'
 import { kv } from 'hub:kv'
 import { blob } from 'hub:blob'
 
-// Access SQL database
 const todos = await db.query.todos.findMany()
-// Access Key-Value storage
+
 const value = await kv.get('my-key')
-// Upload a file to the blob storage
+
 const file = await blob.put('my-file.txt', 'file-content')
-// Cache a function
+
 const cachedAPICall = defineCachedFunction(async () => {
   return $fetch('https://api.example.com/todos')
 }, { maxAge: 60 * 60 })

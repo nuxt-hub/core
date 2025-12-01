@@ -1,5 +1,14 @@
 import type { BuiltinDriverName } from 'unstorage'
 
+export interface CacheConfig {
+  driver?: BuiltinDriverName | string
+  [key: string]: any
+}
+
+export interface ResolvedCacheConfig extends CacheConfig {
+  driver: BuiltinDriverName | string
+}
+
 export interface KVConfig {
   driver?: BuiltinDriverName
   [key: string]: any
@@ -103,12 +112,13 @@ export interface ModuleOptions {
    */
   blob?: boolean
   /**
-   * Set `true` to enable caching for the project.
+   * Set `true` to enable caching for the project with auto-configuration.
+   * Or provide a CacheConfig object with driver and connection details.
    *
    * @default false
    * @see https://hub.nuxt.com/docs/features/cache
    */
-  cache?: boolean
+  cache?: boolean | CacheConfig
   /**
    * Set to `'postgresql'`, `'sqlite'`, or `'mysql'` to use a specific database dialect with a zero-config development database.
    * Or provide a DatabaseConfig object with dialect and connection details.
@@ -148,7 +158,7 @@ export interface ResolvedDatabaseConfig extends DatabaseConfig {
 
 export interface HubConfig {
   blob: boolean
-  cache: boolean
+  cache: boolean | CacheConfig
   db: false | 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig
   kv: boolean | KVConfig
   dir: string
@@ -157,7 +167,7 @@ export interface HubConfig {
 
 export interface ResolvedHubConfig extends HubConfig {
   blob: boolean
-  cache: boolean
+  cache: CacheConfig | false
   db: ResolvedDatabaseConfig | false
   kv: KVConfig | false
   dir: string

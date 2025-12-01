@@ -2,7 +2,6 @@ import type { Nuxt } from '@nuxt/schema'
 import type { ResolvedHubConfig } from '../types'
 
 import { setupProductionBlob } from '../features/blob'
-import { setupProductionCache } from '../features/cache'
 
 import { copyDatabaseAssets, applyBuildTimeMigrations } from './db'
 
@@ -22,9 +21,8 @@ export function addBuildHooks(nuxt: Nuxt, hub: ResolvedHubConfig, deps: Record<s
       nitro.options.cloudflare.nodeCompat = true
     }
 
-    await Promise.all([
-      hub.blob && await setupProductionBlob(nitro, hub, deps),
-      hub.cache && await setupProductionCache(nitro, hub, deps)
-    ])
+    if (hub.blob) {
+      await setupProductionBlob(nitro, hub, deps)
+    }
   })
 }
