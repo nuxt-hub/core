@@ -13,11 +13,8 @@ describe('KV', async () => {
 
   it('Check cache is enabled', async () => {
     const manifest = await $fetch('/api/manifest')
-    expect(manifest).includes({
-      db: false,
-      kv: false,
-      blob: false,
-      cache: true
+    expect(manifest.cache).includes({
+      driver: 'fs-lite',
     })
   })
 
