@@ -55,7 +55,7 @@ export default defineNuxtModule<ModuleOptions>({
     const packageJSON = await readPackageJSON(nuxt.options.rootDir)
     const deps = Object.assign({}, packageJSON.dependencies, packageJSON.devDependencies)
     await setupBase(nuxt, hub as HubConfig)
-    hub.blob && await setupBlob(nuxt, hub as HubConfig, deps)
+    await setupBlob(nuxt, hub as HubConfig, deps)
     await setupCache(nuxt, hub as HubConfig, deps)
     await setupDatabase(nuxt, hub as HubConfig, deps)
     await setupKV(nuxt, hub as HubConfig, deps)

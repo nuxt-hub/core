@@ -1,16 +1,18 @@
+import { blob } from 'hub:blob'
+
 export default eventHandler(async (event) => {
   const { pathname } = await getValidatedRouterParams(event, z.object({
     pathname: z.string().min(1)
   }).parse)
 
-  const blob = await hubBlob().get(pathname)
+  const object = await blob.get(pathname)
 
-  if (!blob) {
+  if (!object) {
     throw createError({
       statusCode: 404,
       statusMessage: 'Blob not found'
     })
   }
 
-  return blob
+  return object
 })

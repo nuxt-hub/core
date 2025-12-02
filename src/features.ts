@@ -4,7 +4,7 @@ import { logger } from '@nuxt/kit'
 const log = logger.withTag('nuxt:hub')
 
 export { setupBase } from './features/base'
-export { setupBlob } from './features/blob'
+export { setupBlob, resolveBlobConfig } from './features/blob'
 export { setupCache, resolveCacheConfig } from './features/cache'
 export { setupDatabase, resolveDatabaseConfig } from './features/db'
 export { setupKV, resolveKVConfig } from './features/kv'

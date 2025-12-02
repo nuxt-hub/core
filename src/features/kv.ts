@@ -1,5 +1,5 @@
 import { defu } from 'defu'
-import { addServerScanDir, addServerImportsDir } from '@nuxt/kit'
+import { addTypeTemplate, addServerImports, addTemplate } from '@nuxt/kit'
 import { logWhenReady } from '../features'
 import { resolve } from '../module'
 
@@ -68,12 +68,25 @@ export function setupKV(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>
   nuxt.options.nitro.storage ||= {}
   nuxt.options.nitro.storage.kv = defu(nuxt.options.nitro.storage.kv, kvConfig)
 
-  // Add Server scanning
-  addServerScanDir(resolve('runtime/kv/server'))
-  addServerImportsDir(resolve('runtime/kv/server/utils'))
+  const { driver, ...driverOptions } = kvConfig
+  const template = addTemplate({
+    filename: 'hub/kv.mjs',
+    getContents: () => `import { createStorage } from "unstorage"
+import driver from "unstorage/drivers/${driver}";
 
+export const kv = createStorage({
+  driver: driver(${JSON.stringify(driverOptions)}),
+});
+`,
+    write: true
+  })
+  addServerImports({ name: 'kv', from: 'hub:kv', meta: { description: `The Key-Value storage instance.` } })
+  addTypeTemplate({
+    src: resolve('types/kv.d.ts'),
+    filename: 'hub/kv.d.ts'
+  }, { nitro: true })
   nuxt.options.nitro.alias ||= {}
-  nuxt.options.nitro.alias['hub:kv'] = resolve('runtime/kv/server/utils/kv.ts')
+  nuxt.options.nitro.alias['hub:kv'] = template.dst
 
-  logWhenReady(nuxt, `\`hub:kv\` using \`${kvConfig.driver}\` driver`)
+  logWhenReady(nuxt, `\`hub:kv\` using \`${driver}\` driver`)
 }

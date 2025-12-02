@@ -1,3 +1,5 @@
+import { blob } from 'hub:blob'
+
 export default eventHandler(async (event) => {
   const listOptions = await getValidatedQuery(event, z.object({
     folded: z.string().toLowerCase().transform(x => x === 'true').optional(),
@@ -6,5 +8,5 @@ export default eventHandler(async (event) => {
     cursor: z.string().optional()
   }).parse)
 
-  return hubBlob().list(listOptions)
+  return blob.list(listOptions)
 })

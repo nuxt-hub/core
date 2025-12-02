@@ -271,6 +271,22 @@ export interface BlobCredentials {
   sessionToken: string
 }
 
+declare module 'hub:blob' {
+  /**
+   * The Blob storage instance.
+   *
+   * @example ```ts
+   * import { blob } from 'hub:blob'
+   *
+   * const { blobs } = await blob.list()
+   * await blob.put('my-file.txt', 'Hello World')
+   * ```
+   *
+   * @see https://hub.nuxt.com/docs/features/blob
+   */
+  export const blob: HubBlob
+}
+
 export interface HubBlob {
   /**
    * List all the blobs in the bucket (metadata only).
@@ -278,7 +294,7 @@ export interface HubBlob {
    * @param options The list options
    *
    * @example ```ts
-   * const { blobs } = await hubBlob().list({ limit: 10 })
+   * const { blobs } = await blob.list({ limit: 10 })
    * ```
    */
   list(options?: BlobListOptions): Promise<BlobListResult>
@@ -290,7 +306,7 @@ export interface HubBlob {
    *
    * @example ```ts
    * export default eventHandler(async (event) => {
-   *   return hubBlob().serve(event, '/my-image.jpg')
+   *   return blob.serve(event, '/my-image.jpg')
    * })
    * ```
    */
@@ -303,7 +319,7 @@ export interface HubBlob {
    * @param options The put options
    *
    * @example ```ts
-   * const blob = await hubBlob().put('/my-image.jpg', file)
+   * const file = await blob.put('/my-image.jpg', file)
    * ```
    */
   put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options?: BlobPutOptions): Promise<BlobObject>
@@ -313,7 +329,7 @@ export interface HubBlob {
    * @param pathname The pathname of the blob
    *
    * @example ```ts
-   * const blobMetadata = await hubBlob().head('/my-image.jpg')
+   * const blobMetadata = await blob.head('/my-image.jpg')
    * ```
    */
   head(pathname: string): Promise<BlobObject>
@@ -323,7 +339,7 @@ export interface HubBlob {
    * @param pathname The pathname of the blob
    *
    * @example ```ts
-   * const blob = await hubBlob().get('/my-image.jpg')
+   * const file = await blob.get('/my-image.jpg')
    * ```
    */
   get(pathname: string): Promise<Blob | null>
@@ -333,7 +349,7 @@ export interface HubBlob {
    * @param pathnames The pathname of the blob
    *
    * @example ```ts
-   * await hubBlob().del('/my-image.jpg')
+   * await blob.del('/my-image.jpg')
    * ```
    */
   del(pathnames: string | string[]): Promise<void>
@@ -343,7 +359,7 @@ export interface HubBlob {
    * @param pathnames The pathname of the blob
    *
    * @example ```ts
-   * await hubBlob().delete('/my-image.jpg')
+   * await blob.delete('/my-image.jpg')
    * ```
    */
   delete(pathnames: string | string[]): Promise<void>
@@ -383,7 +399,7 @@ export interface HubBlob {
    * Only available in production or in development with `--remote` flag.
    *
    * @example ```ts
-   * const { accountId, bucketName, accessKeyId, secretAccessKey, sessionToken } = await hubBlob().createCredentials()
+   * const { accountId, bucketName, accessKeyId, secretAccessKey, sessionToken } = await blob.createCredentials()
    * ```
    */
   createCredentials(options?: BlobCredentialsOptions): Promise<BlobCredentials>

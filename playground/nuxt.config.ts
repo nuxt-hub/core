@@ -7,7 +7,6 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
     '@nuxtjs/mdc',
-    // '@kgierke/nuxt-basic-auth',
     '@vueuse/nuxt',
     'nuxt-auth-utils',
     module
@@ -22,9 +21,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-09-09',
 
   nitro: {
-    // preset: 'cloudflare-durable',
     experimental: {
-      database: true,
       websocket: true
     }
   },
@@ -42,15 +39,5 @@ export default defineNuxtConfig({
     'hub:db:queries:paths': (queries, dialect) => {
       queries.push(resolver.resolve(`server/db/queries/admin.${dialect}.sql`))
     }
-  },
-
-  basicAuth: {
-    enabled: process.env.NODE_ENV === 'production',
-    users: [
-      {
-        username: 'admin',
-        password: process.env.NUXT_ADMIN_PASSWORD || 'admin'
-      }
-    ]
   }
 })

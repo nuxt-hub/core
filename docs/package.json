@@ -12,9 +12,9 @@
   "dependencies": {
     "@iconify-json/heroicons": "^1.2.3",
     "@iconify-json/logos": "^1.2.10",
-    "@iconify-json/lucide": "^1.2.76",
+    "@iconify-json/lucide": "^1.2.77",
     "@iconify-json/ph": "^1.2.2",
-    "@iconify-json/simple-icons": "^1.2.60",
+    "@iconify-json/simple-icons": "^1.2.61",
     "@iconify-json/vscode-icons": "^1.2.37",
     "@nuxt/content": "^3.8.2",
     "@nuxt/fonts": "^0.12.1",
