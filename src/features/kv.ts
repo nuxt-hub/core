@@ -82,7 +82,7 @@ export const kv = createStorage({
   })
   addServerImports({ name: 'kv', from: 'hub:kv', meta: { description: `The Key-Value storage instance.` } })
   addTypeTemplate({
-    src: resolve('types/kv.d.ts'),
+    src: resolve('runtime/kv/kv.d.ts'),
     filename: 'hub/kv.d.ts'
   }, { nitro: true })
   nuxt.options.nitro.alias ||= {}
