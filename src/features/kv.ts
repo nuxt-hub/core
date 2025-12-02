@@ -20,11 +20,19 @@ export function resolveKVConfig(hub: HubConfig): ResolvedKVConfig | false {
     return userConfig as ResolvedKVConfig
   }
 
-  // Redis (Vercel, Upstash, etc.)
-  if (process.env.REDIS_URL) {
+  // Upstash Redis
+  if ((process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) || (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)) {
+    return defu(userConfig, {
+      driver: 'upstash',
+      url: process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN
+    }) as ResolvedKVConfig
+  }
+  // Redis
+  if (process.env.REDIS_URL || process.env.KV_URL?.startsWith('rediss://')) {
     return defu(userConfig, {
       driver: 'redis',
-      url: process.env.REDIS_URL
+      url: process.env.REDIS_URL || process.env.KV_URL
     }) as ResolvedKVConfig
   }
 
@@ -57,6 +65,9 @@ export function setupKV(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>
   const kvConfig = hub.kv as KVConfig
 
   // Verify dependencies
+  if (kvConfig.driver === 'upstash' && !deps['@upstash/redis']) {
+    logWhenReady(nuxt, 'Please run `npx nypm i @upstash/redis` to use Upstash Redis KV storage', 'error')
+  }
   if (kvConfig.driver === 'redis' && !deps['ioredis']) {
     logWhenReady(nuxt, 'Please run `npx nypm i ioredis` to use Redis KV storage', 'error')
   }

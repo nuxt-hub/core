@@ -18,6 +18,7 @@
     "@nuxt/ui": "^4.2.1",
     "@nuxthub/core": "workspace:*",
     "@nuxtjs/mdc": "^0.19.1",
+    "@upstash/redis": "^1.35.7",
     "@vercel/blob": "^2.0.0",
     "@vueuse/core": "^14.1.0",
     "@vueuse/nuxt": "^14.1.0",
