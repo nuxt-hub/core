@@ -4,7 +4,7 @@ import { addServerScanDir, addServerImportsDir, addImportsDir, logger } from '@n
 
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig, BlobConfig, ResolvedBlobConfig } from '../types'
-import { resolve, logWhenReady } from '../module'
+import { resolve, logWhenReady } from '../utils'
 
 const log = logger.withTag('nuxt:hub')
 

@@ -1,4 +1,4 @@
-import { createResolver } from 'nuxt/kit'
+import { createResolver } from '@nuxt/kit'
 import module from '../src/module'
 
 const resolver = createResolver(import.meta.url)

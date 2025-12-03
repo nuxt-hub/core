@@ -3,32 +3,66 @@ import { defineNuxtModule, createResolver, logger, addTemplate } from '@nuxt/kit
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
-import type { Nuxt } from '@nuxt/schema'
+import { provider } from 'std-env'
 import { version } from '../package.json'
 import { setupCache } from './features/cache'
 import { setupDatabase } from './db/setup'
 import { setupKV } from './features/kv'
 import { setupBlob } from './features/blob'
-import type { ModuleOptions, HubConfig, ResolvedHubConfig } from './types'
-import { provider } from 'std-env'
+import type { BlobConfig, CacheConfig, HubConfig, KVConfig, ResolvedHubConfig } from './types/module'
 import { addDevToolsCustomTabs } from './devtools'
-
-export * from './types'
+import type { DatabaseConfig } from './db/types'
+import type { NuxtModule} from '@nuxt/schema'
 
 const log = logger.withTag('nuxt:hub')
-export function logWhenReady(nuxt: Nuxt, message: string, type: 'info' | 'warn' | 'error' = 'info') {
-  if (nuxt.options._prepare) {
-    return
-  }
-  if (nuxt.options.dev) {
-    nuxt.hooks.hookOnce('modules:done', () => {
-      log[type](message)
-    })
-  } else {
-    log[type](message)
-  }
+
+export * from './types/hooks'
+// export * from './types/blob'
+
+export interface ModuleOptions {
+  /**
+   * Set `true` to enable blob storage with auto-configuration.
+   * Or provide a BlobConfig object with driver and connection details.
+   *
+   * @default false
+   * @see https://hub.nuxt.com/docs/features/blob
+   */
+  blob?: boolean | BlobConfig
+  /**
+   * Set `true` to enable caching for the project with auto-configuration.
+   * Or provide a CacheConfig object with driver and connection details.
+   *
+   * @default false
+   * @see https://hub.nuxt.com/docs/features/cache
+   */
+  cache?: boolean | CacheConfig
+  /**
+   * Set to `'postgresql'`, `'sqlite'`, or `'mysql'` to use a specific database dialect with a zero-config development database.
+   * Or provide a DatabaseConfig object with dialect and connection details.
+   *
+   * @default false
+   * @see https://hub.nuxt.com/docs/features/database
+   */
+  db?: 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig | false
+  /**
+   * Set `true` to enable the key-value storage with auto-configuration.
+   * Or provide a KVConfig object with driver and connection details.
+   *
+   * @default false
+   * @see https://hub.nuxt.com/docs/features/kv
+   */
+  kv?: boolean | KVConfig
+  /**
+   * The directory used for storage (database, kv, etc.) during local development.
+   * @default '.data'
+   */
+  dir?: string
+  /**
+   * The hosting provider that the project is hosted on.
+   * This is automatically determined using the NITRO_PRESET or the detected provider during the CI/CD.
+   */
+  hosting?: string
 }
-export const { resolve, resolvePath } = createResolver(import.meta.url)
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
@@ -38,7 +72,7 @@ export default defineNuxtModule<ModuleOptions>({
     docs: 'https://hub.nuxt.com'
   },
   defaults: {},
-  async setup(options: ModuleOptions, nuxt: Nuxt) {
+  async setup(options, nuxt) {
     // Cannot be used with `nuxt generate`
     if (nuxt.options.nitro.static || (nuxt.options as any)._generate) {
       log.error('NuxtHub is not compatible with `nuxt generate` as it needs a server to run.')
@@ -173,4 +207,4 @@ export default defineNuxtModule<ModuleOptions>({
       }
     }
   }
-})
+}) as NuxtModule<ModuleOptions, ModuleOptions, false>

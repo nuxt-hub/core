@@ -3,7 +3,7 @@ import { join } from 'pathe'
 import { defu } from 'defu'
 import { isWindows } from 'std-env'
 import { addServerScanDir } from '@nuxt/kit'
-import { resolve, logWhenReady } from '../module'
+import { resolve, logWhenReady } from '../utils'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig, CacheConfig, ResolvedCacheConfig } from '../types'

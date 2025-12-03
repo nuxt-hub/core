@@ -4,12 +4,12 @@ import { glob } from 'tinyglobby'
 import { join, resolve as resolvePath } from 'pathe'
 import { defu } from 'defu'
 import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
-import { resolve, logWhenReady } from '../module'
+import { resolve, logWhenReady } from '../utils'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { ResolvedDatabaseConfig } from './types/index'
-import type { HubConfig, ResolvedHubConfig } from '../types'
+import type { HubConfig, ResolvedHubConfig } from '../types/module'
 import { relative } from 'node:path'
 
 const log = logger.withTag('nuxt:hub')
