@@ -90,6 +90,8 @@ export interface ResolvedHubConfig extends HubConfig {
   dir: string
 }
 
-export interface ModuleRuntimeConfig {
-  hub: ResolvedHubConfig
+declare module 'nuxt/schema' {
+  interface RuntimeConfig {
+    hub: ResolvedHubConfig
+  }
 }
