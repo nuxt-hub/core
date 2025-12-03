@@ -1,6 +1,4 @@
 import { mkdir } from 'node:fs/promises'
-import { consola } from 'consola'
-import { build } from 'tsdown'
 import chokidar from 'chokidar'
 import { glob } from 'tinyglobby'
 import { join, resolve as resolvePath } from 'pathe'
@@ -257,7 +255,7 @@ export { db, schema, client }
     addServerHandler({
       handler: resolve('db/runtime/api/_hub/db/launch-studio.post.dev'),
       method: 'post',
-      route: '/api/_hub/db/launch-studio',
+      route: '/api/_hub/db/launch-studio'
     })
   }
   if (driver === 'postgres-js' && nuxt.options.dev) {
