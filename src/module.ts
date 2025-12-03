@@ -202,9 +202,9 @@ export default defineNuxtModule<ModuleOptions>({
       // Add it to .gitignore
       const gitignorePath = join(workspaceDir, '.gitignore')
       const gitignore = await readFile(gitignorePath, 'utf-8').catch(() => '')
-      if (!gitignore.includes('.data')) {
-        await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}.data`, 'utf-8')
+      if (!gitignore.includes(hub.dir)) {
+        await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}${hub.dir}`, 'utf-8')
       }
     }
   }
-}) as NuxtModule<ModuleOptions, ModuleOptions, false>
+}) as NuxtModule<ModuleOptions>
