@@ -1,12 +1,12 @@
 import { eventHandler, getValidatedRouterParams, sendNoContent } from 'h3'
 import * as z from 'zod'
-import { hubBlob } from '#imports'
+import { blob } from 'hub:blob'
 
 export default eventHandler(async (event) => {
   const { pathname } = await getValidatedRouterParams(event, z.object({
     pathname: z.string().min(1)
   }).parse)
 
-  await hubBlob().delete(pathname)
+  await blob.delete(pathname)
   return sendNoContent(event)
 })

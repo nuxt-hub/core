@@ -391,16 +391,4 @@ export interface HubBlob {
    * @see https://hub.nuxt.com/docs/features/blob#handleupload
    */
   handleUpload(event: H3Event, options?: BlobUploadOptions): Promise<BlobObject[]>
-  /**
-   * Creates temporary access credentials that can be optionally scoped to prefixes or objects.
-   *
-   * Useful to create a signed url to upload directory to R2 from client-side.
-   *
-   * Only available in production or in development with `--remote` flag.
-   *
-   * @example ```ts
-   * const { accountId, bucketName, accessKeyId, secretAccessKey, sessionToken } = await blob.createCredentials()
-   * ```
-   */
-  createCredentials(options?: BlobCredentialsOptions): Promise<BlobCredentials>
 }

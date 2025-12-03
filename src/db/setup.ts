@@ -5,14 +5,13 @@ import chokidar from 'chokidar'
 import { glob } from 'tinyglobby'
 import { join, resolve as resolvePath } from 'pathe'
 import { defu } from 'defu'
-import { addServerImports, addServerImportsDir, addServerScanDir, addTemplate, addTypeTemplate, getLayerDirectories, updateTemplates, logger } from '@nuxt/kit'
-import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir } from '../runtime/db/server/utils/migrations/helpers'
-import { logWhenReady } from '../features'
-import { resolve } from '../module'
-import { getDatabasePathMetadata } from '../utils/db'
+import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
+import { resolve, logWhenReady } from '../module'
+import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { ResolvedDatabaseConfig, HubConfig, ResolvedHubConfig } from '../types'
+import type { ResolvedDatabaseConfig } from './types/index'
+import type { HubConfig, ResolvedHubConfig } from '../types'
 import { relative } from 'node:path'
 
 const log = logger.withTag('nuxt:hub')
@@ -47,7 +46,7 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
           accountId: process.env.NUXT_HUB_CLOUDFLARE_ACCOUNT_ID || undefined,
           apiToken: process.env.NUXT_HUB_CLOUDFLARE_API_TOKEN || undefined,
           databaseId: process.env.NUXT_HUB_CLOUDFLARE_DATABASE_ID || undefined
-        })
+        }) as DatabaseConnection
         if (!config.connection?.accountId || !config.connection?.apiToken || !config.connection?.databaseId) {
           throw new Error('D1 HTTP driver requires NUXT_HUB_CLOUDFLARE_ACCOUNT_ID, NUXT_HUB_CLOUDFLARE_API_TOKEN, and NUXT_HUB_CLOUDFLARE_DATABASE_ID environment variables')
         }
@@ -118,8 +117,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   }
 
   // Add Server scanning
-  addServerScanDir(resolve('runtime/db/server'))
-  addServerImportsDir(resolve('runtime/db/server/utils'))
+  addServerPlugin(resolve('db/runtime/plugins/migrations.dev'))
 
   // Handle migrations
   nuxt.hook('modules:done', async () => {
@@ -132,6 +130,13 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
     // Call hub:db:queries:paths hook
     await nuxt.callHook('hub:db:queries:paths', queriesPaths, dialect)
     await copyDatabaseQueriesToHubDir(hub as ResolvedHubConfig)
+  })
+
+  // Copy database assets to public directory during build
+  nuxt.hook('nitro:build:public-assets', async (nitro) => {
+    // Database migrations & queries
+    await copyDatabaseAssets(nitro, hub as ResolvedHubConfig)
+    await applyBuildTimeMigrations(nitro, hub as ResolvedHubConfig)
   })
 
   await setupDatabaseClient(nuxt, hub as ResolvedHubConfig)
@@ -153,7 +158,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
     await nuxt.callHook('hub:db:schema:extend', { dialect, paths: schemaPaths })
 
     schemaPaths = schemaPaths.filter((path) => {
-      const meta = getDatabasePathMetadata(path)
+      const meta = getDatabaseSchemaPathMetadata(path)
       return !meta.dialect || meta.dialect === dialect
     })
     return schemaPaths
@@ -173,7 +178,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
     watcher.on('all', async (event, path) => {
       if (!path.endsWith('db/schema.ts') && !path.endsWith(`db/schema.${dialect}.ts`) && !path.includes('/db/schema/')) return
       if (['add', 'unlink', 'change'].includes(event) === false) return
-      const meta = getDatabasePathMetadata(path)
+      const meta = getDatabaseSchemaPathMetadata(path)
       if (meta.dialect && meta.dialect !== dialect) return
       log.info(`Database schema ${event === 'add' ? 'added' : event === 'unlink' ? 'removed' : 'changed'}: \`${relative(nuxt.options.rootDir, path)}\``)
       log.info('Make sure to run `npx nuxt db generate` to generate the database migrations.')
@@ -249,7 +254,11 @@ const db = drizzle({ client, schema })
 export { db, schema, client }
 `
 
-    addServerScanDir(resolve('runtime/db/pglite-server'))
+    addServerHandler({
+      handler: resolve('db/runtime/api/_hub/db/launch-studio.post.dev'),
+      method: 'post',
+      route: '/api/_hub/db/launch-studio',
+    })
   }
   if (driver === 'postgres-js' && nuxt.options.dev) {
     // disable notice logger for postgres-js in dev
@@ -365,33 +374,4 @@ export default defineConfig({
   schema: '${relative(nuxt.options.rootDir, resolve(nuxt.options.buildDir, 'hub/db/schema.mjs'))}',
   out: '${relative(nuxt.options.rootDir, resolve(nuxt.options.rootDir, `server/db/migrations/${dialect}`))}'
 });` })
-}
-
-export async function buildDatabaseSchema(buildDir: string, { relativeDir }: { relativeDir?: string } = {}) {
-  relativeDir = relativeDir || buildDir
-  const entry = join(buildDir, 'hub/db/schema.entry.ts')
-  await build({
-    entry: {
-      schema: entry
-    },
-    outDir: join(buildDir, 'hub/db'),
-    outExtensions: () => ({
-      js: '.mjs',
-      dts: '.d.ts'
-    }),
-    alias: {
-      'hub:db:schema': entry
-    },
-    platform: 'neutral',
-    format: 'esm',
-    skipNodeModulesBundle: true,
-    dts: {
-      build: false,
-      tsconfig: join(buildDir, 'tsconfig.shared.json'),
-      newContext: true
-    },
-    clean: false,
-    logLevel: 'warn'
-  })
-  consola.debug(`Database schema built successfully at \`${relative(relativeDir, join(buildDir, 'hub/db/schema.mjs'))}\``)
 }

@@ -1,13 +1,12 @@
 import { eventHandler, readValidatedBody, sendNoContent } from 'h3'
 import * as z from 'zod'
-import { hubBlob } from '#imports'
+import { blob } from 'hub:blob'
 
 export default eventHandler(async (event) => {
   const { prefix } = await readValidatedBody(event, z.object({
     prefix: z.string().min(1)
   }).parse)
 
-  const blob = hubBlob()
   let cursor = undefined
   const pathnames = []
 

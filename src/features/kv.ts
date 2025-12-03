@@ -1,7 +1,6 @@
 import { defu } from 'defu'
 import { addTypeTemplate, addServerImports, addTemplate } from '@nuxt/kit'
-import { logWhenReady } from '../features'
-import { resolve } from '../module'
+import { resolve, logWhenReady } from '../module'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig, KVConfig, ResolvedKVConfig } from '../types'

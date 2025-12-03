@@ -14,6 +14,10 @@
     ".": {
       "types": "./dist/module.d.mts",
       "import": "./dist/module.mjs"
+    },
+    "./db": {
+      "types": "./dist/db/lib/index.d.ts",
+      "import": "./dist/db/lib/index.mjs"
     }
   },
   "main": "./dist/module.mjs",

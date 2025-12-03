@@ -1,6 +1,6 @@
 import { logger } from '@nuxt/kit'
 import type { Nuxt } from 'nuxt/schema'
-import type { HubConfig, ResolvedDatabaseConfig } from '../types'
+import type { HubConfig, ResolvedDatabaseConfig } from './types'
 import { getPort } from 'get-port-please'
 
 let isReady = false

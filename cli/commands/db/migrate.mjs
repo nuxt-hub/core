@@ -3,7 +3,7 @@ import { consola } from 'consola'
 import { execa } from 'execa'
 import { readFile } from 'node:fs/promises'
 import { join } from 'pathe'
-import { applyDatabaseMigrations, applyDatabaseQueries, createDrizzleClient } from '../../../dist/module.mjs'
+import { applyDatabaseMigrations, applyDatabaseQueries, createDrizzleClient } from '@nuxthub/core/db'
 
 export default defineCommand({
   meta: {

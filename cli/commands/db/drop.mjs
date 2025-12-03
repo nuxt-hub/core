@@ -3,7 +3,7 @@ import { consola } from 'consola'
 import { execa } from 'execa'
 import { readFile } from 'node:fs/promises'
 import { join } from 'pathe'
-import { createDrizzleClient } from '../../../dist/module.mjs'
+import { createDrizzleClient } from '@nuxthub/core/db'
 import { sql } from 'drizzle-orm'
 
 export default defineCommand({

@@ -1,55 +1,13 @@
 import { cp } from 'node:fs/promises'
-import { logger } from '@nuxt/kit'
-import { resolve } from 'pathe'
+import { join, relative, resolve } from 'pathe'
 import type { Nitro } from 'nitropack'
-import type { ResolvedDatabaseConfig, ResolvedHubConfig } from '../types'
+import type { ResolvedHubConfig } from '../../types'
+import { consola } from 'consola'
+import { createDrizzleClient } from './client'
+import { applyDatabaseMigrations, applyDatabaseQueries } from './migrations'
+import { build } from 'tsdown'
 
-import { applyDatabaseMigrations, applyDatabaseQueries } from '../runtime/db/server/utils/migrations/migrations'
-
-const log = logger.withTag('nuxt:hub')
-
-export function getDatabasePathMetadata(path: string): { name: string, dialect: string | undefined, path: string } {
-  // remove .ts, .js, .mjs and .sql extensions
-  let name = path.replace(/\.(ts|js|mjs|sql)$/, '')
-  // Remove dialect suffix if present (e.g., .postgresql, .sqlite, .mysql)
-  const dialect = name.match(/\.(postgresql|sqlite|mysql)$/)?.[1]
-  if (dialect) {
-    name = name.replace(`.${dialect}`, '')
-  }
-
-  return { name, dialect, path }
-}
-
-/**
- * Creates a Drizzle client for the given configuration
- */
-export async function createDrizzleClient(config: ResolvedDatabaseConfig) {
-  const { driver, connection } = config
-  let client
-
-  let pkg = ''
-  if (driver === 'postgres-js') {
-    const clientPkg = 'postgres'
-    const { default: postgres } = await import(clientPkg)
-    client = postgres(connection.url, {
-      onnotice: () => {}
-    })
-    pkg = 'drizzle-orm/postgres-js'
-    const { drizzle } = await import(pkg)
-    return drizzle({ client })
-  } else if (driver === 'libsql') {
-    pkg = 'drizzle-orm/libsql'
-  } else if (driver === 'mysql2') {
-    pkg = 'drizzle-orm/mysql2'
-  } else if (driver === 'pglite') {
-    pkg = 'drizzle-orm/pglite'
-  } else {
-    throw new Error(`Unsupported driver: ${driver}`)
-  }
-
-  const { drizzle } = await import(pkg)
-  return drizzle({ connection })
-}
+const log = consola.withTag('nuxt:hub')
 
 /**
  * Copies database migrations and queries to the build output directory
@@ -121,4 +79,33 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubCon
     log.error('Failed to apply database migrations during build:', error)
     throw error
   }
+}
+
+export async function buildDatabaseSchema(buildDir: string, { relativeDir }: { relativeDir?: string } = {}) {
+  relativeDir = relativeDir || buildDir
+  const entry = join(buildDir, 'hub/db/schema.entry.ts')
+  await build({
+    entry: {
+      schema: entry
+    },
+    outDir: join(buildDir, 'hub/db'),
+    outExtensions: () => ({
+      js: '.mjs',
+      dts: '.d.ts'
+    }),
+    alias: {
+      'hub:db:schema': entry
+    },
+    platform: 'neutral',
+    format: 'esm',
+    skipNodeModulesBundle: true,
+    dts: {
+      build: false,
+      tsconfig: join(buildDir, 'tsconfig.shared.json'),
+      newContext: true
+    },
+    clean: false,
+    logLevel: 'warn'
+  })
+  consola.debug(`Database schema built successfully at \`${relative(relativeDir, join(buildDir, 'hub/db/schema.mjs'))}\``)
 }

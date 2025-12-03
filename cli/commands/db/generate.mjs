@@ -2,7 +2,7 @@ import { defineCommand } from 'citty'
 import { consola } from 'consola'
 import { execa } from 'execa'
 import { join, resolve } from 'pathe'
-import { buildDatabaseSchema } from '../../../dist/module.mjs'
+import { buildDatabaseSchema } from '@nuxthub/core/db'
 
 export default defineCommand({
   meta: {

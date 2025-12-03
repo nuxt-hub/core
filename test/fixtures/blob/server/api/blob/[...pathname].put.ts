@@ -1,6 +1,6 @@
 import { eventHandler, getValidatedRouterParams, getHeader, getRequestWebStream, getQuery } from 'h3'
 import * as z from 'zod'
-import { hubBlob } from '#imports'
+import { blob } from 'hub:blob'
 
 // Simple streamToArrayBuffer implementation for test fixture
 async function streamToArrayBuffer(stream: ReadableStream, _contentLength: number): Promise<Uint8Array> {
@@ -55,5 +55,5 @@ export default eventHandler(async (event) => {
   const stream = getRequestWebStream(event)!
   const body = await streamToArrayBuffer(stream, Number(contentLength))
 
-  return hubBlob().put(pathname, body, options)
+  return blob.put(pathname, body, options)
 })

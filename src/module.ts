@@ -1,24 +1,33 @@
-import { writeFile, readFile } from 'node:fs/promises'
+import { writeFile, readFile, mkdir } from 'node:fs/promises'
 import { defineNuxtModule, createResolver, logger, addTemplate } from '@nuxt/kit'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
 import type { Nuxt } from '@nuxt/schema'
 import { version } from '../package.json'
-import { setupCache, setupDatabase, setupKV, setupBase, setupBlob } from './features'
+import { setupCache } from './features/cache'
+import { setupDatabase } from './db/setup'
+import { setupKV } from './features/kv'
+import { setupBlob } from './features/blob'
 import type { ModuleOptions, HubConfig, ResolvedHubConfig } from './types'
-import { addBuildHooks } from './utils/build'
 import { provider } from 'std-env'
-
-export { applyDatabaseMigrations, applyDatabaseQueries } from './runtime/db/server/utils/migrations/migrations'
-export { getDatabaseMigrationFiles, AppliedDatabaseMigrationsQuery, splitSqlQueries } from './runtime/db/server/utils/migrations/helpers'
-export { createDrizzleClient } from './utils/db'
-export { buildDatabaseSchema } from './features/db'
+import { addDevToolsCustomTabs } from './devtools'
 
 export * from './types'
 
 const log = logger.withTag('nuxt:hub')
-
+export function logWhenReady(nuxt: Nuxt, message: string, type: 'info' | 'warn' | 'error' = 'info') {
+  if (nuxt.options._prepare) {
+    return
+  }
+  if (nuxt.options.dev) {
+    nuxt.hooks.hookOnce('modules:done', () => {
+      log[type](message)
+    })
+  } else {
+    log[type](message)
+  }
+}
 export const { resolve, resolvePath } = createResolver(import.meta.url)
 
 export default defineNuxtModule<ModuleOptions>({
@@ -52,9 +61,14 @@ export default defineNuxtModule<ModuleOptions>({
       kv: false
     }) as HubConfig
 
+    // Create the hub directory
+    await mkdir(join(nuxt.options.rootDir, hub.dir), { recursive: true })
+      .catch((e: any) => {
+        if (e.errno !== -17) throw e
+      })
+
     const packageJSON = await readPackageJSON(nuxt.options.rootDir)
     const deps = Object.assign({}, packageJSON.dependencies, packageJSON.devDependencies)
-    await setupBase(nuxt, hub as HubConfig)
     await setupBlob(nuxt, hub as HubConfig, deps)
     await setupCache(nuxt, hub as HubConfig, deps)
     await setupDatabase(nuxt, hub as HubConfig, deps)
@@ -76,14 +90,16 @@ export default defineNuxtModule<ModuleOptions>({
       return
     }
 
-    // TODO: remove
-    addBuildHooks(nuxt, hub as ResolvedHubConfig, deps)
+    // Add custom tabs to Nuxt DevTools
+    if (nuxt.options.dev) {
+      addDevToolsCustomTabs(nuxt, hub)
+    }
 
     // Enable Async Local Storage
     nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}
     nuxt.options.nitro.experimental.asyncContext = true
 
-    if (nuxt.options.nitro.preset?.includes('cloudflare')) {
+    if (nuxt.options.nitro.preset?.includes('cloudflare') && hub.hosting.includes('cloudflare')) {
       // Fix cloudflare:* externals in rollup
       nuxt.options.nitro.rollupConfig = nuxt.options.nitro.rollupConfig || {}
       nuxt.options.nitro.rollupConfig.plugins = ([] as any[]).concat(nuxt.options.nitro.rollupConfig.plugins || [])
@@ -96,6 +112,13 @@ export default defineNuxtModule<ModuleOptions>({
           return null
         }
       })
+
+      // Enable Cloudflare Node.js compatibility
+      nuxt.options.nitro.cloudflare ||= {}
+      nuxt.options.nitro.cloudflare.nodeCompat = true
+      // Remove trailing slash for prerender routes
+      nuxt.options.nitro.prerender ||= {}
+      nuxt.options.nitro.prerender.autoSubfolderIndex ||= false
 
       // Enable Async Local Storage
       nuxt.options.nitro.unenv = nuxt.options.nitro.unenv || {}

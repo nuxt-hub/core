@@ -1,11 +1,10 @@
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { addServerScanDir, addServerImportsDir, addImportsDir, logger } from '@nuxt/kit'
-import { logWhenReady } from '../features'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig, BlobConfig, ResolvedBlobConfig } from '../types'
-import { resolve } from '../module'
+import { resolve, logWhenReady } from '../module'
 
 const log = logger.withTag('nuxt:hub')
 

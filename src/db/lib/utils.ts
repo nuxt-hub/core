@@ -1,18 +1,40 @@
-import { readFile } from 'node:fs/promises'
-import { createStorage } from 'unstorage'
-import fsDriver from 'unstorage/drivers/fs'
-import overlayDriver from 'unstorage/drivers/overlay'
-import { join } from 'pathe'
-import type { ResolvedHubConfig } from '../../../../../types'
+export const CreateDatabaseMigrationsTableQuerySqlite = `CREATE TABLE IF NOT EXISTS _hub_migrations (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  name       TEXT UNIQUE,
+  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);`
 
-// #region Migrations
-export function useDatabaseMigrationsStorage(hub: ResolvedHubConfig) {
-  // .data/hub/db/migrations
-  return createStorage({
-    driver: fsDriver({
-      base: join(hub.dir, 'db/migrations')
-    })
-  })
+export const CreateDatabaseMigrationsTableQueryPostgresql = `CREATE TABLE IF NOT EXISTS _hub_migrations (
+  id         SERIAL PRIMARY KEY,
+  name       TEXT UNIQUE,
+  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);`
+
+export const CreateDatabaseMigrationsTableQueryMysql = `CREATE TABLE IF NOT EXISTS _hub_migrations (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  name       VARCHAR(255) UNIQUE,
+  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);`
+
+export const CreateDatabaseMigrationsTableQueryLibsql = CreateDatabaseMigrationsTableQuerySqlite
+
+export const AppliedDatabaseMigrationsQuery = 'select id, name, applied_at from _hub_migrations order by id'
+
+/**
+ * Get the metadata for a database schema file
+ * @param path - The path to the database file
+ * @returns The name, dialect and path of the database file
+ */
+export function getDatabaseSchemaPathMetadata(path: string): { name: string, dialect: string | undefined, path: string } {
+  // remove .ts, .js, .mjs extensions
+  let name = path.replace(/\.(ts|js|mjs)$/, '')
+  // Remove dialect suffix if present (e.g., .postgresql, .sqlite, .mysql)
+  const dialect = name.match(/\.(postgresql|sqlite|mysql)$/)?.[1]
+  if (dialect) {
+    name = name.replace(`.${dialect}`, '')
+  }
+
+  return { name, dialect, path }
 }
 
 /**
@@ -40,64 +62,6 @@ export function getMigrationMetadata(filename: string): { filename: string, name
   }
 }
 
-export async function getDatabaseMigrationFiles(hub: ResolvedHubConfig) {
-  if (!hub.db) return []
-  const dialect = hub.db.dialect
-  const storage = useDatabaseMigrationsStorage(hub)
-
-  // Get migrations and exclude if dialect specified but not the current database dialect
-  const migrationsFiles = (await storage.getKeys()).map(file => getMigrationMetadata(file)).filter(migration => migration.dialect === dialect || !migration.dialect)
-
-  return migrationsFiles.filter((migration) => {
-    // if generic SQL migration file, exclude it if same migration name for current database dialect exists
-    if (!migration.dialect && migrationsFiles.findIndex(m => m.name === migration.name && m.dialect === dialect) !== -1) {
-      return false
-    }
-    return true
-  })
-}
-
-export async function copyDatabaseMigrationsToHubDir(hub: ResolvedHubConfig) {
-  if (!hub.db) return
-  const srcStorage = createStorage({
-    driver: overlayDriver({
-      layers: hub.db.migrationsDirs.map(dir => fsDriver({
-        base: dir,
-        ignore: ['.DS_Store']
-      }))
-    })
-  })
-  const destStorage = useDatabaseMigrationsStorage(hub)
-  await destStorage.clear()
-  const migrationFiles = (await srcStorage.getKeys()).filter(file => file.endsWith('.sql'))
-  await Promise.all(migrationFiles.map(async (file) => {
-    const sql = await srcStorage.getItem(file)
-    await destStorage.setItem(file, sql)
-  }))
-}
-
-export const CreateDatabaseMigrationsTableQuerySqlite = `CREATE TABLE IF NOT EXISTS _hub_migrations (
-  id         INTEGER PRIMARY KEY AUTOINCREMENT,
-  name       TEXT UNIQUE,
-  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-);`
-
-export const CreateDatabaseMigrationsTableQueryPostgresql = `CREATE TABLE IF NOT EXISTS _hub_migrations (
-  id         SERIAL PRIMARY KEY,
-  name       TEXT UNIQUE,
-  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-);`
-
-export const CreateDatabaseMigrationsTableQueryMysql = `CREATE TABLE IF NOT EXISTS _hub_migrations (
-  id         INT AUTO_INCREMENT PRIMARY KEY,
-  name       VARCHAR(255) UNIQUE,
-  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-);`
-
-export const CreateDatabaseMigrationsTableQueryLibsql = CreateDatabaseMigrationsTableQuerySqlite
-
-export const AppliedDatabaseMigrationsQuery = 'select id, name, applied_at from _hub_migrations order by id'
-
 /**
  * Get the appropriate create table query for the migrations table based on the database dialect
  */
@@ -117,56 +81,7 @@ export function getCreateMigrationsTableQuery(db: { dialect: string }): string {
       throw new Error('Invalid database dialect')
   }
 }
-// #endregion
 
-// #region Queries
-export function useDatabaseQueriesStorage(hub: ResolvedHubConfig) {
-  // .data/hub/db/queries
-  return createStorage({
-    driver: fsDriver({
-      base: join(hub.dir, 'db/queries')
-    })
-  })
-}
-
-export async function getDatabaseQueryFiles(hub: ResolvedHubConfig) {
-  const storage = useDatabaseQueriesStorage(hub)
-  // Get database dialect from hub config
-  const dialect = typeof hub.db === 'string'
-    ? hub.db
-    : (typeof hub.db === 'object' && hub.db !== null && 'dialect' in hub.db)
-        ? hub.db.dialect
-        : undefined
-
-  const queriesFiles = (await storage.getKeys()).map(file => getMigrationMetadata(file)).filter(query => query.dialect === dialect || !query.dialect)
-
-  return queriesFiles.filter((query) => {
-    // if generic SQL query file, exclude it if same query name for current database dialect exists
-    if (!query.dialect && queriesFiles.findIndex(q => q.name === query.name && q.dialect === dialect) !== -1) {
-      return false
-    }
-    return true
-  })
-}
-
-export async function copyDatabaseQueriesToHubDir(hub: ResolvedHubConfig) {
-  if (!hub.db) return
-  const destStorage = useDatabaseQueriesStorage(hub)
-  await destStorage.clear()
-
-  await Promise.all(hub.db.queriesPaths.map(async (path) => {
-    try {
-      const filename = path.split('/').pop()!
-      const sql = await readFile(path, 'utf-8')
-      await destStorage.setItem(filename, sql)
-    } catch (error: any) {
-      console.error(`Failed to read database query file ${path}: ${error.message}`)
-    }
-  }))
-}
-// #endregion
-
-// #region Utils
 /**
  * Split a string containing SQL queries into an array of individual queries after removing comments
  */
@@ -298,4 +213,3 @@ export function splitSqlQueries(sqlFileContent: string): string[] {
     })
     .filter(query => query !== ';' && query.trim() !== '')
 }
-// #endregion

@@ -1,5 +1,5 @@
-import type { ResolvedHubConfig } from '../../../../types'
-import { applyDatabaseMigrations, applyDatabaseQueries } from '../utils/migrations/migrations'
+import type { ResolvedHubConfig } from '../../../types'
+import { applyDatabaseMigrations, applyDatabaseQueries } from '../../lib/migrations'
 // @ts-expect-error - Generated at runtime
 import { db } from 'hub:db'
 // @ts-expect-error - Generated at runtime
