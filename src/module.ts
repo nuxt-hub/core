@@ -1,6 +1,6 @@
 import { writeFile, readFile, mkdir } from 'node:fs/promises'
 import { defineNuxtModule, createResolver, logger, addTemplate } from '@nuxt/kit'
-import { join } from 'pathe'
+import { join, relative, resolve as resolveFs } from 'pathe'
 import { defu } from 'defu'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
 import { provider } from 'std-env'
@@ -12,7 +12,7 @@ import { setupBlob } from './features/blob'
 import type { BlobConfig, CacheConfig, HubConfig, KVConfig, ResolvedHubConfig } from './types/module'
 import { addDevToolsCustomTabs } from './devtools'
 import type { DatabaseConfig } from './db/types'
-import type { NuxtModule} from '@nuxt/schema'
+import type { NuxtModule } from '@nuxt/schema'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -94,9 +94,11 @@ export default defineNuxtModule<ModuleOptions>({
       db: false,
       kv: false
     }) as HubConfig
+    // resolve the hub directory
+    hub.dir = await resolveFs(nuxt.options.rootDir, hub.dir)
 
     // Create the hub directory
-    await mkdir(join(nuxt.options.rootDir, hub.dir), { recursive: true })
+    await mkdir(hub.dir, { recursive: true })
       .catch((e: any) => {
         if (e.errno !== -17) throw e
       })
@@ -202,8 +204,9 @@ export default defineNuxtModule<ModuleOptions>({
       // Add it to .gitignore
       const gitignorePath = join(workspaceDir, '.gitignore')
       const gitignore = await readFile(gitignorePath, 'utf-8').catch(() => '')
-      if (!gitignore.includes(hub.dir)) {
-        await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}${hub.dir}`, 'utf-8')
+      const relativeDir = relative(workspaceDir, hub.dir)
+      if (!gitignore.includes(relativeDir)) {
+        await writeFile(gitignorePath, `${gitignore ? gitignore + '\n' : gitignore}${relativeDir}`, 'utf-8')
       }
     }
   }

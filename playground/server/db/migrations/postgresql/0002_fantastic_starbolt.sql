@@ -1,1 +1,0 @@
-ALTER TABLE "todos" ADD COLUMN "updatedAt" timestamp DEFAULT now() NOT NULL;

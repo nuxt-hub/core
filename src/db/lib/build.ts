@@ -1,4 +1,4 @@
-import { cp } from 'node:fs/promises'
+import { cp, rm } from 'node:fs/promises'
 import { join, relative, resolve } from 'pathe'
 import type { Nitro } from 'nitropack'
 import type { ResolvedHubConfig } from '../../types/module'
@@ -15,14 +15,16 @@ const log = consola.withTag('nuxt:hub')
 export async function copyDatabaseAssets(nitro: Nitro, hub: ResolvedHubConfig) {
   if (!hub.db) return
 
-  const migrationsPath = resolve(nitro.options.rootDir, hub.dir!, 'db/migrations')
-  const queriesPath = resolve(nitro.options.rootDir, hub.dir!, 'db/queries')
+  const migrationsPath = join(hub.dir, 'db/migrations')
+  const queriesPath = join(hub.dir, 'db/queries')
   const outputDir = nitro.options.output.serverDir
 
   const bundledItems = []
 
-  // Copy migrations if they exist
   try {
+    // empty the migrations directory
+    await rm(resolve(outputDir, 'db/migrations'), { recursive: true })
+    // copy migrations if they exist
     await cp(migrationsPath, resolve(outputDir, 'db/migrations'), { recursive: true })
     bundledItems.push('migrations')
   } catch (error: unknown) {
@@ -33,8 +35,10 @@ export async function copyDatabaseAssets(nitro: Nitro, hub: ResolvedHubConfig) {
     }
   }
 
-  // Copy queries if they exist
   try {
+    // empty the queries directory
+    await rm(resolve(outputDir, 'db/queries'), { recursive: true })
+    // copy queries if they exist
     await cp(queriesPath, resolve(outputDir, 'db/queries'), { recursive: true })
     bundledItems.push('queries')
   } catch (error: unknown) {
@@ -57,7 +61,7 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubCon
   if (!hub.db || !hub.db.applyMigrationsDuringBuild) return
 
   try {
-    const db = await createDrizzleClient(hub.db)
+    const db = await createDrizzleClient(hub.db, hub.dir)
 
     const buildHubConfig = {
       ...hub,

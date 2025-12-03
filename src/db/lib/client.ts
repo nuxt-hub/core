@@ -1,9 +1,11 @@
+import { mkdir } from 'node:fs/promises'
+import { join } from 'pathe'
 import type { ResolvedDatabaseConfig } from '../types'
 
 /**
  * Creates a Drizzle client for the given configuration
  */
-export async function createDrizzleClient(config: ResolvedDatabaseConfig) {
+export async function createDrizzleClient(config: ResolvedDatabaseConfig, hubDir: string) {
   const { driver, connection } = config
   let client
 
@@ -23,6 +25,7 @@ export async function createDrizzleClient(config: ResolvedDatabaseConfig) {
     pkg = 'drizzle-orm/mysql2'
   } else if (driver === 'pglite') {
     pkg = 'drizzle-orm/pglite'
+    await mkdir(join(hubDir, 'db/pglite'), { recursive: true })
   } else {
     throw new Error(`Unsupported driver: ${driver}`)
   }

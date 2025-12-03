@@ -1,10 +1,10 @@
 import { mkdir } from 'node:fs/promises'
 import chokidar from 'chokidar'
 import { glob } from 'tinyglobby'
-import { join, resolve as resolvePath } from 'pathe'
+import { join, resolve as resolveFs } from 'pathe'
 import { defu } from 'defu'
 import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
-import { resolve, logWhenReady } from '../utils'
+import { resolve, resolvePath, logWhenReady } from '../utils'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
 
 import type { Nuxt } from '@nuxt/schema'
@@ -69,7 +69,7 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
       }
       // Local PGLite
       config.driver ||= 'pglite'
-      config.connection = defu(config.connection, { dataDir: join(hub.dir!, 'db/pglite') })
+      config.connection = defu(config.connection, { dataDir: join(hub.dir, 'db/pglite') })
       await mkdir(join(hub.dir, 'db/pglite'), { recursive: true })
       break
     }
@@ -147,9 +147,9 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
 
   const getSchemaPaths = async () => {
     const schemaPatterns = getLayerDirectories().map(layer => [
-      resolvePath(layer.server, 'db/schema.ts'),
-      resolvePath(layer.server, `db/schema.${dialect}.ts`),
-      resolvePath(layer.server, 'db/schema/*.ts')
+      resolveFs(layer.server, 'db/schema.ts'),
+      resolveFs(layer.server, `db/schema.${dialect}.ts`),
+      resolveFs(layer.server, 'db/schema/*.ts')
     ]).flat()
     let schemaPaths = await glob(schemaPatterns, { absolute: true, onlyFiles: true })
 
@@ -169,7 +169,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
   // Watch schema files for changes
   if (nuxt.options.dev && !nuxt.options._prepare) {
     // chokidar doesn't support glob patterns, so we need to watch the server/db directories
-    const watchDirs = getLayerDirectories().map(layer => resolvePath(layer.server, 'db'))
+    const watchDirs = getLayerDirectories().map(layer => resolveFs(layer.server, 'db'))
     const watcher = chokidar.watch(watchDirs, {
       ignoreInitial: true
     })
@@ -253,7 +253,7 @@ export { db, schema, client }
 `
 
     addServerHandler({
-      handler: resolve('db/runtime/api/_hub/db/launch-studio.post.dev'),
+      handler: await resolvePath('db/runtime/api/launch-studio.post.dev'),
       method: 'post',
       route: '/api/_hub/db/launch-studio'
     })

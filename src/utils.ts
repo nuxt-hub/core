@@ -16,4 +16,4 @@ export function logWhenReady(nuxt: Nuxt, message: string, type: 'info' | 'warn' 
   }
 }
 
-export const { resolve } = createResolver(import.meta.url)
+export const { resolve, resolvePath } = createResolver(import.meta.url)

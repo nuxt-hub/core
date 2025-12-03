@@ -40,7 +40,8 @@ export default defineCommand({
     consola.info(`Database: \`${hubConfig.db.dialect}\` with \`${hubConfig.db.driver}\` driver`)
     const url = hubConfig.db.connection.uri || hubConfig.db.connection.url
     consola.debug(`Database connection: \`${url}\``)
-    const db = await createDrizzleClient(hubConfig.db)
+    const hubDir = join(cwd, hubConfig.dir)
+    const db = await createDrizzleClient(hubConfig.db, hubDir)
     const migrationsApplied = await applyDatabaseMigrations(hubConfig, db)
     if (migrationsApplied === false) {
       process.exit(1)

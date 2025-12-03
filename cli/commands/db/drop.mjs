@@ -45,7 +45,8 @@ export default defineCommand({
     consola.info(`Database: \`${hubConfig.db.dialect}\` with \`${hubConfig.db.driver}\` driver`)
     const url = hubConfig.db.connection.uri || hubConfig.db.connection.url
     consola.debug(`Database connection: \`${url}\``)
-    const db = await createDrizzleClient(hubConfig.db)
+    const hubDir = join(cwd, hubConfig.dir)
+    const db = await createDrizzleClient(hubConfig.db, hubDir)
     const execute = hubConfig.db.dialect === 'sqlite' ? 'run' : 'execute'
     await db[execute](sql.raw(`DROP TABLE IF EXISTS "${args.table}";`))
     consola.success(`Table \`${args.table}\` dropped successfully.`)

@@ -57,7 +57,8 @@ export default defineCommand({
       consola.error(`Local migration \`${args.name}\` not found.`)
       process.exit(1)
     }
-    const db = await createDrizzleClient(hubConfig.db)
+    const hubDir = join(cwd, hubConfig.dir)
+    const db = await createDrizzleClient(hubConfig.db, hubDir)
     const execute = dialect === 'sqlite' ? 'run' : 'execute'
     const getRows = result => (dialect === 'mysql' ? result[0] : result.rows || result)
     const closeDb = async () => await db.$client?.end?.()

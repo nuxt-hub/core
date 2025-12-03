@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1761788519975,
-      "tag": "0000_left_magdalene",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1762269606032,
-      "tag": "0001_exotic_hellcat",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1763618979986,
-      "tag": "0002_fantastic_starbolt",
+      "when": 1764778111563,
+      "tag": "0000_dark_gwen_stacy",
       "breakpoints": true
     }
   ]
