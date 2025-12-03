@@ -4,6 +4,7 @@ import { execa } from 'execa'
 import { readFile } from 'node:fs/promises'
 import { join } from 'pathe'
 import { applyDatabaseMigrations, applyDatabaseQueries, createDrizzleClient } from '@nuxthub/core/db'
+import { loadDotenv, dotenvArg } from '../../utils/dotenv.mjs'
 
 export default defineCommand({
   meta: {
@@ -16,6 +17,7 @@ export default defineCommand({
       description: 'The directory to run the command in.',
       required: false
     },
+    dotenv: dotenvArg,
     verbose: {
       alias: 'v',
       type: 'boolean',
@@ -29,6 +31,7 @@ export default defineCommand({
       consola.level = 4
     }
     const cwd = args.cwd || process.cwd()
+    await loadDotenv({ cwd, dotenv: args.dotenv })
     consola.info('Ensuring database migrations are available...')
     await execa({
       stdio: 'pipe',

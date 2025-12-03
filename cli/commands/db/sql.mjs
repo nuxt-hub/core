@@ -6,6 +6,7 @@ import { readFile } from 'node:fs/promises'
 import { join } from 'pathe'
 import { createDrizzleClient, splitSqlQueries } from '@nuxthub/core/db'
 import { sql } from 'drizzle-orm'
+import { loadDotenv, dotenvArg } from '../../utils/dotenv.mjs'
 
 export default defineCommand({
   meta: {
@@ -23,6 +24,7 @@ export default defineCommand({
       description: 'The directory to run the command in.',
       required: false
     },
+    dotenv: dotenvArg,
     verbose: {
       alias: 'v',
       type: 'boolean',
@@ -36,6 +38,7 @@ export default defineCommand({
       consola.level = 4
     }
     const cwd = args.cwd || process.cwd()
+    await loadDotenv({ cwd, dotenv: args.dotenv })
     consola.info('Preparing database configuration...')
     await execa({
       stdio: 'pipe',
