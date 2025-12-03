@@ -49,6 +49,6 @@ export default defineCommand({
       process.exit(1)
     }
     consola.success('Database migrations generated successfully.')
-    consola.info('Run `npx nuxt dev` or run `npx nuxthub database migrate` to apply the migrations.')
+    consola.info('Run `npx nuxt dev` or run `npx nuxt db migrate` to apply the migrations.')
   }
 })
