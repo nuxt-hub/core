@@ -22,8 +22,6 @@ export async function copyDatabaseAssets(nitro: Nitro, hub: ResolvedHubConfig) {
   const bundledItems = []
 
   try {
-    // empty the migrations directory
-    await rm(resolve(outputDir, 'db/migrations'), { recursive: true })
     // copy migrations if they exist
     await cp(migrationsPath, resolve(outputDir, 'db/migrations'), { recursive: true })
     bundledItems.push('migrations')
@@ -36,8 +34,6 @@ export async function copyDatabaseAssets(nitro: Nitro, hub: ResolvedHubConfig) {
   }
 
   try {
-    // empty the queries directory
-    await rm(resolve(outputDir, 'db/queries'), { recursive: true })
     // copy queries if they exist
     await cp(queriesPath, resolve(outputDir, 'db/queries'), { recursive: true })
     bundledItems.push('queries')
@@ -69,7 +65,6 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubCon
     } as ResolvedHubConfig
 
     log.info('Applying database migrations...')
-
     const migrationsApplied = await applyDatabaseMigrations(buildHubConfig, db)
     if (migrationsApplied === false) {
       process.exit(1)
