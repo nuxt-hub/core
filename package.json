@@ -24,7 +24,7 @@
   "typesVersions": {
     "*": {
       ".": [
-        "./dist/module.d.mts"
+        "./dist/types.d.mts"
       ]
     }
   },
