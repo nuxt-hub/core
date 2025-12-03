@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
-import { resolveDatabaseConfig } from '../src/features/db'
+import { resolveDatabaseConfig } from '../src/db/setup'
 import type { HubConfig } from '../src/types'
 
 // Mock the mkdir function from node:fs/promises

@@ -43,11 +43,8 @@ describe('Blob', async () => {
 
   it('Check Blob is enabled', async () => {
     const manifest = await $fetch('/api/manifest')
-    expect(manifest).includes({
-      db: false,
-      kv: false,
-      blob: true,
-      cache: false
+    expect(manifest.blob).includes({
+      driver: 'fs-lite'
     })
   })
 

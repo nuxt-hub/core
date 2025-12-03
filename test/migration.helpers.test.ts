@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   splitSqlQueries,
   getMigrationMetadata
-} from '../src/runtime/db/server/utils/migrations/helpers'
+} from '../src/db/lib'
 
 describe('splitSqlQueries', () => {
   it('Should split minified sql', () => {
