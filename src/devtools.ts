@@ -1,6 +1,7 @@
 import { logger } from '@nuxt/kit'
 import type { Nuxt } from 'nuxt/schema'
-import type { HubConfig, ResolvedDatabaseConfig } from './types'
+import type { HubConfig } from './types/module'
+import type { ResolvedDatabaseConfig } from './db/types'
 import { getPort } from 'get-port-please'
 
 let isReady = false
@@ -44,7 +45,6 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
     } else if (dialect === 'sqlite') {
       const { startStudioSQLiteServer } = await import('drizzle-kit/api')
       log.info(`Launching Drizzle Studio with SQLite...`)
-      // @ts-expect-error - SQLite credentials typed incorrectly
       await startStudioSQLiteServer(schema, connection, { port })
     } else {
       throw new Error(`Unsupported database dialect: ${dialect}`)

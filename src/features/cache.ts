@@ -6,7 +6,7 @@ import { addServerScanDir } from '@nuxt/kit'
 import { resolve, logWhenReady } from '../utils'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig, CacheConfig, ResolvedCacheConfig } from '../types'
+import type { HubConfig, CacheConfig, ResolvedCacheConfig } from '../types/module'
 
 /**
  * Resolve cache configuration from boolean or object format

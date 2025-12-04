@@ -3,7 +3,7 @@ import { defu } from 'defu'
 import { addServerScanDir, addServerImportsDir, addImportsDir, logger } from '@nuxt/kit'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig, BlobConfig, ResolvedBlobConfig } from '../types'
+import type { HubConfig, BlobConfig, ResolvedBlobConfig } from '../types/module'
 import { resolve, logWhenReady } from '../utils'
 
 const log = logger.withTag('nuxt:hub')

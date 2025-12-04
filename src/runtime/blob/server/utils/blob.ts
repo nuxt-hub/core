@@ -130,7 +130,7 @@ interface HubBlob {
 const storage = blobStorage(useStorage('blob'), 'blob')
 
 export const blob = {
-  storage,
+  ...storage,
   async list(options?: BlobListOptions) {
     const resolvedOptions = defu(options, {
       limit: 1000,

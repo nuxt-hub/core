@@ -3,7 +3,7 @@ import { addTypeTemplate, addServerImports, addTemplate } from '@nuxt/kit'
 import { resolve, logWhenReady } from '../utils'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig, KVConfig, ResolvedKVConfig } from '../types'
+import type { HubConfig, KVConfig, ResolvedKVConfig } from '../types/module'
 
 /**
  * Resolve KV configuration from boolean or object format

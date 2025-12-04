@@ -8,7 +8,7 @@ import { resolve, resolvePath, logWhenReady } from '../utils'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { ResolvedDatabaseConfig } from './types/index'
+import type { ResolvedDatabaseConfig } from './types'
 import type { HubConfig, ResolvedHubConfig } from '../types/module'
 import { relative } from 'node:path'
 
@@ -44,7 +44,7 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
           accountId: process.env.NUXT_HUB_CLOUDFLARE_ACCOUNT_ID || undefined,
           apiToken: process.env.NUXT_HUB_CLOUDFLARE_API_TOKEN || undefined,
           databaseId: process.env.NUXT_HUB_CLOUDFLARE_DATABASE_ID || undefined
-        }) as DatabaseConnection
+        }) as ResolvedDatabaseConfig['connection']
         if (!config.connection?.accountId || !config.connection?.apiToken || !config.connection?.databaseId) {
           throw new Error('D1 HTTP driver requires NUXT_HUB_CLOUDFLARE_ACCOUNT_ID, NUXT_HUB_CLOUDFLARE_API_TOKEN, and NUXT_HUB_CLOUDFLARE_DATABASE_ID environment variables')
         }
