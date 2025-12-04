@@ -13,6 +13,4 @@ export default defineNitroPlugin(async (nitroApp: any) => {
 
   await applyDatabaseMigrations(hub, db)
   await applyDatabaseQueries(hub, db)
-
-  nitroApp.hooks.callHookParallel('hub:db:migrations:done')
 })

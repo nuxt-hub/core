@@ -1,6 +1,5 @@
 import { consola } from 'consola'
 import { join, relative } from 'pathe'
-import { sql } from 'drizzle-orm'
 import type { ResolvedHubConfig } from '../../types/module'
 import { AppliedDatabaseMigrationsQuery, getCreateMigrationsTableQuery, splitSqlQueries } from './utils'
 import { useDatabaseMigrationsStorage, getDatabaseMigrationFiles, useDatabaseQueriesStorage, getDatabaseQueryFiles } from './storage'
@@ -21,6 +20,8 @@ export async function applyDatabaseMigrations(hub: ResolvedHubConfig, db: any) {
 
   const createMigrationsTableQuery = getCreateMigrationsTableQuery({ dialect: hub.db.dialect })
   log.debug('Creating migrations table if not exists...')
+  const drizzleOrmPkg = 'drizzle-orm'
+  const sql = await import(drizzleOrmPkg).then(m => m.sql)
   try {
     await db[execute](sql.raw(createMigrationsTableQuery))
   } catch (error: any) {
@@ -92,6 +93,8 @@ export async function applyDatabaseQueries(hub: ResolvedHubConfig, db: any) {
     const sqlQuery = await queriesStorage.getItem<string>(queryFile.filename)
     if (!sqlQuery) continue
     const queries = splitSqlQueries(sqlQuery)
+    const drizzleOrmPkg = 'drizzle-orm'
+    const sql = await import(drizzleOrmPkg).then(m => m.sql)
     try {
       log.debug(`Applying database query \`${getRelativePath(join(hub.dir!, 'db/queries', queryFile.filename))}\`...`)
       for (const query of queries) {

@@ -21,13 +21,3 @@ declare module '@nuxt/schema' {
     'hub:db:queries:paths': (queries: string[], dialect: 'sqlite' | 'postgresql' | 'mysql') => void | Promise<void>
   }
 }
-
-declare module 'nitropack/types' {
-  interface NitroRuntimeHooks {
-    /**
-     * Called when the database migrations are completed.
-     * @returns void
-     */
-    'hub:db:migrations:done': () => void
-  }
-}
