@@ -229,7 +229,7 @@ declare module 'hub:db' {
   addTypeTemplate({
     filename: 'hub/db.d.ts',
     getContents: () => databaseTypes
-  }, { nitro: true })
+  }, { nitro: true, nuxt: true })
 
   // Setup Drizzle ORM
 
@@ -354,7 +354,7 @@ export { db, schema }
     getContents: () => drizzleOrmContent,
     write: true
   })
-  nuxt.options.nitro.alias!['hub:db'] = databaseTemplate.dst
+  nuxt.options.alias!['hub:db'] = databaseTemplate.dst
   addServerImports({ name: 'db', from: 'hub:db', meta: { description: `The ${driver} database client.` } })
   addServerImports({ name: 'schema', from: 'hub:db', meta: { description: `The database schema object` } })
 }
