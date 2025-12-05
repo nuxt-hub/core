@@ -4,7 +4,7 @@ import { consola } from 'consola'
 
 /**
  * Load environment variables from a .env file
- * @param {Object} options
+ * @param {object} options
  * @param {string} options.cwd - The current working directory
  * @param {string} options.dotenv - The path to the .env file (relative to cwd)
  */

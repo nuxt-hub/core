@@ -5,7 +5,7 @@ import { db } from 'hub:db'
 // @ts-expect-error - Generated at runtime
 import { defineNitroPlugin, useRuntimeConfig } from '#imports'
 
-export default defineNitroPlugin(async (nitroApp: any) => {
+export default defineNitroPlugin(async () => {
   if (!import.meta.dev) return
 
   const hub = useRuntimeConfig().hub as ResolvedHubConfig

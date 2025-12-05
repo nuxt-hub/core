@@ -224,7 +224,7 @@ export function createBlobStorage(driver: Driver): BlobStorage {
     },
     async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}): Promise<BlobMultipartUpload> {
       pathname = decodeURIComponent(pathname)
-      const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, customMetadata } = options
+      const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix } = options
       const contentType = optionsContentType || getContentType(pathname)
 
       const { dir, ext, name: filename } = parse(pathname)
