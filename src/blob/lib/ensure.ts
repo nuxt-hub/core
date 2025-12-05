@@ -1,6 +1,5 @@
 import { createError } from 'h3'
-import type { BlobType, FileSizeUnit } from '../types'
-import type { BlobEnsureOptions } from '../types/index'
+import type { BlobType, FileSizeUnit, BlobEnsureOptions } from '../runtime/blob'
 
 // Credits from shared utils of https://github.com/pingdotgg/uploadthing
 const FILESIZE_UNITS = ['B', 'KB', 'MB', 'GB']

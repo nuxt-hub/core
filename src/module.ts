@@ -9,7 +9,7 @@ import { setupCache } from './cache/setup'
 import { setupDatabase } from './db/setup'
 import { setupKV } from './kv/setup'
 import { setupBlob } from './blob/setup'
-import type { ModuleOptions, HubConfig, ResolvedHubConfig } from './types/config'
+import type { ModuleOptions, HubConfig, ResolvedHubConfig } from '@nuxthub/core'
 import { addDevToolsCustomTabs } from './devtools'
 import type { NuxtModule } from '@nuxt/schema'
 

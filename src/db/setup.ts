@@ -8,8 +8,7 @@ import { resolve, resolvePath, logWhenReady } from '../utils'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { ResolvedDatabaseConfig } from './types/config'
-import type { HubConfig, ResolvedHubConfig } from '../types/config'
+import type { HubConfig, ResolvedHubConfig, ResolvedDatabaseConfig } from '@nuxthub/core'
 import { relative } from 'node:path'
 
 const log = logger.withTag('nuxt:hub')
@@ -96,7 +95,6 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   if (!hub.db) return
 
   const { dialect, driver, migrationsDirs, queriesPaths } = hub.db as ResolvedDatabaseConfig
-  nuxt.options.nitro.alias ||= {}
 
   logWhenReady(nuxt, `\`hub:db\` using \`${dialect}\` database with \`${driver}\` driver`, 'info')
 

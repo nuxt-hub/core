@@ -1,5 +1,5 @@
 import { AwsClient } from 'aws4fetch'
-import type { BlobMultipartUpload, BlobMultipartOptions } from '../../types/index'
+import type { BlobMultipartUpload, BlobMultipartOptions } from '../../runtime/blob'
 import type { S3DriverOptions } from 'unstorage/drivers/s3'
 
 export async function createMultipartUpload(pathname: string, driverOptions: S3DriverOptions, options?: BlobMultipartOptions): Promise<BlobMultipartUpload> {

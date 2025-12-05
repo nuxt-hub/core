@@ -1,6 +1,6 @@
 import * as z from 'zod'
 import type { H3Event } from 'h3'
-import type { BlobMultipartOptions, BlobStorage } from '../types/index'
+import type { BlobMultipartOptions, BlobStorage } from '../runtime/blob'
 import { createError, getValidatedQuery, readValidatedBody, getRequestWebStream, sendNoContent, getHeader, getValidatedRouterParams } from 'h3'
 import { streamToArrayBuffer } from './utils'
 

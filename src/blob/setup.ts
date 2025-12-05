@@ -3,8 +3,7 @@ import { defu } from 'defu'
 import { addTypeTemplate, addServerImports, addImportsDir, logger, addTemplate } from '@nuxt/kit'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig } from '../types/config'
-import type { BlobConfig, ResolvedBlobConfig } from './types/config'
+import type { HubConfig, BlobConfig, ResolvedBlobConfig } from '@nuxthub/core'
 import { resolve, logWhenReady } from '../utils'
 
 const log = logger.withTag('nuxt:hub')
@@ -100,27 +99,11 @@ export const blob = createBlobStorage(driver(${JSON.stringify(driverOptions)}));
   })
   addServerImports({ name: 'blob', from: 'hub:blob', meta: { description: `The Blob storage instance.` } })
   addTypeTemplate({
-    filename: 'hub/blob.d.ts',
-    getContents: () => `import type { BlobStorage } from "@nuxthub/core/blob"
-
-  declare module 'hub:blob' {
-    /**
-     * The Blob storage instance.
-     *
-     * @example \`\`\`ts
-     * import { blob } from 'hub:blob'
-     *
-     * const { blobs } = await blob.list()
-     * await blob.put('my-file.txt', 'Hello World')
-     * \`\`\`
-     *
-     * @see https://hub.nuxt.com/docs/features/blob
-     */
-    export const blob: BlobStorage
-  }` }, { nitro: true })
+    src: resolve('blob/runtime/blob.d.ts'),
+    filename: 'hub/blob.d.ts'
+  }, { nitro: true, nuxt: true })
   // Add alias for hub:blob import
-  nuxt.options.nitro.alias ||= {}
-  nuxt.options.nitro.alias['hub:blob'] = template.dst
+  nuxt.options.alias['hub:blob'] = template.dst
 
   // Set blob provider in runtime config for client-side composables
   if (blobConfig.driver === 'vercel-blob') {

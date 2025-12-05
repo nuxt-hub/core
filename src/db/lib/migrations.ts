@@ -1,6 +1,6 @@
 import { consola } from 'consola'
 import { join, relative } from 'pathe'
-import type { ResolvedHubConfig } from '../../types/config'
+import type { ResolvedHubConfig } from '@nuxthub/core'
 import { AppliedDatabaseMigrationsQuery, getCreateMigrationsTableQuery, splitSqlQueries } from './utils'
 import { useDatabaseMigrationsStorage, getDatabaseMigrationFiles, useDatabaseQueriesStorage, getDatabaseQueryFiles } from './storage'
 

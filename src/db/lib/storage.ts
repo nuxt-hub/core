@@ -3,7 +3,7 @@ import { createStorage } from 'unstorage'
 import fsDriver from 'unstorage/drivers/fs'
 import overlayDriver from 'unstorage/drivers/overlay'
 import { join } from 'pathe'
-import type { ResolvedHubConfig } from '../../types/config'
+import type { ResolvedHubConfig } from '@nuxthub/core'
 import { getMigrationMetadata } from './utils'
 
 // #region Migrations

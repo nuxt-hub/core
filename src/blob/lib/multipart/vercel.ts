@@ -2,7 +2,7 @@ import { readBody, type H3Event } from 'h3'
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client'
 import type { PutBlobResult } from '@vercel/blob'
 import { createMultipartUpload as vercelCreateMultipartUpload, uploadPart as vercelUploadPart, completeMultipartUpload as vercelCompleteMultipartUpload } from '@vercel/blob'
-import type { BlobMultipartOptions, BlobMultipartUpload, BlobObject, HandleMPUResponse } from '../../types/index'
+import type { BlobMultipartOptions, BlobMultipartUpload, BlobObject, HandleMPUResponse } from '../../runtime/blob'
 
 export async function createMultipartUpload(token: string, pathname: string, options?: BlobMultipartOptions): Promise<BlobMultipartUpload> {
   const { key, uploadId } = await vercelCreateMultipartUpload(pathname, {

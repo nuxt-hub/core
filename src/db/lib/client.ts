@@ -1,6 +1,6 @@
 import { mkdir } from 'node:fs/promises'
 import { join } from 'pathe'
-import type { ResolvedDatabaseConfig } from '../types/config'
+import type { ResolvedDatabaseConfig } from '@nuxthub/core'
 
 /**
  * Creates a Drizzle client for the given configuration

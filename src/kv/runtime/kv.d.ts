@@ -1,5 +1,21 @@
 import type { Storage } from 'unstorage'
 
+declare module 'hub:kv' {
+  /**
+   * The KV storage instance.
+   *
+   * @example ```ts
+   * import { kv } from 'hub:kv'
+   *
+   * await kv.set('key', 'value')
+   * const value = await kv.get('key')
+   * ```
+   *
+   * @see https://hub.nuxt.com/docs/features/kv
+   */
+  export const kv: KVStorage
+}
+
 export interface KVStorage extends Storage {
   /**
    * Get all keys from the storage.
@@ -48,20 +64,4 @@ export interface KVStorage extends Storage {
    * @see https://hub.nuxt.com/docs/features/kv#clear-the-kv-namespace
    */
   clear: Storage['clear']
-}
-
-declare module 'hub:kv' {
-  /**
-   * The KV storage instance.
-   *
-   * @example ```ts
-   * import { kv } from 'hub:kv'
-   *
-   * await kv.set('key', 'value')
-   * const value = await kv.get('key')
-   * ```
-   *
-   * @see https://hub.nuxt.com/docs/features/kv
-   */
-  export const kv: KVStorage
 }

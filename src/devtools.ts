@@ -1,7 +1,6 @@
 import { logger } from '@nuxt/kit'
 import type { Nuxt } from 'nuxt/schema'
-import type { HubConfig } from './types/config'
-import type { ResolvedDatabaseConfig } from './db/types/config'
+import type { HubConfig, ResolvedDatabaseConfig } from '@nuxthub/core'
 import { getPort } from 'get-port-please'
 
 let isReady = false
@@ -20,7 +19,7 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
 
   try {
     const { dialect, driver, connection } = dbConfig
-    const { schema } = await import(nuxt.options.nitro.alias!['hub:db'] as string)
+    const { schema } = await import(nuxt.options.alias!['hub:db'] as string)
 
     // Launch Drizzle Studio based on dialect and driver
     if (dialect === 'postgresql') {

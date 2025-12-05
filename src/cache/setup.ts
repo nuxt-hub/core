@@ -5,8 +5,7 @@ import { isWindows } from 'std-env'
 import { resolve, logWhenReady } from '../utils'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig } from '../types/config'
-import type { CacheConfig, ResolvedCacheConfig } from './types/config'
+import type { HubConfig, CacheConfig, ResolvedCacheConfig } from '@nuxthub/core'
 
 /**
  * Resolve cache configuration from boolean or object format

@@ -3,8 +3,7 @@ import { addTypeTemplate, addServerImports, addTemplate } from '@nuxt/kit'
 import { resolve, logWhenReady } from '../utils'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig } from '../types/config'
-import type { KVConfig, ResolvedKVConfig } from './types/config'
+import type { HubConfig, KVConfig, ResolvedKVConfig } from '@nuxthub/core'
 
 /**
  * Resolve KV configuration from boolean or object format
@@ -95,9 +94,8 @@ export const kv = createStorage({
   addTypeTemplate({
     src: resolve('kv/runtime/kv.d.ts'),
     filename: 'hub/kv.d.ts'
-  }, { nitro: true })
-  nuxt.options.nitro.alias ||= {}
-  nuxt.options.nitro.alias['hub:kv'] = template.dst
+  }, { nitro: true, nuxt: true })
+  nuxt.options.alias['hub:kv'] = template.dst
 
   logWhenReady(nuxt, `\`hub:kv\` using \`${driver}\` driver`)
 }

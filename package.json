@@ -22,6 +22,9 @@
     "./db": {
       "types": "./dist/db/lib/index.d.ts",
       "import": "./dist/db/lib/index.mjs"
+    },
+    "./kv": {
+      "types": "./dist/kv/runtime/kv.d.ts"
     }
   },
   "main": "./dist/module.mjs",

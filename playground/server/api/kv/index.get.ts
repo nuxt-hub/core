@@ -1,4 +1,5 @@
 import { kv } from 'hub:kv'
+import type { KVStorage } from '@nuxthub/core/kv'
 
 export default eventHandler(async (event) => {
   // List entries for the current user

@@ -17,11 +17,6 @@ export default defineBuildConfig({
       builder: 'mkdist'
     },
     {
-      input: 'src/db/types/',
-      outDir: 'dist/db/types',
-      builder: 'mkdist'
-    },
-    {
       input: 'src/db/runtime/',
       outDir: 'dist/db/runtime',
       builder: 'mkdist'
