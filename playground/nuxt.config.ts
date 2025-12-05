@@ -6,7 +6,6 @@ const resolver = createResolver(import.meta.url)
 export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
-    '@nuxtjs/mdc',
     '@vueuse/nuxt',
     'nuxt-auth-utils',
     module
