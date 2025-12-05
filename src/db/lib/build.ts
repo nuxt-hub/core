@@ -1,4 +1,4 @@
-import { cp, rm } from 'node:fs/promises'
+import { cp } from 'node:fs/promises'
 import { join, relative, resolve } from 'pathe'
 import type { Nitro } from 'nitropack'
 import type { ResolvedHubConfig } from '../../types/module'
@@ -100,8 +100,7 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir }: { r
     skipNodeModulesBundle: true,
     dts: {
       build: false,
-      tsconfig: join(buildDir, 'tsconfig.shared.json'),
-      newContext: true
+      tsconfig: false
     },
     clean: false,
     logLevel: 'warn'
