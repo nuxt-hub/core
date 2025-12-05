@@ -1,6 +1,6 @@
 import mime from 'mime'
 import type { R2Bucket, R2Object } from '@cloudflare/workers-types/experimental'
-import type { BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobUploadedPart } from '../../runtime/blob'
+import type { BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobUploadedPart } from '../../types'
 
 export async function createMultipartUpload(bucket: R2Bucket, pathname: string, options?: BlobMultipartOptions): Promise<BlobMultipartUpload> {
   const mpu = await bucket.createMultipartUpload(pathname!, {

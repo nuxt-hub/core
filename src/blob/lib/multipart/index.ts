@@ -1,6 +1,6 @@
 import type { Driver } from 'unstorage'
 import type { S3DriverOptions } from 'unstorage/drivers/s3'
-import type { BlobMultipartOptions } from '../../runtime/blob'
+import type { BlobMultipartOptions } from '../../types'
 
 export function getMultiPartDriver(driver: Driver) {
   if (driver.name === 's3') {

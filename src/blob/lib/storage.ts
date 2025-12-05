@@ -1,6 +1,6 @@
 import { createStorage } from 'unstorage'
 import type { Driver } from 'unstorage'
-import type { BlobStorage, BlobListOptions, BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobPutOptions, BlobUploadOptions } from '../runtime/blob'
+import type { BlobStorage, BlobListOptions, BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobPutOptions, BlobUploadOptions } from '../types'
 import { getMultiPartDriver } from './multipart/index'
 import { defu } from 'defu'
 import { getContentType } from './utils'
@@ -12,7 +12,7 @@ import { randomUUID } from 'uncrypto'
 import { ensureBlob } from './ensure'
 import { createMultipartUploadHandler } from './multipart-handler'
 
-export type * from '../runtime/blob'
+export type * from '../types'
 
 export function createBlobStorage(driver: Driver): BlobStorage {
   const storage = createStorage({ driver })

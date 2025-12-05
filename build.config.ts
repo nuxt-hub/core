@@ -38,6 +38,11 @@ export default defineBuildConfig({
       outDir: 'dist/blob/runtime',
       builder: 'mkdist'
     },
+    {
+      input: 'src/blob/types/',
+      outDir: 'dist/blob/types',
+      builder: 'mkdist'
+    },
     // Cache
     {
       input: 'src/cache/runtime/',

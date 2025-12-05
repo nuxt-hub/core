@@ -1,4 +1,4 @@
-import type { BlobMultipartUpload, BlobObject, BlobUploadedPart } from '../../runtime/blob'
+import type { BlobMultipartUpload, BlobObject, BlobUploadedPart } from '../../types'
 import { randomUUID } from 'uncrypto'
 import { join } from 'pathe'
 import fs from 'node:fs'
