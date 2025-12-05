@@ -1,13 +1,13 @@
-const test = defineCachedFunction((_event) => {
+const test = defineCachedFunction(() => {
   return 'test'
 }, {
   getKey: () => 'test'
 })
 
-export default cachedEventHandler(async (event) => {
+export default cachedEventHandler(async () => {
   return {
     now: Date.now(),
-    test: test(event)
+    test: test()
   }
 }, {
   maxAge: 10,

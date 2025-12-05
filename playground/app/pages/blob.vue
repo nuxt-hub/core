@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { BlobObject } from '@nuxthub/core/blob'
+
 const loading = ref(false)
 const loadingProgress = ref<number | undefined>(undefined)
 const newFilesValue = ref<File[]>([])
@@ -139,7 +141,7 @@ async function deleteFile(pathname: string) {
     // @ts-expect-error method DELETE is not typed
     await $fetch(`/api/blob/${pathname}`, { method: 'DELETE' })
 
-    blobData.value!.blobs = blobData.value!.blobs!.filter(t => t.pathname !== pathname)
+    blobData.value!.blobs = blobData.value!.blobs!.filter((t: BlobObject) => t.pathname !== pathname)
 
     toast.add({ title: `File "${pathname}" deleted.` })
   } catch (err: any) {

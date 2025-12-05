@@ -26,7 +26,7 @@ export default defineNuxtConfig({
   },
 
   hub: {
-    db: 'postgresql',
+    db: 'sqlite',
     blob: true,
     kv: true,
     cache: true

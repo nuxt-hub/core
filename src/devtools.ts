@@ -45,7 +45,7 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
     } else if (dialect === 'sqlite') {
       const { startStudioSQLiteServer } = await import('drizzle-kit/api')
       log.info(`Launching Drizzle Studio with SQLite...`)
-      await startStudioSQLiteServer(schema, connection, { port })
+      await startStudioSQLiteServer(schema, connection as any, { port })
     } else {
       throw new Error(`Unsupported database dialect: ${dialect}`)
     }

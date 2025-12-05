@@ -21,15 +21,15 @@ async function addTodo() {
         completed: 0
       }
     })
-    todos.value.push(todo)
+    todos.value!.push(todo)
     toast.add({ title: `Todo "${todo.title}" created.` })
     newTodo.value = ''
     nextTick(() => {
       newTodoInput.value?.input?.focus()
     })
-  } catch (err) {
+  } catch (err: any) {
     const title = err.data?.data?.issues?.map(issue => issue.message).join('\n') || err.message
-    toast.add({ title, color: 'red' })
+    toast.add({ title, color: 'error' })
   }
   loading.value = false
 }
