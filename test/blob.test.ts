@@ -2,9 +2,9 @@ import { fileURLToPath } from 'node:url'
 import fs from 'node:fs/promises'
 import { describe, it, expect, vi } from 'vitest'
 import { setup, $fetch, url } from '@nuxt/test-utils'
-import type { BlobListResult } from '../src/types/blob'
-import { useUpload } from '../src/runtime/blob/app/composables/useUpload'
-import { useMultipartUpload } from '../src/runtime/blob/app/composables/useMultipartUpload'
+import type { BlobListResult } from '../src/blob/types'
+import { useUpload } from '../src/runtime/runtime/app/composables/useUpload'
+import { useMultipartUpload } from '../src/runtime/runtime/app/composables/useMultipartUpload'
 
 const images = [
   {

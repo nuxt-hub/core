@@ -5,64 +5,17 @@ import { defu } from 'defu'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
 import { provider } from 'std-env'
 import { version } from '../package.json'
-import { setupCache } from './features/cache'
+import { setupCache } from './cache/setup'
 import { setupDatabase } from './db/setup'
-import { setupKV } from './features/kv'
-import { setupBlob } from './features/blob'
-import type { BlobConfig, CacheConfig, HubConfig, KVConfig, ResolvedHubConfig } from './types/module'
+import { setupKV } from './kv/setup'
+import { setupBlob } from './blob/setup'
+import type { ModuleOptions, HubConfig, ResolvedHubConfig } from './types/config'
 import { addDevToolsCustomTabs } from './devtools'
-import type { DatabaseConfig } from './db/types'
 import type { NuxtModule } from '@nuxt/schema'
 
 const log = logger.withTag('nuxt:hub')
 
-export * from './types/hooks'
-// export * from './types/blob'
-
-export interface ModuleOptions {
-  /**
-   * Set `true` to enable blob storage with auto-configuration.
-   * Or provide a BlobConfig object with driver and connection details.
-   *
-   * @default false
-   * @see https://hub.nuxt.com/docs/features/blob
-   */
-  blob?: boolean | BlobConfig
-  /**
-   * Set `true` to enable caching for the project with auto-configuration.
-   * Or provide a CacheConfig object with driver and connection details.
-   *
-   * @default false
-   * @see https://hub.nuxt.com/docs/features/cache
-   */
-  cache?: boolean | CacheConfig
-  /**
-   * Set to `'postgresql'`, `'sqlite'`, or `'mysql'` to use a specific database dialect with a zero-config development database.
-   * Or provide a DatabaseConfig object with dialect and connection details.
-   *
-   * @default false
-   * @see https://hub.nuxt.com/docs/features/database
-   */
-  db?: 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig | false
-  /**
-   * Set `true` to enable the key-value storage with auto-configuration.
-   * Or provide a KVConfig object with driver and connection details.
-   *
-   * @default false
-   * @see https://hub.nuxt.com/docs/features/kv
-   */
-  kv?: boolean | KVConfig
-  /**
-   * The directory used for storage (database, kv, etc.) during local development.
-   * @default '.data'
-   */
-  dir?: string
-  /**
-   * The hosting provider that the project is hosted on.
-   * This is automatically determined using the NITRO_PRESET or the detected provider during the CI/CD.
-   */
-  hosting?: string
-}
+export * from './types/index'
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {

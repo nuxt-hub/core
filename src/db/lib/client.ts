@@ -1,6 +1,6 @@
 import { mkdir } from 'node:fs/promises'
 import { join } from 'pathe'
-import type { ResolvedDatabaseConfig } from '../types'
+import type { ResolvedDatabaseConfig } from '../types/config'
 
 /**
  * Creates a Drizzle client for the given configuration

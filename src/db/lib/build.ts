@@ -1,7 +1,7 @@
 import { cp } from 'node:fs/promises'
 import { join, relative, resolve } from 'pathe'
 import type { Nitro } from 'nitropack'
-import type { ResolvedHubConfig } from '../../types/module'
+import type { ResolvedHubConfig } from '../../types/config'
 import { consola } from 'consola'
 import { createDrizzleClient } from './client'
 import { applyDatabaseMigrations, applyDatabaseQueries } from './migrations'
