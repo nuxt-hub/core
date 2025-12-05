@@ -9,11 +9,8 @@
     "preview": "nuxi preview"
   },
   "dependencies": {
-    "@ai-sdk/gateway": "^2.0.18",
-    "@ai-sdk/vue": "^2.0.106",
     "@electric-sql/pglite": "^0.3.14",
     "@iconify-json/simple-icons": "^1.2.61",
-    "@kgierke/nuxt-basic-auth": "^1.7.0",
     "@libsql/client": "^0.15.15",
     "@nuxt/ui": "^4.2.1",
     "@nuxthub/core": "workspace:*",
@@ -23,15 +20,14 @@
     "@vueuse/core": "^14.1.0",
     "@vueuse/nuxt": "^14.1.0",
     "aws4fetch": "^1.0.20",
-    "drizzle-kit": "^0.31.7",
-    "drizzle-orm": "^0.44.7",
+    "drizzle-kit": "^0.31.8",
+    "drizzle-orm": "^0.45.0",
     "ioredis": "^5.8.2",
     "mysql2": "^3.15.3",
     "nuxt": "4.2.1",
     "nuxt-auth-utils": "^0.5.25",
     "postgres": "^3.4.7",
     "tailwindcss": "^4.1.17",
-    "workers-ai-provider": "^2.0.0",
     "zod": "^4.1.13"
   },
   "devDependencies": {
