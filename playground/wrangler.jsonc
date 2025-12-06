@@ -1,5 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "playground",
   "d1_databases": [
     {
       "binding": "DB",
