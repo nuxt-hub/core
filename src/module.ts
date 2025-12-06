@@ -110,8 +110,15 @@ export default defineNuxtModule<ModuleOptions>({
       nuxt.options.nitro.prerender ||= {}
       nuxt.options.nitro.prerender.autoSubfolderIndex ||= false
 
+      nuxt.options.nitro.unenv = nuxt.options.nitro.unenv || {}
+      // @ts-expect-error unenv is not typed here
+      nuxt.options.nitro.unenv.external ||= []
+      // @ts-expect-error unenv is not typed here
+      if (!nuxt.options.nitro.unenv.external.includes('node:console')) {
+        // @ts-expect-error unenv is not typed here
+        nuxt.options.nitro.unenv.external.push('node:console')
+      }
       // Enable Async Local Storage
-      // nuxt.options.nitro.unenv = nuxt.options.nitro.unenv || {}
 
       // // @ts-expect-error unenv is not typed here
       // nuxt.options.nitro.unenv.external = nuxt.options.nitro.unenv.external || []
