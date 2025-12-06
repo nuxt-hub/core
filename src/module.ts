@@ -89,19 +89,6 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.nitro.experimental.asyncContext = true
 
     if (nuxt.options.nitro.preset?.includes('cloudflare') || hub.hosting.includes('cloudflare')) {
-      // Fix cloudflare:* externals in rollup
-      // nuxt.options.nitro.rollupConfig = nuxt.options.nitro.rollupConfig || {}
-      // nuxt.options.nitro.rollupConfig.plugins = ([] as any[]).concat(nuxt.options.nitro.rollupConfig.plugins || [])
-      // nuxt.options.nitro.rollupConfig.plugins.push({
-      //   name: 'nuxthub-rollup-plugin',
-      //   resolveId(id: string) {
-      //     if (id.startsWith('cloudflare:')) {
-      //       return { id, external: true }
-      //     }
-      //     return null
-      //   }
-      // })
-
       // Enable Cloudflare Node.js compatibility
       nuxt.options.nitro.cloudflare ||= {}
       nuxt.options.nitro.cloudflare.nodeCompat = true
@@ -109,47 +96,12 @@ export default defineNuxtModule<ModuleOptions>({
       // Remove trailing slash for prerender routes
       nuxt.options.nitro.prerender ||= {}
       nuxt.options.nitro.prerender.autoSubfolderIndex ||= false
-
-      nuxt.options.nitro.unenv = nuxt.options.nitro.unenv || {}
-      // @ts-expect-error unenv is not typed here
-      nuxt.options.nitro.unenv.external ||= []
-      // @ts-expect-error unenv is not typed here
-      if (!nuxt.options.nitro.unenv.external.includes('node:console')) {
-        // @ts-expect-error unenv is not typed here
-        nuxt.options.nitro.unenv.external.push('node:console')
-      }
-      // Enable Async Local Storage
-
-      // // @ts-expect-error unenv is not typed here
-      // nuxt.options.nitro.unenv.external = nuxt.options.nitro.unenv.external || []
-      // // @ts-expect-error unenv is not typed here
-      // if (!nuxt.options.nitro.unenv.external.includes('node:async_hooks')) {
-      // // @ts-expect-error unenv is not typed here
-      //   nuxt.options.nitro.unenv.external.push('node:async_hooks')
-      // }
-
-      // // Production mode
-      // if (!nuxt.options.dev) {
-      //   // Add node:stream to unenv external (only for Cloudflare Pages/Workers)
-      //   // @ts-expect-error unenv is not typed here
-      //   if (!nuxt.options.nitro.unenv.external.includes('node:stream')) {
-      //     // @ts-expect-error unenv is not typed here
-      //     nuxt.options.nitro.unenv.external.push('node:stream')
-      //   }
-      //   // @ts-expect-error unenv is not typed here
-      //   if (!nuxt.options.nitro.unenv.external.includes('node:process')) {
-      //     // @ts-expect-error unenv is not typed here
-      //     nuxt.options.nitro.unenv.external.push('node:process')
-      //   }
-      //   // Add safer-buffer as alias to node:buffer
-      //   // @ts-expect-error unenv is not typed here
-      //   nuxt.options.nitro.unenv.alias ||= {}
-      //   // @ts-expect-error unenv is not typed here
-      //   if (!nuxt.options.nitro.unenv.alias['safer-buffer']) {
-      //     // @ts-expect-error unenv is not typed here
-      //     nuxt.options.nitro.unenv.alias['safer-buffer'] = 'node:buffer'
-      //   }
-      // }
+      // Fix node:console not available on Cloudflare Pages
+      nuxt.options.nitro.unenv ||= {}
+      // @ts-expect-error unenv.alias is not typed correctly
+      nuxt.options.nitro.unenv.alias ||= {}
+      // @ts-expect-error unenv.alias is not typed correctly
+      nuxt.options.nitro.unenv.alias['node:console'] = 'unenv/runtime/node/console'
     }
 
     // Add .data to .gitignore
