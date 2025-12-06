@@ -276,6 +276,9 @@ export { db, schema }
 import * as schema from './db/schema.mjs'
 
 const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
+if (!binding) {
+  throw new Error('DB binding not found')
+}
 const db = drizzle(binding, { schema })
 export { db, schema }
 `
@@ -342,6 +345,9 @@ export { db, schema }
 import * as schema from './db/schema.mjs'
 
 const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
+if (!hyperdrive) {
+  throw new Error('${bindingName} binding not found')
+}
 const db = drizzle({ connection: hyperdrive.connectionString, schema })
 export { db, schema }
 `
