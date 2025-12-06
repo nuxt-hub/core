@@ -155,7 +155,7 @@ export interface DatabaseConfig {
    * PostgreSQL drivers: 'postgres-js', 'pglite'
    * MySQL drivers: 'mysql2'
    */
-  driver?: string
+  driver?: 'better-sqlite3' | 'libsql' | 'bun-sqlite' | 'd1' | 'd1-http' | 'postgres-js' | 'pglite' | 'mysql2'
   /**
    * Database connection configuration
    */
@@ -179,7 +179,7 @@ export interface DatabaseConfig {
 
 export interface ResolvedDatabaseConfig extends DatabaseConfig {
   dialect: 'sqlite' | 'postgresql' | 'mysql'
-  driver: string
+  driver: 'better-sqlite3' | 'libsql' | 'bun-sqlite' | 'd1' | 'd1-http' | 'postgres-js' | 'pglite' | 'mysql2'
   connection: DatabaseConnection
   migrationsDirs: string[]
   queriesPaths: string[]
