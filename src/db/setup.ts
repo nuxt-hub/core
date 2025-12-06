@@ -275,7 +275,7 @@ export { db, schema }
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/d1'
 import * as schema from './db/schema.mjs'
 
-const binding = process.env.DB || globalThis.DB
+const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
 const db = drizzle(binding, { schema })
 export { db, schema }
 `
