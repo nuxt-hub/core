@@ -51,7 +51,7 @@ export async function setupCache(nuxt: Nuxt, hub: HubConfig, _deps: Record<strin
   hub.cache = resolveCacheConfig(hub)
   if (!hub.cache) return
 
-  const cacheConfig = hub.cache as CacheConfig
+  const cacheConfig = hub.cache as ResolvedCacheConfig
 
   // Configure storage
   nuxt.options.nitro.storage ||= {}
@@ -63,5 +63,5 @@ export async function setupCache(nuxt: Nuxt, hub: HubConfig, _deps: Record<strin
     nuxt.options.nitro.devStorage.cache = defu(nuxt.options.nitro.devStorage.cache, cacheConfig)
   }
 
-  logWhenReady(nuxt, `\`hub:cache\` using \`${cacheConfig.driver}\` driver`)
+  logWhenReady(nuxt, `\`hub:cache\` using \`${cacheConfig.driver.split('/').pop()}\` driver`)
 }
