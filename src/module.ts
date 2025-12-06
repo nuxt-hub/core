@@ -88,7 +88,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}
     nuxt.options.nitro.experimental.asyncContext = true
 
-    if (nuxt.options.nitro.preset?.includes('cloudflare') && hub.hosting.includes('cloudflare')) {
+    if (nuxt.options.nitro.preset?.includes('cloudflare') || hub.hosting.includes('cloudflare')) {
       // Fix cloudflare:* externals in rollup
       nuxt.options.nitro.rollupConfig = nuxt.options.nitro.rollupConfig || {}
       nuxt.options.nitro.rollupConfig.plugins = ([] as any[]).concat(nuxt.options.nitro.rollupConfig.plugins || [])
@@ -142,13 +142,6 @@ export default defineNuxtModule<ModuleOptions>({
           nuxt.options.nitro.unenv.alias['safer-buffer'] = 'node:buffer'
         }
       }
-
-      // Add the env middleware
-      nuxt.options.nitro.handlers ||= []
-      nuxt.options.nitro.handlers.unshift({
-        middleware: true,
-        handler: resolve('./runtime/env')
-      })
     }
 
     // Add .data to .gitignore
