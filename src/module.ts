@@ -105,6 +105,7 @@ export default defineNuxtModule<ModuleOptions>({
       // Enable Cloudflare Node.js compatibility
       nuxt.options.nitro.cloudflare ||= {}
       nuxt.options.nitro.cloudflare.nodeCompat = true
+      nuxt.options.nitro.cloudflare.deployConfig = true
       nuxt.options.nitro.cloudflare.wrangler = defu(nuxt.options.nitro.cloudflare.wrangler, {
         compatibility_flags: ['nodejs_compat']
       })
