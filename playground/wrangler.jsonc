@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "playground",
+      "database_id": "adc66aba-ce5f-40bc-bffc-bc80eb17e0b7"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "BLOB",
+      "bucket_name": "playground"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "919a41f11e5649deace923de93d8d9ec"
+    },
+    {
+      "binding": "CACHE",
+      "id": "c59a5cea9d0f44ad92b92e328c7e8b67"
+    }
+  ]
+}
+
