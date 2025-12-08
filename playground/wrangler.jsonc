@@ -23,6 +23,14 @@
       "binding": "CACHE",
       "id": "c59a5cea9d0f44ad92b92e328c7e8b67"
     }
-  ]
+  ],
+  "observability": {
+    "logs": {
+      "enabled": false,
+      "head_sampling_rate": 1,
+      "invocation_logs": true,
+      "persist": true
+    }
+  }
 }
 
