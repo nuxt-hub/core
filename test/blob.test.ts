@@ -24,7 +24,7 @@ vi.mock('#imports', () => ({
   useRuntimeConfig: () => ({
     public: {
       hub: {
-        blobProvider: 'fs-lite'
+        blobProvider: 'fs'
       }
     }
   })
@@ -44,7 +44,7 @@ describe('Blob', async () => {
   it('Check Blob is enabled', async () => {
     const manifest = await $fetch('/api/manifest')
     expect(manifest.blob).includes({
-      driver: 'fs-lite'
+      driver: 'fs'
     })
   })
 

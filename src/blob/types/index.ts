@@ -1,6 +1,10 @@
-import type { Driver, Storage } from 'unstorage'
 import type { MimeType } from '@uploadthing/mime-types'
 import type { H3Event } from 'h3'
+import type { BlobDriver } from '../lib/drivers/types'
+import type { FSDriverOptions } from '../lib/drivers/fs'
+import type { S3DriverOptions } from '../lib/drivers/s3'
+import type { VercelDriverOptions } from '../lib/drivers/vercel-blob'
+import type { CloudflareDriverOptions } from '../lib/drivers/cloudflare-r2'
 
 // Credits from shared utils of https://github.com/pingdotgg/uploadthing
 export type PowOf2 = 1 | 2 | 4 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024
@@ -271,11 +275,11 @@ export interface BlobCredentials {
   sessionToken: string
 }
 
-export interface BlobStorage extends Storage {
+export interface BlobStorage {
   /**
-   * The instance of the unstorage driver
+   * The instance of the blob driver
    */
-  driver: Driver
+  driver: BlobDriver<FSDriverOptions | S3DriverOptions | VercelDriverOptions | CloudflareDriverOptions>
   /**
    * List all the blobs in the bucket (metadata only).
    *

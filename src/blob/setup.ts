@@ -3,10 +3,13 @@ import { defu } from 'defu'
 import { addTypeTemplate, addServerImports, addImportsDir, logger, addTemplate } from '@nuxt/kit'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig, BlobConfig, ResolvedBlobConfig } from '@nuxthub/core'
+import type { HubConfig, ResolvedBlobConfig } from '@nuxthub/core'
 import { resolve, logWhenReady } from '../utils'
 
 const log = logger.withTag('nuxt:hub')
+
+// Supported blob drivers
+const supportedDrivers = ['fs', 's3', 'vercel-blob', 'cloudflare-r2'] as const
 
 /**
  * Resolve blob configuration from boolean or object format
@@ -14,20 +17,18 @@ const log = logger.withTag('nuxt:hub')
 export function resolveBlobConfig(hub: HubConfig, deps: Record<string, string>): ResolvedBlobConfig | false {
   if (!hub.blob) return false
 
-  // Start with user-provided config if it's an object
-  const userConfig = typeof hub.blob === 'object' ? hub.blob : {} as BlobConfig
-
   // If driver is already specified by user, use it with their options
-  if (userConfig.driver) {
-    return userConfig as ResolvedBlobConfig
+  if (typeof hub.blob === 'object' && 'driver' in hub.blob) {
+    return hub.blob as ResolvedBlobConfig
   }
 
+  // Otherwise hub.blob is set to true, so we need to resolve the config
   // AWS S3
   if (process.env.S3_ACCESS_KEY_ID && process.env.S3_SECRET_ACCESS_KEY && process.env.S3_BUCKET && process.env.S3_REGION) {
     if (!deps['aws4fetch']) {
       log.error('Please run `npx nypm i aws4fetch` to use S3')
     }
-    return defu(userConfig, {
+    return defu(hub.blob, {
       driver: 's3',
       accessKeyId: process.env.S3_ACCESS_KEY_ID,
       secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
@@ -38,11 +39,11 @@ export function resolveBlobConfig(hub: HubConfig, deps: Record<string, string>):
   }
 
   // Vercel Blob
-  if (hub.hosting.includes('vercel')) {
+  if (hub.hosting.includes('vercel') || process.env.BLOB_READ_WRITE_TOKEN) {
     if (!deps['@vercel/blob']) {
       log.error('Please run `npx nypm i @vercel/blob` to use Vercel Blob')
     }
-    return defu(userConfig, {
+    return defu(hub.blob, {
       driver: 'vercel-blob',
       access: 'public'
     }) as ResolvedBlobConfig
@@ -50,27 +51,16 @@ export function resolveBlobConfig(hub: HubConfig, deps: Record<string, string>):
 
   // Cloudflare R2
   if (hub.hosting.includes('cloudflare')) {
-    return defu(userConfig, {
-      driver: 'cloudflare-r2-binding',
+    return defu(hub.blob, {
+      driver: 'cloudflare-r2',
       binding: 'BLOB'
     }) as ResolvedBlobConfig
   }
 
-  // Netlify Blobs
-  if (hub.hosting.includes('netlify')) {
-    if (!deps['@netlify/blobs']) {
-      log.error('Please run `npx nypm i @netlify/blobs` to use Netlify Blobs')
-    }
-    return defu(userConfig, {
-      driver: 'netlify-blobs',
-      name: process.env.NETLIFY_BLOB_STORE_NAME
-    }) as ResolvedBlobConfig
-  }
-
   // Default: file system storage
-  return defu(userConfig, {
-    driver: 'fs-lite',
-    base: join(hub.dir!, 'blob')
+  return defu(hub.blob, {
+    driver: 'fs',
+    dir: join(hub.dir, 'blob')
   }) as ResolvedBlobConfig
 }
 
@@ -78,25 +68,28 @@ export function setupBlob(nuxt: Nuxt, hub: HubConfig, deps: Record<string, strin
   hub.blob = resolveBlobConfig(hub, deps)
   if (!hub.blob) return
 
-  const blobConfig = hub.blob as BlobConfig
-
-  // Configure storage
-  nuxt.options.nitro.storage ||= {}
-  nuxt.options.nitro.storage.blob = defu(nuxt.options.nitro.storage.blob, blobConfig)
+  const blobConfig = hub.blob as ResolvedBlobConfig
 
   // Add Composables
   addImportsDir(resolve('blob/runtime/app/composables'))
 
   const { driver, ...driverOptions } = blobConfig
+
+  if (!supportedDrivers.includes(driver as any)) {
+    log.error(`Unsupported blob driver: ${driver}. Supported drivers: ${supportedDrivers.join(', ')}`)
+    return
+  }
+
   const template = addTemplate({
     filename: 'hub/blob.mjs',
     getContents: () => `import { createBlobStorage } from "@nuxthub/core/blob"
-import driver from "unstorage/drivers/${driver}";
+import { createDriver } from "@nuxthub/core/blob/drivers/${driver}";
 
-export const blob = createBlobStorage(driver(${JSON.stringify(driverOptions)}));
+export const blob = createBlobStorage(createDriver(${JSON.stringify(driverOptions)}));
 `,
     write: true
   })
+
   addServerImports({ name: 'blob', from: 'hub:blob', meta: { description: `The Blob storage instance.` } })
   addTypeTemplate({
     src: resolve('blob/runtime/blob.d.ts'),

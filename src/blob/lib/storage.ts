@@ -1,123 +1,58 @@
-import { createStorage } from 'unstorage'
-import type { Driver } from 'unstorage'
-import type { BlobStorage, BlobListOptions, BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobPutOptions, BlobUploadOptions } from '../types'
-import { getMultiPartDriver } from './multipart/index'
+import * as z from 'zod'
+import type { BlobStorage, BlobListOptions, BlobMultipartOptions, BlobObject, BlobPutOptions, BlobUploadOptions, HandleMPUResponse } from '../types'
+import type { BlobDriver } from './drivers/types'
 import { defu } from 'defu'
-import { getContentType } from './utils'
-import { setHeader, createError, assertMethod, readFormData } from 'h3'
+import { getContentType, streamToArrayBuffer } from './utils'
+import { setHeader, createError, assertMethod, readFormData, getValidatedQuery, readValidatedBody, getRequestWebStream, sendNoContent, getHeader, getValidatedRouterParams } from 'h3'
 import type { H3Event } from 'h3'
 import { parse } from 'pathe'
 import { joinURL } from 'ufo'
 import { randomUUID } from 'uncrypto'
 import { ensureBlob } from './ensure'
-import { createMultipartUploadHandler } from './multipart-handler'
 
 export type * from '../types'
 
-export function createBlobStorage(driver: Driver): BlobStorage {
-  const storage = createStorage({ driver })
-  const multiPartDriver = getMultiPartDriver(driver)
-
+export function createBlobStorage(driver: BlobDriver): BlobStorage {
   const blob = {
-    ...storage,
     driver,
+
     async list(options?: BlobListOptions) {
       const resolvedOptions = defu(options, {
-        limit: 1000,
-        include: ['httpMetadata' as const, 'customMetadata' as const],
-        delimiter: options?.folded ? '/' : undefined
+        limit: 1000
       })
 
-      // Convert "/" to ":" in prefix for unstorage driver compatibility
-      if (resolvedOptions.prefix) {
-        resolvedOptions.prefix = resolvedOptions.prefix.replace(/\//g, ':')
-      }
-
-      // TODO: cursor based pagination
-      const listed = await storage.getKeys(resolvedOptions.prefix)
-      const hasMore = false
-      const cursor = undefined
-
-      // Convert keys to blob objects
-      const blobs: BlobObject[] = []
-      await Promise.all(listed.map(async (key) => {
-        try {
-          const meta = await storage.getMeta(key)
-          blobs.push({
-            pathname: key.replace(/:/g, '/'), // Convert ":" back to "/" for consumer
-            contentType: getContentType(key),
-            size: typeof meta?.size === 'number' ? meta.size : 0,
-            httpEtag: typeof meta?.etag === 'string' ? meta.etag : '',
-            uploadedAt: meta?.mtime || new Date(),
-            httpMetadata: {},
-            customMetadata: (meta || {}) as Record<string, string>
-          })
-        } catch (error) {
-          return
-        }
-      }))
-
-      // Handle folders if folded option is enabled
-      const folders: string[] = []
-      if (resolvedOptions.folded) {
-        const folderSet = new Set<string>()
-        for (const key of listed) {
-          const relativePath = resolvedOptions.prefix ? key.replace(resolvedOptions.prefix, '') : key
-          const colonIndex = relativePath.indexOf(':')
-          if (colonIndex > 0) {
-            const folder = relativePath.substring(0, colonIndex + 1).replace(/:/g, '/')
-            folderSet.add((resolvedOptions.prefix || '').replace(/:/g, '/') + folder)
-          }
-        }
-        folders.push(...Array.from(folderSet))
-      }
-
-      return {
-        blobs: resolvedOptions.folded
-          ? blobs.filter((blob) => {
-              const relativePath = resolvedOptions.prefix
-                ? blob.pathname.replace(resolvedOptions.prefix.replace(/:/g, '/'), '')
-                : blob.pathname
-              return !relativePath.includes('/')
-            })
-          : blobs,
-        hasMore,
-        cursor,
-        folders: resolvedOptions.folded ? folders : undefined
-      }
+      return driver.list(resolvedOptions)
     },
+
     async serve(event: H3Event, pathname: string) {
-      pathname = decodeURIComponent(pathname).replace(/\//g, ':') // Convert "/" to ":" for unstorage
-      const arrayBuffer = await storage.getItemRaw(pathname, { type: 'arrayBuffer' })
+      pathname = decodeURIComponent(pathname)
+      const arrayBuffer = await driver.getArrayBuffer(pathname)
 
       if (!arrayBuffer) {
         throw createError({ message: 'File not found', statusCode: 404 })
       }
 
-      const meta = await storage.getMeta(pathname)
-      const contentType = getContentType(pathname)
+      const meta = await driver.head(pathname)
+      const contentType = meta?.contentType || getContentType(pathname)
+
       setHeader(event, 'Content-Type', contentType)
-      setHeader(event, 'Content-Length', (arrayBuffer as ArrayBuffer).byteLength)
-      if (meta?.etag) {
-        setHeader(event, 'etag', meta.etag)
+      setHeader(event, 'Content-Length', arrayBuffer.byteLength)
+      if (meta?.httpEtag) {
+        setHeader(event, 'etag', meta.httpEtag)
       }
 
       return new ReadableStream({
         start(controller) {
-          controller.enqueue(new Uint8Array(arrayBuffer as ArrayBuffer))
+          controller.enqueue(new Uint8Array(arrayBuffer))
           controller.close()
         }
       })
     },
+
     async get(pathname: string): Promise<Blob | null> {
-      const arrayBuffer = await storage.getItemRaw(decodeURIComponent(pathname).replace(/\//g, ':'), { type: 'arrayBuffer' })
-
-      if (!arrayBuffer) {
-        return null
-      }
-
-      return new Blob([arrayBuffer])
+      return driver.get(decodeURIComponent(pathname))
     },
+
     async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = {}) {
       pathname = decodeURIComponent(pathname)
       const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, customMetadata } = options
@@ -132,99 +67,38 @@ export function createBlobStorage(driver: Driver): BlobStorage {
 
       if (prefix) {
         pathname = joinURL(prefix, pathname).replace(/\/+/g, '/').replace(/^\/+/, '')
-        // Convert "/" to ":" for unstorage driver compatibility
-        pathname = pathname.replace(/\//g, ':')
       }
 
-      const httpMetadata: Record<string, string> = { contentType }
-      if (contentLength) {
-        httpMetadata.contentLength = contentLength
-      }
-
-      if (!storage.setItemRaw) {
-        throw createError({ statusCode: 500, message: 'Storage does not implement setItemRaw' })
-      }
-
-      // Convert File or Blob to TypedArray for storage
-      let processedBody = body as string | ReadableStream<any> | ArrayBuffer | ArrayBufferView
-      if (body instanceof Blob) {
-        const arrayBuffer = await body.arrayBuffer()
-        processedBody = new Uint8Array(arrayBuffer)
-      }
-
-      // Check if setItemRaw accepts 3 parameters (key, value, options) or just 2 (key, value)
-      if (storage.setItemRaw.length >= 3) {
-      // Driver supports 3 parameters - assuming it's R2 so passing httpMetadata and customMetadata directly
-        await storage.setItemRaw(pathname, processedBody, { httpMetadata, customMetadata })
-      } else {
-      // Driver only accepts 2 parameters - use setMeta for custom metadata
-        await storage.setItemRaw(pathname, processedBody)
-
-        // Store custom metadata separately if provided and setMeta is available
-        if (customMetadata && Object.keys(customMetadata).length > 0 && storage.setMeta) {
-          await storage.setMeta(pathname, customMetadata)
-        }
-      }
-
-      // Return the created blob object
-      return {
-        pathname: pathname.replace(/:/g, '/'), // Convert ":" back to "/" for backwards compat with R2's blob
+      return driver.put(pathname, body, {
         contentType,
-        size: typeof body === 'string'
-          ? new TextEncoder().encode(body).length
-          : body instanceof ArrayBuffer
-            ? body.byteLength
-            : body instanceof Blob
-              ? body.size
-              : processedBody instanceof ArrayBuffer
-                ? processedBody.byteLength
-                : (processedBody as ArrayBufferView)?.byteLength || 0,
-        httpEtag: '',
-        uploadedAt: new Date(),
-        httpMetadata: httpMetadata,
-        customMetadata: customMetadata || {}
-      }
+        contentLength,
+        customMetadata
+      })
     },
-    async head(pathname: string) {
-      pathname = decodeURIComponent(pathname).replace(/\//g, ':') // Convert "/" to ":" for unstorage
-      const hasItem = await storage.hasItem(pathname)
 
-      if (!hasItem) {
+    async head(pathname: string) {
+      pathname = decodeURIComponent(pathname)
+      const meta = await driver.head(pathname)
+
+      if (!meta) {
         throw createError({ message: 'Blob not found', statusCode: 404 })
       }
 
-      const meta = await storage.getMeta(pathname)
+      return meta
+    },
 
-      return {
-        pathname: pathname.replace(/:/g, '/'), // Convert ":" back to "/" for consumer
-        contentType: getContentType(pathname),
-        size: typeof meta?.size === 'number' ? meta.size : 0,
-        httpEtag: typeof meta?.etag === 'string' ? meta.etag : '',
-        uploadedAt: meta?.mtime || new Date(),
-        httpMetadata: {},
-        customMetadata: (meta || {}) as Record<string, string>
-      }
-    },
     async del(pathnames: string | string[]) {
-      if (Array.isArray(pathnames)) {
-        for (const pathname of pathnames) {
-          const key = decodeURIComponent(pathname).replace(/\//g, ':')
-          await Promise.all([
-            storage.removeItem(key),
-            storage.removeMeta?.(key)
-          ])
-        }
-      } else {
-        const key = decodeURIComponent(pathnames).replace(/\//g, ':')
-        await Promise.all([
-          storage.removeItem(key),
-          storage.removeMeta?.(key)
-        ])
-      }
+      const paths = Array.isArray(pathnames) ? pathnames : [pathnames]
+      await driver.delete(paths.map(p => decodeURIComponent(p)))
     },
-    async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}): Promise<BlobMultipartUpload> {
+
+    async delete(pathnames: string | string[]) {
+      return this.del(pathnames)
+    },
+
+    async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}) {
       pathname = decodeURIComponent(pathname)
-      const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix } = options
+      const { contentType: optionsContentType, addRandomSuffix, prefix } = options
       const contentType = optionsContentType || getContentType(pathname)
 
       const { dir, ext, name: filename } = parse(pathname)
@@ -237,16 +111,16 @@ export function createBlobStorage(driver: Driver): BlobStorage {
         pathname = joinURL(prefix, pathname).replace(/\/+/g, '/').replace(/^\/+/, '')
       }
 
-      const httpMetadata: Record<string, string> = { contentType }
-      if (contentLength) {
-        httpMetadata.contentLength = contentLength
-      }
+      return driver.createMultipartUpload(pathname, {
+        ...options,
+        contentType
+      })
+    },
 
-      return await multiPartDriver.createMultipartUpload(pathname, options)
-    },
     async resumeMultipartUpload(pathname: string, uploadId: string) {
-      return await multiPartDriver.resumeMultipartUpload(decodeURIComponent(pathname), uploadId)
+      return driver.resumeMultipartUpload(decodeURIComponent(pathname), uploadId)
     },
+
     async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
       assertMethod(event, ['POST', 'PUT', 'PATCH'])
 
@@ -265,7 +139,7 @@ export function createBlobStorage(driver: Driver): BlobStorage {
 
       const objects: BlobObject[] = []
       try {
-      // Ensure the files meet the requirements
+        // Ensure the files meet the requirements
         if (options.ensure) {
           for (const file of files) {
             ensureBlob(file, options.ensure)
@@ -284,11 +158,154 @@ export function createBlobStorage(driver: Driver): BlobStorage {
 
       return objects
     }
-  }
+  } satisfies Omit<BlobStorage, 'handleMultipartUpload'>
 
   return {
     ...blob,
-    delete: blob.del,
-    handleMultipartUpload: createMultipartUploadHandler(blob as BlobStorage)
+    handleMultipartUpload: driver.handleMultipartUpload ?? createGenericMultipartUploadHandler(blob as BlobStorage)
   } satisfies BlobStorage
+}
+
+/**
+ * Create the generic multipart upload handler for drivers that don't have a custom implementation
+ */
+function createGenericMultipartUploadHandler(blob: BlobStorage) {
+  const createHandler = async (event: H3Event, options?: BlobMultipartOptions) => {
+    const { pathname } = await getValidatedRouterParams(event, z.object({
+      pathname: z.string().min(1)
+    }).parse)
+
+    options ||= {}
+    if (getHeader(event, 'x-nuxthub-file-content-type')) {
+      options.contentType ||= getHeader(event, 'x-nuxthub-file-content-type')
+    }
+
+    try {
+      const object = await blob.createMultipartUpload(pathname, options)
+      return {
+        uploadId: object.uploadId,
+        pathname: object.pathname
+      }
+    } catch (e: any) {
+      throw createError({
+        statusCode: 400,
+        message: e.message
+      })
+    }
+  }
+
+  const uploadHandler = async (event: H3Event) => {
+    const { pathname } = await getValidatedRouterParams(event, z.object({
+      pathname: z.string().min(1)
+    }).parse)
+
+    const { uploadId, partNumber } = await getValidatedQuery(event, z.object({
+      uploadId: z.string(),
+      partNumber: z.coerce.number()
+    }).parse)
+
+    const contentLength = Number(getHeader(event, 'content-length') || '0')
+
+    const stream = getRequestWebStream(event)!
+    const body = await streamToArrayBuffer(stream, contentLength)
+
+    const mpu = await blob.resumeMultipartUpload(pathname, uploadId)
+
+    try {
+      return await mpu.uploadPart(partNumber, body)
+    } catch (e: any) {
+      throw createError({ status: 400, message: e.message })
+    }
+  }
+
+  const completeHandler = async (event: H3Event) => {
+    const { pathname } = await getValidatedRouterParams(event, z.object({
+      pathname: z.string().min(1)
+    }).parse)
+
+    const { uploadId } = await getValidatedQuery(event, z.object({
+      uploadId: z.string().min(1)
+    }).parse)
+
+    const { parts } = await readValidatedBody(event, z.object({
+      parts: z.array(z.object({
+        partNumber: z.number(),
+        etag: z.string()
+      }))
+    }).parse)
+
+    const mpu = await blob.resumeMultipartUpload(pathname, uploadId)
+    try {
+      const object = await mpu.complete(parts)
+      return object
+    } catch (e: any) {
+      throw createError({ status: 400, message: e.message })
+    }
+  }
+
+  const abortHandler = async (event: H3Event) => {
+    const { pathname } = await getValidatedRouterParams(event, z.object({
+      pathname: z.string().min(1)
+    }).parse)
+
+    const { uploadId } = await getValidatedQuery(event, z.object({
+      uploadId: z.string().min(1)
+    }).parse)
+
+    const mpu = await blob.resumeMultipartUpload(pathname, uploadId)
+
+    try {
+      await mpu.abort()
+    } catch (e: any) {
+      throw createError({ status: 400, message: e.message })
+    }
+  }
+
+  const handler = async (event: H3Event, options?: BlobMultipartOptions) => {
+    const method = event.method
+    const { action } = await getValidatedRouterParams(event, z.object({
+      action: z.enum(['create', 'upload', 'complete', 'abort'])
+    }).parse)
+
+    if (action === 'create' && method === 'POST') {
+      return {
+        action,
+        data: await createHandler(event, options)
+      }
+    }
+
+    if (action === 'upload' && method === 'PUT') {
+      return {
+        action,
+        data: await uploadHandler(event)
+      }
+    }
+
+    if (action === 'complete' && method === 'POST') {
+      return {
+        action,
+        data: await completeHandler(event)
+      }
+    }
+
+    if (action === 'abort' && method === 'DELETE') {
+      return {
+        action,
+        data: await abortHandler(event)
+      }
+    }
+
+    throw createError({ status: 405 })
+  }
+
+  return async (event: H3Event, options?: BlobMultipartOptions): Promise<HandleMPUResponse> => {
+    const result = await handler(event, options)
+
+    if (result.data) {
+      event.respondWith(Response.json(result.data))
+    } else {
+      sendNoContent(event)
+    }
+    return result as HandleMPUResponse
+  }
 }

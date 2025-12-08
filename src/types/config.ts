@@ -1,10 +1,14 @@
 import type { BuiltinDriverName } from 'unstorage'
+import type { FSDriverOptions } from '@nuxthub/core/blob/drivers/fs'
+import type { S3DriverOptions } from '@nuxthub/core/blob/drivers/s3'
+import type { VercelDriverOptions } from '@nuxthub/core/blob/drivers/vercel'
+import type { CloudflareDriverOptions } from '@nuxthub/core/blob/drivers/cloudflare'
 
 export interface HubConfig {
-  blob: boolean | BlobConfig
-  cache: boolean | CacheConfig
-  db: false | 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig
-  kv: boolean | KVConfig
+  blob: BlobConfig
+  cache: CacheConfig
+  db: DatabaseConfig
+  kv: KVConfig
   dir: string
   hosting: string
 }
@@ -66,35 +70,35 @@ export interface ModuleOptions {
   hosting?: string
 }
 
-export interface BlobConfig {
-  driver?: 's3' | 'vercel-blob' | 'cloudflare-r2-binding' | 'netlify-blobs' | 'azure-storage-blob' | 'uploadthing' | 'fs-lite' | 'fs'
-  [key: string]: any
-}
+// Blob driver configurations - extend from driver option types
+export type FSBlobConfig = { driver: 'fs' } & FSDriverOptions
+export type S3BlobConfig = { driver: 's3' } & S3DriverOptions
+export type VercelBlobConfig = { driver: 'vercel-blob' } & VercelDriverOptions
+export type CloudflareR2BlobConfig = { driver: 'cloudflare-r2' } & CloudflareDriverOptions
 
-export interface ResolvedBlobConfig extends BlobConfig {
-  driver: 's3' | 'vercel-blob' | 'cloudflare-r2-binding' | 'netlify-blobs' | 'azure-storage-blob' | 'uploadthing' | 'fs-lite' | 'fs'
-}
-export interface CacheConfig {
+export type BlobConfig = boolean | FSBlobConfig | S3BlobConfig | VercelBlobConfig | CloudflareR2BlobConfig
+export type ResolvedBlobConfig = FSBlobConfig | S3BlobConfig | VercelBlobConfig | CloudflareR2BlobConfig
+
+export type CacheConfig = boolean | {
   driver?: BuiltinDriverName
   [key: string]: any
 }
-
-export interface ResolvedCacheConfig {
-  // we add type string to allow for custom drivers set by nuxthub module for CF when kv: true
-  driver: BuiltinDriverName | string
-  [key: string]: any
-}
-
-export interface KVConfig {
-  driver?: BuiltinDriverName
-  [key: string]: any
-}
-
-export interface ResolvedKVConfig extends KVConfig {
+export type ResolvedCacheConfig = false | {
   driver: BuiltinDriverName
+  [key: string]: any
 }
 
-interface DatabaseConnection {
+export type KVConfig = boolean | {
+  driver?: BuiltinDriverName
+  [key: string]: any
+}
+
+export type ResolvedKVConfig = false & {
+  driver: BuiltinDriverName
+  [key: string]: any
+}
+
+type DatabaseConnection = {
   /**
    * Database connection URL
    */
@@ -145,7 +149,7 @@ interface DatabaseConnection {
   [key: string]: any
 }
 
-export interface DatabaseConfig {
+export type DatabaseConfig = false | 'postgresql' | 'sqlite' | 'mysql' | {
   /**
    * Database dialect
    */
@@ -179,7 +183,7 @@ export interface DatabaseConfig {
   applyMigrationsDuringBuild?: boolean
 }
 
-export interface ResolvedDatabaseConfig extends DatabaseConfig {
+export type ResolvedDatabaseConfig = false & {
   dialect: 'sqlite' | 'postgresql' | 'mysql'
   driver: 'better-sqlite3' | 'libsql' | 'bun-sqlite' | 'd1' | 'd1-http' | 'postgres-js' | 'pglite' | 'mysql2'
   connection: DatabaseConnection

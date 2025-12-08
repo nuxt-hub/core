@@ -19,6 +19,10 @@
       "types": "./dist/blob/lib/index.d.ts",
       "import": "./dist/blob/lib/index.mjs"
     },
+    "./blob/drivers/*": {
+      "types": "./dist/blob/lib/drivers/*.d.ts",
+      "import": "./dist/blob/lib/drivers/*.mjs"
+    },
     "./db": {
       "types": "./dist/db/lib/index.d.ts",
       "import": "./dist/db/lib/index.mjs"
