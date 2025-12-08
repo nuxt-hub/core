@@ -1,4 +1,4 @@
-import { blob } from 'hub:blob'
+import { blob, ensureBlob } from 'hub:blob'
 
 export default eventHandler(async (event) => {
   const { prefix } = getQuery(event)

@@ -82,15 +82,17 @@ export function setupBlob(nuxt: Nuxt, hub: HubConfig, deps: Record<string, strin
 
   const template = addTemplate({
     filename: 'hub/blob.mjs',
-    getContents: () => `import { createBlobStorage } from "@nuxthub/core/blob"
+    getContents: () => `import { createBlobStorage } from "@nuxthub/core/blob";
 import { createDriver } from "@nuxthub/core/blob/drivers/${driver}";
 
+export { ensureBlob } from "@nuxthub/core/blob";
 export const blob = createBlobStorage(createDriver(${JSON.stringify(driverOptions)}));
 `,
     write: true
   })
 
   addServerImports({ name: 'blob', from: 'hub:blob', meta: { description: `The Blob storage instance.` } })
+  addServerImports({ name: 'ensureBlob', from: 'hub:blob', meta: { description: `Ensure the blob is valid and meets the specified requirements.` } })
   addTypeTemplate({
     src: resolve('blob/runtime/blob.d.ts'),
     filename: 'hub/blob.d.ts'
