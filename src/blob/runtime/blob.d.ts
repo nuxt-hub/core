@@ -1,4 +1,4 @@
-import type { BlobStorage } from '../types/index'
+import type { BlobStorage } from '@nuxthub/core/blob'
 
 declare module 'hub:blob' {
   /**
