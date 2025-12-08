@@ -34,6 +34,17 @@ export function resolveKVConfig(hub: HubConfig): ResolvedKVConfig | false {
       url: process.env.REDIS_URL || process.env.KV_URL
     }) as ResolvedKVConfig
   }
+  // S3
+  if (process.env.S3_ACCESS_KEY_ID && process.env.S3_SECRET_ACCESS_KEY && process.env.S3_BUCKET && process.env.S3_REGION) {
+    return defu(userConfig, {
+      driver: 's3',
+      accessKeyId: process.env.S3_ACCESS_KEY_ID,
+      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+      bucket: process.env.S3_BUCKET,
+      region: process.env.S3_REGION,
+      endpoint: process.env.S3_ENDPOINT || undefined
+    }) as ResolvedKVConfig
+  }
 
   // Cloudflare KV
   if (hub.hosting.includes('cloudflare')) {

@@ -67,20 +67,22 @@ export interface ModuleOptions {
 }
 
 export interface BlobConfig {
-  driver?: BuiltinDriverName | string
+  driver?: 's3' | 'vercel-blob' | 'cloudflare-r2-binding' | 'netlify-blobs' | 'azure-storage-blob' | 'uploadthing' | 'fs-lite' | 'fs'
   [key: string]: any
 }
 
 export interface ResolvedBlobConfig extends BlobConfig {
-  driver: BuiltinDriverName | string
+  driver: 's3' | 'vercel-blob' | 'cloudflare-r2-binding' | 'netlify-blobs' | 'azure-storage-blob' | 'uploadthing' | 'fs-lite' | 'fs'
 }
 export interface CacheConfig {
-  driver?: BuiltinDriverName | string
+  driver?: BuiltinDriverName
   [key: string]: any
 }
 
-export interface ResolvedCacheConfig extends CacheConfig {
+export interface ResolvedCacheConfig {
+  // we add type string to allow for custom drivers set by nuxthub module for CF when kv: true
   driver: BuiltinDriverName | string
+  [key: string]: any
 }
 
 export interface KVConfig {
