@@ -3,7 +3,7 @@ import { joinRelativeURL } from 'ufo'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
 import { randomUUID } from 'uncrypto'
-import type { BlobDriver } from './types'
+import type { BlobDriver, BlobPutBody } from './types'
 import type { BlobListOptions, BlobListResult, BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobPutOptions, BlobUploadedPart } from '../../types'
 import { getContentType } from '../utils'
 
@@ -176,7 +176,7 @@ export function createDriver(options: FSDriverOptions): BlobDriver<FSDriverOptio
       }
     },
 
-    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options?: BlobPutOptions): Promise<BlobObject> {
+    async put(pathname: string, body: BlobPutBody, options?: BlobPutOptions): Promise<BlobObject> {
       await ensureBase()
 
       const fullPath = getFullPath(pathname)

@@ -1,8 +1,8 @@
 import type { BuiltinDriverName } from 'unstorage'
 import type { FSDriverOptions } from '@nuxthub/core/blob/drivers/fs'
 import type { S3DriverOptions } from '@nuxthub/core/blob/drivers/s3'
-import type { VercelDriverOptions } from '@nuxthub/core/blob/drivers/vercel'
-import type { CloudflareDriverOptions } from '@nuxthub/core/blob/drivers/cloudflare'
+import type { VercelDriverOptions } from '@nuxthub/core/blob/drivers/vercel-blob'
+import type { CloudflareDriverOptions } from '@nuxthub/core/blob/drivers/cloudflare-r2'
 
 export interface HubConfig {
   blob: BlobConfig

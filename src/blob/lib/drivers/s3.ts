@@ -1,5 +1,5 @@
 import { AwsClient } from 'aws4fetch'
-import type { BlobDriver } from './types'
+import type { BlobDriver, BlobPutBody } from './types'
 import type { BlobListOptions, BlobListResult, BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobPutOptions, BlobUploadedPart } from '../../types'
 import { getContentType } from '../utils'
 
@@ -153,12 +153,12 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
       return res.arrayBuffer()
     },
 
-    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, putOptions?: BlobPutOptions): Promise<BlobObject> {
-      const contentType = putOptions?.contentType || (body instanceof Blob ? body.type : undefined) || getContentType(pathname)
+    async put(pathname: string, body: BlobPutBody, putOptions?: BlobPutOptions): Promise<BlobObject> {
+      const contentType = putOptions?.contentType || (body instanceof File || body instanceof Blob ? body.type : undefined) || getContentType(pathname)
 
       // Convert body to ArrayBuffer for proper S3 signing (aws4fetch needs to hash the body)
       let processedBody: ArrayBuffer | string
-      if (body instanceof Blob) {
+      if (body instanceof File || body instanceof Blob) {
         processedBody = await body.arrayBuffer()
       } else if (body instanceof ReadableStream) {
         // ReadableStream must be converted to ArrayBuffer for S3 signing

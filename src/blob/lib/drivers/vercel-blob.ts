@@ -2,7 +2,7 @@ import { put as vercelPut, del as vercelDel, head as vercelHead, list as vercelL
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client'
 import type { PutBlobResult, ListBlobResultBlob } from '@vercel/blob'
 import { readBody, type H3Event } from 'h3'
-import type { BlobDriver } from './types'
+import type { BlobDriver, BlobPutBody } from './types'
 import type { BlobListOptions, BlobListResult, BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobPutOptions, BlobUploadedPart, HandleMPUResponse } from '../../types'
 import { getContentType } from '../utils'
 
@@ -78,7 +78,7 @@ export function createDriver(options: VercelDriverOptions = {}): BlobDriver<Verc
       }
     },
 
-    async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, putOptions?: BlobPutOptions): Promise<BlobObject> {
+    async put(pathname: string, body: BlobPutBody, putOptions?: BlobPutOptions): Promise<BlobObject> {
       const contentType = putOptions?.contentType || (body instanceof Blob ? body.type : undefined) || getContentType(pathname)
 
       const result = await vercelPut(pathname, body as any, {

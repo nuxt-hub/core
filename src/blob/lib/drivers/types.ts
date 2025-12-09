@@ -1,7 +1,7 @@
 import type { H3Event } from 'h3'
 import type { BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobListOptions, BlobListResult, BlobPutOptions, HandleMPUResponse } from '../../types'
 
-export type BlobPutBody = string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob
+export type BlobPutBody = string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob | File
 
 /**
  * Custom blob driver interface - replaces unstorage driver
