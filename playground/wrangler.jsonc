@@ -4,8 +4,9 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "playground",
-      "database_id": "adc66aba-ce5f-40bc-bffc-bc80eb17e0b7"
+      "database_id": "adc66aba-ce5f-40bc-bffc-bc80eb17e0b7",
+      "migrations_table": "_hub_migrations",
+      "migrations_dir": "server/db/migrations"
     }
   ],
   "r2_buckets": [

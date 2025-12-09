@@ -1,5 +1,5 @@
 import { writeFile, readFile, mkdir } from 'node:fs/promises'
-import { defineNuxtModule, createResolver, logger, addTemplate } from '@nuxt/kit'
+import { defineNuxtModule, logger, addTemplate } from '@nuxt/kit'
 import { join, relative, resolve as resolveFs } from 'pathe'
 import { defu } from 'defu'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
@@ -34,8 +34,6 @@ export default defineNuxtModule<ModuleOptions>({
     }
 
     const rootDir = nuxt.options.rootDir
-    const { resolve } = createResolver(import.meta.url)
-
     const hosting = process.env.NITRO_PRESET || nuxt.options.nitro.preset || provider
     const hub = defu(options, {
       // Local storage
@@ -88,7 +86,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}
     nuxt.options.nitro.experimental.asyncContext = true
 
-    if (nuxt.options.nitro.preset?.includes('cloudflare') || hub.hosting.includes('cloudflare')) {
+    if (!nuxt.options.dev && (nuxt.options.nitro.preset?.includes('cloudflare') || hub.hosting.includes('cloudflare'))) {
       // Enable Cloudflare Node.js compatibility
       nuxt.options.nitro.cloudflare ||= {}
       nuxt.options.nitro.cloudflare.nodeCompat = true
