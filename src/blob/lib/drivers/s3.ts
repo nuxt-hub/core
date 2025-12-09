@@ -2,6 +2,7 @@ import { AwsClient } from 'aws4fetch'
 import type { BlobDriver, BlobPutBody } from './types'
 import type { BlobListOptions, BlobListResult, BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobPutOptions, BlobUploadedPart } from '../../types'
 import { getContentType } from '../utils'
+import { camelCase, snakeCase } from 'scule'
 
 export interface S3DriverOptions {
   accessKeyId: string
@@ -183,7 +184,7 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
       // Add custom metadata as x-amz-meta-* headers
       if (putOptions?.customMetadata) {
         for (const [key, value] of Object.entries(putOptions.customMetadata)) {
-          headers[`x-amz-meta-${key.toLowerCase()}`] = value
+          headers[`x-amz-meta-${snakeCase(key)}`] = encodeURIComponent(value)
         }
       }
 
@@ -232,8 +233,8 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
       const customMetadata: Record<string, string> = {}
       res.headers.forEach((value, key) => {
         if (key.toLowerCase().startsWith('x-amz-meta-')) {
-          const metaKey = key.substring('x-amz-meta-'.length)
-          customMetadata[metaKey] = value
+          const metaKey = camelCase(key.substring('x-amz-meta-'.length))
+          customMetadata[metaKey] = decodeURIComponent(value)
         }
       })
 
@@ -316,7 +317,7 @@ const buildCreateHeaders = (opts?: BlobMultipartOptions): Record<string, string>
   if (opts?.contentType) headers['Content-Type'] = opts.contentType
   if (opts?.customMetadata) {
     for (const [k, v] of Object.entries(opts.customMetadata)) {
-      headers[`x-amz-meta-${k.toLowerCase()}`] = String(v)
+      headers[`x-amz-meta-${snakeCase(k)}`] = encodeURIComponent(v)
     }
   }
   return headers
