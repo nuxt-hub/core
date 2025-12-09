@@ -115,6 +115,7 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
       }
 
       const xml = await res.text()
+      console.log('xml', xml)
       const { objects, isTruncated, nextToken, prefixes } = parseListResponse(xml)
 
       return {
@@ -156,8 +157,28 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
     async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, putOptions?: BlobPutOptions): Promise<BlobObject> {
       const contentType = putOptions?.contentType || (body instanceof Blob ? body.type : undefined) || getContentType(pathname)
 
+      // Convert body to ArrayBuffer for proper S3 signing (aws4fetch needs to hash the body)
+      let processedBody: ArrayBuffer | string
+      if (body instanceof Blob) {
+        processedBody = await body.arrayBuffer()
+      } else if (body instanceof ReadableStream) {
+        // ReadableStream must be converted to ArrayBuffer for S3 signing
+        const response = new Response(body)
+        processedBody = await response.arrayBuffer()
+      } else if (ArrayBuffer.isView(body)) {
+        processedBody = body.buffer.slice(body.byteOffset, body.byteOffset + body.byteLength) as ArrayBuffer
+      } else {
+        processedBody = body as ArrayBuffer | string
+      }
+
+      // Calculate content length
+      const contentLength = typeof processedBody === 'string'
+        ? new TextEncoder().encode(processedBody).length
+        : processedBody.byteLength
+
       const headers: Record<string, string> = {
-        'Content-Type': contentType
+        'Content-Type': contentType,
+        'Content-Length': String(contentLength)
       }
 
       // Add custom metadata as x-amz-meta-* headers
@@ -165,12 +186,6 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
         for (const [key, value] of Object.entries(putOptions.customMetadata)) {
           headers[`x-amz-meta-${key.toLowerCase()}`] = value
         }
-      }
-
-      // Convert Blob to ArrayBuffer for S3
-      let processedBody: BodyInit = body as BodyInit
-      if (body instanceof Blob) {
-        processedBody = await body.arrayBuffer()
       }
 
       const res = await aws.fetch(`${bucketUrl}/${encodeURI(decodeURIComponent(pathname))}`, {
@@ -186,24 +201,10 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
 
       const etag = res.headers.get('ETag') || ''
 
-      // Calculate size
-      let size: number
-      if (typeof body === 'string') {
-        size = new TextEncoder().encode(body).length
-      } else if (body instanceof Blob) {
-        size = body.size
-      } else if (body instanceof ArrayBuffer) {
-        size = body.byteLength
-      } else if (ArrayBuffer.isView(body)) {
-        size = body.byteLength
-      } else {
-        size = 0
-      }
-
       return {
         pathname,
         contentType,
-        size,
+        size: contentLength,
         httpEtag: etag,
         uploadedAt: new Date(),
         httpMetadata: {},
