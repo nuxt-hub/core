@@ -115,7 +115,6 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
       }
 
       const xml = await res.text()
-      console.log('xml', xml)
       const { objects, isTruncated, nextToken, prefixes } = parseListResponse(xml)
 
       return {
