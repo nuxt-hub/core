@@ -5,10 +5,10 @@ import type { VercelDriverOptions } from '@nuxthub/core/blob/drivers/vercel-blob
 import type { CloudflareDriverOptions } from '@nuxthub/core/blob/drivers/cloudflare-r2'
 
 export interface HubConfig {
-  blob: BlobConfig
-  cache: CacheConfig
-  db: DatabaseConfig
-  kv: KVConfig
+  blob: boolean | BlobConfig
+  cache: boolean | CacheConfig
+  db: false | 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig
+  kv: boolean | KVConfig
   dir: string
   hosting: string
 }
@@ -79,23 +79,21 @@ export type CloudflareR2BlobConfig = { driver: 'cloudflare-r2' } & CloudflareDri
 export type BlobConfig = boolean | FSBlobConfig | S3BlobConfig | VercelBlobConfig | CloudflareR2BlobConfig
 export type ResolvedBlobConfig = FSBlobConfig | S3BlobConfig | VercelBlobConfig | CloudflareR2BlobConfig
 
-export type CacheConfig = boolean | {
+export type CacheConfig = {
   driver?: BuiltinDriverName
   [key: string]: any
 }
-export type ResolvedCacheConfig = false | {
+export type ResolvedCacheConfig = CacheConfig & {
   driver: BuiltinDriverName
-  [key: string]: any
 }
 
-export type KVConfig = boolean | {
+export type KVConfig = {
   driver?: BuiltinDriverName
   [key: string]: any
 }
 
-export type ResolvedKVConfig = false & {
+export type ResolvedKVConfig = KVConfig & {
   driver: BuiltinDriverName
-  [key: string]: any
 }
 
 type DatabaseConnection = {
@@ -149,7 +147,7 @@ type DatabaseConnection = {
   [key: string]: any
 }
 
-export type DatabaseConfig = false | 'postgresql' | 'sqlite' | 'mysql' | {
+export type DatabaseConfig = {
   /**
    * Database dialect
    */
@@ -183,7 +181,7 @@ export type DatabaseConfig = false | 'postgresql' | 'sqlite' | 'mysql' | {
   applyMigrationsDuringBuild?: boolean
 }
 
-export type ResolvedDatabaseConfig = false & {
+export type ResolvedDatabaseConfig = DatabaseConfig & {
   dialect: 'sqlite' | 'postgresql' | 'mysql'
   driver: 'better-sqlite3' | 'libsql' | 'bun-sqlite' | 'd1' | 'd1-http' | 'postgres-js' | 'pglite' | 'mysql2'
   connection: DatabaseConnection

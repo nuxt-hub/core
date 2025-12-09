@@ -3,7 +3,7 @@ import { addTypeTemplate, addServerImports, addTemplate } from '@nuxt/kit'
 import { resolve, logWhenReady } from '../utils'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig, KVConfig, ResolvedKVConfig } from '@nuxthub/core'
+import type { HubConfig, ResolvedKVConfig } from '@nuxthub/core'
 
 /**
  * Resolve KV configuration from boolean or object format
@@ -11,17 +11,14 @@ import type { HubConfig, KVConfig, ResolvedKVConfig } from '@nuxthub/core'
 export function resolveKVConfig(hub: HubConfig): ResolvedKVConfig | false {
   if (!hub.kv) return false
 
-  // Start with user-provided config if it's an object
-  const userConfig = typeof hub.kv === 'object' ? hub.kv : {} as KVConfig
-
   // If driver is already specified by user, use it with their options
-  if (userConfig.driver) {
-    return userConfig as ResolvedKVConfig
+  if (typeof hub.kv === 'object' && 'driver' in hub.kv) {
+    return hub.kv as ResolvedKVConfig
   }
 
   // Upstash Redis
   if ((process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) || (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)) {
-    return defu(userConfig, {
+    return defu(hub.kv, {
       driver: 'upstash',
       url: process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL,
       token: process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN
@@ -29,14 +26,14 @@ export function resolveKVConfig(hub: HubConfig): ResolvedKVConfig | false {
   }
   // Redis
   if (process.env.REDIS_URL || process.env.KV_URL?.startsWith('rediss://')) {
-    return defu(userConfig, {
+    return defu(hub.kv, {
       driver: 'redis',
       url: process.env.REDIS_URL || process.env.KV_URL
     }) as ResolvedKVConfig
   }
   // S3
   if (process.env.S3_ACCESS_KEY_ID && process.env.S3_SECRET_ACCESS_KEY && process.env.S3_BUCKET && process.env.S3_REGION) {
-    return defu(userConfig, {
+    return defu(hub.kv, {
       driver: 's3',
       accessKeyId: process.env.S3_ACCESS_KEY_ID,
       secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
@@ -48,7 +45,7 @@ export function resolveKVConfig(hub: HubConfig): ResolvedKVConfig | false {
 
   // Cloudflare KV
   if (hub.hosting.includes('cloudflare')) {
-    return defu(userConfig, {
+    return defu(hub.kv, {
       driver: 'cloudflare-kv-binding',
       binding: 'KV'
     }) as ResolvedKVConfig
@@ -56,13 +53,13 @@ export function resolveKVConfig(hub: HubConfig): ResolvedKVConfig | false {
 
   // Deno KV
   if (hub.hosting.includes('deno')) {
-    return defu(userConfig, {
+    return defu(hub.kv, {
       driver: 'deno-kv'
     }) as ResolvedKVConfig
   }
 
   // Default: local file storage
-  return defu(userConfig, {
+  return defu(hub.kv, {
     driver: 'fs-lite',
     base: '.data/kv'
   }) as ResolvedKVConfig
@@ -72,7 +69,7 @@ export function setupKV(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>
   hub.kv = resolveKVConfig(hub)
   if (!hub.kv) return
 
-  const kvConfig = hub.kv as KVConfig
+  const kvConfig = hub.kv as ResolvedKVConfig
 
   // Verify dependencies
   if (kvConfig.driver === 'upstash' && !deps['@upstash/redis']) {

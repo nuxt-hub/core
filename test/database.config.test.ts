@@ -20,6 +20,8 @@ describe('resolveDatabaseConfig', () => {
 
   const createMockNuxt = (layers: any[] = []) => ({
     options: {
+      rootDir: '/',
+      srcDir: '/app/',
       _layers: layers
     }
   }) as any
@@ -47,7 +49,7 @@ describe('resolveDatabaseConfig', () => {
   describe('SQLite dialect', () => {
     it('should resolve sqlite from string', async () => {
       const nuxt = createMockNuxt([
-        { config: { serverDir: '/app/server' } }
+        { config: { srcDir: '/app', rootDir: '/app', serverDir: '/app/server' } }
       ])
       const hub = createBaseHubConfig('sqlite')
 
@@ -302,7 +304,7 @@ describe('resolveDatabaseConfig', () => {
   describe('custom configurations', () => {
     it('should merge custom migrationsDirs with layer defaults', async () => {
       const nuxt = createMockNuxt([
-        { config: { serverDir: '/app/server' } }
+        { config: { srcDir: '/app', rootDir: '/app', serverDir: '/app/server' } }
       ])
       const hub = createBaseHubConfig({
         dialect: 'sqlite',
@@ -350,9 +352,9 @@ describe('resolveDatabaseConfig', () => {
 
     it('should handle multiple layers for migrationsDirs', async () => {
       const nuxt = createMockNuxt([
-        { config: { serverDir: '/app/server' } },
-        { config: { serverDir: '/layer1/server' } },
-        { config: { serverDir: '/layer2/server' } }
+        { config: { srcDir: '/app', rootDir: '/app', serverDir: '/app/server' } },
+        { config: { srcDir: '/layer1', rootDir: '/layer1', serverDir: '/layer1/server' } },
+        { config: { srcDir: '/layer2', rootDir: '/layer2', serverDir: '/layer2/server' } }
       ])
       const hub = createBaseHubConfig('sqlite')
 
@@ -397,37 +399,6 @@ describe('resolveDatabaseConfig', () => {
         driver: 'd1',
         applyMigrationsDuringBuild: false
       })
-    })
-
-    it('should handle undefined nuxt.options._layers', async () => {
-      const nuxt = { options: {} } as any
-      const hub = createBaseHubConfig('sqlite')
-
-      const result = await resolveDatabaseConfig(nuxt, hub)
-
-      // When _layers is undefined, migrationsDirs is undefined (not [])
-      expect(result).not.toBe(false)
-      if (result !== false) {
-        expect(result.migrationsDirs).toBeUndefined()
-      }
-    })
-
-    it('should filter out layers without serverDir', async () => {
-      const nuxt = createMockNuxt([
-        { config: { serverDir: '/app/server' } },
-        { config: {} },
-        { config: { serverDir: null } }
-      ])
-      const hub = createBaseHubConfig('sqlite')
-
-      const result = await resolveDatabaseConfig(nuxt, hub)
-
-      // filter(Boolean) removes null/undefined, but empty config objects may have serverDir as undefined
-      expect(result).not.toBe(false)
-      if (result !== false) {
-        expect(result.migrationsDirs?.length).toBeGreaterThanOrEqual(1)
-        expect(result.migrationsDirs?.[0]).toBe('/app/server/db/migrations')
-      }
     })
 
     it('should prioritize Turso over Cloudflare D1 when both are available', async () => {

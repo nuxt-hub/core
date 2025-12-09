@@ -21,7 +21,7 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
 
   let config = typeof hub.db === 'string' ? { dialect: hub.db } : hub.db
   config = defu(config, {
-    migrationsDirs: nuxt.options._layers?.map(layer => join(layer.config.serverDir!, 'db/migrations')).filter(Boolean),
+    migrationsDirs: getLayerDirectories(nuxt).map(layer => join(layer.server, 'db/migrations')),
     queriesPaths: [],
     applyMigrationsDuringBuild: true
   })
@@ -144,7 +144,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
   const dialect = hub.db.dialect
 
   const getSchemaPaths = async () => {
-    const schemaPatterns = getLayerDirectories().map(layer => [
+    const schemaPatterns = getLayerDirectories(nuxt).map(layer => [
       resolveFs(layer.server, 'db/schema.ts'),
       resolveFs(layer.server, `db/schema.${dialect}.ts`),
       resolveFs(layer.server, 'db/schema/*.ts')
@@ -167,7 +167,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
   // Watch schema files for changes
   if (nuxt.options.dev && !nuxt.options._prepare) {
     // chokidar doesn't support glob patterns, so we need to watch the server/db directories
-    const watchDirs = getLayerDirectories().map(layer => resolveFs(layer.server, 'db'))
+    const watchDirs = getLayerDirectories(nuxt).map(layer => resolveFs(layer.server, 'db'))
     const watcher = chokidar.watch(watchDirs, {
       ignoreInitial: true
     })
