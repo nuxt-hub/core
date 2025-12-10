@@ -88,7 +88,7 @@ const logoContextMenuItems = [
       <UContextMenu :items="logoContextMenuItems" size="xs">
         <NuxtLink to="/" class="inline-flex items-end gap-2" aria-label="Back to home">
           <HubLogo ref="logo" class="h-6" />
-          <UBadge label="beta" variant="subtle" size="sm" class="-mb-[2px] font-semibold text-[12px]/3" />
+          <VersionMenu />
         </NuxtLink>
       </UContextMenu>
     </template>
