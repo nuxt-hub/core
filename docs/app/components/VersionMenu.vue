@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const items = computed(() => {
   return [
-    { label: `v0.19`, active: true, color: 'primary' as const, checked: true, type: 'checkbox' as const },
+    { label: `v0.10`, active: true, color: 'primary' as const, checked: true, type: 'checkbox' as const },
     { label: 'v0.9', to: 'https://legacy.hub.nuxt.com' }
   ]
 })
