@@ -20,7 +20,7 @@ authors:
 This feature is available in [`@nuxthub/core >= v0.10.0`](https://github.com/nuxt-hub/core/releases/tag/v0.10.0).
 ::
 
-Following the [acquisition of NuxtLabs by Vercel](https://nuxtlabs.com), we started working on enabling you to build full-stack Nuxt applications that work across multiple hosting providers. Today, we're excited to announce that **NuxtHub is now multi-vendor**.
+Since [Vercel's acquisition of NuxtLabs](https://nuxtlabs.com), we've been working to let you build full-stack Nuxt applications across multiple hosting providers. Today, we're excited to announce that **NuxtHub is now multi-vendor**.
 
 ## Deploy Anywhere
 
@@ -138,8 +138,8 @@ As we move toward a fully self-hosted, multi-cloud future, we're making importan
 
 We've added a **guided migration tool** directly in [NuxtHub Admin](https://admin.hub.nuxt.com). This tool helps you:
 
-- **Stay on Cloudflare**: Migrate your project to a self-hosted Cloudflare setup with `wrangler.jsonc`
-- **Move to Vercel**: Transition your project to Vercel with the appropriate storage integrations
+- **Stay on Cloudflare**: Keep your project on Cloudflare with `wrangler.jsonc`
+- **Move to Vercel**: Migrate your project and optionally database, KV, and blob storage to Vercel
 
 The migration tool walks you through each step, ensuring your data and configuration are preserved.
 
@@ -151,9 +151,9 @@ During this period:
 - You **won't be able** to create new projects on NuxtHub Admin
 - You **will still be able** to deploy existing projects
 
-### CLI Deprecation
+### CLI & Action Deprecation
 
-Starting **January 31st, 2026**, new deployments using the `nuxthub` CLI will no longer work. We recommend switching to your provider's native deployment method:
+Starting **January 31st, 2026**, new deployments using the `nuxthub` CLI and GitHub Action will no longer work. We recommend switching to your provider's native deployment method:
 
 - **Cloudflare**: Use [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/) or [Pages CI](https://developers.cloudflare.com/pages/configuration/git-integration/)
 - **Vercel**: Use the [Vercel CLI](https://vercel.com/docs/cli) or [Git integration](https://vercel.com/docs/deployments/git)
@@ -165,6 +165,6 @@ You can visit [legacy.hub.nuxt.com](https://legacy.hub.nuxt.com) to access the l
 
 ## Looking Forward
 
-This release represents a major step in NuxtHub's evolution. By embracing a multi-cloud approach, we're giving you the freedom to choose the infrastructure that best fits your needs — without sacrificing the developer experience that makes NuxtHub special.
+This release represents a major step in NuxtHub's evolution. With v0.10, NuxtHub works wherever you deploy. Pick the cloud that makes sense for your project without sacrificing the developer experience that makes NuxtHub special.
 
 Thank you for being part of this journey. We can't wait to see what you build with NuxtHub v0.10.
