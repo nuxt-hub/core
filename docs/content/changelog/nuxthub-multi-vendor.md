@@ -138,8 +138,8 @@ As we move toward a fully self-hosted, multi-cloud future, we're making importan
 
 We've added a **guided migration tool** directly in [NuxtHub Admin](https://admin.hub.nuxt.com). This tool helps you:
 
-- **Stay on Cloudflare**: Keep your project on Cloudflare with `wrangler.jsonc`
-- **Move to Vercel**: Migrate your project and optionally database, KV, and blob storage to Vercel
+- **Stay on Cloudflare**: Keep your project on Cloudflare with current bindings using `wrangler.jsonc`
+- **Move to Vercel**: Migrate your project and optionally migrate the database, KV, and blob storage to Vercel
 
 The migration tool walks you through each step, ensuring your data and configuration are preserved.
 

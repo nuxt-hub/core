@@ -24,11 +24,11 @@ const title = post.value.seo?.title || post.value.title
 const description = post.value.seo?.description || post.value.description
 
 useSeoMeta({
-  titleTemplate: '%s · NuxtHub Blog',
+  titleTemplate: '%s · NuxtHub Changelog',
   title,
   description,
   ogDescription: description,
-  ogTitle: `${title} · NuxtHub Blog`
+  ogTitle: `${title} · NuxtHub Changelog`
 })
 
 if (post.value.image && import.meta.server) {
