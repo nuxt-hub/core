@@ -102,7 +102,7 @@ const links = computed(() => [
     <UBanner
       id="nuxthub-multi-vendor"
       title="NuxtHub multi-vendor is now available"
-      icon="i-simple-icons-vercel"
+      icon="i-lucide-globe"
       to="https://hub.nuxt.com/changelog/nuxthub-multi-vendor"
       close
       :actions="[
