@@ -1,10 +1,10 @@
-<script setup>
+<script setup lang="ts">
 const loading = ref(false)
 const newTodo = ref('')
 const newTodoInput = ref(null)
 
 const toast = useToast()
-const { data: todos } = await useFetch('/api/todos', {
+const { data: todos } = await useFetch<Todo[]>('/api/todos', {
   deep: true
 })
 
@@ -21,15 +21,15 @@ async function addTodo() {
         completed: 0
       }
     })
-    todos.value.push(todo)
+    todos.value!.push(todo)
     toast.add({ title: `Todo "${todo.title}" created.` })
     newTodo.value = ''
     nextTick(() => {
       newTodoInput.value?.input?.focus()
     })
-  } catch (err) {
+  } catch (err: any) {
     const title = err.data?.data?.issues?.map(issue => issue.message).join('\n') || err.message
-    toast.add({ title, color: 'red' })
+    toast.add({ title, color: 'error' })
   }
   loading.value = false
 }
@@ -54,7 +54,7 @@ async function deleteTodo(todo) {
 <template>
   <UCard>
     <div class="flex items-center gap-2">
-      <UButtonGroup class="flex-1" as="form" @submit.prevent="addTodo">
+      <UFieldGroup class="flex-1" as="form" @submit.prevent="addTodo">
         <UInput
           ref="newTodoInput"
           v-model="newTodo"
@@ -67,7 +67,7 @@ async function deleteTodo(todo) {
         />
 
         <UButton type="submit" icon="i-lucide-plus" label="Add" :loading="loading" :disabled="newTodo.trim().length === 0" />
-      </UButtonGroup>
+      </UFieldGroup>
     </div>
 
     <ul v-if="todos?.length" class="divide-y divide-gray-200 dark:divide-gray-800 mt-4">

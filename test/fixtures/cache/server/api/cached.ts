@@ -1,4 +1,4 @@
-import { defineCachedEventHandler } from '#imports'
+import { defineCachedEventHandler } from 'nitropack/runtime'
 
 export default defineCachedEventHandler(async () => {
   return { hello: 'world' }

@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import * as z from 'zod'
 
 // Used for the /api/chatroom endpoint
 export default defineEventHandler(async (event) => {

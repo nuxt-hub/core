@@ -1,16 +1,12 @@
 <script setup lang="ts">
 const links = [
   {
-    label: 'Terms',
-    to: 'https://admin.hub.nuxt.com/terms',
+    label: 'Report a bug',
+    to: 'https://github.com/nuxt-hub/core/issues/new/choose',
     target: '_blank'
   }, {
-    label: 'Privacy',
-    to: 'https://admin.hub.nuxt.com/privacy',
-    target: '_blank'
-  }, {
-    label: 'Status',
-    to: 'https://status.hub.nuxt.com',
+    label: 'Star on GitHub',
+    to: 'https://github.com/nuxt-hub/core',
     target: '_blank'
   }
 ]
@@ -19,7 +15,7 @@ const links = [
 <template>
   <UFooter>
     <template #left>
-      <span class="inline text-sm">© {{ new Date().getFullYear() }} <a href="https://nuxtlabs.com" target="_blank" class="text-highlighted hover:underline underline-offset-4">NuxtLabs</a></span>
+      <span class="inline text-sm">Published under <a href="https://github.com/nuxt-hub/core/tree/main/LICENSE" target="_blank" class="text-highlighted hover:underline underline-offset-4">MIT license</a></span>
     </template>
 
     <UNavigationMenu :items="links" variant="link" />

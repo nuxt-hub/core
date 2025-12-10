@@ -15,17 +15,9 @@ const links = computed(() => [
     to: '/templates',
     icon: 'i-lucide-panels-top-left'
   }, {
-    label: 'Pricing',
-    to: '/pricing',
-    icon: 'i-lucide-credit-card'
-  }, {
     label: 'Changelog',
     to: '/changelog',
     icon: 'i-lucide-megaphone'
-  }, {
-    label: 'Blog',
-    to: '/blog',
-    icon: 'i-lucide-newspaper'
   }
 ])
 
@@ -44,21 +36,6 @@ const navLinks = computed(() => links.value.map((link) => {
     icon: link.icon
   }
 }))
-const ready = ref(false)
-const authenticated = ref(false)
-onMounted(async () => {
-  const endpoint = import.meta.dev ? 'http://localhost:3000/api/authenticated' : 'https://admin.hub.nuxt.com/api/authenticated'
-  await $fetch(endpoint, {
-    credentials: 'include'
-  }).then((state: { authenticated: boolean }) => {
-    authenticated.value = state.authenticated
-  }).catch(() => {
-    authenticated.value = false
-  })
-  nextTick(() => {
-    ready.value = true
-  })
-})
 
 const { copy } = useClipboard()
 const toast = useToast()
@@ -88,7 +65,7 @@ const logoContextMenuItems = [
       <UContextMenu :items="logoContextMenuItems" size="xs">
         <NuxtLink to="/" class="inline-flex items-end gap-2" aria-label="Back to home">
           <HubLogo ref="logo" class="h-6" />
-          <UBadge label="beta" variant="subtle" size="sm" class="-mb-[2px] font-semibold text-[12px]/3" />
+          <VersionMenu />
         </NuxtLink>
       </UContextMenu>
     </template>
@@ -96,13 +73,12 @@ const logoContextMenuItems = [
     <UNavigationMenu :items="links.map(({ icon, ...link }) => link)" variant="link" :ui="{ link: 'text-highlighted hover:text-primary data-active:text-primary' }" />
 
     <template #right>
-      <div class="flex items-center gap-2 transition-opacity duration-300" :class="[ready ? 'opacity-100' : 'opacity-0']">
+      <div class="flex items-center gap-2">
         <UTooltip text="Search" :kbds="['meta', 'K']" :popper="{ strategy: 'absolute' }">
-          <UContentSearchButton :label="null" size="sm" />
+          <UContentSearchButton :label="null" />
         </UTooltip>
-        <UButton v-if="ready && !authenticated" size="sm" label="Log in" color="neutral" variant="subtle" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" class="hidden sm:inline-flex" external />
-        <UButton v-if="ready && !authenticated" size="sm" label="Sign up" color="neutral" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="hidden sm:inline-flex" external />
-        <UButton v-if="ready && authenticated" size="sm" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" class="hidden sm:inline-flex" external />
+        <UColorModeButton />
+        <UButton to="https://github.com/nuxt-hub/core" target="_blank" icon="i-simple-icons-github" variant="ghost" color="neutral" />
       </div>
     </template>
 
@@ -111,9 +87,7 @@ const logoContextMenuItems = [
 
       <div class="flex flex-col gap-y-2 mt-4">
         <USeparator class="mb-4" />
-        <UButton v-if="ready && !authenticated" label="Log in" color="neutral" variant="subtle" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=login" class="flex justify-center sm:hidden" external />
-        <UButton v-if="ready && !authenticated" label="Sign up" color="neutral" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=signup" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
-        <UButton v-if="ready && authenticated" label="Dashboard" to="https://admin.hub.nuxt.com/?utm_source=hub-docs&utm_medium=header&utm_campaign=dashboard" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
+        <UButton label="Get started" color="neutral" to="/docs/getting-started/installation" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
       </div>
     </template>
   </UHeader>

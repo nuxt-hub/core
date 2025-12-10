@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { splitSqlQueries } from '~/src/runtime/database/server/utils/migrations/helpers'
+import {
+  splitSqlQueries,
+  getMigrationMetadata
+} from '../src/db/lib'
 
 describe('splitSqlQueries', () => {
   it('Should split minified sql', () => {
@@ -224,5 +227,61 @@ describe('splitSqlQueries', () => {
     `
     const queries = splitSqlQueries(sqlFileContent)
     expect(queries).toHaveLength(5)
+  })
+})
+
+describe('getMigrationMetadata', () => {
+  it('should extract metadata from generic migration file', () => {
+    const result = getMigrationMetadata('0001_create-todos.sql')
+    expect(result).toEqual({
+      filename: '0001_create-todos.sql',
+      name: '0001_create-todos',
+      dialect: undefined
+    })
+  })
+
+  it('should extract metadata from PostgreSQL-specific migration file', () => {
+    const result = getMigrationMetadata('0001_create-todos.postgresql.sql')
+    expect(result).toEqual({
+      filename: '0001_create-todos.postgresql.sql',
+      name: '0001_create-todos',
+      dialect: 'postgresql'
+    })
+  })
+
+  it('should extract metadata from SQLite-specific migration file', () => {
+    const result = getMigrationMetadata('0001_create-todos.sqlite.sql')
+    expect(result).toEqual({
+      filename: '0001_create-todos.sqlite.sql',
+      name: '0001_create-todos',
+      dialect: 'sqlite'
+    })
+  })
+
+  it('should extract metadata from MySQL-specific migration file', () => {
+    const result = getMigrationMetadata('0001_create-todos.mysql.sql')
+    expect(result).toEqual({
+      filename: '0001_create-todos.mysql.sql',
+      name: '0001_create-todos',
+      dialect: 'mysql'
+    })
+  })
+
+  it('should handle complex migration names', () => {
+    const result = getMigrationMetadata('2024-10-15_add-user-indexes.postgresql.sql')
+    expect(result).toEqual({
+      filename: '2024-10-15_add-user-indexes.postgresql.sql',
+      name: '2024-10-15_add-user-indexes',
+      dialect: 'postgresql'
+    })
+  })
+
+  it('should handle complex generic migration names', () => {
+    const result = getMigrationMetadata('2024-10-15_add-user-indexes.sql')
+    expect(result).toEqual({
+      filename: '2024-10-15_add-user-indexes.sql',
+      name: '2024-10-15_add-user-indexes',
+      dialect: undefined
+    })
   })
 })

@@ -1,8 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'docs',
-  primary: 'green',
-  heroBackground: 'opacity-30'
+  layout: 'docs'
 })
 
 const route = useRoute()
@@ -21,13 +19,13 @@ const { data: surround } = await useAsyncData(`${route.path}-surround`, () => {
 
 useSeoMeta({
   titleTemplate: `%s · ${seo?.siteName}`,
-  title: page.value.title,
-  ogTitle: `${page.value.title} · ${seo?.siteName}`,
-  description: page.value.description,
-  ogDescription: page.value.description
+  title: page.value.seo.title,
+  ogTitle: `${page.value.seo.title} · ${seo?.siteName}`,
+  description: page.value.seo.description,
+  ogDescription: page.value.seo.description
 })
 
-defineOgImageComponent('Docs', {
+import.meta.server && defineOgImageComponent('Docs', {
   category: 'Docs'
 })
 </script>

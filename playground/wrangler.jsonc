@@ -1,0 +1,37 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "playground",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_id": "adc66aba-ce5f-40bc-bffc-bc80eb17e0b7",
+      "migrations_table": "_hub_migrations",
+      "migrations_dir": "server/db/migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "BLOB",
+      "bucket_name": "playground"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "919a41f11e5649deace923de93d8d9ec"
+    },
+    {
+      "binding": "CACHE",
+      "id": "c59a5cea9d0f44ad92b92e328c7e8b67"
+    }
+  ],
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "invocation_logs": true,
+      "persist": true
+    }
+  }
+}
+

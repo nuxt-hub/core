@@ -1,7 +1,6 @@
 # Dependencies
 node_modules
 
-
 # Temp directories
 .temp
 .tmp
@@ -13,6 +12,7 @@ node_modules
 
 # Generated dirs
 dist
+cli/dist
 
 # Nuxt
 .nuxt
@@ -54,3 +54,10 @@ Temporary Items
 .apdisk
 
 *.tgz
+
+playground/.data
+test/fixtures/basic/.data
+test/fixtures/kv/.data
+test/fixtures/blob/.data
+test/fixtures/openapi/.data
+test/fixtures/cache/.data

@@ -1,25 +1,9 @@
 <script setup lang="ts">
-const appConfig = useAppConfig()
-const route = useRoute()
 const { seo } = useAppConfig()
-const { isLoading } = useLoadingIndicator()
-
-const primary = (route.meta?.primary as string) || 'green'
-appConfig.ui.colors.primary = primary
-watch(() => route.meta?.primary, (primary: string) => {
-  setTimeout(() => {
-    appConfig.ui.colors.primary = primary || 'green'
-  }, 40)
-})
-const heroBackgroundClass = computed(() => route.meta?.heroBackground || '')
-
-const appear = ref(false)
-const appeared = ref(false)
 
 const { data: navigation } = await useAsyncData('navigation', () => {
   return Promise.all([
     queryCollectionNavigation('docs'),
-    queryCollectionNavigation('blog'),
     queryCollectionNavigation('changelog')
   ])
 }, {
@@ -28,7 +12,6 @@ const { data: navigation } = await useAsyncData('navigation', () => {
 const { data: files } = useLazyAsyncData('search', () => {
   return Promise.all([
     queryCollectionSearchSections('docs'),
-    queryCollectionSearchSections('blog'),
     queryCollectionSearchSections('changelog')
   ])
 }, {
@@ -58,15 +41,6 @@ useSeoMeta({
 
 provide('navigation', navigation)
 
-onMounted(() => {
-  setTimeout(() => {
-    appear.value = true
-    setTimeout(() => {
-      appeared.value = true
-    }, 1000)
-  }, 0)
-})
-
 const links = computed(() => [
   ...navigation.value.map(item => ({
     label: item.title,
@@ -74,11 +48,6 @@ const links = computed(() => [
     to: item.path === '/docs' ? '/docs/getting-started' : item.path
   })),
   {
-    label: 'NuxtHub Admin',
-    to: 'https://admin.hub.nuxt.com',
-    target: '_blank',
-    icon: 'i-simple-icons-nuxtdotjs'
-  }, {
     label: 'nuxt-hub/core',
     to: 'https://github.com/nuxt-hub/core',
     target: '_blank',
@@ -100,10 +69,10 @@ const links = computed(() => [
 <template>
   <UApp>
     <UBanner
-      id="nuxtlabs-joins-vercel"
-      title="NuxtLabs is joining Vercel"
+      id="nuxthub-multi-vendor"
+      title="NuxtHub multi-vendor is now available"
       icon="i-simple-icons-vercel"
-      to="https://nuxtlabs.com/?utm_source=nuxthub&utm_medium=banner&utm_campaign=nuxtlabs-vercel"
+      to="/changelog/nuxthub-multi-vendor"
       close
       :actions="[
         {
@@ -111,20 +80,13 @@ const links = computed(() => [
           color: 'neutral',
           variant: 'outline',
           trailingIcon: 'i-lucide-arrow-right',
-          to: 'https://nuxtlabs.com/?utm_source=nuxthub&utm_medium=banner&utm_campaign=nuxtlabs-vercel'
+          to: '/changelog/nuxthub-multi-vendor'
         }
       ]"
     />
 
     <AppHeader />
     <UMain class="relative">
-      <HeroBackground
-        class="absolute w-full -top-px transition-all text-primary shrink-0 -z-10"
-        :class="[
-          isLoading ? 'animate-pulse' : (appear ? heroBackgroundClass : 'opacity-0'),
-          appeared ? 'duration-[400ms]' : 'duration-1000'
-        ]"
-      />
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>

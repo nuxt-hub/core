@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - v1
   pull_request:
     branches:
       - main
+      - v1
 
 permissions:
   id-token: write
@@ -28,11 +30,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: npm i -g --force corepack && corepack enable
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 24
           cache: "pnpm"
 
       - name: Install dependencies
@@ -48,19 +50,16 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         # os: [ubuntu-latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: npm i -g --force corepack && corepack enable
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
           registry-url: "https://registry.npmjs.org/"
           cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
-
-      - name: Lint
-        run: pnpm lint
 
       - name: Prepare environment
         run: pnpm dev:prepare
@@ -70,15 +69,16 @@ jobs:
 
       # - name: Run types tests
       #   run: pnpm test:types
+
   publish:
     needs: [lint, test]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: npm i -g --force corepack && corepack enable
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
           registry-url: "https://registry.npmjs.org/"
           cache: "pnpm"
       - name: Install dependencies

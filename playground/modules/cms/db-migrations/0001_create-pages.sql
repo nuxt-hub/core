@@ -1,5 +1,0 @@
-CREATE TABLE IF NOT EXISTS pages (
-  id INTEGER PRIMARY KEY,
-  title TEXT NOT NULL,
-  content TEXT NOT NULL
-);

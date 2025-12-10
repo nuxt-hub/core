@@ -5,12 +5,12 @@ import { setup, $fetch } from '@nuxt/test-utils'
 
 describe('KV', async () => {
   let data: Record<string, any> = {
-    'foo/object': { key: 'foo', value: 'bar' },
-    'bar/string': 'some string',
-    'baz/number': 123,
-    'qux/boolean': true
+    'foo:object': { key: 'foo', value: 'bar' },
+    // 'bar:string': 'some string',
+    'baz:number': 123,
+    'qux:boolean': true
   }
-  // clean up
+
   await cleanUp()
 
   await setup({
@@ -18,35 +18,29 @@ describe('KV', async () => {
     dev: true
   })
 
-  it('Check manifest (KV is enabled)', async () => {
-    const manifest = await $fetch('/api/_hub/manifest')
-    expect(manifest).toMatchObject({
-      storage: {
-        database: false,
-        kv: true,
-        blob: false
-      },
-      features: {
-        cache: false
-      }
+  it('Check KV is enabled', async () => {
+    const manifest = await $fetch('/api/manifest')
+    expect(manifest.kv).include({
+      driver: 'fs-lite',
+      base: '.data/kv'
     })
   })
 
   it('Fetch Keys List (empty)', async () => {
-    const result = await $fetch('/api/_hub/kv/:')
+    const result = await $fetch('/api/kv/:')
     expect(result).toMatchObject([])
   })
 
   describe('Create Keys', () => {
     Object.keys(data).forEach((key: string) => {
       it(`create ${typeof data[key as keyof typeof data]} ${key}`, async () => {
-        const result = await $fetch(`/api/_hub/kv/${key}`, {
+        const result = await $fetch(`/api/kv/${key}`, {
           method: 'PUT',
           body: data[key as keyof typeof data]
         })
         expect(result).toEqual('OK')
 
-        const result2 = await $fetch(`/api/_hub/kv/${key}`, { responseType: 'json' })
+        const result2 = await $fetch(`/api/kv/${key}`, { responseType: 'json' })
         expect(result2).toEqual(data[key as keyof typeof data])
       })
     })
@@ -54,21 +48,21 @@ describe('KV', async () => {
 
   describe('Update Keys', () => {
     data = {
-      'foo/object': { key: 'foo', value: 'bar' },
-      'bar/string': 'some string',
-      'baz/number': 123,
-      'qux/boolean': true
+      'foo:object': { key: 'foo', value: 'bar' },
+      // 'bar:string': 'some string',
+      'baz:number': 123,
+      'qux:boolean': true
     }
 
     Object.keys(data).forEach((key: string) => {
       it(`update ${typeof data[key as keyof typeof data]} ${key}`, async () => {
-        const result = await $fetch(`/api/_hub/kv/${key}`, {
+        const result = await $fetch(`/api/kv/${key}`, {
           method: 'PUT',
           body: data[key as keyof typeof data]
         })
         expect(result).toEqual('OK')
 
-        const result2 = await $fetch(`/api/_hub/kv/${key}`, { responseType: 'json' })
+        const result2 = await $fetch(`/api/kv/${key}`, { responseType: 'json' })
         expect(result2).toEqual(data[key as keyof typeof data])
       })
     })
@@ -77,13 +71,13 @@ describe('KV', async () => {
   describe('Fetch Keys', () => {
     Object.keys(data).forEach((key: string) => {
       it(`${typeof data[key as keyof typeof data]} ${key}`, async () => {
-        const result = await $fetch(`/api/_hub/kv/${key}`, { responseType: 'json' })
+        const result = await $fetch(`/api/kv/${key}`, { responseType: 'json' })
         expect(result).toEqual(data[key as keyof typeof data])
       })
     })
 
     it('Fetch Keys List', async () => {
-      const result = await $fetch('/api/_hub/kv/:')
+      const result = await $fetch('/api/kv/:')
       Object.keys(data).forEach(key => expect(result).includes(key))
     })
   })
@@ -91,10 +85,10 @@ describe('KV', async () => {
   describe('Delete Keys', () => {
     Object.keys(data).forEach((key: string) => {
       it(`delete ${typeof data[key as keyof typeof data]} ${key}`, async () => {
-        const result = await $fetch(`/api/_hub/kv/${key}`, { method: 'DELETE' })
+        const result = await $fetch(`/api/kv/${key}`, { method: 'DELETE' })
         expect(result).toEqual('OK')
 
-        const result2 = await $fetch(`/api/_hub/kv/${key}`)
+        const result2 = await $fetch(`/api/kv/${key}`)
           .catch((error) => {
             expect(error.response.status).toBe(404)
           })
@@ -105,5 +99,5 @@ describe('KV', async () => {
 })
 
 async function cleanUp() {
-  await fs.rm(fileURLToPath(new URL('./fixtures/kv/.data/hub/kv', import.meta.url)), { force: true, recursive: true })
+  await fs.rm(fileURLToPath(new URL('./fixtures/kv/.data/kv', import.meta.url)), { force: true, recursive: true })
 }

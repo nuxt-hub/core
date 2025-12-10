@@ -1,0 +1,26 @@
+name: nightly
+
+on:
+  push:
+    branches:
+      - v1
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - run: npm i -g --force corepack && corepack enable
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpm changelogen --bump --canary nightly
+      - run: npm publish --provenance --access public --tag latest

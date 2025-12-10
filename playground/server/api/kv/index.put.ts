@@ -1,3 +1,5 @@
+import { kv } from 'hub:kv'
+
 export default eventHandler(async (event) => {
   const { key, value, ttl } = await readValidatedBody(event, z.object({
     key: z.string().min(1).max(100),
@@ -6,7 +8,7 @@ export default eventHandler(async (event) => {
   }).parse)
 
   // Set entry for the current user
-  await hubKV().set(key, value, { ttl })
+  await kv.set(key, value, { ttl })
 
   return { key, value }
 })

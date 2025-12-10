@@ -17,11 +17,7 @@ useSeoMeta({
 
 const links = [
   { label: 'Home', to: '/' },
-  { label: 'AI', to: '/ai' },
-  { label: 'Autorag', to: '/autorag' },
-  { label: 'Browser', to: '/browser' },
   { label: 'Blob', to: '/blob' },
-  { label: 'Chat', to: '/chat' },
   { label: 'Database', to: '/database' },
   { label: 'KV', to: '/kv' }
 ]

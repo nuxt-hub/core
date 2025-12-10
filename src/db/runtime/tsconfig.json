@@ -1,0 +1,12 @@
+{
+  // https://nuxt.com/docs/guide/concepts/typescript
+  "files": [],
+  "references": [
+    {
+      "path": "../../../.nuxt/tsconfig.server.json"
+    },
+    {
+      "path": "../../../.nuxt/tsconfig.node.json"
+    }
+  ]
+}

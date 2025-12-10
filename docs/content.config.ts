@@ -115,16 +115,6 @@ export default defineContentConfig({
         date: z.string().date()
       })
     }),
-    blog: defineCollection({
-      type: 'page',
-      source: 'blog/**/*',
-      schema: z.object({
-        image: z.string().editor({ input: 'media' }),
-        authors: z.array(Author),
-        date: z.string().date(),
-        category: z.enum(['Release', 'Tutorial'])
-      })
-    }),
     templates: defineCollection({
       type: 'data',
       source: 'templates.yml',
@@ -135,76 +125,9 @@ export default defineContentConfig({
         hero: PageHero
       })
     }),
-    pricing: defineCollection({
-      type: 'data',
-      source: 'pricing.yml',
-      schema: z.object({
-        title: z.string(),
-        description: z.string(),
-        icon: z.string().editor({ input: 'icon' }),
-        hero: PageHero,
-        pricing: z.object({
-          plans: z.array(z.object({
-            title: z.string(),
-            description: z.string(),
-            price: z.object({
-              monthly: z.string(),
-              yearly: z.string()
-            }),
-            billingCycle: z.object({
-              monthly: z.string(),
-              yearly: z.string()
-            }),
-            highlight: z.boolean().optional(),
-            scale: z.boolean().optional(),
-            features: z.array(PageFeature),
-            button: Button,
-            ui: z.object({
-              root: z.string().optional()
-            }).optional()
-          })),
-          info: z.string(),
-          contact: z.object({
-            title: z.string(),
-            description: z.string(),
-            button: Button
-          })
-        }),
-        cloudflare: z.object({
-          title: z.string(),
-          description: z.string(),
-          button: Button
-        }),
-        faq: z.object({
-          title: z.string(),
-          description: z.string(),
-          items: z.array(z.object({
-            label: z.string(),
-            content: z.string()
-          }))
-        })
-      })
-    }),
-    cloudflarePricing: defineCollection({
-      type: 'data',
-      source: 'cloudflare-pricing.yml',
-      schema: z.object({
-        plans: z.array(z.object({
-          label: z.string(),
-          icon: z.string().editor({ input: 'icon' }),
-          slot: z.string(),
-          buttons: z.array(Button),
-          columns: z.array(z.object({
-            key: z.string(),
-            label: z.string()
-          })),
-          rows: z.array(z.object({
-            title: z.string(),
-            free: z.string(),
-            paid: z.string()
-          }))
-        }))
-      })
+    pages: defineCollection({
+      type: 'page',
+      source: '*.md'
     })
   }
 })

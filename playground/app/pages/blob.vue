@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import type { BlobObject } from '@nuxthub/core/blob'
+
 const loading = ref(false)
 const loadingProgress = ref<number | undefined>(undefined)
 const newFilesValue = ref<File[]>([])
-const useSignedUrl = ref(false)
 const uploadRef = ref<HTMLInputElement>()
 const folded = ref(false)
 const prefixes = ref<string[]>([])
@@ -10,7 +11,7 @@ const limit = ref(5)
 
 const prefix = computed(() => prefixes.value?.[prefixes.value.length - 1])
 const toast = useToast()
-const { data: blobData, refresh } = await useFetch('/api/blob', {
+const { data: blobData, refresh: _refresh } = await useFetch('/api/blob', {
   query: {
     folded,
     prefix,
@@ -41,34 +42,10 @@ async function loadMore() {
 
 async function addFile() {
   if (!newFilesValue.value.length) {
-    toast.add({ title: 'Missing files.', color: 'red' })
+    toast.add({ title: 'Missing files.', color: 'error' })
     return
   }
   loading.value = true
-
-  if (useSignedUrl.value) {
-    for (const file of newFilesValue.value) {
-      const url = await $fetch(`/api/blob/sign/${file.name}`, {
-        query: {
-          contentType: file.type,
-          contentLength: file.size
-        }
-      })
-      await $fetch(url, {
-        method: 'PUT',
-        body: file
-      })
-        .then(() => {
-          toast.add({ title: `File ${file.name} uploaded.` })
-          refresh()
-        })
-        .catch((err) => {
-          toast.add({ title: `Failed to upload ${file.name}.`, description: err.message, color: 'red' })
-        })
-    }
-    loading.value = false
-    return
-  }
 
   try {
     const uploadedFiles = await uploadFiles(newFilesValue.value)
@@ -79,7 +56,7 @@ async function addFile() {
     newFilesValue.value = []
   } catch (err: any) {
     const title = err.data?.data?.issues?.map((issue: any) => issue.message).join('\n') || err.message
-    toast.add({ title, color: 'red' })
+    toast.add({ title, color: 'error' })
   }
   loading.value = false
 }
@@ -139,7 +116,7 @@ async function uploadFiles(files: File[]) {
     } else {
       toast.add({
         title: `Failed to upload ${file.name}.`,
-        color: 'red'
+        color: 'error'
       })
     }
   }
@@ -164,12 +141,12 @@ async function deleteFile(pathname: string) {
     // @ts-expect-error method DELETE is not typed
     await $fetch(`/api/blob/${pathname}`, { method: 'DELETE' })
 
-    blobData.value!.blobs = blobData.value!.blobs!.filter(t => t.pathname !== pathname)
+    blobData.value!.blobs = blobData.value!.blobs!.filter((t: BlobObject) => t.pathname !== pathname)
 
     toast.add({ title: `File "${pathname}" deleted.` })
   } catch (err: any) {
     const title = err.data?.data?.issues?.map((issue: any) => issue.message).join('\n') || err.message
-    toast.add({ title, color: 'red' })
+    toast.add({ title, color: 'error' })
   }
 }
 </script>
@@ -177,14 +154,14 @@ async function deleteFile(pathname: string) {
 <template>
   <UCard @submit.prevent="addFile">
     <div class="flex">
-      <UButtonGroup class="flex-1">
+      <UFieldGroup class="flex-1">
         <UInput
           :model-value="newFilesValue?.map((file: File) => file.name).join(', ')"
           name="fileValue"
           disabled
           class="flex-1"
           autocomplete="off"
-          :ui="{ wrapper: 'flex-1' }"
+          :ui="{ root: 'flex-1' }"
         />
         <input
           ref="uploadRef"
@@ -202,12 +179,11 @@ async function deleteFile(pathname: string) {
           variant="subtle"
           @click="uploadRef?.click()"
         />
-      </UButtonGroup>
+      </UFieldGroup>
     </div>
 
     <div class="flex items-center gap-6 mt-2">
       <UCheckbox v-model="folded" label="View prefixes as directory" />
-      <UCheckbox v-model="useSignedUrl" label="Use signed url to upload" />
     </div>
 
     <UProgress v-if="loading" :value="loadingProgress" :max="1" class="mt-2" />

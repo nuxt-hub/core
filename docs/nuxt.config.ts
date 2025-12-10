@@ -1,16 +1,27 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
-    '@nuxt/ui-pro',
+    '@nuxt/ui',
     '@nuxt/content',
     '@nuxt/image',
     '@nuxt/scripts',
-    '@nuxtjs/plausible',
     '@vueuse/nuxt',
     'nuxt-og-image',
-    'nuxt-cloudflare-analytics',
     'nuxt-llms'
   ],
+
+  $production: {
+    scripts: {
+      registry: {
+        cloudflareWebAnalytics: {
+          token: '469b1f7049f14941acef0d0262a07ab3'
+        },
+        plausibleAnalytics: {
+          domain: 'hub.nuxt.com'
+        }
+      }
+    }
+  },
   devtools: {
     enabled: true
   },
@@ -19,12 +30,16 @@ export default defineNuxtConfig({
     build: {
       markdown: {
         highlight: {
-          langs: ['sql', 'diff']
+          langs: ['bash', 'diff', 'json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'sql', 'jsonc']
+        },
+        remarkPlugins: {
+          'remark-mdc': {
+            options: {
+              autoUnwrap: true
+            }
+          }
         }
       }
-    },
-    preview: {
-      api: 'https://api.nuxt.studio'
     },
     experimental: { sqliteConnector: 'native' }
   },
@@ -37,20 +52,23 @@ export default defineNuxtConfig({
     '/': { prerender: true },
     '/api/templates.json': { prerender: true },
     '/api/changelog.json': { prerender: true },
-    '/blog/rss.xml': { prerender: true },
     '/changelog/rss.xml': { prerender: true },
     // Redirects
-    '/docs/features': { redirect: { statusCode: 301, to: '/docs/features/ai' } },
-    '/docs/recipes': { redirect: { statusCode: 301, to: '/docs/recipes/hooks' } },
+    '/docs/getting-started/remote-storage': { redirect: { statusCode: 301, to: '/' } },
+    '/docs/features': { redirect: { statusCode: 301, to: '/docs/features/blob' } },
+    '/docs/features/realtime': { redirect: { statusCode: 301, to: '/docs/guides/realtime' } },
+    '/docs/recipes': { redirect: { statusCode: 301, to: '/docs/guides/pre-rendering' } },
     '/docs/storage/blob': { redirect: { statusCode: 301, to: '/docs/features/blob' } },
     '/docs/storage/database': { redirect: { statusCode: 301, to: '/docs/features/database' } },
     '/docs/storage/kv': { redirect: { statusCode: 301, to: '/docs/features/kv' } },
     '/docs/server/api': { redirect: { statusCode: 301, to: '/docs/features/open-api' } },
     '/docs/server/cache': { redirect: { statusCode: 301, to: '/docs/features/cache' } },
-    '/docs/server/logs': { redirect: { statusCode: 301, to: '/docs/getting-started/server-logs' } }
-  },
-  future: {
-    compatibilityVersion: 4
+    '/docs/server/logs': { redirect: { statusCode: 301, to: '/docs/getting-started/server-logs' } },
+    // Recipes
+    '/docs/recipes/hooks': { redirect: { statusCode: 301, to: '/docs/guides/hooks' } },
+    '/docs/recipes/drizzle': { redirect: { statusCode: 301, to: '/docs/features/database' } },
+    '/docs/guides/drizzle': { redirect: { statusCode: 301, to: '/docs/features/database' } },
+    '/docs/recipes/pre-rendering': { redirect: { statusCode: 301, to: '/docs/guides/pre-rendering' } }
   },
   compatibilityDate: '2025-02-11',
   nitro: {
@@ -63,10 +81,6 @@ export default defineNuxtConfig({
   },
   typescript: {
     strict: false
-  },
-  cloudflareAnalytics: {
-    token: '469b1f7049f14941acef0d0262a07ab3',
-    scriptPath: false
   },
   llms: {
     domain: 'https://hub.nuxt.com',
