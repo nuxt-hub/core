@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v0.10.0
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.9.1...v0.10.0)
+
+### 🚀 Enhancements
+
+- ⚠️  Make nuxthub multi-vendor ([#693](https://github.com/nuxt-hub/core/pull/693))
+
+### 📖 Documentation
+
+- Update changelog date to today ([31ced48](https://github.com/nuxt-hub/core/commit/31ced48))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Make nuxthub multi-vendor ([#693](https://github.com/nuxt-hub/core/pull/693))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+
 ## v0.9.1
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.9.0...v0.9.1)
