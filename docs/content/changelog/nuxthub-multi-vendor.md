@@ -1,8 +1,8 @@
 ---
-title: NuxtHub Multi-Vendors is now available
+title: NuxtHub Multi-Vendor is now available
 description: "NuxtHub is now available on multiple cloud providers. You can now deploy your NuxtHub project on your own hosting provider."
 date: 2025-12-09
-image: '/images/changelog/nuxthub-multi-vendors.png'
+image: '/images/changelog/nuxthub-multi-vendor.png'
 authors:
   - name: Sebastien Chopin
     avatar:
@@ -46,7 +46,7 @@ export default defineNuxtConfig({
 })
 ```
 
-NuxtHub detects your deployment environment and configures the appropriate drivers automatically — no manual setup required.
+NuxtHub detects your deployment environment and configures the appropriate drivers automatically. It also uses PGLite locally if no PostgreSQL connection is provided.
 
 ::note{to="/docs/getting-started/migration"}
 Read the migration guide to upgrade your existing project to v0.10.
@@ -149,13 +149,15 @@ The migration tool walks you through each step, ensuring your data and configura
 
 During this period:
 - You **won't be able** to create new projects on NuxtHub Admin
-- You **will still be able** to deploy existing projects
+- You **will still be able** until February 2nd, 2026 to:
+  - deploy existing projects
+  - manage your projects on the dashboard
 
 ### CLI & Action Deprecation
 
-Starting **January 31st, 2026**, new deployments using the `nuxthub` CLI and GitHub Action will no longer work. We recommend switching to your provider's native deployment method:
+Starting **February 2nd, 2026**, new deployments using the `nuxthub` CLI and GitHub Action will no longer work. We recommend switching to your provider's native deployment method:
 
-- **Cloudflare**: Use [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/) or [Pages CI](https://developers.cloudflare.com/pages/configuration/git-integration/)
+- **Cloudflare**: Use [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/)
 - **Vercel**: Use the [Vercel CLI](https://vercel.com/docs/cli) or [Git integration](https://vercel.com/docs/deployments/git)
 - **Other providers**: Use their respective CLI or CI/CD pipelines
 
