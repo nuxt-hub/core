@@ -1,7 +1,7 @@
 ---
 title: NuxtHub Multi-Vendor is now available
 description: "NuxtHub is now available on multiple cloud providers. You can now deploy your NuxtHub project on your own hosting provider."
-date: 2025-12-09
+date: 2025-12-10
 image: '/images/changelog/nuxthub-multi-vendor.png'
 authors:
   - name: Sebastien Chopin
