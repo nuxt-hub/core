@@ -271,12 +271,20 @@ export { db, schema }
   }
 
   if (driver === 'd1') {
-    // D1 requires binding from environment
+    // D1 requires lazy binding access - bindings only available in request context on CF Workers
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/d1'
 import * as schema from './db/schema.mjs'
 
-const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
-const db = drizzle(binding, { schema })
+let _db
+function getDb() {
+  if (!_db) {
+    const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
+    if (!binding) throw new Error('DB binding not found')
+    _db = drizzle(binding, { schema })
+  }
+  return _db
+}
+const db = new Proxy({}, { get(_, prop) { return getDb()[prop] } })
 export { db, schema }
 `
   }
@@ -337,12 +345,21 @@ export { db, schema }
 `
   }
   if (['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare')) {
+    // Hyperdrive requires lazy binding access - bindings only available in request context on CF Workers
     const bindingName = driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL'
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
 import * as schema from './db/schema.mjs'
 
-const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
-const db = drizzle({ connection: hyperdrive.connectionString, schema })
+let _db
+function getDb() {
+  if (!_db) {
+    const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
+    if (!hyperdrive) throw new Error('${bindingName} binding not found')
+    _db = drizzle({ connection: hyperdrive.connectionString, schema })
+  }
+  return _db
+}
+const db = new Proxy({}, { get(_, prop) { return getDb()[prop] } })
 export { db, schema }
 `
   }
