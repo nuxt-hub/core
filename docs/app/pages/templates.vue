@@ -74,15 +74,6 @@ import.meta.server && defineOgImageComponent('Docs')
             <span class="text-gray-900 dark:text-white text-base font-semibold truncate">
               {{ template.title }}
             </span>
-            <UButton
-              icon="i-simple-icons-github"
-              :to="`https://github.com/${template.owner}/${template.repo}`"
-              target="_blank"
-              size="xs"
-              color="neutral"
-              variant="ghost"
-              class="opacity-75 hover:opacity-100"
-            />
           </div>
         </template>
         <template #description>
@@ -119,6 +110,17 @@ import.meta.server && defineOgImageComponent('Docs')
         <template #footer>
           <UFieldGroup class="w-full">
             <UButton
+              label="Source Code"
+              icon="i-simple-icons-github"
+              :to="`https://github.com/${template.owner}/${template.repo}`"
+              size="sm"
+              color="neutral"
+              variant="subtle"
+              class="justify-center"
+              :class="template.demoUrl ? 'w-1/2' : 'w-full'"
+              :ui="{ trailingIcon: 'size-4' }"
+            />
+            <UButton
               v-if="template.demoUrl"
               label="Demo"
               trailing-icon="i-lucide-arrow-up-right"
@@ -128,17 +130,6 @@ import.meta.server && defineOgImageComponent('Docs')
               color="neutral"
               variant="subtle"
               class="w-1/2 justify-center"
-              :ui="{ trailingIcon: 'size-4' }"
-            />
-            <UButton
-              label="Deploy"
-              icon="i-lucide-cloud-upload"
-              :to="`https://hub.nuxt.com/new?template=${template.slug}`"
-              size="sm"
-              color="neutral"
-              variant="subtle"
-              class="justify-center"
-              :class="template.demoUrl ? 'w-1/2' : 'w-full'"
               :ui="{ trailingIcon: 'size-4' }"
             />
           </UFieldGroup>
