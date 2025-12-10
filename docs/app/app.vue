@@ -69,10 +69,10 @@ const links = computed(() => [
 <template>
   <UApp>
     <UBanner
-      id="nuxtlabs-joins-vercel"
-      title="NuxtLabs is joining Vercel"
+      id="nuxthub-multi-vendor"
+      title="NuxtHub multi-vendor is now available"
       icon="i-simple-icons-vercel"
-      to="https://nuxtlabs.com/?utm_source=nuxthub&utm_medium=banner&utm_campaign=nuxtlabs-vercel"
+      to="/changelog/nuxthub-multi-vendor"
       close
       :actions="[
         {
@@ -80,7 +80,7 @@ const links = computed(() => [
           color: 'neutral',
           variant: 'outline',
           trailingIcon: 'i-lucide-arrow-right',
-          to: 'https://nuxtlabs.com/?utm_source=nuxthub&utm_medium=banner&utm_campaign=nuxtlabs-vercel'
+          to: '/changelog/nuxthub-multi-vendor'
         }
       ]"
     />
