@@ -36,8 +36,17 @@ import.meta.server && defineOgImageComponent('Docs', {
       :ui="{ wrapper: 'lg:mr-10' }"
       :title="page.title"
       :description="page.description"
-      :links="page.links"
-    />
+    >
+      <template #links>
+        <UButton
+          v-for="(link, index) in page.links"
+          :key="index"
+          v-bind="link"
+        />
+
+        <PageHeaderLinks />
+      </template>
+    </UPageHeader>
 
     <UPageBody prose class="dark:text-gray-300 dark:prose-pre:!bg-gray-800/60 lg:pr-10 pb-0">
       <ContentRenderer v-if="page.body" :value="page" />

@@ -7,7 +7,8 @@ export default defineNuxtConfig({
     '@nuxt/scripts',
     '@vueuse/nuxt',
     'nuxt-og-image',
-    'nuxt-llms'
+    'nuxt-llms',
+    '@nuxtjs/mcp-toolkit'
   ],
 
   $production: {
@@ -70,6 +71,9 @@ export default defineNuxtConfig({
     '/docs/guides/drizzle': { redirect: { statusCode: 301, to: '/docs/features/database' } },
     '/docs/recipes/pre-rendering': { redirect: { statusCode: 301, to: '/docs/guides/pre-rendering' } }
   },
+  experimental: {
+    asyncContext: true
+  },
   compatibilityDate: '2025-02-11',
   nitro: {
     prerender: {
@@ -90,5 +94,8 @@ export default defineNuxtConfig({
       title: 'NuxtHub Complete Documentation',
       description: 'The complete NuxtHub documentation, blog posts and changelog written in Markdown (MDC syntax).'
     }
+  },
+  mcp: {
+    name: 'NuxtHub Documentation'
   }
 })
