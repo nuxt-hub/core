@@ -89,7 +89,7 @@ export default defineNuxtModule<ModuleOptions>({
     if (!nuxt.options.dev && hub.hosting.includes('cloudflare')) {
       // Enable Cloudflare Node.js compatibility
       nuxt.options.nitro.cloudflare ||= {}
-      nuxt.options.nitro.cloudflare.nodeCompat = true
+      nuxt.options.nitro.cloudflare.nodeCompat = false
       nuxt.options.nitro.cloudflare.deployConfig = true
       // Remove trailing slash for prerender routes
       nuxt.options.nitro.prerender ||= {}
@@ -97,6 +97,7 @@ export default defineNuxtModule<ModuleOptions>({
       // Add no_bundle mode
       if (!hub.hosting.includes('pages')) {
         nuxt.options.nitro.cloudflare.wrangler = defu(nuxt.options.nitro.cloudflare.wrangler, {
+          compatibility_flags: ['nodejs_compat'],
           no_bundle: true
         })
       }
