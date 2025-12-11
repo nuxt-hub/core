@@ -58,15 +58,6 @@ const items = [
       icon: 'i-simple-icons:cursor',
       target: '_blank',
       to: `/mcp/deeplink`
-    },
-    {
-      label: 'Add MCP Server',
-      icon: 'i-vscode-icons:file-type-vscode',
-      target: '_blank',
-      to: `/mcp/deeplink?ide=vscode`,
-      ui: {
-        itemLeadingIcon: 'grayscale'
-      }
     }
   ]
 ]
