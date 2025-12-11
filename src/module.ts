@@ -86,7 +86,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}
     nuxt.options.nitro.experimental.asyncContext = true
 
-    if (!nuxt.options.dev && (nuxt.options.nitro.preset?.includes('cloudflare') || hub.hosting.includes('cloudflare'))) {
+    if (!nuxt.options.dev && hub.hosting.includes('cloudflare')) {
       // Enable Cloudflare Node.js compatibility
       nuxt.options.nitro.cloudflare ||= {}
       nuxt.options.nitro.cloudflare.nodeCompat = true
@@ -94,6 +94,12 @@ export default defineNuxtModule<ModuleOptions>({
       // Remove trailing slash for prerender routes
       nuxt.options.nitro.prerender ||= {}
       nuxt.options.nitro.prerender.autoSubfolderIndex ||= false
+      // Add no_bundle mode
+      if (!hub.hosting.includes('pages')) {
+        nuxt.options.nitro.cloudflare.wrangler = defu(nuxt.options.nitro.cloudflare.wrangler, {
+          no_bundle: true
+        })
+      }
     }
 
     // Add .data to .gitignore
