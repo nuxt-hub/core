@@ -1,8 +1,6 @@
-import { pathToFileURL } from 'node:url'
 import { join } from 'pathe'
 import { defu } from 'defu'
-import { isWindows } from 'std-env'
-import { resolve, logWhenReady } from '../utils'
+import { logWhenReady } from '../utils'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig, CacheConfig, ResolvedCacheConfig } from '@nuxthub/core'
@@ -23,12 +21,8 @@ export function resolveCacheConfig(hub: HubConfig): ResolvedCacheConfig | false 
 
   // Cloudflare KV cache binding
   if (hub.hosting.includes('cloudflare')) {
-    let driver: string = resolve('cache/runtime/cloudflare-driver.mjs')
-    if (isWindows) {
-      driver = pathToFileURL(driver).href
-    }
     return defu(userConfig, {
-      driver,
+      driver: 'cloudflare-kv-binding',
       binding: 'CACHE'
     }) as ResolvedCacheConfig
   }
