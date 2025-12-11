@@ -17,7 +17,7 @@ export default defineNuxtConfig({
     '/cached': { prerender: true }
   },
 
-  compatibilityDate: '2025-09-09',
+  compatibilityDate: '2025-12-11',
 
   nitro: {
     // preset: 'cloudflare-module',
