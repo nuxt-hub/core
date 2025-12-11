@@ -1,7 +1,7 @@
 import { mkdir } from 'node:fs/promises'
 import chokidar from 'chokidar'
 import { glob } from 'tinyglobby'
-import { join, resolve as resolveFs } from 'pathe'
+import { join, resolve as resolveFs, relative } from 'pathe'
 import { defu } from 'defu'
 import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
 import { resolve, resolvePath, logWhenReady } from '../utils'
@@ -9,7 +9,6 @@ import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDataba
 
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig, ResolvedHubConfig, ResolvedDatabaseConfig } from '@nuxthub/core'
-import { relative } from 'node:path'
 
 const log = logger.withTag('nuxt:hub')
 
