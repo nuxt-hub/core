@@ -19,7 +19,8 @@ WORKFLOW: This tool returns the complete page content including title, descripti
   cache: '1h',
   handler: async ({ path }) => {
     const event = useEvent()
-    const siteUrl = import.meta.dev ? 'http://localhost:4000' : getRequestURL(event).origin
+    const url = getRequestURL(event)
+    const siteUrl = import.meta.dev ? `${url.protocol}//${url.hostname}:${url.port}` : url.origin
 
     try {
       const page = await queryCollection(event, 'docs')
