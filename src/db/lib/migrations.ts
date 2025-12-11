@@ -16,7 +16,7 @@ export async function applyDatabaseMigrations(hub: ResolvedHubConfig, db: any) {
   const migrationsStorage = useDatabaseMigrationsStorage(hub)
   const dialect = hub.db.dialect
   const execute = dialect === 'sqlite' ? 'run' : 'execute'
-  const getRows = (result: any) => (dialect === 'mysql' ? result[0] : result.rows || result)
+  const getRows = (result: any) => (dialect === 'mysql' ? result[0] : result.results || result.rows || result) || []
 
   const createMigrationsTableQuery = getCreateMigrationsTableQuery({ dialect: hub.db.dialect })
   log.debug('Creating migrations table if not exists...')

@@ -23,7 +23,7 @@ export function resolveCacheConfig(hub: HubConfig): ResolvedCacheConfig | false 
 
   // Cloudflare KV cache binding
   if (hub.hosting.includes('cloudflare')) {
-    let driver: string = resolve('cache/runtime/cloudflare-driver')
+    let driver: string = resolve('cache/runtime/cloudflare-driver.mjs')
     if (isWindows) {
       driver = pathToFileURL(driver).href
     }
