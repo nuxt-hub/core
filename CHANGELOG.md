@@ -1,6 +1,41 @@
 # Changelog
 
 
+## v0.10.1
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.10.0...v0.10.1)
+
+### 🩹 Fixes
+
+- **db:** Lazy D1/Hyperdrive binding access ([#694](https://github.com/nuxt-hub/core/pull/694))
+- **db:** Setup config relative path on windows ([#702](https://github.com/nuxt-hub/core/pull/702))
+- Support d1 local migrations ([fa0b2b7](https://github.com/nuxt-hub/core/commit/fa0b2b7))
+- Add no_bundle mode ([b2cb2fc](https://github.com/nuxt-hub/core/commit/b2cb2fc))
+
+### 📖 Documentation
+
+- Today is the 10th ([50a838c](https://github.com/nuxt-hub/core/commit/50a838c))
+- Fix logo in banner ([c782f00](https://github.com/nuxt-hub/core/commit/c782f00))
+- Fix typos ([e8047cf](https://github.com/nuxt-hub/core/commit/e8047cf))
+- Version selector typo ([#695](https://github.com/nuxt-hub/core/pull/695))
+- Add Claude Code migration skill link ([#696](https://github.com/nuxt-hub/core/pull/696))
+
+### 🏡 Chore
+
+- Update css ([d60fa8f](https://github.com/nuxt-hub/core/commit/d60fa8f))
+- Disable cloudflare-module locally ([c6e3459](https://github.com/nuxt-hub/core/commit/c6e3459))
+- Simplify cache driver for cloudflare ([5a13325](https://github.com/nuxt-hub/core/commit/5a13325))
+- Revert compat date ([38d7ed8](https://github.com/nuxt-hub/core/commit/38d7ed8))
+- Try using nitro default with latest compat date ([4ae483a](https://github.com/nuxt-hub/core/commit/4ae483a))
+- Try to set compat flag manually ([b00d094](https://github.com/nuxt-hub/core/commit/b00d094))
+- Try bundling again ([96517c5](https://github.com/nuxt-hub/core/commit/96517c5))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+- Muhamad Rizki ([@byrizki](https://github.com/byrizki))
+- Max <maximogarciamtnez@gmail.com>
+
 ## v0.10.0
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.9.1...v0.10.0)
