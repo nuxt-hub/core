@@ -7,7 +7,6 @@ interface Template {
   repo: string
   features: string[]
   demoUrl: string
-  workersPaid: boolean
   slug: string
 }
 
@@ -81,13 +80,6 @@ import.meta.server && defineOgImageComponent('Docs')
             {{ template.description }}
           </p>
           <div class="flex items-center flex-wrap gap-1">
-            <UBadge
-              v-if="template.workersPaid"
-              label="Workers Paid"
-              variant="subtle"
-              size="sm"
-              class="rounded-full"
-            />
             <template v-for="feature of template.features" :key="feature.name">
               <NuxtLink v-if="feature.hasPage" :to="`/docs/features/${feature.name}`">
                 <UBadge
