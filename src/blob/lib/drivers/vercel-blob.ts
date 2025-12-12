@@ -1,7 +1,7 @@
 import { put as vercelPut, del as vercelDel, head as vercelHead, list as vercelList, createMultipartUpload as vercelCreateMultipartUpload, uploadPart as vercelUploadPart, completeMultipartUpload as vercelCompleteMultipartUpload } from '@vercel/blob'
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client'
 import type { PutBlobResult, ListBlobResultBlob } from '@vercel/blob'
-import { readBody, type H3Event } from 'h3'
+import { createError, readBody, type H3Event } from 'h3'
 import type { BlobDriver, BlobPutBody } from './types'
 import type { BlobListOptions, BlobListResult, BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobPutOptions, BlobUploadedPart, HandleMPUResponse } from '../../types'
 import { getContentType } from '../utils'
@@ -81,6 +81,12 @@ export function createDriver(options: VercelDriverOptions = {}): BlobDriver<Verc
     async put(pathname: string, body: BlobPutBody, putOptions?: BlobPutOptions): Promise<BlobObject> {
       const contentType = putOptions?.contentType || (body instanceof Blob ? body.type : undefined) || getContentType(pathname)
 
+      if (putOptions?.access === 'private') {
+        throw createError({
+          statusCode: 400,
+          statusMessage: 'Private access is not yet supported for Vercel Blob'
+        })
+      }
       const result = await vercelPut(pathname, body as any, {
         token,
         access: access as 'public',

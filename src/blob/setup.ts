@@ -24,7 +24,7 @@ export function resolveBlobConfig(hub: HubConfig, deps: Record<string, string>):
 
   // Otherwise hub.blob is set to true, so we need to resolve the config
   // AWS S3
-  if (process.env.S3_ACCESS_KEY_ID && process.env.S3_SECRET_ACCESS_KEY && process.env.S3_BUCKET && process.env.S3_REGION) {
+  if (process.env.S3_ACCESS_KEY_ID && process.env.S3_SECRET_ACCESS_KEY && (process.env.S3_BUCKET || process.env.S3_ENDPOINT)) {
     if (!deps['aws4fetch']) {
       log.error('Please run `npx nypm i aws4fetch` to use S3')
     }
@@ -32,8 +32,8 @@ export function resolveBlobConfig(hub: HubConfig, deps: Record<string, string>):
       driver: 's3',
       accessKeyId: process.env.S3_ACCESS_KEY_ID,
       secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-      bucket: process.env.S3_BUCKET,
-      region: process.env.S3_REGION,
+      bucket: process.env.S3_BUCKET || '',
+      region: process.env.S3_REGION || 'auto',
       endpoint: process.env.S3_ENDPOINT
     }) as ResolvedBlobConfig
   }

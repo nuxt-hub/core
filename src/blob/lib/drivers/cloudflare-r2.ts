@@ -86,6 +86,9 @@ export function createDriver(options: CloudflareDriverOptions): BlobDriver<Cloud
 
       const contentType = options?.contentType || (body instanceof Blob ? body.type : undefined) || getContentType(pathname)
 
+      if (options?.access) {
+        console.warn('Setting access level for blob in Cloudflare R2 is not supported, it will be ignored')
+      }
       const r2Object = await bucket.put(pathname, body as any, {
         httpMetadata: {
           contentType

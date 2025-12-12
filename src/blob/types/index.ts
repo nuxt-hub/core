@@ -107,6 +107,10 @@ export interface BlobListOptions {
 
 export interface BlobPutOptions {
   /**
+   * The access level of the blob.
+   */
+  access?: 'public' | 'private'
+  /**
    * The content type of the blob.
    */
   contentType?: string
@@ -134,6 +138,10 @@ export interface BlobPutOptions {
 }
 
 export interface BlobMultipartOptions {
+  /**
+   * The access level of the blob.
+   */
+  access?: 'public' | 'private'
   /**
    * The content type of the blob.
    */
