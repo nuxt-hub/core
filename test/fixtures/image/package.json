@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "name": "hub-image-test",
+  "type": "module",
+  "devDependencies": {
+    "@nuxt/image": "*"
+  }
+}
+

@@ -5,6 +5,7 @@ import { addTypeTemplate, addServerImports, addImportsDir, logger, addTemplate }
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig, ResolvedBlobConfig } from '@nuxthub/core'
 import { resolve, logWhenReady } from '../utils'
+import { setupImage } from '../image/setup'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -43,6 +44,9 @@ export function resolveBlobConfig(hub: HubConfig, deps: Record<string, string>):
     if (!deps['@vercel/blob']) {
       log.error('Please run `npx nypm i @vercel/blob` to use Vercel Blob')
     }
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      log.warn('Set BLOB_READ_WRITE_TOKEN env var for Vercel Blob storage')
+    }
     return defu(hub.blob, {
       driver: 'vercel-blob',
       access: 'public'
@@ -64,7 +68,7 @@ export function resolveBlobConfig(hub: HubConfig, deps: Record<string, string>):
   }) as ResolvedBlobConfig
 }
 
-export function setupBlob(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>) {
+export async function setupBlob(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>) {
   hub.blob = resolveBlobConfig(hub, deps)
   if (!hub.blob) return
 
@@ -106,6 +110,9 @@ export const blob = createBlobStorage(createDriver(${JSON.stringify(driverOption
     nuxt.options.runtimeConfig.public.hub.blobProvider = 'vercel-blob'
     logWhenReady(nuxt, 'Files stored in Vercel Blob are public. Manually configure a different storage driver if storing sensitive files.', 'warn')
   }
+
+  // Setup @nuxt/image provider
+  await setupImage(nuxt, hub, deps)
 
   logWhenReady(nuxt, `\`hub:blob\` using \`${blobConfig.driver}\` driver`)
 }
