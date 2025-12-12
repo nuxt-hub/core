@@ -78,15 +78,13 @@ function mapS3ObjectToBlob(object: S3Object): BlobObject {
 export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptions> {
   // Use path-style for custom endpoints (S3-compatible services like MinIO, R2, etc.)
   // Use virtual-hosted style for AWS S3
-  const region = options.region || 'auto'
-  const usePathStyle = !!options.endpoint
-  const baseEndpoint = options.endpoint ?? `https://${options.bucket}.s3.${region}.amazonaws.com`
-  const bucketUrl = usePathStyle ? `${baseEndpoint}/${options.bucket}` : baseEndpoint
+  const baseEndpoint = options.endpoint ?? `https://${options.bucket}.s3.${options.region}.amazonaws.com`
+  const bucketUrl = options.endpoint && options.bucket ? `${baseEndpoint}/${options.bucket}` : baseEndpoint
 
   const aws = new AwsClient({
     accessKeyId: options.accessKeyId,
     secretAccessKey: options.secretAccessKey,
-    region,
+    region: options.region,
     service: 's3'
   })
 
@@ -186,6 +184,11 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
         for (const [key, value] of Object.entries(putOptions.customMetadata)) {
           headers[`x-amz-meta-${snakeCase(key)}`] = encodeURIComponent(value)
         }
+      }
+
+      // Add support for public/private access
+      if (putOptions?.access === 'public') {
+        headers['x-amz-acl'] = 'public-read'
       }
 
       const res = await aws.fetch(`${bucketUrl}/${encodeURI(decodeURIComponent(pathname))}`, {

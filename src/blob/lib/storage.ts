@@ -55,7 +55,7 @@ export function createBlobStorage(driver: BlobDriver): BlobStorage {
 
     async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = {}) {
       pathname = decodeURIComponent(pathname)
-      const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, customMetadata } = options
+      const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, customMetadata, access } = options
       const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
 
       const { dir, ext, name: filename } = parse(pathname)
@@ -72,7 +72,8 @@ export function createBlobStorage(driver: BlobDriver): BlobStorage {
       return driver.put(pathname, body, {
         contentType,
         contentLength,
-        customMetadata
+        customMetadata,
+        access
       })
     },
 
