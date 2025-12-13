@@ -70,11 +70,30 @@ export interface ModuleOptions {
   hosting?: string
 }
 
+// Blob image config for @nuxt/image integration
+export interface BlobImageConfig {
+  /**
+   * Path where blob images are served via your route handler.
+   * Enables automatic @nuxt/image configuration.
+   * @example '/images'
+   */
+  path: string
+}
+
+// Base blob config with shared options
+interface BaseBlobConfig {
+  /**
+   * @nuxt/image integration settings.
+   * Set `image.path` to match your blob serve route.
+   */
+  image?: BlobImageConfig
+}
+
 // Blob driver configurations - extend from driver option types
-export type FSBlobConfig = { driver: 'fs' } & FSDriverOptions
-export type S3BlobConfig = { driver: 's3' } & S3DriverOptions
-export type VercelBlobConfig = { driver: 'vercel-blob' } & VercelDriverOptions
-export type CloudflareR2BlobConfig = { driver: 'cloudflare-r2' } & CloudflareDriverOptions
+export type FSBlobConfig = { driver: 'fs' } & FSDriverOptions & BaseBlobConfig
+export type S3BlobConfig = { driver: 's3' } & S3DriverOptions & BaseBlobConfig
+export type VercelBlobConfig = { driver: 'vercel-blob' } & VercelDriverOptions & BaseBlobConfig
+export type CloudflareR2BlobConfig = { driver: 'cloudflare-r2' } & CloudflareDriverOptions & BaseBlobConfig
 
 export type BlobConfig = boolean | FSBlobConfig | S3BlobConfig | VercelBlobConfig | CloudflareR2BlobConfig
 export type ResolvedBlobConfig = FSBlobConfig | S3BlobConfig | VercelBlobConfig | CloudflareR2BlobConfig

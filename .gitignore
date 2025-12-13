@@ -61,3 +61,6 @@ test/fixtures/kv/.data
 test/fixtures/blob/.data
 test/fixtures/openapi/.data
 test/fixtures/cache/.data
+
+# Local PR notes
+pr-body.md
