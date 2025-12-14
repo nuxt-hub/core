@@ -74,13 +74,17 @@ export interface ModuleOptions {
 export type FSBlobConfig = { driver: 'fs' } & FSDriverOptions
 export type S3BlobConfig = { driver: 's3' } & S3DriverOptions
 export type VercelBlobConfig = { driver: 'vercel-blob' } & VercelDriverOptions
-export type CloudflareR2BlobConfig = { driver: 'cloudflare-r2' } & CloudflareDriverOptions
+export type CloudflareR2BlobConfig = { driver: 'cloudflare-r2', bucketName?: string } & CloudflareDriverOptions
 
 export type BlobConfig = boolean | FSBlobConfig | S3BlobConfig | VercelBlobConfig | CloudflareR2BlobConfig
 export type ResolvedBlobConfig = FSBlobConfig | S3BlobConfig | VercelBlobConfig | CloudflareR2BlobConfig
 
 export type CacheConfig = {
   driver?: BuiltinDriverName
+  /**
+   * Cloudflare KV namespace ID for auto-generating wrangler bindings
+   */
+  namespaceId?: string
   [key: string]: any
 }
 export type ResolvedCacheConfig = CacheConfig & {
@@ -89,6 +93,10 @@ export type ResolvedCacheConfig = CacheConfig & {
 
 export type KVConfig = {
   driver?: BuiltinDriverName
+  /**
+   * Cloudflare KV namespace ID for auto-generating wrangler bindings
+   */
+  namespaceId?: string
   [key: string]: any
 }
 
@@ -138,9 +146,13 @@ type DatabaseConnection = {
    */
   apiToken?: string
   /**
-   * Cloudflare D1 Database ID (for D1 HTTP driver)
+   * Cloudflare D1 Database ID (for D1 driver and D1 HTTP driver)
    */
   databaseId?: string
+  /**
+   * Cloudflare Hyperdrive ID for auto-generating wrangler bindings (PostgreSQL/MySQL)
+   */
+  hyperdriveId?: string
   /**
    * Additional connection options
    */

@@ -3,8 +3,8 @@ import { defu } from 'defu'
 import { addTypeTemplate, addServerImports, addImportsDir, logger, addTemplate } from '@nuxt/kit'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig, ResolvedBlobConfig } from '@nuxthub/core'
-import { resolve, logWhenReady } from '../utils'
+import type { HubConfig, ResolvedBlobConfig, CloudflareR2BlobConfig } from '@nuxthub/core'
+import { resolve, logWhenReady, addWranglerBinding } from '../utils'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -70,10 +70,14 @@ export function setupBlob(nuxt: Nuxt, hub: HubConfig, deps: Record<string, strin
 
   const blobConfig = hub.blob as ResolvedBlobConfig
 
+  if (blobConfig.driver === 'cloudflare-r2' && blobConfig.bucketName) {
+    addWranglerBinding(nuxt, 'r2_buckets', { binding: blobConfig.binding || 'BLOB', bucket_name: blobConfig.bucketName })
+  }
+
   // Add Composables
   addImportsDir(resolve('blob/runtime/app/composables'))
 
-  const { driver, ...driverOptions } = blobConfig
+  const { driver, bucketName: _bucketName, ...driverOptions } = blobConfig as CloudflareR2BlobConfig
 
   if (!supportedDrivers.includes(driver as any)) {
     log.error(`Unsupported blob driver: ${driver}. Supported drivers: ${supportedDrivers.join(', ')}`)

@@ -61,6 +61,27 @@ export default defineNuxtModule<ModuleOptions>({
     await setupDatabase(nuxt, hub as HubConfig, deps)
     await setupKV(nuxt, hub as HubConfig, deps)
 
+    // Validate Cloudflare bindings configuration
+    if (!nuxt.options.dev && hub.hosting.includes('cloudflare')) {
+      const resolvedHub = hub as ResolvedHubConfig
+      const missingBindings: string[] = []
+      if (resolvedHub.blob && (resolvedHub.blob as any).driver === 'cloudflare-r2') {
+        missingBindings.push('BLOB (R2 bucket)')
+      }
+      if (resolvedHub.kv && (resolvedHub.kv as any).driver === 'cloudflare-kv-binding') {
+        missingBindings.push('KV (KV namespace)')
+      }
+      if (resolvedHub.cache && (resolvedHub.cache as any).driver === 'cloudflare-kv-binding') {
+        missingBindings.push('CACHE (KV namespace)')
+      }
+      if (resolvedHub.db && (resolvedHub.db as any).driver === 'd1') {
+        missingBindings.push('DB (D1 database)')
+      }
+      if (missingBindings.length) {
+        log.warn(`Ensure your wrangler.toml/json has these bindings configured: ${missingBindings.join(', ')}`)
+      }
+    }
+
     const runtimeConfig = nuxt.options.runtimeConfig
     runtimeConfig.hub = hub as ResolvedHubConfig
     runtimeConfig.public.hub ||= {}
