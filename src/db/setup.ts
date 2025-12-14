@@ -61,6 +61,13 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
     }
     case 'postgresql': {
       config.connection = defu(config.connection, { url: process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL || '' })
+      // Neon HTTP
+      if (config.driver === 'neon-http') {
+        if (!config.connection.url) {
+          throw new Error('Neon HTTP driver requires DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL environment variable')
+        }
+        break
+      }
       if (config.connection.url) {
         config.driver ||= 'postgres-js'
         break
@@ -103,6 +110,8 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   }
   if (driver === 'postgres-js' && !deps['postgres']) {
     logWhenReady(nuxt, 'Please run `npx nypm i postgres` to use PostgreSQL as database.', 'error')
+  } else if (driver === 'neon-http' && !deps['@neondatabase/serverless']) {
+    logWhenReady(nuxt, 'Please run `npx nypm i @neondatabase/serverless` to use Neon serverless database.', 'error')
   } else if (driver === 'pglite' && !deps['@electric-sql/pglite']) {
     logWhenReady(nuxt, 'Please run `npx nypm i @electric-sql/pglite` to use PGlite as database.', 'error')
   } else if (driver === 'mysql2' && !deps.mysql2) {
@@ -268,7 +277,16 @@ const db = drizzle({ client, schema });
 export { db, schema }
 `
   }
+  if (driver === 'neon-http') {
+    drizzleOrmContent = `import { neon } from '@neondatabase/serverless'
+import { drizzle } from 'drizzle-orm/neon-http'
+import * as schema from './db/schema.mjs'
 
+const sql = neon(${JSON.stringify(connection.url)})
+const db = drizzle(sql, { schema })
+export { db, schema }
+`
+  }
   if (driver === 'd1') {
     // D1 requires lazy binding access - bindings only available in request context on CF Workers
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/d1'

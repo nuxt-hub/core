@@ -19,6 +19,13 @@ export async function createDrizzleClient(config: ResolvedDatabaseConfig, hubDir
     pkg = 'drizzle-orm/postgres-js'
     const { drizzle } = await import(pkg)
     return drizzle({ client })
+  } else if (driver === 'neon-http') {
+    const clientPkg = '@neondatabase/serverless'
+    const { neon } = await import(clientPkg)
+    const sql = neon(connection.url)
+    pkg = 'drizzle-orm/neon-http'
+    const { drizzle } = await import(pkg)
+    return drizzle(sql)
   } else if (driver === 'libsql') {
     pkg = 'drizzle-orm/libsql'
   } else if (driver === 'mysql2') {
