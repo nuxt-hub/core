@@ -1,7 +1,6 @@
 ---
-title: Cache Pages, API & Functions
-navigation.title: Cache
-description: Speed up Nuxt by caching pages, API routes and functions.
+title: Setup
+description: Configure caching in your Nuxt application, including setup for pages, API routes, and serverless functions to improve performance and reduce load.
 ---
 
 NuxtHub Cache automatically configures [Nitro's cache storage](https://nitro.build/guide/cache#customize-cache-storage). It allows you to cache API routes, server functions, and pages in your application.

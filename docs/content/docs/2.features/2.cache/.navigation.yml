@@ -1,0 +1,4 @@
+title: Cache Pages, API & Functions
+icon: i-lucide-zap
+navigation.title: Cache
+description: Speed up Nuxt by caching pages, API routes and functions.

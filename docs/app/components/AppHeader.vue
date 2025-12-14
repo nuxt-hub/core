@@ -57,10 +57,13 @@ const logoContextMenuItems = [
     }
   }]
 ]
+
+const headerBottomLinks = computed(() => (navigation.value.find(link => link.path === '/docs')?.children ?? [])
+  .map(link => ({ ...link, to: link.path, children: undefined, active: route.path.startsWith(link.path) })))
 </script>
 
 <template>
-  <UHeader>
+  <UHeader :ui="{ left: 'min-w-0' }" class="flex flex-col">
     <template #left>
       <UContextMenu :items="logoContextMenuItems" size="xs">
         <NuxtLink to="/" class="inline-flex items-end gap-2" aria-label="Back to home">
@@ -89,6 +92,18 @@ const logoContextMenuItems = [
         <USeparator class="mb-4" />
         <UButton label="Get started" color="neutral" to="/docs/getting-started/installation" class="flex justify-center text-gray-900 bg-primary sm:hidden" external />
       </div>
+    </template>
+    <template v-if="route.path.startsWith('/docs/')" #bottom>
+      <USeparator class="hidden lg:flex" />
+      <UContainer class="hidden lg:flex items-center justify-between">
+        <UNavigationMenu
+          :items="headerBottomLinks"
+          label-key="title"
+          variant="pill"
+          highlight
+          class="-mx-2.5 -mb-px"
+        />
+      </UContainer>
     </template>
   </UHeader>
 </template>
