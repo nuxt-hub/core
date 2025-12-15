@@ -1,12 +1,42 @@
 import { writeFile, readFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { join } from 'pathe'
+import { defu } from 'defu'
 import { logger } from '@nuxt/kit'
 import type { Nuxt } from '@nuxt/schema'
 import type { EnvironmentNonInheritable } from 'nitropack/presets/cloudflare/wrangler/environment'
 import type { WranglerConfig } from 'nitropack/presets/cloudflare/types'
+import type { HubConfig } from '../types'
 
 const log = logger.withTag('nuxt:hub')
+
+export function setupCloudflare(nuxt: Nuxt, hub: HubConfig) {
+  // Enable Cloudflare Node.js compatibility
+  nuxt.options.nitro.cloudflare ||= {}
+  nuxt.options.nitro.cloudflare.nodeCompat = false
+  nuxt.options.nitro.cloudflare.deployConfig = true
+  // Remove trailing slash for prerender routes
+  nuxt.options.nitro.prerender ||= {}
+  nuxt.options.nitro.prerender.autoSubfolderIndex ||= false
+  // Add no_bundle mode
+  if (!hub.hosting.includes('pages')) {
+    nuxt.options.nitro.cloudflare.wrangler = defu(nuxt.options.nitro.cloudflare.wrangler, {
+      compatibility_flags: ['nodejs_compat']
+    })
+  }
+
+  // Setup wrangler.json environment processing
+  if (nuxt.options.dev || nuxt.options._prepare) {
+    return
+  }
+  const cloudflareEnv = process.env.CLOUDFLARE_ENV
+  if (!cloudflareEnv) {
+    return
+  }
+  nuxt.hook('close', async () => {
+    await processWranglerConfigFile(nuxt, cloudflareEnv)
+  })
+}
 
 /**
  * Non-inheritable keys in Wrangler configuration that must be specified per environment.
@@ -92,34 +122,6 @@ export function processWranglerConfig(config: WranglerConfigWithEnv, targetEnv: 
 
   // Merge the environment-specific configuration into the top-level
   return { ...filteredConfig, ...envConfig } as WranglerConfig
-}
-
-/**
- * Setup Cloudflare-specific post-build processing.
- *
- * This hooks into the Nuxt close hook (which runs after build completion)
- * to process the generated wrangler.json file for environment-specific deployments.
- */
-export function setupCloudflare(nuxt: Nuxt) {
-  if (nuxt.options.dev || nuxt.options._prepare) {
-    return
-  }
-
-  const preset = process.env.NITRO_PRESET || nuxt.options.nitro.preset
-  const isCloudflare = preset?.includes('cloudflare')
-  if (!isCloudflare) {
-    return
-  }
-
-  // Check if CLOUDFLARE_ENV is set
-  const cloudflareEnv = process.env.CLOUDFLARE_ENV
-  if (!cloudflareEnv) {
-    return
-  }
-
-  nuxt.hook('close', async () => {
-    await processWranglerConfigFile(nuxt, cloudflareEnv)
-  })
 }
 
 async function processWranglerConfigFile(nuxt: Nuxt, targetEnv: string) {
