@@ -61,12 +61,8 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
     }
     case 'postgresql': {
       config.connection = defu(config.connection, { url: process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL || '' })
-      // Neon HTTP
-      if (config.driver === 'neon-http') {
-        if (!config.connection.url) {
-          throw new Error('Neon HTTP driver requires DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL environment variable')
-        }
-        break
+      if (config.driver && ['neon-http', 'postgres-js'].includes(config.driver) && !config.connection.url) {
+        throw new Error(`\`${config.driver}\` driver requires \`DATABASE_URL\`, \`POSTGRES_URL\`, or \`POSTGRESQL_URL\` environment variable`)
       }
       if (config.connection.url) {
         config.driver ||= 'postgres-js'
