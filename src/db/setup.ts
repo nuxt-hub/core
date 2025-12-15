@@ -216,7 +216,7 @@ declare module 'hub:db' {
    * The database schema object
    * Defined in server/db/schema.ts and server/db/schema/*.ts
    */
-  export * as schema from './db/schema.mjs'
+  export { schema }
   /**
    * The ${driver} database client.
    */
