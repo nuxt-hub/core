@@ -11,6 +11,7 @@ import { setupKV } from './kv/setup'
 import { setupBlob } from './blob/setup'
 import type { ModuleOptions, HubConfig, ResolvedHubConfig } from '@nuxthub/core'
 import { addDevToolsCustomTabs } from './devtools'
+import { setupCloudflare } from './cloudflare'
 import type { NuxtModule } from '@nuxt/schema'
 
 const log = logger.withTag('nuxt:hub')
@@ -100,6 +101,8 @@ export default defineNuxtModule<ModuleOptions>({
           compatibility_flags: ['nodejs_compat']
         })
       }
+      // Setup Cloudflare environment processing for the generated wrangler.json
+      setupCloudflare(nuxt)
     }
 
     // Add .data to .gitignore
