@@ -237,6 +237,55 @@ describe('resolveDatabaseConfig', () => {
         driver: 'custom-postgres'
       })
     })
+
+    it('should use neon-http driver when explicitly set', async () => {
+      process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/db'
+
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'postgresql',
+        driver: 'neon-http'
+      })
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'postgresql',
+        driver: 'neon-http',
+        connection: {
+          url: 'postgresql://user:pass@localhost:5432/db'
+        }
+      })
+    })
+
+    it('should not use neon-http driver automatically', async () => {
+      process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/db'
+
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig('postgresql')
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'postgresql',
+        driver: 'postgres-js',
+        connection: {
+          url: 'postgresql://user:pass@localhost:5432/db'
+        }
+      })
+    })
+
+    it('should throw error when DATABASE_URL is not set for neon-http', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'postgresql',
+        driver: 'neon-http'
+      })
+
+      await expect(resolveDatabaseConfig(nuxt, hub)).rejects.toThrow(
+        'Neon HTTP driver requires DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL environment variable'
+      )
+    })
   })
 
   describe('MySQL dialect', () => {

@@ -156,10 +156,10 @@ export type DatabaseConfig = {
    * Database driver (optional, auto-detected if not provided)
    *
    * SQLite drivers: 'better-sqlite3', 'libsql', 'bun-sqlite', 'd1', 'd1-http'
-   * PostgreSQL drivers: 'postgres-js', 'pglite'
+   * PostgreSQL drivers: 'postgres-js', 'pglite', 'neon-http'
    * MySQL drivers: 'mysql2'
    */
-  driver?: 'better-sqlite3' | 'libsql' | 'bun-sqlite' | 'd1' | 'd1-http' | 'postgres-js' | 'pglite' | 'mysql2'
+  driver?: 'better-sqlite3' | 'libsql' | 'bun-sqlite' | 'd1' | 'd1-http' | 'postgres-js' | 'pglite' | 'neon-http' | 'mysql2'
   /**
    * Database connection configuration
    */
@@ -183,7 +183,7 @@ export type DatabaseConfig = {
 
 export type ResolvedDatabaseConfig = DatabaseConfig & {
   dialect: 'sqlite' | 'postgresql' | 'mysql'
-  driver: 'better-sqlite3' | 'libsql' | 'bun-sqlite' | 'd1' | 'd1-http' | 'postgres-js' | 'pglite' | 'mysql2'
+  driver: 'better-sqlite3' | 'libsql' | 'bun-sqlite' | 'd1' | 'd1-http' | 'postgres-js' | 'pglite' | 'neon-http' | 'mysql2'
   connection: DatabaseConnection
   migrationsDirs: string[]
   queriesPaths: string[]
