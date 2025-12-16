@@ -283,7 +283,7 @@ describe('resolveDatabaseConfig', () => {
       })
 
       await expect(resolveDatabaseConfig(nuxt, hub)).rejects.toThrow(
-        'Neon HTTP driver requires DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL environment variable'
+        '`neon-http` driver requires `DATABASE_URL`, `POSTGRES_URL`, or `POSTGRESQL_URL` environment variable'
       )
     })
   })
