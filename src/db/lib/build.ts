@@ -100,7 +100,8 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir }: { r
     skipNodeModulesBundle: true,
     dts: {
       build: false,
-      tsconfig: false
+      tsconfig: false,
+      newContext: true
     },
     clean: false,
     logLevel: 'warn'
