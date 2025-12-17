@@ -4,7 +4,7 @@ import { glob } from 'tinyglobby'
 import { join, resolve as resolveFs, relative } from 'pathe'
 import { defu } from 'defu'
 import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
-import { resolve, resolvePath, logWhenReady } from '../utils'
+import { resolve, resolvePath, logWhenReady, addWranglerBinding } from '../utils'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
 import { cloudflareHooks } from '../hosting/cloudflare'
 
@@ -61,6 +61,11 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
       break
     }
     case 'postgresql': {
+      // Cloudflare Hyperdrive with explicit hyperdriveId
+      if (hub.hosting.includes('cloudflare') && config.connection?.hyperdriveId && !config.driver) {
+        config.driver = 'postgres-js'
+        break
+      }
       config.connection = defu(config.connection, { url: process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL || '' })
       if (config.driver && ['neon-http', 'postgres-js'].includes(config.driver) && !config.connection.url) {
         throw new Error(`\`${config.driver}\` driver requires \`DATABASE_URL\`, \`POSTGRES_URL\`, or \`POSTGRESQL_URL\` environment variable`)
@@ -76,6 +81,11 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
       break
     }
     case 'mysql': {
+      // Cloudflare Hyperdrive with explicit hyperdriveId
+      if (hub.hosting.includes('cloudflare') && config.connection?.hyperdriveId && !config.driver) {
+        config.driver = 'mysql2'
+        break
+      }
       config.driver ||= 'mysql2'
       config.connection = defu(config.connection, { uri: process.env.MYSQL_URL || process.env.DATABASE_URL || '' })
       if (!config.connection.uri) {
@@ -97,9 +107,17 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   hub.db = await resolveDatabaseConfig(nuxt, hub)
   if (!hub.db) return
 
-  const { dialect, driver, migrationsDirs, queriesPaths } = hub.db as ResolvedDatabaseConfig
+  const { dialect, driver, connection, migrationsDirs, queriesPaths } = hub.db as ResolvedDatabaseConfig
 
   logWhenReady(nuxt, `\`hub:db\` using \`${dialect}\` database with \`${driver}\` driver`, 'info')
+
+  if (driver === 'd1' && connection?.databaseId) {
+    addWranglerBinding(nuxt, 'd1_databases', { binding: 'DB', database_id: connection.databaseId })
+  }
+  if (['postgres-js', 'mysql2'].includes(driver) && connection?.hyperdriveId) {
+    const binding = driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL'
+    addWranglerBinding(nuxt, 'hyperdrive', { binding, id: connection.hyperdriveId })
+  }
 
   // Verify development database dependencies are installed
   if (!deps['drizzle-orm'] || !deps['drizzle-kit']) {

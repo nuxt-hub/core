@@ -1,6 +1,6 @@
 import { defu } from 'defu'
 import { addTypeTemplate, addServerImports, addTemplate } from '@nuxt/kit'
-import { resolve, logWhenReady } from '../utils'
+import { resolve, logWhenReady, addWranglerBinding } from '../utils'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig, ResolvedKVConfig } from '@nuxthub/core'
@@ -71,6 +71,10 @@ export function setupKV(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>
 
   const kvConfig = hub.kv as ResolvedKVConfig
 
+  if (kvConfig.driver === 'cloudflare-kv-binding' && kvConfig.namespaceId) {
+    addWranglerBinding(nuxt, 'kv_namespaces', { binding: kvConfig.binding || 'KV', id: kvConfig.namespaceId })
+  }
+
   // Verify dependencies
   if (kvConfig.driver === 'upstash' && !deps['@upstash/redis']) {
     logWhenReady(nuxt, 'Please run `npx nypm i @upstash/redis` to use Upstash Redis KV storage', 'error')
@@ -83,10 +87,11 @@ export function setupKV(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>
   }
 
   // Configure production storage
+  const { namespaceId: _namespaceId, ...kvStorageConfig } = kvConfig
   nuxt.options.nitro.storage ||= {}
-  nuxt.options.nitro.storage.kv = defu(nuxt.options.nitro.storage.kv, kvConfig)
+  nuxt.options.nitro.storage.kv = defu(nuxt.options.nitro.storage.kv, kvStorageConfig)
 
-  const { driver, ...driverOptions } = kvConfig
+  const { driver, ...driverOptions } = kvStorageConfig
   const template = addTemplate({
     filename: 'hub/kv.mjs',
     getContents: () => `import { createStorage } from "unstorage"
