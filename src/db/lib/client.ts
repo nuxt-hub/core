@@ -6,7 +6,7 @@ import type { ResolvedDatabaseConfig } from '@nuxthub/core'
  * Creates a Drizzle client for the given configuration
  */
 export async function createDrizzleClient(config: ResolvedDatabaseConfig, hubDir: string) {
-  const { driver, connection } = config
+  const { driver, connection, casing } = config
   let client
 
   let pkg = ''
@@ -18,14 +18,14 @@ export async function createDrizzleClient(config: ResolvedDatabaseConfig, hubDir
     })
     pkg = 'drizzle-orm/postgres-js'
     const { drizzle } = await import(pkg)
-    return drizzle({ client })
+    return drizzle({ client, casing })
   } else if (driver === 'neon-http') {
     const clientPkg = '@neondatabase/serverless'
     const { neon } = await import(clientPkg)
     const sql = neon(connection.url)
     pkg = 'drizzle-orm/neon-http'
     const { drizzle } = await import(pkg)
-    return drizzle(sql)
+    return drizzle(sql, { casing })
   } else if (driver === 'libsql') {
     pkg = 'drizzle-orm/libsql'
   } else if (driver === 'mysql2') {
@@ -38,5 +38,5 @@ export async function createDrizzleClient(config: ResolvedDatabaseConfig, hubDir
   }
 
   const { drizzle } = await import(pkg)
-  return drizzle({ connection })
+  return drizzle({ connection, casing })
 }
