@@ -179,6 +179,14 @@ export type DatabaseConfig = {
    * @default true
    */
   applyMigrationsDuringBuild?: boolean
+  /**
+   * MySQL mode for Drizzle ORM relational queries.
+   * Only applicable when dialect is 'mysql'.
+   *
+   * @default 'default'
+   * @see https://orm.drizzle.team/docs/rqb#modes
+   */
+  mode?: 'default' | 'planetscale'
 }
 
 export type ResolvedDatabaseConfig = DatabaseConfig & {
