@@ -11,6 +11,7 @@ import { setupKV } from './kv/setup'
 import { setupBlob } from './blob/setup'
 import type { ModuleOptions, HubConfig, ResolvedHubConfig } from '@nuxthub/core'
 import { addDevToolsCustomTabs } from './devtools'
+import { setupCloudflare } from './hosting/cloudflare'
 import type { NuxtModule } from '@nuxt/schema'
 
 const log = logger.withTag('nuxt:hub')
@@ -87,19 +88,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.nitro.experimental.asyncContext = true
 
     if (!nuxt.options.dev && hub.hosting.includes('cloudflare')) {
-      // Enable Cloudflare Node.js compatibility
-      nuxt.options.nitro.cloudflare ||= {}
-      nuxt.options.nitro.cloudflare.nodeCompat = false
-      nuxt.options.nitro.cloudflare.deployConfig = true
-      // Remove trailing slash for prerender routes
-      nuxt.options.nitro.prerender ||= {}
-      nuxt.options.nitro.prerender.autoSubfolderIndex ||= false
-      // Add no_bundle mode
-      if (!hub.hosting.includes('pages')) {
-        nuxt.options.nitro.cloudflare.wrangler = defu(nuxt.options.nitro.cloudflare.wrangler, {
-          compatibility_flags: ['nodejs_compat']
-        })
-      }
+      setupCloudflare(nuxt, hub)
     }
 
     // Add .data to .gitignore
