@@ -206,7 +206,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
 }
 
 async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
-  const { driver, connection } = hub.db as ResolvedDatabaseConfig
+  const { dialect, driver, connection, mode } = hub.db as ResolvedDatabaseConfig
 
   // For types, d1-http uses sqlite-proxy
   const driverForTypes = driver === 'd1-http' ? 'sqlite-proxy' : driver
@@ -221,7 +221,7 @@ declare module 'hub:db' {
    * The database schema object
    * Defined in server/db/schema.ts and server/db/schema/*.ts
    */
-  export * as schema from './db/schema.mjs'
+  export { schema }
   /**
    * The ${driver} database client.
    */
@@ -236,10 +236,11 @@ declare module 'hub:db' {
   // Setup Drizzle ORM
 
   // Generate simplified drizzle() implementation
+  const modeOption = dialect === 'mysql' ? `, mode: '${mode || 'default'}'` : ''
   let drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
 import * as schema from './db/schema.mjs'
 
-const db = drizzle({ connection: ${JSON.stringify(connection)}, schema })
+const db = drizzle({ connection: ${JSON.stringify(connection)}, schema${modeOption} })
 export { db, schema }
 `
 
@@ -368,7 +369,7 @@ function getDb() {
   if (!_db) {
     const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
     if (!hyperdrive) throw new Error('${bindingName} binding not found')
-    _db = drizzle({ connection: hyperdrive.connectionString, schema })
+    _db = drizzle({ connection: hyperdrive.connectionString, schema${modeOption} })
   }
   return _db
 }
