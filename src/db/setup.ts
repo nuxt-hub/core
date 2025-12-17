@@ -6,6 +6,7 @@ import { defu } from 'defu'
 import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
 import { resolve, resolvePath, logWhenReady } from '../utils'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
+import { cloudflareHooks } from '../hosting/cloudflare'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig, ResolvedHubConfig, ResolvedDatabaseConfig } from '@nuxthub/core'
@@ -138,6 +139,26 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
     await copyDatabaseAssets(nitro, hub as ResolvedHubConfig)
     await applyBuildTimeMigrations(nitro, hub as ResolvedHubConfig)
   })
+
+  // Add D1 migrations settings to wrangler.json for Cloudflare deployments
+  if (driver === 'd1') {
+    cloudflareHooks.hook('wrangler:config', (config) => {
+      const d1Databases = config.d1_databases as {
+        binding: string
+        database_id?: string
+        migrations_table?: string
+        migrations_dir?: string
+      }[] | undefined
+
+      if (!d1Databases?.length) return
+
+      const dbBinding = d1Databases.find(db => db.binding === 'DB')
+      if (dbBinding) {
+        dbBinding.migrations_table ||= '_hub_migrations'
+        dbBinding.migrations_dir ||= '.output/server/db/migrations/'
+      }
+    })
+  }
 
   await setupDatabaseClient(nuxt, hub as ResolvedHubConfig)
   await setupDatabaseConfig(nuxt, hub as ResolvedHubConfig)

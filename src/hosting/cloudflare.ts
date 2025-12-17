@@ -2,6 +2,7 @@ import { writeFile, readFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { join } from 'pathe'
 import { defu } from 'defu'
+import { createHooks } from 'hookable'
 import { logger } from '@nuxt/kit'
 import type { Nuxt } from '@nuxt/schema'
 import type { EnvironmentNonInheritable } from 'nitropack/presets/cloudflare/wrangler/environment'
@@ -9,6 +10,16 @@ import type { WranglerConfig } from 'nitropack/presets/cloudflare/types'
 import type { HubConfig } from '../types'
 
 const log = logger.withTag('nuxt:hub')
+
+export interface CloudflareHooks {
+  /**
+   * Mutate the generated wrangler.json configuration before it's written.
+   * Called during Cloudflare builds after Nitro generates the initial wrangler.json.
+   */
+  'wrangler:config': (config: WranglerConfig) => void | Promise<void>
+}
+
+export const cloudflareHooks = createHooks<CloudflareHooks>()
 
 export function setupCloudflare(nuxt: Nuxt, hub: HubConfig) {
   // Enable Cloudflare Node.js compatibility
@@ -25,15 +36,13 @@ export function setupCloudflare(nuxt: Nuxt, hub: HubConfig) {
     })
   }
 
-  // Setup wrangler.json environment processing
+  // Setup wrangler.json processing (environment flattening + feature hooks)
   if (nuxt.options.dev || nuxt.options._prepare) {
     return
   }
-  const cloudflareEnv = process.env.CLOUDFLARE_ENV
-  if (!cloudflareEnv) {
-    return
-  }
-  nuxt.hook('close', async () => {
+
+  nuxt.hook('close', async (nuxt) => {
+    const cloudflareEnv = process.env.CLOUDFLARE_ENV
     await processWranglerConfigFile(nuxt, cloudflareEnv)
   })
 }
@@ -94,7 +103,7 @@ export type WranglerConfigWithEnv = WranglerConfig & {
  *
  * @see https://developers.cloudflare.com/workers/wrangler/configuration/#generated-wrangler-configuration
  */
-export function processWranglerConfig(config: WranglerConfigWithEnv, targetEnv: string): WranglerConfig {
+export function processWranglerConfigEnv(config: WranglerConfigWithEnv, targetEnv: string): WranglerConfig {
   // If no env section exists, nothing to process
   if (!config.env || Object.keys(config.env).length === 0) {
     const { env: _, ...rest } = config
@@ -124,37 +133,43 @@ export function processWranglerConfig(config: WranglerConfigWithEnv, targetEnv: 
   return { ...filteredConfig, ...envConfig } as WranglerConfig
 }
 
-async function processWranglerConfigFile(nuxt: Nuxt, targetEnv: string) {
+async function processWranglerConfigFile(nuxt: Nuxt, targetEnv?: string) {
   // Nitro outputs wrangler.json to .output/server/
   const wranglerPath = join(nuxt.options.rootDir, '.output', 'server', 'wrangler.json')
 
   if (!existsSync(wranglerPath)) {
-    log.warn(`No wrangler.json found at ${wranglerPath}, skipping environment processing`)
+    log.warn(`No wrangler.json found at ${wranglerPath}, skipping wrangler processing`)
     return
   }
 
   try {
     const content = await readFile(wranglerPath, 'utf-8')
-    const config: WranglerConfigWithEnv = JSON.parse(content)
+    let config: WranglerConfigWithEnv = JSON.parse(content)
 
-    // Check if there's an env section to process
-    if (!config.env || !config.env[targetEnv]) {
-      log.info(`No environment "${targetEnv}" found in wrangler config, using top-level configuration`)
-      // Still remove the env section if it exists
-      if (config.env) {
-        const { env: _, ...rest } = config
-        await writeFile(wranglerPath, JSON.stringify(rest, null, 2), 'utf-8')
+    // Process environment if CLOUDFLARE_ENV is set
+    if (targetEnv) {
+      if (!config.env || !config.env[targetEnv]) {
+        log.info(`No environment "${targetEnv}" found in wrangler config, using top-level configuration`)
+        // Still remove the env section if it exists
+        if (config.env) {
+          const { env: _, ...rest } = config
+          config = rest
+        }
+      } else {
+        // Process the config to flatten the environment
+        config = processWranglerConfigEnv(config, targetEnv)
       }
-      return
     }
 
-    // Process the config to flatten the environment
-    const processedConfig = processWranglerConfig(config, targetEnv)
+    // Allow modules to mutate the wrangler config
+    await cloudflareHooks.callHook('wrangler:config', config)
 
     // Write the processed config back
-    await writeFile(wranglerPath, JSON.stringify(processedConfig, null, 2), 'utf-8')
+    await writeFile(wranglerPath, JSON.stringify(config, null, 2), 'utf-8')
 
-    log.success(`Processed wrangler config for environment "${targetEnv}"`)
+    if (targetEnv) {
+      log.success(`Processed wrangler config for environment "${targetEnv}"`)
+    }
   } catch (error) {
     log.error(`Failed to process wrangler config: ${error}`)
   }
