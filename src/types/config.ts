@@ -187,6 +187,13 @@ export type DatabaseConfig = {
    * @see https://orm.drizzle.team/docs/rqb#modes
    */
   mode?: 'default' | 'planetscale'
+  /**
+   * Database model naming convention for Drizzle ORM.
+   * When set to `'snake_case'`, automatically maps camelCase JavaScript keys to snake_case database column names.
+   *
+   * @see https://orm.drizzle.team/docs/sql-schema-declaration#camel-and-snake-casing
+   */
+  casing?: 'snake_case' | 'camelCase'
 }
 
 export type ResolvedDatabaseConfig = DatabaseConfig & {
@@ -196,4 +203,5 @@ export type ResolvedDatabaseConfig = DatabaseConfig & {
   migrationsDirs: string[]
   queriesPaths: string[]
   applyMigrationsDuringBuild: boolean
+  casing?: 'snake_case' | 'camelCase'
 }
