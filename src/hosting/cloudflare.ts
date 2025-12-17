@@ -146,18 +146,18 @@ async function processWranglerConfigFile(nuxt: Nuxt, targetEnv?: string) {
     const content = await readFile(wranglerPath, 'utf-8')
     let config: WranglerConfigWithEnv = JSON.parse(content)
 
-    // Process environment if CLOUDFLARE_ENV is set
-    if (targetEnv) {
-      if (!config.env || !config.env[targetEnv]) {
-        log.info(`No environment "${targetEnv}" found in wrangler config, using top-level configuration`)
-        // Still remove the env section if it exists
-        if (config.env) {
-          const { env: _, ...rest } = config
-          config = rest
-        }
-      } else {
-        // Process the config to flatten the environment
-        config = processWranglerConfigEnv(config, targetEnv)
+    if (targetEnv && config.env?.[targetEnv]) {
+      // Flatten the specified environment into top-level config
+      config = processWranglerConfigEnv(config, targetEnv)
+      log.info(`Using wrangler environment \`${targetEnv}\``)
+    } else {
+      // Remove env section if present (use top-level config)
+      if (config.env) {
+        const { env: _, ...rest } = config
+        config = rest
+      }
+      if (targetEnv) {
+        log.info(`No environment \`${targetEnv}\` found in wrangler config, using top-level configuration`)
       }
     }
 
@@ -166,10 +166,6 @@ async function processWranglerConfigFile(nuxt: Nuxt, targetEnv?: string) {
 
     // Write the processed config back
     await writeFile(wranglerPath, JSON.stringify(config, null, 2), 'utf-8')
-
-    if (targetEnv) {
-      log.success(`Processed wrangler config for environment "${targetEnv}"`)
-    }
   } catch (error) {
     log.error(`Failed to process wrangler config: ${error}`)
   }
