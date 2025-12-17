@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v0.10.3
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.10.2...v0.10.3)
+
+### 🚀 Enhancements
+
+- **db:** Support drizzle casing ([#731](https://github.com/nuxt-hub/core/pull/731))
+- Auto-generate wrangler bindings from hub config ([#716](https://github.com/nuxt-hub/core/pull/716))
+
+### 🩹 Fixes
+
+- **db:** Pass mode to drizzle for mysql ([#730](https://github.com/nuxt-hub/core/pull/730))
+- **build:** Merge nitro generated env to root in wrangler.json ([#720](https://github.com/nuxt-hub/core/pull/720))
+
+### ❤️ Contributors
+
+- Max <maximogarciamtnez@gmail.com>
+- Rihan Arfan ([@RihanArfan](https://github.com/RihanArfan))
+
 ## v0.10.2
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.10.1...v0.10.2)
