@@ -1,12 +1,20 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "playground",
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "invocation_logs": true,
+      "persist": true
+    }
+  },
   "d1_databases": [
     {
       "binding": "DB",
       "database_id": "adc66aba-ce5f-40bc-bffc-bc80eb17e0b7",
       "migrations_table": "_hub_migrations",
-      "migrations_dir": "server/db/migrations"
+      "migrations_dir": ".output/server/db/migrations/"
     }
   ],
   "r2_buckets": [
@@ -25,13 +33,25 @@
       "id": "c59a5cea9d0f44ad92b92e328c7e8b67"
     }
   ],
-  "observability": {
-    "logs": {
-      "enabled": true,
-      "head_sampling_rate": 1,
-      "invocation_logs": true,
-      "persist": true
+  "env": {
+    "preview": {
+      "name": "playground-preview",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_id": "adc66aba-ce5f-40bc-bffc-bc80eb171234"
+        }
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "KV",
+          "id": "919a41f11e5649deace923de93d81234"
+        },
+        {
+          "binding": "CACHE",
+          "id": "c59a5cea9d0f44ad92b92e328c7e1234"
+        }
+      ],
     }
   }
 }
-
