@@ -243,11 +243,10 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
   nuxt.options.alias ||= {}
   nuxt.options.alias['hub:db:schema'] = join(nuxt.options.buildDir, 'hub/db/schema.mjs')
 
-  const schemaTypePath = join(nuxt.options.buildDir, 'hub/db/schema.d.mts')
   addTypeTemplate({
     filename: 'hub/db/schema.d.ts',
     getContents: () => `declare module 'hub:db:schema' {
-  export * from '${schemaTypePath}'
+  export * from '#build/hub/db/schema.mjs'
 }`
   }, { nitro: true, nuxt: true })
 }
