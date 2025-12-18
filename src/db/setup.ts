@@ -242,6 +242,13 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
 
   nuxt.options.alias ||= {}
   nuxt.options.alias['hub:db:schema'] = join(nuxt.options.buildDir, 'hub/db/schema.mjs')
+
+  addTypeTemplate({
+    filename: 'hub/db/schema.d.ts',
+    getContents: () => `declare module 'hub:db:schema' {
+  export * from '#build/hub/db/schema.mjs'
+}`
+  }, { nitro: true, nuxt: true })
 }
 
 async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
