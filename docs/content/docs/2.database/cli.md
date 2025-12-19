@@ -64,6 +64,35 @@ OPTIONS
   -v, --verbose    Show verbose output. 
 ```
 
+## `nuxt db squash`
+
+Squash several migrations into a single migration. This is useful for cleaning up your migration history during development.
+
+```bash [Terminal]
+USAGE db squash [OPTIONS]
+
+OPTIONS
+         --last    Number of migrations to squash starting from most recently applied. If not specified migrations can be interactively selected.
+          --cwd    The directory to run the command in.
+  -v, --verbose    Show verbose output.
+```
+
+Example usage:
+
+```bash [Terminal]
+# Squash the last 3 migrations into one
+npx nuxt db squash --last 3
+
+# Interactive mode - select which migrations to squash
+npx nuxt db squash
+```
+
+After squashing, you'll be prompted to mark the new migration as already applied. This is useful when your database already has the schema from the squashed migrations applied.
+
+::note
+When using interactive selection, all migrations after the oldest selected one will automatically be included, since migrations must be squashed sequentially.
+::
+
 ## `nuxt db sql`
 
 Execute a SQL query against the database.
