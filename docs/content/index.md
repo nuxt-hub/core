@@ -7,6 +7,8 @@ description: "Build full-stack Nuxt applications, with zero configuration. NuxtH
 ::u-page-hero
 ---
 orientation: 'horizontal'
+ui:
+  container: 'lg:items-start'
 ---
 #headline
   :::u-button
@@ -39,8 +41,9 @@ NuxtHub is a Nuxt module giving you all the features required to ship full-stack
 
 
 #default
-::code-group
-```ts [Database]
+::tabs{class="xl:-mt-10"}
+:::tabs-item{label="Database" icon="i-lucide-database"}
+```ts
 import { eq, desc } from 'drizzle-orm'
 import { db, schema } from 'hub:db'
 
@@ -56,7 +59,9 @@ await db.insert(schema.todos).values({
   completed: false,
 })
 ```
-```ts [Blob]
+:::
+:::tabs-item{label="Blob" icon="i-lucide-shapes"}
+```ts
 import { blob } from 'hub:blob'
 
 // Ensure the blob is valid
@@ -73,7 +78,9 @@ const avatars = await blob.list({ prefix: 'avatars/', limit: 10 })
 // Serve the avatar with streaming
 return blob.serve(event, 'avatars/atinux.png')
 ```
-```ts [KV]
+:::
+:::tabs-item{label="KV" icon="i-lucide-list"}
+```ts
 import { kv } from 'hub:kv'
 
 // Store and retrieve any data
@@ -84,7 +91,9 @@ const session = await kv.get('user:1:session')
 // With TTL support
 await kv.set('rate-limit:ip', count, { ttl: 60 })
 ```
-```ts [Cache]
+:::
+:::tabs-item{label="Cache" icon="i-lucide-zap"}
+```ts
 // Cache API responses for 1 hour
 export default defineCachedEventHandler(async () => {
   const data = await $fetch('https://api.example.com')
