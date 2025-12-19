@@ -1,5 +1,5 @@
 import { writeFile, readFile, mkdir } from 'node:fs/promises'
-import { defineNuxtModule, logger, addTemplate } from '@nuxt/kit'
+import { defineNuxtModule, logger, addTemplate, addServerPlugin } from '@nuxt/kit'
 import { join, relative, resolve as resolveFs } from 'pathe'
 import { defu } from 'defu'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
@@ -11,6 +11,7 @@ import { setupKV } from './kv/setup'
 import { setupBlob } from './blob/setup'
 import type { ModuleOptions, HubConfig, ResolvedHubConfig } from '@nuxthub/core'
 import { addDevToolsCustomTabs } from './devtools'
+import { resolve } from './utils'
 import { setupCloudflare } from './hosting/cloudflare'
 import type { NuxtModule } from '@nuxt/schema'
 
@@ -40,6 +41,8 @@ export default defineNuxtModule<ModuleOptions>({
       // Local storage
       dir: '.data',
       hosting,
+      // Remote Cloudflare bindings (connects to production during dev)
+      remote: false,
       // NuxtHub features
       blob: false,
       cache: false,
@@ -61,6 +64,32 @@ export default defineNuxtModule<ModuleOptions>({
     await setupCache(nuxt, hub as HubConfig, deps)
     await setupDatabase(nuxt, hub as HubConfig, deps)
     await setupKV(nuxt, hub as HubConfig, deps)
+
+    // Setup remote Cloudflare bindings for dev mode
+    if (nuxt.options.dev && hub.remote) {
+      const wranglerPath = join(hub.dir, 'wrangler.toml')
+      const wrangler = nuxt.options.nitro.cloudflare?.wrangler || {}
+      let tomlContent = ''
+      // D1 databases
+      for (const db of (wrangler.d1_databases || [])) {
+        tomlContent += `[[d1_databases]]\nbinding = "${db.binding}"\ndatabase_name = "${db.database_name || 'default'}"\ndatabase_id = "${db.database_id || 'default'}"\nremote = true\n\n`
+      }
+      // KV namespaces
+      for (const kv of (wrangler.kv_namespaces || [])) {
+        tomlContent += `[[kv_namespaces]]\nbinding = "${kv.binding}"\nid = "${kv.id}"\nremote = true\n\n`
+      }
+      // R2 buckets
+      for (const r2 of (wrangler.r2_buckets || [])) {
+        tomlContent += `[[r2_buckets]]\nbinding = "${r2.binding}"\nbucket_name = "${r2.bucket_name}"\nremote = true\n\n`
+      }
+      if (tomlContent) {
+        await writeFile(wranglerPath, tomlContent, 'utf-8')
+        // Store wrangler config for the plugin
+        ;(hub as any)._remote = { configPath: wranglerPath, persistDir: hub.dir }
+        // Add plugin to inject bindings
+        addServerPlugin(resolve('remote/runtime/plugin.dev'))
+      }
+    }
 
     const runtimeConfig = nuxt.options.runtimeConfig
     runtimeConfig.hub = hub as ResolvedHubConfig

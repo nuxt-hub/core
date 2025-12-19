@@ -23,9 +23,7 @@ export function createDriver(options: CloudflareDriverOptions): BlobDriver<Cloud
   const getBucket = (): R2Bucket => {
     const binding = options.binding || 'BLOB'
     // @ts-expect-error globalThis may have the binding
-    // Note: nitro-cloudflare-dev sets globalThis.__env__ as a Promise initially, so we check it's not a Promise
-    const env = globalThis.__env__
-    const bucket = globalThis[binding] || (env && typeof env.then !== 'function' ? env[binding] : undefined) || process.env[binding]
+    const bucket = globalThis[binding] || globalThis.__env__?.[binding] || process.env[binding]
     if (!bucket) {
       throw new Error(`R2 binding "${options.binding}" not found`)
     }

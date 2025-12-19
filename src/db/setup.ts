@@ -1,9 +1,9 @@
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir } from 'node:fs/promises'
 import chokidar from 'chokidar'
 import { glob } from 'tinyglobby'
 import { join, resolve as resolveFs, relative } from 'pathe'
 import { defu } from 'defu'
-import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler, installModule } from '@nuxt/kit'
+import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
 import { resolve, resolvePath, logWhenReady, addWranglerBinding } from '../utils'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
 import { cloudflareHooks } from '../hosting/cloudflare'
@@ -135,18 +135,10 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
     logWhenReady(nuxt, 'Please run `npx nypm i @libsql/client` to use SQLite as database.', 'error')
   }
 
-  // Setup nitro-cloudflare-dev for local D1 emulation
+  // Add D1 binding for cloudflare dev emulation
   if (nuxt.options.dev && driver === 'd1') {
-    if (!deps['nitro-cloudflare-dev']) {
-      logWhenReady(nuxt, 'Please run `npx nypm i -D nitro-cloudflare-dev` for local D1 emulation.', 'error')
-    } else {
-      const wranglerPath = join(hub.dir, 'wrangler.toml')
-      const tomlContent = `[[d1_databases]]\nbinding = "DB"\ndatabase_name = "default"\ndatabase_id = "default"\n`
-      await mkdir(hub.dir, { recursive: true })
-      await writeFile(wranglerPath, tomlContent, 'utf-8')
-      nuxt.options.nitro.cloudflareDev = { persistDir: hub.dir, configPath: wranglerPath, silent: true }
-      await installModule('nitro-cloudflare-dev')
-    }
+    const databaseId = hub.remote ? (connection?.databaseId || 'default') : 'default'
+    addWranglerBinding(nuxt, 'd1_databases', { binding: 'DB', database_name: 'default', database_id: databaseId })
   }
 
   // Add Server scanning
@@ -347,15 +339,13 @@ export { db, schema }
   }
   if (driver === 'd1') {
     // D1 requires lazy binding access - bindings only available in request context on CF Workers
-    // Note: nitro-cloudflare-dev sets globalThis.__env__ as a Promise initially, so we check it's not a Promise
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/d1'
 import * as schema from './db/schema.mjs'
 
 let _db
 function getDb() {
   if (!_db) {
-    const env = globalThis.__env__
-    const binding = process.env.DB || (env && typeof env.then !== 'function' ? env.DB : undefined) || globalThis.DB
+    const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
     if (!binding) throw new Error('DB binding not found')
     _db = drizzle(binding, { schema${casingOption} })
   }
@@ -423,7 +413,6 @@ export { db, schema }
   }
   if (['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare')) {
     // Hyperdrive requires lazy binding access - bindings only available in request context on CF Workers
-    // Note: nitro-cloudflare-dev sets globalThis.__env__ as a Promise initially, so we check it's not a Promise
     const bindingName = driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL'
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
 import * as schema from './db/schema.mjs'
@@ -431,8 +420,7 @@ import * as schema from './db/schema.mjs'
 let _db
 function getDb() {
   if (!_db) {
-    const env = globalThis.__env__
-    const hyperdrive = process.env.${bindingName} || (env && typeof env.then !== 'function' ? env.${bindingName} : undefined) || globalThis.${bindingName}
+    const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
     if (!hyperdrive) throw new Error('${bindingName} binding not found')
     _db = drizzle({ connection: hyperdrive.connectionString, schema${modeOption}${casingOption} })
   }
