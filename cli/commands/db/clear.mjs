@@ -1,7 +1,7 @@
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
 import { execa } from 'execa'
-import { readFile, rm } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { join } from 'pathe'
 import { createDrizzleClient } from '@nuxthub/core/db'
 import { sql } from 'drizzle-orm'
@@ -26,8 +26,8 @@ function getListTablesQuery(dialect) {
 
 export default defineCommand({
   meta: {
-    name: 'reset',
-    description: 'Reset the database by dropping all tables and deleting migration files.'
+    name: 'clear',
+    description: 'Clear the database by dropping all tables.'
   },
   args: {
     cwd: {
@@ -45,22 +45,21 @@ export default defineCommand({
   },
   async run({ args }) {
     if (args.verbose) {
-      // Set log level to debug
       consola.level = 4
     }
     const cwd = args.cwd || process.cwd()
     await loadDotenv({ cwd, dotenv: args.dotenv })
 
-    consola.warn(`This command will drop all tables and delete all migration files. ALL DATA STORED IN THE DATABASE WILL BE LOST!`)
+    consola.warn('This command will drop all tables. ALL DATA STORED IN THE DATABASE WILL BE LOST!')
 
-    const confirmation = await consola.prompt('Type "confirm" to reset the database:', {
+    const confirmation = await consola.prompt('Type "confirm" to clear the database:', {
       type: 'text',
       placeholder: 'confirm',
       cancel: 'null'
     })
 
     if (confirmation !== 'confirm') {
-      consola.info('Database reset cancelled.')
+      consola.info('Database clear cancelled.')
       return
     }
 
@@ -80,10 +79,45 @@ export default defineCommand({
     const hubDir = join(cwd, hubConfig.dir)
     const db = await createDrizzleClient(hubConfig.db, hubDir)
     const execute = dialect === 'sqlite' ? 'run' : 'execute'
-    const getRows = result => (dialect === 'mysql' ? result[0] : result.results || result.rows || result) || []
-    const closeDb = async () => await db.$client?.end?.()
 
-    // Get list of all tables
+    // PostgreSQL: Drop and recreate all user schemas
+    if (dialect === 'postgresql') {
+      consola.debug('Fetching database schemas...')
+      const getRows = result => result.rows || result || []
+
+      // Get all user-created schemas
+      const schemasResult = await db[execute](sql.raw(`
+        SELECT schema_name FROM information_schema.schemata
+        WHERE schema_name NOT LIKE 'pg_%'
+        AND schema_name != 'information_schema';
+      `))
+      const schemas = getRows(schemasResult).map(row => row.schema_name)
+
+      if (schemas.length === 0) {
+        consola.info('No schemas found.')
+      } else {
+        consola.debug(`Found ${schemas.length} schema${schemas.length === 1 ? '' : 's'} to clear`)
+
+        for (const schema of schemas) {
+          try {
+            consola.debug(`Dropping schema \`${schema}\`...`)
+            await db[execute](sql.raw(`DROP SCHEMA "${schema}" CASCADE;`))
+            await db[execute](sql.raw(`CREATE SCHEMA "${schema}";`))
+            consola.debug(`Cleared schema \`${schema}\``)
+          } catch (error) {
+            consola.error(`Failed to clear schema \`${schema}\`: ${error.message}`)
+          }
+        }
+      }
+
+      await db.$client?.end?.()
+      consola.success('Database cleared successfully.')
+      return
+    }
+
+    // SQLite/libsql/MySQL: Drop tables individually
+    const getRows = result => (dialect === 'mysql' ? result[0] : result.results || result.rows || result) || []
+
     consola.info('Fetching database tables...')
     const listTablesQuery = getListTablesQuery(dialect)
     let tables = []
@@ -99,6 +133,13 @@ export default defineCommand({
     } else {
       consola.info(`Found ${tables.length} table${tables.length === 1 ? '' : 's'} to drop`)
 
+      // Disable foreign key checks to allow dropping tables with relations
+      if (dialect === 'sqlite' || dialect === 'libsql') {
+        await db[execute](sql.raw('PRAGMA foreign_keys = OFF;'))
+      } else if (dialect === 'mysql') {
+        await db[execute](sql.raw('SET FOREIGN_KEY_CHECKS = 0;'))
+      }
+
       // Drop all tables
       for (const table of tables) {
         try {
@@ -109,30 +150,16 @@ export default defineCommand({
           consola.error(`Failed to drop table \`${table}\`: ${error.message}`)
         }
       }
-    }
 
-    await closeDb()
-
-    // Delete migration files
-    consola.info('Deleting migration files...')
-    const migrationsDirs = hubConfig.db.migrationsDirs || []
-    let deletedMigrations = false
-
-    for (const migrationsDir of migrationsDirs) {
-      try {
-        await rm(migrationsDir, { recursive: true, force: true })
-        consola.success(`Deleted migrations directory: \`${migrationsDir}\``)
-        deletedMigrations = true
-      } catch (error) {
-        consola.debug(`No migrations directory at \`${migrationsDir}\` or error deleting: ${error.message}`)
+      // Re-enable foreign key checks
+      if (dialect === 'sqlite' || dialect === 'libsql') {
+        await db[execute](sql.raw('PRAGMA foreign_keys = ON;'))
+      } else if (dialect === 'mysql') {
+        await db[execute](sql.raw('SET FOREIGN_KEY_CHECKS = 1;'))
       }
     }
 
-    if (!deletedMigrations) {
-      consola.info('No migration files found to delete.')
-    }
-
-    consola.success('Database reset complete!')
-    consola.info('You can regenerate migrations with `npx nuxt db generate`')
+    await db.$client?.end?.()
+    consola.success('Database cleared successfully.')
   }
 })
