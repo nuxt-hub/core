@@ -1,4 +1,4 @@
 title: Blob Storage
-icon: i-lucide-file
+icon: i-lucide-shapes
 navigation.title: Blob
 description: Upload, store and serve images, videos, music, documents and other unstructured data in your Nuxt application.

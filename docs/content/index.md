@@ -40,39 +40,60 @@ NuxtHub is a Nuxt module giving you all the features required to ship full-stack
 
 #default
 ::code-group
-```ts [server/api/todos.ts]
-import { db } from 'hub:db'
-import { kv } from 'hub:kv'
-import { blob } from 'hub:blob'
+```ts [Database]
+import { eq, desc } from 'drizzle-orm'
+import { db, schema } from 'hub:db'
 
-const todos = await db.query.todos.findMany()
+// Type-safe queries with Drizzle ORM
+const todos = await db.query.todos.findMany({
+  where: eq(schema.todos.completed, false),
+  orderBy: [desc(schema.todos.createdAt)]
+})
 
-const value = await kv.get('my-key')
-
-const file = await blob.put('my-file.txt', 'file-content')
-
-const cachedAPICall = defineCachedFunction(async () => {
-  return $fetch('https://api.example.com/todos')
-}, { maxAge: 60 * 60 })
-```
-```ts [server/db/schema.ts]
-import { pgTable, integer, text, boolean } from 'drizzle-orm/pg-core'
-
-export const todos = pgTable('todos', {
-  id: integer().primaryKey(),
-  title: text().notNull(),
-  completed: boolean().notNull().default(false),
+// Insert with automatic type inference
+await db.insert(schema.todos).values({
+  title: 'Ship my app',
+  completed: false,
 })
 ```
-```ts [nuxt.config.ts]
-export default defineNuxtConfig({
-  modules: ['@nuxthub/core'],
-  hub: {
-    blob: true,
-    cache: true,
-    db: 'postgresql',
-    kv: true,
-  }
+```ts [Blob]
+import { blob } from 'hub:blob'
+
+// Ensure the blob is valid
+ensureBlob(imageData, { maxSize: '1MB', types: ['image'] })
+
+// Upload files with ease
+const file = await blob.put('avatars/user-1.png', imageData, {
+  access: 'public'
+})
+
+// List avatars
+const avatars = await blob.list({ prefix: 'avatars/', limit: 10 })
+
+// Serve the avatar with streaming
+return blob.serve(event, 'avatars/atinux.png')
+```
+```ts [KV]
+import { kv } from 'hub:kv'
+
+// Store and retrieve any data
+await kv.set('user:1:session', { token, expiresAt })
+
+const session = await kv.get('user:1:session')
+
+// With TTL support
+await kv.set('rate-limit:ip', count, { ttl: 60 })
+```
+```ts [Cache]
+// Cache API responses for 1 hour
+export default defineCachedEventHandler(async () => {
+  const data = await $fetch('https://api.example.com')
+  return data
+}, { maxAge: 60 * 60 })
+
+// Or cache any function
+const getStats = defineCachedFunction(fetchStats, {
+  maxAge: 60 * 5,
 })
 ```
 ::
@@ -93,7 +114,7 @@ export default defineNuxtConfig({
     title: SQL Database
     description: Query your database with a type-safe ORM and automated migrations.
     icon: i-lucide-database
-    to: /docs/features/database
+    to: /docs/database
     ---
     :::
     :::landing-feature
@@ -101,7 +122,7 @@ export default defineNuxtConfig({
     title: Files Storage
     description: Upload, store and serve images, videos and any kind of file.
     icon: i-lucide-shapes
-    to: /docs/features/blob
+    to: /docs/blob
     ---
     :::
     :::landing-feature
@@ -109,7 +130,7 @@ export default defineNuxtConfig({
     title: KV Storage
     description: Leverage a Key-Value data store replicated globally for maximum performance.
     icon: i-lucide-list
-    to: /docs/features/kv
+    to: /docs/kv
     ---
     :::
     :::landing-feature
@@ -117,7 +138,7 @@ export default defineNuxtConfig({
     title: Caching
     description: Cache Nuxt pages, API routes and server functions on the Edge.
     icon: i-lucide-zap
-    to: /docs/features/cache
+    to: /docs/cache
     ---
     :::
     :::landing-feature
@@ -129,17 +150,4 @@ export default defineNuxtConfig({
     ---
     :::
   :::
-::
-
-::landing-testimonial
----
-quote: "I created NuxtHub to give Nuxt developers the ability to create full-stack applications, with the same DX as Nuxt and a progressive approach."
-author:
-  name: "Sébastien Chopin"
-  description: "Creator of Nuxt & NuxtHub"
-  to: "https://x.com/Atinux"
-  avatar:
-    src: "https://ipx.nuxt.com/f_auto,s_40x40/gh_avatar/atinux"
-    srcset: "https://ipx.nuxt.com/f_auto,s_80x80/gh_avatar/atinux 2x"
----
 ::

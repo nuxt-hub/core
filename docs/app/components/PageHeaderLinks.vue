@@ -43,7 +43,7 @@ const items = [
   ],
   [
     {
-      label: 'Copy MCP Server URL',
+      label: 'Copy MCP URL',
       icon: 'i-lucide-link',
       onSelect() {
         copy(`https://hub.nuxt.com/mcp`)

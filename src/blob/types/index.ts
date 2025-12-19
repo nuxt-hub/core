@@ -199,12 +199,12 @@ export interface BlobUploadOptions {
   multiple?: boolean
   /**
    * Options used for the ensure() method.
-   * @see https://hub.nuxt.com/docs/features/blob#ensureblob
+   * @see https://hub.nuxt.com/docs/blob/usage#ensureblob
    */
   ensure?: BlobEnsureOptions
   /**
    * Options used for the put() method.
-   * @see https://hub.nuxt.com/docs/features/blob#put
+   * @see https://hub.nuxt.com/docs/blob/usage#put
    */
   put?: BlobPutOptions
 }
@@ -366,20 +366,20 @@ export interface BlobStorage {
   /**
    * Create a multipart upload.
    *
-   * @see https://hub.nuxt.com/docs/features/blob#createmultipartupload
+   * @see https://hub.nuxt.com/docs/blob/upload#createmultipartupload
    */
   createMultipartUpload(pathname: string, options?: BlobMultipartOptions): Promise<BlobMultipartUpload>
   /**
    * Get the specified multipart upload.
    *
-   * @see https://hub.nuxt.com/docs/features/blob#resumemultipartupload
+   * @see https://hub.nuxt.com/docs/blob/upload#resumemultipartupload
    */
   resumeMultipartUpload(pathname: string, uploadId: string): Promise<BlobMultipartUpload>
   /**
    * Handle the multipart upload request.
    * Make sure your route includes `[action]` and `[...pathname]` params.
    *
-   * @see https://hub.nuxt.com/docs/features/blob#handlemultipartupload
+   * @see https://hub.nuxt.com/docs/blob/upload#handlemultipartupload
    */
   handleMultipartUpload(event: H3Event, options?: BlobMultipartOptions): Promise<HandleMPUResponse>
   /**
@@ -388,7 +388,7 @@ export interface BlobStorage {
    * @param event The H3 event (needed to set headers for the response)
    * @param options The upload options
    *
-   * @see https://hub.nuxt.com/docs/features/blob#handleupload
+   * @see https://hub.nuxt.com/docs/blob/upload#handleupload
    */
   handleUpload(event: H3Event, options?: BlobUploadOptions): Promise<BlobObject[]>
 }

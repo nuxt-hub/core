@@ -1,6 +1,7 @@
 ---
-title: CLI
+title: Database CLI
 description: Manage your Nuxt SQL database with the `npx nuxt db` CLI, including generating migrations, applying them, running SQL queries, and marking migrations as applied.
+navigation.title: CLI
 ---
 
 NuxtHub provides a CLI for managing your database migrations and running SQL queries accessible from the `npx nuxt db` command.

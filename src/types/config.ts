@@ -31,7 +31,7 @@ export interface ModuleOptions {
    * Or provide a BlobConfig object with driver and connection details.
    *
    * @default false
-   * @see https://hub.nuxt.com/docs/features/blob
+   * @see https://hub.nuxt.com/docs/blob
    */
   blob?: boolean | BlobConfig
   /**
@@ -39,7 +39,7 @@ export interface ModuleOptions {
    * Or provide a CacheConfig object with driver and connection details.
    *
    * @default false
-   * @see https://hub.nuxt.com/docs/features/cache
+   * @see https://hub.nuxt.com/docs/cache
    */
   cache?: boolean | CacheConfig
   /**
@@ -47,7 +47,7 @@ export interface ModuleOptions {
    * Or provide a DatabaseConfig object with dialect and connection details.
    *
    * @default false
-   * @see https://hub.nuxt.com/docs/features/database
+   * @see https://hub.nuxt.com/docs/database
    */
   db?: 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig | false
   /**
@@ -55,7 +55,7 @@ export interface ModuleOptions {
    * Or provide a KVConfig object with driver and connection details.
    *
    * @default false
-   * @see https://hub.nuxt.com/docs/features/kv
+   * @see https://hub.nuxt.com/docs/kv
    */
   kv?: boolean | KVConfig
   /**
