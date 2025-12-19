@@ -2,6 +2,8 @@
 title: "Build full-stack Nuxt applications."
 navigation: false
 description: "Build full-stack Nuxt applications, with zero configuration. NuxtHub supercharges your Nuxt development workflow so you can focus on shipping features."
+seo:
+  ogImage: '/social-card.png'
 ---
 
 ::u-page-hero
