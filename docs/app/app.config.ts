@@ -25,11 +25,11 @@ export default defineAppConfig({
       },
       tabs: {
         slots: {
-          root: 'rounded border border-default'
+          root: 'rounded border border-default gap-0'
         }
       },
       tabsItem: {
-        base: 'p-4 *:my-3 pt-2 text-sm'
+        base: 'p-4'
       }
     }
   },
