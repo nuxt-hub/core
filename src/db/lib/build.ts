@@ -90,7 +90,7 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir }: { r
     outDir: join(buildDir, 'hub/db'),
     outExtensions: () => ({
       js: '.mjs',
-      dts: '.d.ts'
+      dts: '.d.mts'
     }),
     alias: {
       'hub:db:schema': entry
@@ -100,7 +100,8 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir }: { r
     skipNodeModulesBundle: true,
     dts: {
       build: false,
-      tsconfig: false
+      tsconfig: false,
+      newContext: true
     },
     clean: false,
     logLevel: 'warn'

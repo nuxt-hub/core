@@ -1,6 +1,56 @@
 # Changelog
 
 
+## v0.10.3
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.10.2...v0.10.3)
+
+### 🚀 Enhancements
+
+- **db:** Support drizzle casing ([#731](https://github.com/nuxt-hub/core/pull/731))
+- Auto-generate wrangler bindings from hub config ([#716](https://github.com/nuxt-hub/core/pull/716))
+
+### 🩹 Fixes
+
+- **db:** Pass mode to drizzle for mysql ([#730](https://github.com/nuxt-hub/core/pull/730))
+- **build:** Merge nitro generated env to root in wrangler.json ([#720](https://github.com/nuxt-hub/core/pull/720))
+
+### ❤️ Contributors
+
+- Max <maximogarciamtnez@gmail.com>
+- Rihan Arfan ([@RihanArfan](https://github.com/RihanArfan))
+
+## v0.10.2
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.10.1...v0.10.2)
+
+### 🚀 Enhancements
+
+- **blob:** Add support for access and improve s3 driver ([#709](https://github.com/nuxt-hub/core/pull/709))
+- **db:** Add `drizzle-orm/neon-http` support ([#713](https://github.com/nuxt-hub/core/pull/713))
+
+### 🩹 Fixes
+
+- **db:** Resolve JSON $type<> types in schema ([#723](https://github.com/nuxt-hub/core/pull/723))
+- Make sure to run tsdown in new context for proper types generation ([038ea73](https://github.com/nuxt-hub/core/commit/038ea73))
+
+### 📖 Documentation
+
+- Add `PageHeaderLinks` and MCP server ([#705](https://github.com/nuxt-hub/core/pull/705))
+- Remove unused badge ([2a37e09](https://github.com/nuxt-hub/core/commit/2a37e09))
+
+### 🏡 Chore
+
+- Fix neon http test ([50fda23](https://github.com/nuxt-hub/core/commit/50fda23))
+- Update deps ([34fafdd](https://github.com/nuxt-hub/core/commit/34fafdd))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+- Max <maximogarciamtnez@gmail.com>
+- Adam Kasper ([@adamkasper](https://github.com/adamkasper))
+- Hugo <hugo.richard@vercel.com>
+
 ## v0.10.1
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.10.0...v0.10.1)

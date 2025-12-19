@@ -74,13 +74,17 @@ export interface ModuleOptions {
 export type FSBlobConfig = { driver: 'fs' } & FSDriverOptions
 export type S3BlobConfig = { driver: 's3' } & S3DriverOptions
 export type VercelBlobConfig = { driver: 'vercel-blob' } & VercelDriverOptions
-export type CloudflareR2BlobConfig = { driver: 'cloudflare-r2' } & CloudflareDriverOptions
+export type CloudflareR2BlobConfig = { driver: 'cloudflare-r2', bucketName?: string } & CloudflareDriverOptions
 
 export type BlobConfig = boolean | FSBlobConfig | S3BlobConfig | VercelBlobConfig | CloudflareR2BlobConfig
 export type ResolvedBlobConfig = FSBlobConfig | S3BlobConfig | VercelBlobConfig | CloudflareR2BlobConfig
 
 export type CacheConfig = {
   driver?: BuiltinDriverName
+  /**
+   * Cloudflare KV namespace ID for auto-generating wrangler bindings
+   */
+  namespaceId?: string
   [key: string]: any
 }
 export type ResolvedCacheConfig = CacheConfig & {
@@ -89,6 +93,10 @@ export type ResolvedCacheConfig = CacheConfig & {
 
 export type KVConfig = {
   driver?: BuiltinDriverName
+  /**
+   * Cloudflare KV namespace ID for auto-generating wrangler bindings
+   */
+  namespaceId?: string
   [key: string]: any
 }
 
@@ -138,9 +146,13 @@ type DatabaseConnection = {
    */
   apiToken?: string
   /**
-   * Cloudflare D1 Database ID (for D1 HTTP driver)
+   * Cloudflare D1 Database ID (for D1 driver and D1 HTTP driver)
    */
   databaseId?: string
+  /**
+   * Cloudflare Hyperdrive ID for auto-generating wrangler bindings (PostgreSQL/MySQL)
+   */
+  hyperdriveId?: string
   /**
    * Additional connection options
    */
@@ -156,10 +168,10 @@ export type DatabaseConfig = {
    * Database driver (optional, auto-detected if not provided)
    *
    * SQLite drivers: 'better-sqlite3', 'libsql', 'bun-sqlite', 'd1', 'd1-http'
-   * PostgreSQL drivers: 'postgres-js', 'pglite'
+   * PostgreSQL drivers: 'postgres-js', 'pglite', 'neon-http'
    * MySQL drivers: 'mysql2'
    */
-  driver?: 'better-sqlite3' | 'libsql' | 'bun-sqlite' | 'd1' | 'd1-http' | 'postgres-js' | 'pglite' | 'mysql2'
+  driver?: 'better-sqlite3' | 'libsql' | 'bun-sqlite' | 'd1' | 'd1-http' | 'postgres-js' | 'pglite' | 'neon-http' | 'mysql2'
   /**
    * Database connection configuration
    */
@@ -179,13 +191,29 @@ export type DatabaseConfig = {
    * @default true
    */
   applyMigrationsDuringBuild?: boolean
+  /**
+   * MySQL mode for Drizzle ORM relational queries.
+   * Only applicable when dialect is 'mysql'.
+   *
+   * @default 'default'
+   * @see https://orm.drizzle.team/docs/rqb#modes
+   */
+  mode?: 'default' | 'planetscale'
+  /**
+   * Database model naming convention for Drizzle ORM.
+   * When set to `'snake_case'`, automatically maps camelCase JavaScript keys to snake_case database column names.
+   *
+   * @see https://orm.drizzle.team/docs/sql-schema-declaration#camel-and-snake-casing
+   */
+  casing?: 'snake_case' | 'camelCase'
 }
 
 export type ResolvedDatabaseConfig = DatabaseConfig & {
   dialect: 'sqlite' | 'postgresql' | 'mysql'
-  driver: 'better-sqlite3' | 'libsql' | 'bun-sqlite' | 'd1' | 'd1-http' | 'postgres-js' | 'pglite' | 'mysql2'
+  driver: 'better-sqlite3' | 'libsql' | 'bun-sqlite' | 'd1' | 'd1-http' | 'postgres-js' | 'pglite' | 'neon-http' | 'mysql2'
   connection: DatabaseConnection
   migrationsDirs: string[]
   queriesPaths: string[]
   applyMigrationsDuringBuild: boolean
+  casing?: 'snake_case' | 'camelCase'
 }
