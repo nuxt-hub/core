@@ -30,7 +30,7 @@ With **v0.10**, you can now deploy your NuxtHub projects to any hosting provider
 
 NuxtHub v0.10 brings multi-cloud support for all core features:
 
-- **Database**: Use SQLite, PostgreSQL, or MySQL with [Drizzle ORM](/docs/features/database) — NuxtHub auto-configures based on your provider
+- **Database**: Use SQLite, PostgreSQL, or MySQL with [Drizzle ORM](/docs/database) — NuxtHub auto-configures based on your provider
 - **Blob Storage**: Upload and serve files from [Cloudflare R2](https://developers.cloudflare.com/r2/), [Vercel Blob](https://vercel.com/docs/storage/vercel-blob), [AWS S3](https://aws.amazon.com/s3/), and more
 - **KV Storage**: Key-value storage via [Cloudflare KV](https://developers.cloudflare.com/kv), [Upstash Redis](https://upstash.com/docs/redis), [Vercel KV](https://vercel.com/docs/storage/vercel-kv), and others
 - **Cache Storage**: Efficient caching that works across all supported providers
@@ -118,7 +118,7 @@ npx nuxt db drop <table>
 
 Migrations are automatically applied during development and at build time — no extra configuration needed.
 
-::note{to="/docs/features/database"}
+::note{to="/docs/database"}
 Read the full Database documentation to learn more.
 ::
 

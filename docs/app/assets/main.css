@@ -10,7 +10,7 @@
 
 @theme static {
   --font-sans: 'Public Sans', sans-serif;
-
+  --container-8xl: 90rem;
   --breakpoint-3xl: 1920px;
 
   --color-green-50: #EFFDF5;
@@ -24,4 +24,8 @@
   --color-green-800: #016538;
   --color-green-900: #0A5331;
   --color-green-950: #052E16;
+}
+
+:root {
+  --ui-container: var(--container-8xl);
 }

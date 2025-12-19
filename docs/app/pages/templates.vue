@@ -17,7 +17,7 @@ const { data: page } = await useAsyncData(route.path, () => {
 })
 
 const { data: featurePaths } = await useAsyncData('featurePaths', () =>
-  queryCollection('docs').where('path', 'LIKE', '/docs/features/%').select('path').all()
+  queryCollection('docs').where('path', 'LIKE', '/docs/%').select('path').all()
 )
 
 const templates = computed(() => {
@@ -27,7 +27,7 @@ const templates = computed(() => {
     ...template,
     features: template.features.map(feature => ({
       name: feature,
-      hasPage: featurePaths.value?.some(item => item.path === `/docs/features/${feature}`) || false
+      hasPage: featurePaths.value?.some(item => item.path === `/docs/${feature}`) || false
     }))
   }))
 })
@@ -81,7 +81,7 @@ import.meta.server && defineOgImageComponent('Docs')
           </p>
           <div class="flex items-center flex-wrap gap-1">
             <template v-for="feature of template.features" :key="feature.name">
-              <NuxtLink v-if="feature.hasPage" :to="`/docs/features/${feature.name}`">
+              <NuxtLink v-if="feature.hasPage" :to="`/docs/${feature.name}`">
                 <UBadge
                   :label="feature.name"
                   color="neutral"

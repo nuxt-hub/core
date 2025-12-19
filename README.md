@@ -12,10 +12,10 @@ NuxtHub supercharges your Nuxt development workflow so you can focus on shipping
 ## ✨ Key Features
 
 NuxtHub provides optional features to help you build full-stack applications:
-- [**SQL database**](https://hub.nuxt.com/docs/features/database) to store your application's data with [automatic migrations](https://hub.nuxt.com/docs/features/database#database-migrations)
-- [**Files storage**](https://hub.nuxt.com/docs/features/blob) to store static assets, such as images, videos and more
-- [**Caching system**](https://hub.nuxt.com/docs/features/cache) for your Nuxt pages, API routes or server functions
-- [**Key-Value**](https://hub.nuxt.com/docs/features/kv) to store JSON data accessible globally with low-latency
+- [**SQL database**](https://hub.nuxt.com/docs/database) to store your application's data with [automatic migrations](https://hub.nuxt.com/docs/databas/migrations)
+- [**Files storage**](https://hub.nuxt.com/docs/blob) to store static assets, such as images, videos and more
+- [**Caching system**](https://hub.nuxt.com/docs/cache) for your Nuxt pages, API routes or server functions
+- [**Key-Value**](https://hub.nuxt.com/docs/kv) to store JSON data accessible globally with low-latency
 
 Read more on https://hub.nuxt.com
 

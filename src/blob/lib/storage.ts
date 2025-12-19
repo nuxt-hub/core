@@ -12,7 +12,7 @@ import { ensureBlob } from './ensure'
 
 export type * from '../types'
 
-export function createBlobStorage(driver: BlobDriver): BlobStorage {
+export function createBlobStorage(driver: BlobDriver<any>): BlobStorage {
   const blob = {
     driver,
 

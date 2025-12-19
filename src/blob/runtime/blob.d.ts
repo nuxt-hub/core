@@ -11,7 +11,7 @@ declare module 'hub:blob' {
    * await blob.put('my-file.txt', 'Hello World')
    * ```
    *
-   * @see https://hub.nuxt.com/docs/features/blob
+   * @see https://hub.nuxt.com/docs/blob
    */
   export const blob: BlobStorage
   /**
@@ -24,7 +24,7 @@ declare module 'hub:blob' {
    * ensureBlob(file, { maxSize: '1MB', types: ['image']})
    * ```
    *
-   * @see https://hub.nuxt.com/docs/features/blob#ensureblob
+   * @see https://hub.nuxt.com/docs/blob/usage#validation
    */
   export const ensureBlob: (blob: Blob, options: BlobEnsureOptions) => void
 }

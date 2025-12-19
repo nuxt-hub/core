@@ -91,7 +91,6 @@ const links = computed(() => [
         <NuxtPage />
       </NuxtLayout>
     </UMain>
-
     <AppFooter />
 
     <ClientOnly>
