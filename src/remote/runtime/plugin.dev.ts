@@ -1,6 +1,6 @@
 import type { NitroAppPlugin } from 'nitropack'
 import type { GetPlatformProxyOptions } from 'wrangler'
-// @ts-ignore
+// @ts-expect-error - virtual import
 import { useRuntimeConfig } from '#imports'
 
 const _proxy = _getPlatformProxy()
@@ -16,7 +16,7 @@ const _proxy = _getPlatformProxy()
 // Initially set __env__ as a Promise that resolves to env
 ;(globalThis as any).__env__ = _proxy.then(proxy => proxy.env)
 
-export default <NitroAppPlugin>function (nitroApp) {
+export default <NitroAppPlugin> function (nitroApp) {
   nitroApp.hooks.hook('request', async (event) => {
     const proxy = await _proxy
 
@@ -36,7 +36,7 @@ export default <NitroAppPlugin>function (nitroApp) {
   })
 
   // Ensure our hook runs first
-  // @ts-expect-error
+  // @ts-expect-error - accessing internal hooks
   nitroApp.hooks._hooks.request?.unshift(nitroApp.hooks._hooks.request?.pop())
 
   nitroApp.hooks.hook('close', () => {
@@ -52,7 +52,7 @@ async function _getPlatformProxy() {
 
   const runtimeConfig = useRuntimeConfig() as {
     hub: {
-      _remote: { configPath: string; persistDir: string }
+      _remote: { configPath: string, persistDir: string }
     }
   }
 
