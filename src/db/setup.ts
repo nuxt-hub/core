@@ -1,9 +1,9 @@
-import { mkdir } from 'node:fs/promises'
+import { mkdir, writeFile } from 'node:fs/promises'
 import chokidar from 'chokidar'
 import { glob } from 'tinyglobby'
 import { join, resolve as resolveFs, relative } from 'pathe'
 import { defu } from 'defu'
-import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
+import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler, installModule } from '@nuxt/kit'
 import { resolve, resolvePath, logWhenReady, addWranglerBinding } from '../utils'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
 import { cloudflareHooks } from '../hosting/cloudflare'
@@ -133,6 +133,20 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
     logWhenReady(nuxt, 'Please run `npx nypm i mysql2` to use MySQL as database.', 'error')
   } else if (driver === 'libsql' && !deps['@libsql/client']) {
     logWhenReady(nuxt, 'Please run `npx nypm i @libsql/client` to use SQLite as database.', 'error')
+  }
+
+  // Setup nitro-cloudflare-dev for local D1 emulation
+  if (nuxt.options.dev && driver === 'd1') {
+    if (!deps['nitro-cloudflare-dev']) {
+      logWhenReady(nuxt, 'Please run `npx nypm i -D nitro-cloudflare-dev` for local D1 emulation.', 'error')
+    } else {
+      const wranglerPath = join(hub.dir, 'wrangler.toml')
+      const tomlContent = `[[d1_databases]]\nbinding = "DB"\ndatabase_name = "default"\ndatabase_id = "default"\n`
+      await mkdir(hub.dir, { recursive: true })
+      await writeFile(wranglerPath, tomlContent, 'utf-8')
+      nuxt.options.nitro.cloudflareDev = { persistDir: hub.dir, configPath: wranglerPath, silent: true }
+      await installModule('nitro-cloudflare-dev')
+    }
   }
 
   // Add Server scanning
