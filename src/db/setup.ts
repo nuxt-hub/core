@@ -326,7 +326,7 @@ export { db, schema }
 import { drizzle } from 'drizzle-orm/neon-http'
 import * as schema from './db/schema.mjs'
 
-const sql = neon(${connection.connectionString})
+const sql = neon(${JSON.stringify(connection.url)})
 const db = drizzle(sql, { schema${casingOption} })
 export { db, schema }
 `
