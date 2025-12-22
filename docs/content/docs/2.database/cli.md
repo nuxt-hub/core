@@ -64,12 +64,12 @@ OPTIONS
   -v, --verbose    Show verbose output.
 ```
 
-## `nuxt db clear`
+## `nuxt db drop-all`
 
-Clear the database by dropping all tables.
+Drop all tables from the database.
 
 ```bash [Terminal]
-USAGE db clear [OPTIONS]
+USAGE db drop-all [OPTIONS]
 
 OPTIONS
           --cwd    The directory to run the command in.

@@ -26,8 +26,8 @@ function getListTablesQuery(dialect) {
 
 export default defineCommand({
   meta: {
-    name: 'clear',
-    description: 'Clear the database by dropping all tables.'
+    name: 'drop-all',
+    description: 'Drop all tables from the database.'
   },
   args: {
     cwd: {
@@ -52,14 +52,14 @@ export default defineCommand({
 
     consola.warn('This command will drop all tables. ALL DATA STORED IN THE DATABASE WILL BE LOST!')
 
-    const confirmation = await consola.prompt('Type "confirm" to clear the database:', {
+    const confirmation = await consola.prompt('Type "confirm" to drop all tables:', {
       type: 'text',
       placeholder: 'confirm',
       cancel: 'null'
     })
 
     if (confirmation !== 'confirm') {
-      consola.info('Database clear cancelled.')
+      consola.info('Operation cancelled.')
       return
     }
 
@@ -111,7 +111,7 @@ export default defineCommand({
       }
 
       await db.$client?.end?.()
-      consola.success('Database cleared successfully.')
+      consola.success('All tables dropped successfully.')
       return
     }
 
@@ -160,6 +160,6 @@ export default defineCommand({
     }
 
     await db.$client?.end?.()
-    consola.success('Database cleared successfully.')
+    consola.success('All tables dropped successfully.')
   }
 })
