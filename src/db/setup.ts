@@ -135,6 +135,12 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
     logWhenReady(nuxt, 'Please run `npx nypm i @libsql/client` to use SQLite as database.', 'error')
   }
 
+  // Add D1 binding for cloudflare dev emulation
+  if (nuxt.options.dev && driver === 'd1') {
+    const databaseId = hub.remote ? (connection?.databaseId || 'default') : 'default'
+    addWranglerBinding(nuxt, 'd1_databases', { binding: 'DB', database_name: 'default', database_id: databaseId })
+  }
+
   // Add Server scanning
   addServerPlugin(resolve('db/runtime/plugins/migrations.dev'))
 

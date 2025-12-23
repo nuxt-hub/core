@@ -11,6 +11,12 @@ export interface HubConfig {
   kv: boolean | KVConfig
   dir: string
   hosting: string
+  /**
+   * Use remote Cloudflare bindings during local development.
+   * Connects to production D1/KV/R2 instead of local emulation.
+   * @default false
+   */
+  remote: boolean
 }
 
 export interface ResolvedHubConfig extends HubConfig {
@@ -68,6 +74,12 @@ export interface ModuleOptions {
    * This is automatically determined using the NITRO_PRESET or the detected provider during the CI/CD.
    */
   hosting?: string
+  /**
+   * Use remote Cloudflare bindings during local development.
+   * Connects to production D1/KV/R2 instead of local emulation.
+   * @default false
+   */
+  remote?: boolean
 }
 
 // Blob driver configurations - extend from driver option types
