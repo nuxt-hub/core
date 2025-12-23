@@ -11,11 +11,11 @@ NuxtHub provides a CLI for managing your database migrations and running SQL que
 Generate database migrations from the schema.
 
 ```bash [Terminal]
-USAGE db generate [OPTIONS] 
+USAGE db generate [OPTIONS]
 
 OPTIONS
           --cwd    The directory to run the command in.
-  -v, --verbose    Show verbose output.  
+  -v, --verbose    Show verbose output.
 ```
 
 ## `nuxt db migrate`
@@ -23,11 +23,11 @@ OPTIONS
 Apply database migrations to the database.
 
 ```bash [Terminal]
-USAGE db migrate [OPTIONS] 
+USAGE db migrate [OPTIONS]
 
 OPTIONS
 
-          --cwd    The directory to run the command in.                               
+          --cwd    The directory to run the command in.
        --dotenv    Point to another .env file to load.
   -v, --verbose    Show verbose output.
 ```
@@ -40,10 +40,10 @@ Mark local database migration(s) as applied to the database.
 USAGE db mark-as-migrated [OPTIONS] [NAME]
 
 ARGUMENTS
-  NAME    The name of the migration to mark as applied.    
+  NAME    The name of the migration to mark as applied.
 
 OPTIONS
-          --cwd    The directory to run the command in.                               
+          --cwd    The directory to run the command in.
        --dotenv    Point to another .env file to load.
   -v, --verbose    Show verbose output.
 ```
@@ -56,13 +56,30 @@ Drop a table from the database.
 USAGE db drop [OPTIONS] <TABLE>
 
 ARGUMENTS
-  TABLE    The name of the table to drop.    
+  TABLE    The name of the table to drop.
 
 OPTIONS
-          --cwd    The directory to run the command in.                               
+          --cwd    The directory to run the command in.
        --dotenv    Point to another .env file to load.
-  -v, --verbose    Show verbose output. 
+  -v, --verbose    Show verbose output.
 ```
+
+## `nuxt db drop-all`
+
+Drop all tables from the database.
+
+```bash [Terminal]
+USAGE db drop-all [OPTIONS]
+
+OPTIONS
+          --cwd    The directory to run the command in.
+       --dotenv    Point to another .env file to load, relative to the root directory.
+  -v, --verbose    Show verbose output.
+```
+
+::warning
+This is a destructive operation that will permanently delete all data in your database. Take a backup of your database before using this command.
+::
 
 ## `nuxt db squash`
 
@@ -101,12 +118,12 @@ Execute a SQL query against the database.
 USAGE db sql [OPTIONS] [QUERY]
 
 ARGUMENTS
-  QUERY    The SQL query to execute. If not provided, reads from stdin.    
+  QUERY    The SQL query to execute. If not provided, reads from stdin.
 
 OPTIONS
-          --cwd    The directory to run the command in.                               
+          --cwd    The directory to run the command in.
        --dotenv    Point to another .env file to load, relative to the root directory.
-  -v, --verbose    Show verbose output. 
+  -v, --verbose    Show verbose output.
 ```
 
 Example usage:
