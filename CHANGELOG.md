@@ -1,6 +1,44 @@
 # Changelog
 
 
+## v0.10.4
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.10.3...v0.10.4)
+
+### 🚀 Enhancements
+
+- **db:** Nuxt db squash ([#739](https://github.com/nuxt-hub/core/pull/739))
+- **db:** Nuxt db drop-all ([#736](https://github.com/nuxt-hub/core/pull/736))
+
+### 🩹 Fixes
+
+- **types:** Properly export ModuleHooks ([d2060fd](https://github.com/nuxt-hub/core/commit/d2060fd))
+- **db:** Add ts declaration for `hub:db:schema` ([#733](https://github.com/nuxt-hub/core/pull/733))
+- **db:** Update `neon-http` connection string format in setup.ts ([#750](https://github.com/nuxt-hub/core/pull/750))
+
+### 📖 Documentation
+
+- Restructure docs, update routes & navigation ([#717](https://github.com/nuxt-hub/core/pull/717))
+- Add og image ([7edb2fc](https://github.com/nuxt-hub/core/commit/7edb2fc))
+- Clarify D1 migrations not run during build ([#734](https://github.com/nuxt-hub/core/pull/734))
+- Auto-generate wrangler bindings from config ([#732](https://github.com/nuxt-hub/core/pull/732))
+- Clean up prose tabs spacing ([#738](https://github.com/nuxt-hub/core/pull/738))
+- **blob:** Add @nuxt/image integration guide ([#729](https://github.com/nuxt-hub/core/pull/729))
+- **installation:** Update module installation command ([#749](https://github.com/nuxt-hub/core/pull/749))
+
+### 🏡 Chore
+
+- Update deps ([e49c264](https://github.com/nuxt-hub/core/commit/e49c264))
+
+### ❤️ Contributors
+
+- Adam Kasper ([@adamkasper](https://github.com/adamkasper))
+- Rihan Arfan ([@RihanArfan](https://github.com/RihanArfan))
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+- Max <maximogarciamtnez@gmail.com>
+- Mrkaashee <mrkaashee@gmail.com>
+- Hugo <hugo.richard@vercel.com>
+
 ## v0.10.3
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.10.2...v0.10.3)
