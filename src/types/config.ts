@@ -206,6 +206,14 @@ export type DatabaseConfig = {
    * @see https://orm.drizzle.team/docs/sql-schema-declaration#camel-and-snake-casing
    */
   casing?: 'snake_case' | 'camelCase'
+  /**
+   * Drizzle ORM version to use.
+   * Set to `1` to use Drizzle ORM v1-beta (experimental).
+   *
+   * @default 0
+   * @see https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v1beta2
+   */
+  drizzleVersion?: 0 | 1
 }
 
 export type ResolvedDatabaseConfig = DatabaseConfig & {
@@ -216,4 +224,5 @@ export type ResolvedDatabaseConfig = DatabaseConfig & {
   queriesPaths: string[]
   applyMigrationsDuringBuild: boolean
   casing?: 'snake_case' | 'camelCase'
+  drizzleVersion: 0 | 1
 }

@@ -23,7 +23,8 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
   config = defu(config, {
     migrationsDirs: getLayerDirectories(nuxt).map(layer => join(layer.server, 'db/migrations')),
     queriesPaths: [],
-    applyMigrationsDuringBuild: true
+    applyMigrationsDuringBuild: true,
+    drizzleVersion: 0 as const
   })
 
   switch (config.dialect) {
@@ -120,8 +121,16 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   }
 
   // Verify development database dependencies are installed
+  const drizzleVersion = hub.db.drizzleVersion || 0
   if (!deps['drizzle-orm'] || !deps['drizzle-kit']) {
-    logWhenReady(nuxt, 'Please run `npx nypm i drizzle-orm drizzle-kit` to properly setup Drizzle ORM with NuxtHub.', 'error')
+    const versionHint = drizzleVersion === 1 ? ' (use `drizzle-orm@beta` and `drizzle-kit@beta` for v1-beta)' : ''
+    logWhenReady(nuxt, `Please run \`npx nypm i drizzle-orm drizzle-kit\` to properly setup Drizzle ORM with NuxtHub.${versionHint}`, 'error')
+  } else if (drizzleVersion === 1) {
+    const ormVersion = deps['drizzle-orm']
+    const kitVersion = deps['drizzle-kit']
+    if (!ormVersion?.includes('beta') || !kitVersion?.includes('beta')) {
+      logWhenReady(nuxt, 'Using Drizzle v1-beta requires `drizzle-orm@beta` and `drizzle-kit@beta`. Please install beta versions.', 'warn')
+    }
   }
   if (driver === 'postgres-js' && !deps['postgres']) {
     logWhenReady(nuxt, 'Please run `npx nypm i postgres` to use PostgreSQL as database.', 'error')
@@ -252,14 +261,13 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
 }
 
 async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
-  const { dialect, driver, connection, mode, casing } = hub.db as ResolvedDatabaseConfig
+  const { dialect, driver, connection, mode, casing, drizzleVersion } = hub.db as ResolvedDatabaseConfig
 
   // For types, d1-http uses sqlite-proxy
   const driverForTypes = driver === 'd1-http' ? 'sqlite-proxy' : driver
 
   // Setup Database Types
-  const databaseTypes = `import type { DrizzleConfig } from 'drizzle-orm'
-import { drizzle as drizzleCore } from 'drizzle-orm/${driverForTypes}'
+  const databaseTypes = `import { drizzle as drizzleCore } from 'drizzle-orm/${driverForTypes}'
 import * as schema from './db/schema.mjs'
 
 declare module 'hub:db' {
@@ -284,6 +292,8 @@ declare module 'hub:db' {
   // Generate simplified drizzle() implementation
   const modeOption = dialect === 'mysql' ? `, mode: '${mode || 'default'}'` : ''
   const casingOption = casing ? `, casing: '${casing}'` : ''
+  const isV1 = drizzleVersion === 1
+
   let drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
 import * as schema from './db/schema.mjs'
 
@@ -298,7 +308,7 @@ import { PGlite } from '@electric-sql/pglite'
 import * as schema from './db/schema.mjs'
 
 const client = new PGlite(${JSON.stringify(connection.dataDir)})
-const db = drizzle({ client, schema${casingOption} })
+const db = drizzle(${isV1 ? `{ connection: client, schema${casingOption} }` : `{ client, schema${casingOption} }`})
 export { db, schema, client }
 `
 
@@ -317,7 +327,7 @@ import * as schema from './db/schema.mjs'
 const client = postgres('${connection.url}', {
   onnotice: () => {}
 })
-const db = drizzle({ client, schema${casingOption} });
+const db = drizzle(${isV1 ? `{ connection: client, schema${casingOption} }` : `{ client, schema${casingOption} }`});
 export { db, schema }
 `
   }
@@ -327,7 +337,7 @@ import { drizzle } from 'drizzle-orm/neon-http'
 import * as schema from './db/schema.mjs'
 
 const sql = neon('${connection.url}')
-const db = drizzle(sql, { schema${casingOption} })
+const db = drizzle(${isV1 ? `{ connection: sql, schema${casingOption} }` : `sql, { schema${casingOption} }`})
 export { db, schema }
 `
   }
@@ -341,7 +351,7 @@ function getDb() {
   if (!_db) {
     const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
     if (!binding) throw new Error('DB binding not found')
-    _db = drizzle(binding, { schema${casingOption} })
+    _db = drizzle(${isV1 ? `{ connection: binding, schema${casingOption} }` : `binding, { schema${casingOption} }`})
   }
   return _db
 }
@@ -400,7 +410,7 @@ async function d1HttpDriver(sql, params, method) {
   return { rows }
 }
 
-const db = drizzle(d1HttpDriver, { schema${casingOption} })
+const db = drizzle(${isV1 ? `{ connection: d1HttpDriver, schema${casingOption} }` : `d1HttpDriver, { schema${casingOption} }`})
 
 export { db, schema }
 `
