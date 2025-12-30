@@ -41,8 +41,8 @@ export default defineCommand({
     consola.info('Applying database migrations...')
     const hubConfig = JSON.parse(await readFile(join(cwd, '.nuxt/hub/db/config.json'), 'utf-8'))
     consola.info(`Database: \`${hubConfig.db.dialect}\` with \`${hubConfig.db.driver}\` driver`)
-    const url = hubConfig.db.connection.uri || hubConfig.db.connection.url
-    consola.debug(`Database connection: \`${url}\``)
+    const url = hubConfig.db.connection?.uri || hubConfig.db.connection?.url
+    if (url) consola.debug(`Database connection: \`${url}\``)
     const hubDir = join(cwd, hubConfig.dir)
     const db = await createDrizzleClient(hubConfig.db, hubDir)
     const migrationsApplied = await applyDatabaseMigrations(hubConfig, db)
