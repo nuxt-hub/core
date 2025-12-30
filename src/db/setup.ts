@@ -234,11 +234,9 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
     getContents: () => `${schemaPaths.map(path => `export * from '${path}'`).join('\n')}`,
     write: true
   })
-  if (!nuxt.options._prepare) {
-    nuxt.hooks.hookOnce('app:templatesGenerated', async () => {
-      await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir })
-    })
-  }
+  nuxt.hooks.hookOnce('app:templatesGenerated', async () => {
+    await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir })
+  })
 
   nuxt.options.alias ||= {}
   nuxt.options.alias['hub:db:schema'] = join(nuxt.options.buildDir, 'hub/db/schema.mjs')
