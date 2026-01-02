@@ -16,6 +16,9 @@ export function resolveCacheConfig(hub: HubConfig): ResolvedCacheConfig | false 
 
   // If driver is already specified by user, use it with their options
   if (userConfig.driver) {
+    if (userConfig.driver === 'cloudflare-kv-binding') {
+      return defu(userConfig, { binding: 'CACHE' }) as ResolvedCacheConfig
+    }
     return userConfig as ResolvedCacheConfig
   }
 
