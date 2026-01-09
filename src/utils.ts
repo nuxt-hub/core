@@ -1,7 +1,13 @@
 import type { Nuxt } from '@nuxt/schema'
 import { logger, createResolver } from '@nuxt/kit'
+import type { HubConfig } from '@nuxthub/core'
 
 const log = logger.withTag('nuxt:hub')
+
+/** Check if running in dev mode with remote Cloudflare bindings enabled */
+export function isRemoteDev(nuxt: Nuxt, hub: HubConfig): boolean {
+  return nuxt.options.dev && hub.remote
+}
 
 export function logWhenReady(nuxt: Nuxt, message: string, type: 'info' | 'warn' | 'error' = 'info') {
   if (nuxt.options._prepare) {

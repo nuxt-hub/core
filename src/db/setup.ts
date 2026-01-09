@@ -4,7 +4,7 @@ import { glob } from 'tinyglobby'
 import { join, resolve as resolveFs, relative } from 'pathe'
 import { defu } from 'defu'
 import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
-import { resolve, resolvePath, logWhenReady, addWranglerBinding } from '../utils'
+import { resolve, resolvePath, logWhenReady, addWranglerBinding, isRemoteDev } from '../utils'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
 import { cloudflareHooks } from '../hosting/cloudflare'
 
@@ -133,6 +133,12 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
     logWhenReady(nuxt, 'Please run `npx nypm i mysql2` to use MySQL as database.', 'error')
   } else if (driver === 'libsql' && !deps['@libsql/client']) {
     logWhenReady(nuxt, 'Please run `npx nypm i @libsql/client` to use SQLite as database.', 'error')
+  }
+
+  // Add D1 binding for cloudflare dev emulation
+  if (nuxt.options.dev && driver === 'd1') {
+    const databaseId = isRemoteDev(nuxt, hub) ? (connection?.databaseId || 'default') : 'default'
+    addWranglerBinding(nuxt, 'd1_databases', { binding: 'DB', database_name: 'default', database_id: databaseId })
   }
 
   // Add Server scanning
