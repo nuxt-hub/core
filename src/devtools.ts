@@ -27,7 +27,7 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
         log.info(`Launching Drizzle Studio with PGlite...`)
 
         // Trigger studio launch in the Nitro process for PGlite instance
-        const nitroDevUrl = `http://localhost:${nuxt.options.devServer.port || 3000}`
+        const nitroDevUrl = `${nuxt.options.devServer.https ? 'https' : 'http'}://localhost:${nuxt.options.devServer.port || 3000}`
         await fetch(`${nitroDevUrl}/api/_hub/db/launch-studio?port=${port}`, {
           method: 'POST'
         })
