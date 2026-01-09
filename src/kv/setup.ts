@@ -1,6 +1,6 @@
 import { defu } from 'defu'
 import { addTypeTemplate, addServerImports, addTemplate } from '@nuxt/kit'
-import { resolve, logWhenReady, addWranglerBinding } from '../utils'
+import { resolve, logWhenReady, addWranglerBinding, isRemoteDev } from '../utils'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig, ResolvedKVConfig } from '@nuxthub/core'
@@ -8,7 +8,7 @@ import type { HubConfig, ResolvedKVConfig } from '@nuxthub/core'
 /**
  * Resolve KV configuration from boolean or object format
  */
-export function resolveKVConfig(hub: HubConfig): ResolvedKVConfig | false {
+export function resolveKVConfig(hub: HubConfig, nuxt: Nuxt): ResolvedKVConfig | false {
   if (!hub.kv) return false
 
   // If driver is already specified by user, use it with their options
@@ -43,8 +43,8 @@ export function resolveKVConfig(hub: HubConfig): ResolvedKVConfig | false {
     }) as ResolvedKVConfig
   }
 
-  // Cloudflare KV
-  if (hub.hosting.includes('cloudflare')) {
+  // Cloudflare KV (production or remote dev)
+  if (hub.hosting.includes('cloudflare') || isRemoteDev(nuxt, hub)) {
     return defu(hub.kv, {
       driver: 'cloudflare-kv-binding',
       binding: 'KV'
@@ -66,13 +66,15 @@ export function resolveKVConfig(hub: HubConfig): ResolvedKVConfig | false {
 }
 
 export function setupKV(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>) {
-  hub.kv = resolveKVConfig(hub)
+  hub.kv = resolveKVConfig(hub, nuxt)
   if (!hub.kv) return
 
   const kvConfig = hub.kv as ResolvedKVConfig
 
   if (kvConfig.driver === 'cloudflare-kv-binding' && kvConfig.namespaceId) {
-    addWranglerBinding(nuxt, 'kv_namespaces', { binding: kvConfig.binding || 'KV', id: kvConfig.namespaceId })
+    const binding: Record<string, any> = { binding: kvConfig.binding || 'KV', id: kvConfig.namespaceId }
+    if (isRemoteDev(nuxt, hub)) binding.remote = true
+    addWranglerBinding(nuxt, 'kv_namespaces', binding)
   }
 
   // Verify dependencies

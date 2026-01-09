@@ -4,7 +4,7 @@ import { addTypeTemplate, addServerImports, addImportsDir, logger, addTemplate }
 
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig, ResolvedBlobConfig, CloudflareR2BlobConfig } from '@nuxthub/core'
-import { resolve, logWhenReady, addWranglerBinding } from '../utils'
+import { resolve, logWhenReady, addWranglerBinding, isRemoteDev } from '../utils'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -14,7 +14,7 @@ const supportedDrivers = ['fs', 's3', 'vercel-blob', 'cloudflare-r2'] as const
 /**
  * Resolve blob configuration from boolean or object format
  */
-export function resolveBlobConfig(hub: HubConfig, deps: Record<string, string>): ResolvedBlobConfig | false {
+export function resolveBlobConfig(hub: HubConfig, deps: Record<string, string>, nuxt: Nuxt): ResolvedBlobConfig | false {
   if (!hub.blob) return false
 
   // If driver is already specified by user, use it with their options
@@ -49,8 +49,8 @@ export function resolveBlobConfig(hub: HubConfig, deps: Record<string, string>):
     }) as ResolvedBlobConfig
   }
 
-  // Cloudflare R2
-  if (hub.hosting.includes('cloudflare')) {
+  // Cloudflare R2 (production or remote dev)
+  if (hub.hosting.includes('cloudflare') || isRemoteDev(nuxt, hub)) {
     return defu(hub.blob, {
       driver: 'cloudflare-r2',
       binding: 'BLOB'
@@ -65,13 +65,15 @@ export function resolveBlobConfig(hub: HubConfig, deps: Record<string, string>):
 }
 
 export function setupBlob(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>) {
-  hub.blob = resolveBlobConfig(hub, deps)
+  hub.blob = resolveBlobConfig(hub, deps, nuxt)
   if (!hub.blob) return
 
   const blobConfig = hub.blob as ResolvedBlobConfig
 
   if (blobConfig.driver === 'cloudflare-r2' && blobConfig.bucketName) {
-    addWranglerBinding(nuxt, 'r2_buckets', { binding: blobConfig.binding || 'BLOB', bucket_name: blobConfig.bucketName })
+    const binding: Record<string, any> = { binding: blobConfig.binding || 'BLOB', bucket_name: blobConfig.bucketName }
+    if (isRemoteDev(nuxt, hub)) binding.remote = true
+    addWranglerBinding(nuxt, 'r2_buckets', binding)
   }
 
   // Add Composables

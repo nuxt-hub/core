@@ -4,7 +4,7 @@ import { glob } from 'tinyglobby'
 import { join, resolve as resolveFs, relative } from 'pathe'
 import { defu } from 'defu'
 import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
-import { resolve, resolvePath, logWhenReady, addWranglerBinding } from '../utils'
+import { resolve, resolvePath, logWhenReady, addWranglerBinding, isRemoteDev } from '../utils'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
 import { cloudflareHooks } from '../hosting/cloudflare'
 
@@ -49,8 +49,8 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
         }
         break
       }
-      // Cloudflare D1
-      if (hub.hosting.includes('cloudflare')) {
+      // Cloudflare D1 (production or remote dev mode)
+      if (hub.hosting.includes('cloudflare') || isRemoteDev(nuxt, hub)) {
         config.driver = 'd1'
         break
       }
@@ -133,6 +133,15 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
     logWhenReady(nuxt, 'Please run `npx nypm i mysql2` to use MySQL as database.', 'error')
   } else if (driver === 'libsql' && !deps['@libsql/client']) {
     logWhenReady(nuxt, 'Please run `npx nypm i @libsql/client` to use SQLite as database.', 'error')
+  }
+
+  // Add D1 binding for cloudflare dev emulation
+  if (nuxt.options.dev && driver === 'd1') {
+    if (isRemoteDev(nuxt, hub) && !connection?.databaseId) {
+      throw new Error('[nuxt:hub] Remote mode requires `db.connection.databaseId` to be set in nuxt.config')
+    }
+    const databaseId = isRemoteDev(nuxt, hub) ? connection!.databaseId : 'default'
+    addWranglerBinding(nuxt, 'd1_databases', { binding: 'DB', database_name: 'default', database_id: databaseId })
   }
 
   // Add Server scanning
