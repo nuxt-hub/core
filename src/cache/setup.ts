@@ -1,6 +1,6 @@
 import { join } from 'pathe'
 import { defu } from 'defu'
-import { logWhenReady, addWranglerBinding } from '../utils'
+import { logWhenReady, addWranglerBinding, isRemoteDev } from '../utils'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig, CacheConfig, ResolvedCacheConfig } from '@nuxthub/core'
@@ -8,7 +8,7 @@ import type { HubConfig, CacheConfig, ResolvedCacheConfig } from '@nuxthub/core'
 /**
  * Resolve cache configuration from boolean or object format
  */
-export function resolveCacheConfig(hub: HubConfig): ResolvedCacheConfig | false {
+export function resolveCacheConfig(hub: HubConfig, nuxt: Nuxt): ResolvedCacheConfig | false {
   if (!hub.cache) return false
 
   // Start with user-provided config if it's an object
@@ -19,8 +19,8 @@ export function resolveCacheConfig(hub: HubConfig): ResolvedCacheConfig | false 
     return userConfig as ResolvedCacheConfig
   }
 
-  // Cloudflare KV cache binding
-  if (hub.hosting.includes('cloudflare')) {
+  // Cloudflare KV cache binding (production or remote dev)
+  if (hub.hosting.includes('cloudflare') || isRemoteDev(nuxt, hub)) {
     return defu(userConfig, {
       driver: 'cloudflare-kv-binding',
       binding: 'CACHE'
@@ -42,13 +42,15 @@ export function resolveCacheConfig(hub: HubConfig): ResolvedCacheConfig | false 
 }
 
 export async function setupCache(nuxt: Nuxt, hub: HubConfig, _deps: Record<string, string>) {
-  hub.cache = resolveCacheConfig(hub)
+  hub.cache = resolveCacheConfig(hub, nuxt)
   if (!hub.cache) return
 
   const cacheConfig = hub.cache as ResolvedCacheConfig
 
   if (cacheConfig.driver === 'cloudflare-kv-binding' && cacheConfig.namespaceId) {
-    addWranglerBinding(nuxt, 'kv_namespaces', { binding: cacheConfig.binding || 'CACHE', id: cacheConfig.namespaceId })
+    const binding: Record<string, any> = { binding: cacheConfig.binding || 'CACHE', id: cacheConfig.namespaceId }
+    if (isRemoteDev(nuxt, hub)) binding.remote = true
+    addWranglerBinding(nuxt, 'kv_namespaces', binding)
   }
 
   // Configure storage
