@@ -49,19 +49,12 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
         }
         break
       }
-      // Cloudflare D1
-      if (hub.hosting.includes('cloudflare')) {
-        if (nuxt.options.dev) {
-          // Use libsql in dev mode since D1 bindings don't exist locally
-          config.driver = 'libsql'
-          config.connection = defu(config.connection, { url: `file:${join(hub.dir!, 'db/sqlite.db')}` })
-          await mkdir(join(hub.dir, 'db'), { recursive: true })
-        } else {
-          config.driver = 'd1'
-        }
+      // Cloudflare D1 (production only - dev mode uses local libsql)
+      if (hub.hosting.includes('cloudflare') && !nuxt.options.dev) {
+        config.driver = 'd1'
         break
       }
-      // Local SQLite
+      // Local SQLite (libsql) - used for local dev including cloudflare preset
       config.driver ||= 'libsql'
       config.connection = defu(config.connection, { url: `file:${join(hub.dir!, 'db/sqlite.db')}` })
       await mkdir(join(hub.dir, 'db'), { recursive: true })
