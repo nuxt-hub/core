@@ -7,7 +7,7 @@ export default eventHandler(async (event) => {
   const query = getQuery(event)
 
   // Validate port to prevent XSS injection
-  const port = parseInt(String(query.port)) || 4983
+  const port = Number.parseInt(String(query.port)) || 4983
   if (port < 1 || port > 65535) {
     throw createError({ statusCode: 400, message: 'Invalid port' })
   }
@@ -17,7 +17,7 @@ export default eventHandler(async (event) => {
   const path = fullPath.replace('/api/_hub/studio', '') || '/'
 
   // Validate path to prevent SSRF and path traversal
-  if (path !== '/' && (!/^\/[a-zA-Z0-9._-]+$/.test(path) || path.includes('..'))) {
+  if (path !== '/' && (!/^\/[\w.-]+$/.test(path) || path.includes('..'))) {
     throw createError({ statusCode: 400, message: 'Invalid path' })
   }
 
@@ -46,7 +46,7 @@ export default eventHandler(async (event) => {
   let html: string
   try {
     html = await $fetch<string>('https://local.drizzle.studio/', {
-      headers: { 'Accept': 'text/html' }
+      headers: { Accept: 'text/html' }
     })
   } catch {
     throw createError({ statusCode: 502, message: 'Failed to fetch Drizzle Studio' })
