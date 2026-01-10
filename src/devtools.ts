@@ -43,8 +43,13 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
       await startStudioMySQLServer(schema, connection, { port })
     } else if (dialect === 'sqlite') {
       const { startStudioSQLiteServer } = await import('drizzle-kit/api')
-      log.info(`Launching Drizzle Studio with SQLite...`)
-      await startStudioSQLiteServer(schema, connection as any, { port })
+      log.info(`Launching Drizzle Studio with SQLite (${driver})...`)
+      // drizzle-kit auto-detects libsql from @libsql/client package
+      // Only pass driver for d1-http, otherwise just pass connection
+      const studioConnection = driver === 'd1-http'
+        ? { driver: 'd1-http', ...connection }
+        : connection
+      await startStudioSQLiteServer(schema, studioConnection as any, { port })
     } else {
       throw new Error(`Unsupported database dialect: ${dialect}`)
     }
@@ -77,7 +82,8 @@ export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
       view: isReady && port
         ? {
             type: 'iframe',
-            src: `https://local.drizzle.studio?port=${port}`
+            // Serve Drizzle Studio through Nitro proxy to avoid CORS/Private Network Access issues
+            src: `/api/_hub/studio?port=${port}`
           }
         : {
             type: 'launch',
