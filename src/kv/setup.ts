@@ -13,6 +13,9 @@ export function resolveKVConfig(hub: HubConfig): ResolvedKVConfig | false {
 
   // If driver is already specified by user, use it with their options
   if (typeof hub.kv === 'object' && 'driver' in hub.kv) {
+    if (hub.kv.driver === 'cloudflare-kv-binding') {
+      return defu(hub.kv, { binding: 'KV' }) as ResolvedKVConfig
+    }
     return hub.kv as ResolvedKVConfig
   }
 
