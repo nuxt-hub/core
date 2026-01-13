@@ -202,6 +202,9 @@ export function createDriver(options: VercelDriverOptions = {}): BlobDriver<Verc
      */
     async handleMultipartUpload(event: H3Event, mpuOptions?: BlobMultipartOptions): Promise<HandleMPUResponse> {
       const body = await readBody<HandleUploadBody>(event)
+      if (!body || typeof body.type !== 'string') {
+        throw createError({ statusCode: 400, message: 'Invalid multipart upload request body' })
+      }
 
       const json = await handleUpload({
         body,
