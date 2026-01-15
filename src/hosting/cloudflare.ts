@@ -24,7 +24,7 @@ export const cloudflareHooks = createHooks<CloudflareHooks>()
 export function setupCloudflare(nuxt: Nuxt, hub: HubConfig) {
   // Enable Cloudflare Node.js compatibility
   nuxt.options.nitro.cloudflare ||= {}
-  nuxt.options.nitro.cloudflare.nodeCompat = false
+  nuxt.options.nitro.cloudflare.nodeCompat = true
   nuxt.options.nitro.cloudflare.deployConfig = true
   // Remove trailing slash for prerender routes
   nuxt.options.nitro.prerender ||= {}
