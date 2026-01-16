@@ -245,56 +245,58 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
     write: true
   })
 
-  nuxt.hooks.hookOnce('app:templatesGenerated', async () => {
-    await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir })
+  if (!nuxt.options._prepare) {
+    nuxt.hooks.hookOnce('app:templatesGenerated', async () => {
+      await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir })
 
-    // Also copy schema.mjs to node_modules/@nuxthub/db/ for workflow compatibility
-    const physicalDbDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db')
-    await mkdir(physicalDbDir, { recursive: true })
+      // Also copy schema.mjs to node_modules/@nuxthub/db/ for workflow compatibility
+      const physicalDbDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db')
+      await mkdir(physicalDbDir, { recursive: true })
 
-    const { copyFile, writeFile, readFile } = await import('node:fs/promises')
+      const { copyFile, writeFile, readFile } = await import('node:fs/promises')
 
-    try {
-      await copyFile(join(nuxt.options.buildDir, 'hub/db/schema.mjs'), join(physicalDbDir, 'schema.mjs'))
-
-      // Try to copy the generated .d.mts file for TypeScript support
-      // The .d.mts is generated in the same directory as schema.mjs
-      const schemaDtsSource = join(nuxt.options.buildDir, 'hub/db/schema.d.mts')
       try {
-        const schemaTypes = await readFile(schemaDtsSource, 'utf-8')
-        await writeFile(join(physicalDbDir, 'schema.d.mts'), schemaTypes)
-      } catch {
-        // Fallback: create a simple re-export if .d.mts doesn't exist yet
-        await writeFile(
-          join(physicalDbDir, 'schema.d.mts'),
-          `export * from './schema.mjs'`
-        )
-      }
+        await copyFile(join(nuxt.options.buildDir, 'hub/db/schema.mjs'), join(physicalDbDir, 'schema.mjs'))
 
-      // Create a minimal package.json for Node.js module resolution
-      const packageJson = {
-        name: '@nuxthub/db',
-        version: '0.0.0',
-        type: 'module',
-        exports: {
-          '.': {
-            types: './db.d.ts',
-            default: './db.mjs'
-          },
-          './schema': {
-            types: './schema.d.mts',
-            default: './schema.mjs'
+        // Try to copy the generated .d.mts file for TypeScript support
+        // The .d.mts is generated in the same directory as schema.mjs
+        const schemaDtsSource = join(nuxt.options.buildDir, 'hub/db/schema.d.mts')
+        try {
+          const schemaTypes = await readFile(schemaDtsSource, 'utf-8')
+          await writeFile(join(physicalDbDir, 'schema.d.mts'), schemaTypes)
+        } catch {
+          // Fallback: create a simple re-export if .d.mts doesn't exist yet
+          await writeFile(
+            join(physicalDbDir, 'schema.d.mts'),
+            `export * from './schema.mjs'`
+          )
+        }
+
+        // Create a minimal package.json for Node.js module resolution
+        const packageJson = {
+          name: '@nuxthub/db',
+          version: '0.0.0',
+          type: 'module',
+          exports: {
+            '.': {
+              types: './db.d.ts',
+              default: './db.mjs'
+            },
+            './schema': {
+              types: './schema.d.mts',
+              default: './schema.mjs'
+            }
           }
         }
+        await writeFile(
+          join(physicalDbDir, 'package.json'),
+          JSON.stringify(packageJson, null, 2)
+        )
+      } catch (error) {
+        log.warn(`Failed to copy schema to node_modules/.hub/: ${error}`)
       }
-      await writeFile(
-        join(physicalDbDir, 'package.json'),
-        JSON.stringify(packageJson, null, 2)
-      )
-    } catch (error) {
-      log.warn(`Failed to copy schema to node_modules/.hub/: ${error}`)
-    }
-  })
+    })
+  }
 
   nuxt.options.alias ||= {}
   // Create hub:db:schema alias to @nuxthub/db/schema for backwards compatibility
