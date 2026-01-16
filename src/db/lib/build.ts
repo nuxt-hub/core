@@ -98,6 +98,7 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir }: { r
     platform: 'neutral',
     format: 'esm',
     skipNodeModulesBundle: true,
+    tsconfig: false,
     dts: {
       build: false,
       tsconfig: false,
