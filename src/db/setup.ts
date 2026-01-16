@@ -49,12 +49,12 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
         }
         break
       }
-      // Cloudflare D1
-      if (hub.hosting.includes('cloudflare')) {
+      // Cloudflare D1 (production only - dev mode uses local libsql)
+      if (hub.hosting.includes('cloudflare') && !nuxt.options.dev) {
         config.driver = 'd1'
         break
       }
-      // Local SQLite
+      // Local SQLite (libsql) - used for local dev including cloudflare preset
       config.driver ||= 'libsql'
       config.connection = defu(config.connection, { url: `file:${join(hub.dir!, 'db/sqlite.db')}` })
       await mkdir(join(hub.dir, 'db'), { recursive: true })
@@ -137,6 +137,18 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
 
   // Add Server scanning
   addServerPlugin(resolve('db/runtime/plugins/migrations.dev'))
+
+  // Add Drizzle Studio proxy (serves frontend from localhost to avoid CORS issues)
+  addServerHandler({
+    handler: resolve('db/runtime/api/studio.get.dev'),
+    method: 'get',
+    route: '/api/_hub/studio'
+  })
+  addServerHandler({
+    handler: resolve('db/runtime/api/studio.get.dev'),
+    method: 'get',
+    route: '/api/_hub/studio/**'
+  })
 
   // Handle migrations
   nuxt.hook('modules:done', async () => {
