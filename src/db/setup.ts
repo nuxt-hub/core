@@ -118,6 +118,10 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
     const binding = driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL'
     addWranglerBinding(nuxt, 'hyperdrive', { binding, id: connection.hyperdriveId })
   }
+  if (['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare') && !connection?.hyperdriveId && !connection?.url) {
+    const envVar = driver === 'postgres-js' ? 'DATABASE_URL' : 'MYSQL_URL'
+    log.warn(`Using \`${driver}\` on Cloudflare without \`hyperdriveId\` or \`${envVar}\`. Ensure ${envVar} is set at runtime.`)
+  }
 
   // Verify development database dependencies are installed
   if (!deps['drizzle-orm'] || !deps['drizzle-kit']) {
@@ -403,7 +407,7 @@ const db = drizzle(d1HttpDriver, { schema${casingOption} })
 export { db, schema }
 `
   }
-  if (['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare')) {
+  if (['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare') && connection?.hyperdriveId) {
     // Hyperdrive requires lazy binding access - bindings only available in request context on CF Workers
     const bindingName = driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL'
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
