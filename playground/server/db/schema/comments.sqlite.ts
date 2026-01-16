@@ -1,4 +1,4 @@
-import { pages } from 'hub:db:schema'
+import { pages } from '@nuxthub/db/schema'
 import { sql } from 'drizzle-orm'
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
