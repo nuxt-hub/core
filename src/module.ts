@@ -10,7 +10,7 @@ import { setupDatabase } from './db/setup'
 import { setupKV } from './kv/setup'
 import { setupBlob } from './blob/setup'
 import type { ModuleOptions, HubConfig, ResolvedHubConfig } from '@nuxthub/core'
-import { addDevToolsCustomTabs } from './devtools'
+import { addDevToolsCustomTabs, setupDevTools, addDevToolsStorageTabs } from './devtools'
 import { setupCloudflare } from './hosting/cloudflare'
 import type { NuxtModule } from '@nuxt/schema'
 
@@ -81,6 +81,8 @@ export default defineNuxtModule<ModuleOptions>({
     // Add custom tabs to Nuxt DevTools
     if (nuxt.options.dev) {
       addDevToolsCustomTabs(nuxt, hub)
+      await setupDevTools(nuxt, hub)
+      addDevToolsStorageTabs(nuxt, hub)
     }
 
     // Enable Async Local Storage
