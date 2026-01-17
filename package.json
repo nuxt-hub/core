@@ -57,9 +57,11 @@
     "blob"
   ],
   "scripts": {
-    "prepack": "nuxt-module-build build",
+    "prepack": "nuxt-module-build build && pnpm build:devtools",
+    "build:devtools": "nuxi generate src/devtools/client",
     "dev:prepare": "nuxt-module-build build --stub && mkdist --src=src/blob/lib --dist=dist/blob/lib -d && mkdist --src=src/db/lib --dist=dist/db/lib -d && nuxt-module-build prepare && nuxi prepare playground",
     "dev": "nuxi dev playground",
+    "dev:devtools": "nuxi dev src/devtools/client --port 3300",
     "dev:build": "nuxi build playground",
     "docs": "PORT=4000 nuxi dev docs",
     "docs:build": "nuxi generate docs",
@@ -97,6 +99,7 @@
     "ufo": "^1.6.1",
     "uncrypto": "^0.1.3",
     "unstorage": "^1.17.3",
+    "sirv": "^3.0.1",
     "zod": "^4.2.1"
   },
   "devDependencies": {
