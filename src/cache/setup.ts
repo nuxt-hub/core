@@ -22,8 +22,8 @@ export function resolveCacheConfig(hub: HubConfig): ResolvedCacheConfig | false 
     return userConfig as ResolvedCacheConfig
   }
 
-  // Cloudflare KV cache binding
-  if (hub.hosting.includes('cloudflare')) {
+  // Cloudflare KV cache binding (production or dev with namespaceId)
+  if (hub.hosting.includes('cloudflare') || userConfig.namespaceId) {
     return defu(userConfig, {
       driver: 'cloudflare-kv-binding',
       binding: 'CACHE'

@@ -49,8 +49,8 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
         }
         break
       }
-      // Cloudflare D1
-      if (hub.hosting.includes('cloudflare')) {
+      // Cloudflare D1 (production or dev with databaseId)
+      if (hub.hosting.includes('cloudflare') || config.connection?.databaseId) {
         config.driver = 'd1'
         break
       }
@@ -61,8 +61,8 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
       break
     }
     case 'postgresql': {
-      // Cloudflare Hyperdrive with explicit hyperdriveId
-      if (hub.hosting.includes('cloudflare') && config.connection?.hyperdriveId && !config.driver) {
+      // Cloudflare Hyperdrive with explicit hyperdriveId (production or dev)
+      if (config.connection?.hyperdriveId && !config.driver) {
         config.driver = 'postgres-js'
         break
       }
@@ -81,8 +81,8 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
       break
     }
     case 'mysql': {
-      // Cloudflare Hyperdrive with explicit hyperdriveId
-      if (hub.hosting.includes('cloudflare') && config.connection?.hyperdriveId && !config.driver) {
+      // Cloudflare Hyperdrive with explicit hyperdriveId (production or dev)
+      if (config.connection?.hyperdriveId && !config.driver) {
         config.driver = 'mysql2'
         break
       }
@@ -403,7 +403,7 @@ const db = drizzle(d1HttpDriver, { schema${casingOption} })
 export { db, schema }
 `
   }
-  if (['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare')) {
+  if (['postgres-js', 'mysql2'].includes(driver) && (hub.hosting.includes('cloudflare') || connection?.hyperdriveId)) {
     // Hyperdrive requires lazy binding access - bindings only available in request context on CF Workers
     const bindingName = driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL'
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
