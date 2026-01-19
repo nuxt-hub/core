@@ -1,4 +1,4 @@
-import { mkdir } from 'node:fs/promises'
+import { mkdir, copyFile, writeFile, readFile } from 'node:fs/promises'
 import chokidar from 'chokidar'
 import { glob } from 'tinyglobby'
 import { join, resolve as resolveFs, relative } from 'pathe'
@@ -227,7 +227,6 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
 
       // Also copy to node_modules/@nuxthub/db/ for workflow compatibility
       const physicalDbDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db')
-      const { copyFile } = await import('node:fs/promises')
       try {
         await copyFile(join(nuxt.options.buildDir, 'hub/db/schema.mjs'), join(physicalDbDir, 'schema.mjs'))
         await copyFile(join(nuxt.options.buildDir, 'hub/db/schema.d.mts'), join(physicalDbDir, 'schema.d.mts'))
@@ -252,8 +251,6 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
       // Also copy schema.mjs to node_modules/@nuxthub/db/ for workflow compatibility
       const physicalDbDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db')
       await mkdir(physicalDbDir, { recursive: true })
-
-      const { copyFile, writeFile, readFile } = await import('node:fs/promises')
 
       try {
         await copyFile(join(nuxt.options.buildDir, 'hub/db/schema.mjs'), join(physicalDbDir, 'schema.mjs'))
@@ -476,21 +473,12 @@ export { db, schema }
   await mkdir(physicalDbDir, { recursive: true })
 
   // Write db.mjs to node_modules/@nuxthub/db/
-  addTemplate({
-    filename: 'hub/db-physical.mjs',
-    getContents: () => drizzleOrmContent.replace(/from '\.\/db\/schema\.mjs'/g, 'from \'./schema.mjs\''),
-    write: true,
-    dst: join(physicalDbDir, 'db.mjs')
-  })
+  await writeFile(
+    join(physicalDbDir, 'db.mjs'),
+    drizzleOrmContent.replace(/from '\.\/db\/schema\.mjs'/g, 'from \'./schema.mjs\'')
+  )
 
-  // Create hub:db alias to @nuxthub/db for backwards compatibility
-  nuxt.options.alias!['hub:db'] = '@nuxthub/db'
-
-  // Add auto-imports for both @nuxthub/db and hub:db
-  addServerImports({ name: 'db', from: '@nuxthub/db', meta: { description: `The ${driver} database client.` } })
-  addServerImports({ name: 'schema', from: '@nuxthub/db', meta: { description: `The database schema object` } })
-
-  // Write db.d.ts for TypeScript support (inline content without module declaration)
+  // Write db.d.ts for TypeScript support
   const physicalDbTypes = `import type { DrizzleConfig } from 'drizzle-orm'
 import { drizzle as drizzleCore } from 'drizzle-orm/${driverForTypes}'
 import * as schema from './schema.mjs'
@@ -506,12 +494,17 @@ export { schema }
 export const db: ReturnType<typeof drizzleCore<typeof schema>>
 `
 
-  addTemplate({
-    filename: 'hub/db-physical-inline.d.ts',
-    getContents: () => physicalDbTypes,
-    write: true,
-    dst: join(physicalDbDir, 'db.d.ts')
-  })
+  await writeFile(
+    join(physicalDbDir, 'db.d.ts'),
+    physicalDbTypes
+  )
+
+  // Create hub:db alias to @nuxthub/db for backwards compatibility
+  nuxt.options.alias!['hub:db'] = '@nuxthub/db'
+
+  // Add auto-imports for both @nuxthub/db and hub:db
+  addServerImports({ name: 'db', from: '@nuxthub/db', meta: { description: `The ${driver} database client.` } })
+  addServerImports({ name: 'schema', from: '@nuxthub/db', meta: { description: `The database schema object` } })
 }
 
 async function setupDatabaseConfig(nuxt: Nuxt, hub: ResolvedHubConfig) {
