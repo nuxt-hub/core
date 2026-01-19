@@ -1,7 +1,7 @@
 import { mkdir, writeFile, copyFile } from 'node:fs/promises'
 import { join } from 'pathe'
 import { defu } from 'defu'
-import { addTypeTemplate, addServerImports, addTemplate } from '@nuxt/kit'
+import { addTypeTemplate, addServerImports } from '@nuxt/kit'
 import { resolve, logWhenReady, addWranglerBinding } from '../utils'
 
 import type { Nuxt } from '@nuxt/schema'
