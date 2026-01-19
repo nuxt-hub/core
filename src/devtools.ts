@@ -77,7 +77,8 @@ export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
       view: isReady && port
         ? {
             type: 'iframe',
-            src: `https://local.drizzle.studio?port=${port}`
+            src: `https://local.drizzle.studio?port=${port}`,
+            permissions: ['local-network-access https://local.drizzle.studio']
           }
         : {
             type: 'launch',
