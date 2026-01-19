@@ -1,4 +1,4 @@
-import { kv } from 'hub:kv'
+import { kv } from '@nuxthub/kv'
 
 export default eventHandler(async (event) => {
   const { key } = await getValidatedRouterParams(event, z.object({

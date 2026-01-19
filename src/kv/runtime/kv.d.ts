@@ -1,20 +1,19 @@
 import type { Storage } from 'unstorage'
 
-declare module 'hub:kv' {
-  /**
-   * The KV storage instance.
-   *
-   * @example ```ts
-   * import { kv } from 'hub:kv'
-   *
-   * await kv.set('key', 'value')
-   * const value = await kv.get('key')
-   * ```
-   *
-   * @see https://hub.nuxt.com/docs/kv/usage
-   */
-  export const kv: KVStorage
-}
+/**
+ * The KV storage instance.
+ *
+ * @example
+ * ```ts
+ * import { kv } from '@nuxthub/kv'
+ *
+ * await kv.set('key', 'value')
+ * const value = await kv.get('key')
+ * ```
+ *
+ * @see https://hub.nuxt.com/docs/kv/usage
+ */
+export const kv: KVStorage
 
 export interface KVStorage extends Storage {
   /**

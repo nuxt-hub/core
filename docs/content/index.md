@@ -83,7 +83,7 @@ return blob.serve(event, 'avatars/atinux.png')
 :::
 :::tabs-item{label="KV" icon="i-lucide-list"}
 ```ts
-import { kv } from 'hub:kv'
+import { kv } from '@nuxthub/kv'
 
 // Store and retrieve any data
 await kv.set('user:1:session', { token, expiresAt })
