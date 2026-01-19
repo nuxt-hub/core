@@ -50,8 +50,9 @@ export function resolveBlobConfig(hub: HubConfig, deps: Record<string, string>):
     }) as ResolvedBlobConfig
   }
 
-  // Cloudflare R2
-  if (hub.hosting.includes('cloudflare')) {
+  // Cloudflare R2 (production or dev with bucketName)
+  const blobConfig = typeof hub.blob === 'object' ? hub.blob : {}
+  if (hub.hosting.includes('cloudflare') || ('bucketName' in blobConfig && blobConfig.bucketName)) {
     return defu(hub.blob, {
       driver: 'cloudflare-r2',
       binding: 'BLOB'
