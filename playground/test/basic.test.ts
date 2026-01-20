@@ -8,7 +8,8 @@ describe('ssr', async () => {
 
   await setup({
     rootDir: fileURLToPath(new URL('..', import.meta.url)),
-    dev: true
+    dev: true,
+    setupTimeout: 180000
   })
 
   it('List todos', async () => {

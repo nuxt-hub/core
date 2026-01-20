@@ -8,10 +8,11 @@ export default defineNitroPlugin(async () => {
   const hub = useRuntimeConfig().hub as ResolvedHubConfig
   if (!hub.db) return
 
-  let db
+  let executeRaw, getRows
   try {
     const module = await import('hub:db')
-    db = module.db
+    executeRaw = module.executeRaw
+    getRows = module.getRows
   } catch (error) {
     console.error('[nuxt:hub] Failed to import hub:db module:', error instanceof Error ? error.message : error)
     console.error('[nuxt:hub] This may happen when using remote bindings before the proxy is initialized.')
@@ -19,6 +20,6 @@ export default defineNitroPlugin(async () => {
     return
   }
 
-  await applyDatabaseMigrations(hub, db)
-  await applyDatabaseQueries(hub, db)
+  await applyDatabaseMigrations(hub, { executeRaw, getRows })
+  await applyDatabaseQueries(hub, { executeRaw })
 })

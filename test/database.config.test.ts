@@ -492,6 +492,66 @@ describe('resolveDatabaseConfig', () => {
     })
   })
 
+  describe('ORM configuration', () => {
+    it('should default orm to drizzle', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig('sqlite')
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).not.toBe(false)
+      if (result !== false) {
+        expect(result.orm).toBe('drizzle')
+      }
+    })
+
+    it('should accept orm: drizzle explicitly', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'sqlite',
+        orm: 'drizzle'
+      })
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).not.toBe(false)
+      if (result !== false) {
+        expect(result.orm).toBe('drizzle')
+      }
+    })
+
+    it('should accept orm: prisma', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'sqlite',
+        orm: 'prisma'
+      })
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).not.toBe(false)
+      if (result !== false) {
+        expect(result.orm).toBe('prisma')
+      }
+    })
+
+    it('should set orm for postgresql with pglite', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'postgresql',
+        orm: 'prisma'
+      })
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).not.toBe(false)
+      if (result !== false) {
+        expect(result.orm).toBe('prisma')
+        expect(result.driver).toBe('pglite')
+      }
+    })
+  })
+
   describe('edge cases', () => {
     it('should handle empty layers', async () => {
       const nuxt = createMockNuxt([])
