@@ -106,6 +106,8 @@
     "@nuxt/schema": "^4.2.2",
     "@nuxt/test-utils": "3.21.0",
     "@nuxthub/core": "link:",
+    "@prisma/adapter-libsql": "^5.22.0",
+    "@prisma/client": "^5.22.0",
     "@types/node": "^25.0.3",
     "better-sqlite3": "^12.5.0",
     "changelogen": "^0.6.2",
@@ -114,6 +116,7 @@
     "jiti": "^2.6.1",
     "nitropack": "^2.12.9",
     "nuxt": "^4.2.2",
+    "prisma": "^5.22.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.16",
     "vue-tsc": "^3.1.8"
