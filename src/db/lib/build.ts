@@ -3,7 +3,6 @@ import { join, relative, resolve } from 'pathe'
 import type { Nitro } from 'nitropack'
 import type { ResolvedHubConfig } from '@nuxthub/core'
 import { consola } from 'consola'
-import { createDrizzleClient } from './client'
 import { applyDatabaseMigrations, applyDatabaseQueries } from './migrations'
 import { build } from 'tsdown'
 
@@ -57,7 +56,19 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubCon
   if (!hub.db || !hub.db.applyMigrationsDuringBuild) return
 
   try {
+    // Dynamically import drizzle-orm and client only when needed
+    const { sql } = await import('drizzle-orm')
+    const { createDrizzleClient } = await import('./client')
     const db = await createDrizzleClient(hub.db, hub.dir)
+
+    // Wrap Drizzle client in executor interface for migrations
+    const executor = {
+      executeRaw: async (query: string) => {
+        const result = await db.run(sql.raw(query))
+        return result.rows || []
+      },
+      getRows: (result: unknown) => (result as unknown[]) || []
+    }
 
     const buildHubConfig = {
       ...hub,
@@ -65,11 +76,11 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubCon
     } as ResolvedHubConfig
 
     log.info('Applying database migrations...')
-    const migrationsApplied = await applyDatabaseMigrations(buildHubConfig, db)
+    const migrationsApplied = await applyDatabaseMigrations(buildHubConfig, executor)
     if (migrationsApplied === false) {
       process.exit(1)
     }
-    const queriesApplied = await applyDatabaseQueries(buildHubConfig, db)
+    const queriesApplied = await applyDatabaseQueries(buildHubConfig, executor)
     if (queriesApplied === false) {
       process.exit(1)
     }

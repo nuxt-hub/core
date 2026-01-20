@@ -62,3 +62,5 @@ test/fixtures/blob/.data
 test/fixtures/openapi/.data
 test/fixtures/cache/.data
 test/fixtures/wrangler/.data
+test/fixtures/db-prisma/.data
+test/fixtures/db-drizzle/.data
