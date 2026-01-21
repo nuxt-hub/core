@@ -152,6 +152,24 @@ describe('resolveDatabaseConfig', () => {
         }
       })
     })
+
+    it('should allow libsql without env vars for lazy resolution (K8s/Docker)', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'sqlite',
+        driver: 'libsql',
+        applyMigrationsDuringBuild: false
+      })
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'sqlite',
+        driver: 'libsql',
+        connection: { url: '' },
+        applyMigrationsDuringBuild: false
+      })
+    })
   })
 
   describe('PostgreSQL dialect', () => {
@@ -275,16 +293,51 @@ describe('resolveDatabaseConfig', () => {
       })
     })
 
-    it('should throw error when DATABASE_URL is not set for neon-http', async () => {
+    it('should throw error when DATABASE_URL is not set for neon-http with applyMigrationsDuringBuild', async () => {
       const nuxt = createMockNuxt()
       const hub = createBaseHubConfig({
         dialect: 'postgresql',
-        driver: 'neon-http'
+        driver: 'neon-http',
+        applyMigrationsDuringBuild: true
       })
 
       await expect(resolveDatabaseConfig(nuxt, hub)).rejects.toThrow(
-        '`neon-http` driver requires `DATABASE_URL`, `POSTGRES_URL`, or `POSTGRESQL_URL` environment variable'
+        '`neon-http` driver requires `DATABASE_URL`, `POSTGRES_URL`, or `POSTGRESQL_URL` environment variable when `applyMigrationsDuringBuild` is enabled'
       )
+    })
+
+    it('should allow neon-http without DATABASE_URL when applyMigrationsDuringBuild is false', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'postgresql',
+        driver: 'neon-http',
+        applyMigrationsDuringBuild: false
+      })
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'postgresql',
+        driver: 'neon-http',
+        applyMigrationsDuringBuild: false
+      })
+    })
+
+    it('should allow postgres-js without DATABASE_URL when applyMigrationsDuringBuild is false', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'postgresql',
+        driver: 'postgres-js',
+        applyMigrationsDuringBuild: false
+      })
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'postgresql',
+        driver: 'postgres-js',
+        applyMigrationsDuringBuild: false
+      })
     })
   })
 
@@ -323,13 +376,32 @@ describe('resolveDatabaseConfig', () => {
       })
     })
 
-    it('should throw error when no DATABASE_URL or MYSQL_URL is set', async () => {
+    it('should throw error when no DATABASE_URL or MYSQL_URL is set with applyMigrationsDuringBuild', async () => {
       const nuxt = createMockNuxt()
-      const hub = createBaseHubConfig('mysql')
+      const hub = createBaseHubConfig({
+        dialect: 'mysql',
+        applyMigrationsDuringBuild: true
+      })
 
       await expect(resolveDatabaseConfig(nuxt, hub)).rejects.toThrow(
-        'MySQL requires DATABASE_URL or MYSQL_URL environment variable'
+        'MySQL requires DATABASE_URL or MYSQL_URL environment variable when `applyMigrationsDuringBuild` is enabled'
       )
+    })
+
+    it('should allow mysql2 without DATABASE_URL when applyMigrationsDuringBuild is false', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'mysql',
+        applyMigrationsDuringBuild: false
+      })
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'mysql',
+        driver: 'mysql2',
+        applyMigrationsDuringBuild: false
+      })
     })
 
     it('should preserve custom driver when specified', async () => {
@@ -587,14 +659,17 @@ describe('resolveDatabaseConfig', () => {
       })
     })
 
-    it('should handle empty string as db connection URL', async () => {
+    it('should handle empty string as db connection URL with applyMigrationsDuringBuild', async () => {
       process.env.DATABASE_URL = ''
 
       const nuxt = createMockNuxt()
-      const hub = createBaseHubConfig('mysql')
+      const hub = createBaseHubConfig({
+        dialect: 'mysql',
+        applyMigrationsDuringBuild: true
+      })
 
       await expect(resolveDatabaseConfig(nuxt, hub)).rejects.toThrow(
-        'MySQL requires DATABASE_URL or MYSQL_URL environment variable'
+        'MySQL requires DATABASE_URL or MYSQL_URL environment variable when `applyMigrationsDuringBuild` is enabled'
       )
     })
 
