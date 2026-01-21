@@ -1,6 +1,7 @@
 import { mkdir } from 'node:fs/promises'
 import { join } from 'pathe'
 import type { ResolvedDatabaseConfig } from '@nuxthub/core'
+import type { Casing } from 'drizzle-orm'
 
 async function createD1HttpClient(accountId: string, databaseId: string, apiToken: string, casing?: string) {
   const d1HttpDriver = async (sql: string, params: unknown[], method: string) => {
@@ -23,7 +24,7 @@ async function createD1HttpClient(accountId: string, databaseId: string, apiToke
     return { rows }
   }
   const { drizzle } = await import('drizzle-orm/sqlite-proxy')
-  return drizzle(d1HttpDriver, { casing })
+  return drizzle(d1HttpDriver as any, { casing: casing as Casing })
 }
 
 /**

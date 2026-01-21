@@ -1,4 +1,4 @@
-import { kv } from 'hub:kv'
+import { kv } from '@nuxthub/kv'
 
 export default eventHandler(async () => {
   await kv.set('vue', { year: 2014 })

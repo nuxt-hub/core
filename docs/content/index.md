@@ -47,7 +47,7 @@ NuxtHub is a Nuxt module giving you all the features required to ship full-stack
 :::tabs-item{label="Database" icon="i-lucide-database"}
 ```ts
 import { eq, desc } from 'drizzle-orm'
-import { db, schema } from 'hub:db'
+import { db, schema } from '@nuxthub/db'
 
 // Type-safe queries with Drizzle ORM
 const todos = await db.query.todos.findMany({
@@ -83,7 +83,7 @@ return blob.serve(event, 'avatars/atinux.png')
 :::
 :::tabs-item{label="KV" icon="i-lucide-list"}
 ```ts
-import { kv } from 'hub:kv'
+import { kv } from '@nuxthub/kv'
 
 // Store and retrieve any data
 await kv.set('user:1:session', { token, expiresAt })

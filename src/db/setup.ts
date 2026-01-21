@@ -1,4 +1,4 @@
-import { mkdir } from 'node:fs/promises'
+import { mkdir, copyFile, writeFile, readFile } from 'node:fs/promises'
 import chokidar from 'chokidar'
 import { glob } from 'tinyglobby'
 import { join, resolve as resolveFs, relative } from 'pathe'
@@ -253,6 +253,15 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
       schemaPaths = await getSchemaPaths()
       await updateTemplates({ filter: template => template.filename.includes('hub/db/schema.entry.ts') })
       await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir })
+
+      // Also copy to node_modules/@nuxthub/db/ for workflow compatibility
+      const physicalDbDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db')
+      try {
+        await copyFile(join(nuxt.options.buildDir, 'hub/db/schema.mjs'), join(physicalDbDir, 'schema.mjs'))
+        await copyFile(join(nuxt.options.buildDir, 'hub/db/schema.d.mts'), join(physicalDbDir, 'schema.d.mts'))
+      } catch (error) {
+        // Ignore errors during watch
+      }
     })
     nuxt.hook('close', () => watcher.close())
   }
@@ -263,19 +272,67 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
     getContents: () => `${schemaPaths.map(path => `export * from '${path}'`).join('\n')}`,
     write: true
   })
-  nuxt.hooks.hookOnce('app:templatesGenerated', async () => {
-    await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir })
-  })
+
+  if (!nuxt.options._prepare) {
+    nuxt.hooks.hookOnce('app:templatesGenerated', async () => {
+      await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir })
+
+      // Also copy schema.mjs to node_modules/@nuxthub/db/ for workflow compatibility
+      const physicalDbDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db')
+      await mkdir(physicalDbDir, { recursive: true })
+
+      try {
+        await copyFile(join(nuxt.options.buildDir, 'hub/db/schema.mjs'), join(physicalDbDir, 'schema.mjs'))
+
+        // Try to copy the generated .d.mts file for TypeScript support
+        // The .d.mts is generated in the same directory as schema.mjs
+        const schemaDtsSource = join(nuxt.options.buildDir, 'hub/db/schema.d.mts')
+        try {
+          const schemaTypes = await readFile(schemaDtsSource, 'utf-8')
+          await writeFile(join(physicalDbDir, 'schema.d.mts'), schemaTypes)
+        } catch {
+          // Fallback: create a simple re-export if .d.mts doesn't exist yet
+          await writeFile(
+            join(physicalDbDir, 'schema.d.mts'),
+            `export * from './schema.mjs'`
+          )
+        }
+
+        // Create a minimal package.json for Node.js module resolution
+        const packageJson = {
+          name: '@nuxthub/db',
+          version: '0.0.0',
+          type: 'module',
+          exports: {
+            '.': {
+              types: './db.d.ts',
+              default: './db.mjs'
+            },
+            './schema': {
+              types: './schema.d.mts',
+              default: './schema.mjs'
+            }
+          }
+        }
+        await writeFile(
+          join(physicalDbDir, 'package.json'),
+          JSON.stringify(packageJson, null, 2)
+        )
+      } catch (error) {
+        log.warn(`Failed to copy schema to node_modules/.hub/: ${error}`)
+      }
+    })
+  }
 
   nuxt.options.alias ||= {}
-  nuxt.options.alias['hub:db:schema'] = join(nuxt.options.buildDir, 'hub/db/schema.mjs')
-
+  // Create hub:db:schema alias to @nuxthub/db/schema for backwards compatibility
   addTypeTemplate({
     filename: 'hub/db/schema.d.ts',
     getContents: () => `declare module 'hub:db:schema' {
   export * from '#build/hub/db/schema.mjs'
 }`
   }, { nitro: true, nuxt: true })
+  nuxt.options.alias['hub:db:schema'] = '@nuxthub/db/schema'
 }
 
 async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
@@ -284,21 +341,9 @@ async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
   // For types, d1-http uses sqlite-proxy
   const driverForTypes = driver === 'd1-http' ? 'sqlite-proxy' : driver
 
-  // Setup Database Types
-  const databaseTypes = `import type { DrizzleConfig } from 'drizzle-orm'
-import { drizzle as drizzleCore } from 'drizzle-orm/${driverForTypes}'
-import * as schema from './db/schema.mjs'
-
-declare module 'hub:db' {
-  /**
-   * The database schema object
-   * Defined in server/db/schema.ts and server/db/schema/*.ts
-   */
-  export { schema }
-  /**
-   * The ${driver} database client.
-   */
-  export const db: ReturnType<typeof drizzleCore<typeof schema>>
+  // Setup Database Types for hub:db - point to @nuxthub/db for type definitions
+  const databaseTypes = `declare module 'hub:db' {
+  export * from '@nuxthub/db'
 }`
 
   addTypeTemplate({
@@ -463,14 +508,43 @@ export { db, schema }
     )
   }
 
-  const databaseTemplate = addTemplate({
-    filename: 'hub/db.mjs',
-    getContents: () => drizzleOrmContent,
-    write: true
-  })
-  nuxt.options.alias!['hub:db'] = databaseTemplate.dst
-  addServerImports({ name: 'db', from: 'hub:db', meta: { description: `The ${driver} database client.` } })
-  addServerImports({ name: 'schema', from: 'hub:db', meta: { description: `The database schema object` } })
+  // Write to node_modules/@nuxthub/db/ for direct imports (workflow compatibility)
+  const physicalDbDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db')
+  await mkdir(physicalDbDir, { recursive: true })
+
+  // Write db.mjs to node_modules/@nuxthub/db/
+  await writeFile(
+    join(physicalDbDir, 'db.mjs'),
+    drizzleOrmContent.replace(/from '\.\/db\/schema\.mjs'/g, 'from \'./schema.mjs\'')
+  )
+
+  // Write db.d.ts for TypeScript support
+  const physicalDbTypes = `import type { DrizzleConfig } from 'drizzle-orm'
+import { drizzle as drizzleCore } from 'drizzle-orm/${driverForTypes}'
+import * as schema from './schema.mjs'
+
+/**
+ * The database schema object
+ * Defined in server/db/schema.ts and server/db/schema/*.ts
+ */
+export { schema }
+/**
+ * The ${driver} database client.
+ */
+export const db: ReturnType<typeof drizzleCore<typeof schema>>
+`
+
+  await writeFile(
+    join(physicalDbDir, 'db.d.ts'),
+    physicalDbTypes
+  )
+
+  // Create hub:db alias to @nuxthub/db for backwards compatibility
+  nuxt.options.alias!['hub:db'] = '@nuxthub/db'
+
+  // Add auto-imports for both @nuxthub/db and hub:db
+  addServerImports({ name: 'db', from: '@nuxthub/db', meta: { description: `The ${driver} database client.` } })
+  addServerImports({ name: 'schema', from: '@nuxthub/db', meta: { description: `The database schema object` } })
 }
 
 async function setupDatabaseConfig(nuxt: Nuxt, hub: ResolvedHubConfig) {

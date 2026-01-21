@@ -1,4 +1,4 @@
-import { blob } from 'hub:blob'
+import { blob } from '@nuxthub/blob'
 
 export default eventHandler(async (event) => {
   const listOptions = await getValidatedQuery(event, z.object({
