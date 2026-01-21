@@ -14,6 +14,28 @@ import type { HubConfig, ResolvedHubConfig, ResolvedDatabaseConfig } from '@nuxt
 const log = logger.withTag('nuxt:hub')
 
 /**
+ * Generate a lazy-initialized db template with Proxy wrapper
+ * Used for runtime env resolution (Docker/multi-deploy) and CF bindings
+ */
+function generateLazyDbTemplate(imports: string, getDbBody: string): string {
+  return `${imports}
+import * as schema from './db/schema.mjs'
+
+let _db
+function getDb() {
+  if (!_db) {
+    try {
+${getDbBody}
+    } catch (e) { throw new Error('[nuxt-hub] ' + e.message) }
+  }
+  return _db
+}
+const db = new Proxy({}, { get(_, prop) { return getDb()[prop] } })
+export { db, schema }
+`
+}
+
+/**
  * Resolve database configuration from string or object format
  */
 export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise<ResolvedDatabaseConfig | false> {
@@ -28,6 +50,9 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
 
   switch (config.dialect) {
     case 'sqlite': {
+      // User explicitly set driver: 'libsql' - track for lazy env resolution
+      const userExplicitLibsql = config.driver === 'libsql'
+
       // Turso Cloud
       if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
         config.driver = 'libsql'
@@ -49,12 +74,15 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
         }
         break
       }
-      // Cloudflare D1
       if (hub.hosting.includes('cloudflare')) {
         config.driver = 'd1'
         break
       }
-      // Local SQLite
+      // User explicitly set libsql without env vars - allow lazy resolution at runtime
+      if (userExplicitLibsql) {
+        config.connection = defu(config.connection, { url: '' })
+        break
+      }
       config.driver ||= 'libsql'
       config.connection = defu(config.connection, { url: `file:${join(hub.dir!, 'db/sqlite.db')}` })
       await mkdir(join(hub.dir, 'db'), { recursive: true })
@@ -67,14 +95,14 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
         break
       }
       config.connection = defu(config.connection, { url: process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL || '' })
-      if (config.driver && ['neon-http', 'postgres-js'].includes(config.driver) && !config.connection.url) {
-        throw new Error(`\`${config.driver}\` driver requires \`DATABASE_URL\`, \`POSTGRES_URL\`, or \`POSTGRESQL_URL\` environment variable`)
+      // Only error at build time if migrations need to run
+      if (config.applyMigrationsDuringBuild && config.driver && ['neon-http', 'postgres-js'].includes(config.driver) && !config.connection.url) {
+        throw new Error(`\`${config.driver}\` driver requires \`DATABASE_URL\`, \`POSTGRES_URL\`, or \`POSTGRESQL_URL\` environment variable when \`applyMigrationsDuringBuild\` is enabled`)
       }
       if (config.connection.url) {
         config.driver ||= 'postgres-js'
         break
       }
-      // Local PGLite
       config.driver ||= 'pglite'
       config.connection = defu(config.connection, { dataDir: join(hub.dir, 'db/pglite') })
       await mkdir(join(hub.dir, 'db/pglite'), { recursive: true })
@@ -88,8 +116,9 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
       }
       config.driver ||= 'mysql2'
       config.connection = defu(config.connection, { uri: process.env.MYSQL_URL || process.env.DATABASE_URL || '' })
-      if (!config.connection.uri) {
-        throw new Error('MySQL requires DATABASE_URL or MYSQL_URL environment variable')
+      // Only error at build time if migrations need to run
+      if (config.applyMigrationsDuringBuild && !config.connection.uri) {
+        throw new Error('MySQL requires DATABASE_URL or MYSQL_URL environment variable when `applyMigrationsDuringBuild` is enabled')
       }
       break
     }
@@ -320,32 +349,22 @@ export { db, schema }
 `
   }
   if (driver === 'neon-http') {
-    drizzleOrmContent = `import { neon } from '@neondatabase/serverless'
-import { drizzle } from 'drizzle-orm/neon-http'
-import * as schema from './db/schema.mjs'
-
-const sql = neon('${connection.url}')
-const db = drizzle(sql, { schema${casingOption} })
-export { db, schema }
-`
+    const urlExpr = connection.url ? `'${connection.url}'` : `process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL`
+    drizzleOrmContent = generateLazyDbTemplate(
+      `import { neon } from '@neondatabase/serverless'\nimport { drizzle } from 'drizzle-orm/neon-http'`,
+      `    const url = ${urlExpr}
+    if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
+    const sql = neon(url)
+    _db = drizzle(sql, { schema${casingOption} })`
+    )
   }
   if (driver === 'd1') {
-    // D1 requires lazy binding access - bindings only available in request context on CF Workers
-    drizzleOrmContent = `import { drizzle } from 'drizzle-orm/d1'
-import * as schema from './db/schema.mjs'
-
-let _db
-function getDb() {
-  if (!_db) {
-    const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
+    drizzleOrmContent = generateLazyDbTemplate(
+      `import { drizzle } from 'drizzle-orm/d1'`,
+      `    const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
     if (!binding) throw new Error('DB binding not found')
-    _db = drizzle(binding, { schema${casingOption} })
-  }
-  return _db
-}
-const db = new Proxy({}, { get(_, prop) { return getDb()[prop] } })
-export { db, schema }
-`
+    _db = drizzle(binding, { schema${casingOption} })`
+    )
   }
   if (driver === 'd1-http') {
     // D1 over HTTP using sqlite-proxy
@@ -403,24 +422,45 @@ const db = drizzle(d1HttpDriver, { schema${casingOption} })
 export { db, schema }
 `
   }
-  if (['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare')) {
-    // Hyperdrive requires lazy binding access - bindings only available in request context on CF Workers
+  if (['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare') && connection?.hyperdriveId) {
     const bindingName = driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL'
-    drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
-import * as schema from './db/schema.mjs'
-
-let _db
-function getDb() {
-  if (!_db) {
-    const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
+    drizzleOrmContent = generateLazyDbTemplate(
+      `import { drizzle } from 'drizzle-orm/${driver}'`,
+      `    const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
     if (!hyperdrive) throw new Error('${bindingName} binding not found')
-    _db = drizzle({ connection: hyperdrive.connectionString, schema${modeOption}${casingOption} })
+    _db = drizzle({ connection: hyperdrive.connectionString, schema${modeOption}${casingOption} })`
+    )
   }
-  return _db
-}
-const db = new Proxy({}, { get(_, prop) { return getDb()[prop] } })
-export { db, schema }
-`
+  // Non-CF postgres-js: lazy env resolution for Docker/multi-deploy scenarios
+  if (driver === 'postgres-js' && !nuxt.options.dev && !hub.hosting.includes('cloudflare')) {
+    const urlExpr = connection.url ? `'${connection.url}'` : `process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL`
+    drizzleOrmContent = generateLazyDbTemplate(
+      `import { drizzle } from 'drizzle-orm/postgres-js'\nimport postgres from 'postgres'`,
+      `    const url = ${urlExpr}
+    if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
+    const client = postgres(url, { onnotice: () => {} })
+    _db = drizzle({ client, schema${casingOption} })`
+    )
+  }
+  // Non-CF mysql2: lazy env resolution for Docker/multi-deploy scenarios
+  if (driver === 'mysql2' && !nuxt.options.dev && !hub.hosting.includes('cloudflare')) {
+    const uriExpr = connection.uri ? `'${connection.uri}'` : `process.env.MYSQL_URL || process.env.DATABASE_URL`
+    drizzleOrmContent = generateLazyDbTemplate(
+      `import { drizzle } from 'drizzle-orm/mysql2'`,
+      `    const uri = ${uriExpr}
+    if (!uri) throw new Error('DATABASE_URL or MYSQL_URL required')
+    _db = drizzle({ connection: { uri }, schema${modeOption}${casingOption} })`
+    )
+  }
+  // libsql: lazy env resolution for Docker/multi-deploy scenarios (when no URL baked in)
+  if (driver === 'libsql' && !connection.url) {
+    drizzleOrmContent = generateLazyDbTemplate(
+      `import { drizzle } from 'drizzle-orm/libsql'`,
+      `    const url = process.env.TURSO_DATABASE_URL || process.env.LIBSQL_URL || process.env.DATABASE_URL
+    const authToken = process.env.TURSO_AUTH_TOKEN || process.env.LIBSQL_AUTH_TOKEN
+    if (!url) throw new Error('Database URL not found. Set TURSO_DATABASE_URL, LIBSQL_URL, or DATABASE_URL')
+    _db = drizzle({ connection: { url, authToken }, schema${casingOption} })`
+    )
   }
 
   const databaseTemplate = addTemplate({
