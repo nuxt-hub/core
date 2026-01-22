@@ -43,8 +43,13 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
       await startStudioMySQLServer(schema, connection, { port })
     } else if (dialect === 'sqlite') {
       const { startStudioSQLiteServer } = await import('drizzle-kit/api')
-      log.info(`Launching Drizzle Studio with SQLite...`)
-      await startStudioSQLiteServer(schema, connection as any, { port })
+      log.info(`Launching Drizzle Studio with SQLite (${driver})...`)
+      // drizzle-kit auto-detects libsql from @libsql/client package
+      // Only pass driver for d1-http, otherwise just pass connection
+      const studioConnection = driver === 'd1-http'
+        ? { driver: 'd1-http', ...connection }
+        : connection
+      await startStudioSQLiteServer(schema, studioConnection as any, { port })
     } else {
       throw new Error(`Unsupported database dialect: ${dialect}`)
     }
