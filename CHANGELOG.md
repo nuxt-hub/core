@@ -1,6 +1,39 @@
 # Changelog
 
 
+## v0.10.5
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.10.4...v0.10.5)
+
+### 🚀 Enhancements
+
+- Add support for `workflow` and other external bundlers ([#779](https://github.com/nuxt-hub/core/pull/779))
+
+### 🩹 Fixes
+
+- **cli:** Handle D1 driver in CLI commands ([#759](https://github.com/nuxt-hub/core/pull/759))
+- **blob:** Validate multipart upload body ([#763](https://github.com/nuxt-hub/core/pull/763))
+- **db:** Generate schema types during nuxt prepare ([#758](https://github.com/nuxt-hub/core/pull/758))
+- **kv,cache:** Merge default binding when driver explicitly set ([#767](https://github.com/nuxt-hub/core/pull/767))
+- Support https dev server with drizzle studio when using pglite ([#753](https://github.com/nuxt-hub/core/pull/753))
+- Enable Node.js compatibility for Cloudflare Workers ([#780](https://github.com/nuxt-hub/core/pull/780))
+- **db:** Skip tsconfig resolution during schema build ([#785](https://github.com/nuxt-hub/core/pull/785))
+- **devtools:** Pass local-network-access permission to drizzle studio embed ([4f11aae](https://github.com/nuxt-hub/core/commit/4f11aae))
+- **db:** Lazy URL resolution for Docker/K8s deployments ([#790](https://github.com/nuxt-hub/core/pull/790))
+- **db:** Use libsql in dev mode when cloudflare preset is set ([#775](https://github.com/nuxt-hub/core/pull/775))
+- **db:** Use dynamic import for migrations plugin ([#788](https://github.com/nuxt-hub/core/pull/788))
+
+### 📖 Documentation
+
+- Clarify migration guide for v0.10.3+ ([#770](https://github.com/nuxt-hub/core/pull/770))
+- **blob:** Add image provider dev limitations ([#782](https://github.com/nuxt-hub/core/pull/782))
+
+### ❤️ Contributors
+
+- Max <maximogarciamtnez@gmail.com>
+- Sébastien Chopin <seb@nuxt.com>
+- Rihan Arfan ([@RihanArfan](https://github.com/RihanArfan))
+
 ## v0.10.4
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.10.3...v0.10.4)
