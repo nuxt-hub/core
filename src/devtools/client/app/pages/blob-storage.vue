@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { useEventListener, useClipboard, useDropZone } from '@vueuse/core'
 import { useToast } from '@nuxt/ui/runtime/composables/useToast'
+import { AlertDialogRoot, AlertDialogPortal, AlertDialogOverlay, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel } from 'reka-ui'
 import { useApiBase } from '~/composables/useApiBase'
 
 interface BlobObject { pathname: string, contentType: string, size: number, uploadedAt: string, customMetadata?: Record<string, string> }
@@ -25,6 +26,7 @@ const moveOpen = ref(false)
 const movePath = ref('')
 const renameOpen = ref(false)
 const renameName = ref('')
+const massDeleteOpen = ref(false)
 const search = ref('')
 const sortBy = ref<SortKey>('name')
 const viewMode = ref<ViewMode>('table')
@@ -322,7 +324,11 @@ function toggleSelectAll() {
   selectedItems.value = new Set(selectedItems.value)
 }
 
-async function deleteSelected() {
+function deleteSelected() {
+  massDeleteOpen.value = true
+}
+
+async function confirmMassDelete() {
   const paths = Array.from(selectedItems.value)
   for (const path of paths) {
     try {
@@ -332,6 +338,7 @@ async function deleteSelected() {
     }
   }
   toast.add({ title: `Deleted ${paths.length} files`, color: 'success' })
+  massDeleteOpen.value = false
   await refresh()
 }
 
@@ -549,22 +556,59 @@ useEventListener(document, 'paste', onPaste)
       </template>
     </UModal>
 
-    <!-- Delete Modal -->
-    <UModal v-model:open="deleteOpen" title="Delete File?" :transition="false">
-      <template #body>
-        <p class="text-muted">
-          Are you sure you want to delete <code class="font-mono bg-elevated px-1.5 py-0.5 rounded text-sm text-highlighted">{{ selectedBlob?.pathname }}</code>?
-        </p>
-      </template>
-      <template #footer>
-        <UButton color="neutral" variant="ghost" @click="deleteOpen = false">
-          Cancel
-        </UButton>
-        <UButton color="error" @click="confirmDelete">
-          Delete
-        </UButton>
-      </template>
-    </UModal>
+    <!-- Delete AlertDialog -->
+    <AlertDialogRoot v-model:open="deleteOpen">
+      <AlertDialogPortal>
+        <AlertDialogOverlay class="fixed inset-0 bg-black/50 z-50" />
+        <AlertDialogContent class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-elevated rounded-lg p-6 max-w-md z-50 shadow-lg">
+          <AlertDialogTitle class="text-lg font-semibold text-highlighted">
+            Delete File?
+          </AlertDialogTitle>
+          <AlertDialogDescription class="text-muted mt-2">
+            Are you sure you want to delete <code class="font-mono bg-accented px-1.5 py-0.5 rounded text-sm text-highlighted">{{ selectedBlob?.pathname }}</code>?
+          </AlertDialogDescription>
+          <div class="flex justify-end gap-2 mt-4">
+            <AlertDialogCancel as-child>
+              <UButton color="neutral" variant="ghost">
+                Cancel
+              </UButton>
+            </AlertDialogCancel>
+            <AlertDialogAction as-child>
+              <UButton color="error" @click="confirmDelete">
+                Delete
+              </UButton>
+            </AlertDialogAction>
+          </div>
+        </AlertDialogContent>
+      </AlertDialogPortal>
+    </AlertDialogRoot>
+
+    <!-- Mass Delete AlertDialog -->
+    <AlertDialogRoot v-model:open="massDeleteOpen">
+      <AlertDialogPortal>
+        <AlertDialogOverlay class="fixed inset-0 bg-black/50 z-50" />
+        <AlertDialogContent class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-elevated rounded-lg p-6 max-w-md z-50 shadow-lg">
+          <AlertDialogTitle class="text-lg font-semibold text-highlighted">
+            Delete {{ selectedItems.size }} files?
+          </AlertDialogTitle>
+          <AlertDialogDescription class="text-muted mt-2">
+            This action cannot be undone.
+          </AlertDialogDescription>
+          <div class="flex justify-end gap-2 mt-4">
+            <AlertDialogCancel as-child>
+              <UButton color="neutral" variant="ghost">
+                Cancel
+              </UButton>
+            </AlertDialogCancel>
+            <AlertDialogAction as-child>
+              <UButton color="error" @click="confirmMassDelete">
+                Delete
+              </UButton>
+            </AlertDialogAction>
+          </div>
+        </AlertDialogContent>
+      </AlertDialogPortal>
+    </AlertDialogRoot>
 
     <!-- New Folder Modal -->
     <UModal v-model:open="newFolderOpen" title="New Folder" :transition="false">
