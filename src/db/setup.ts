@@ -427,7 +427,7 @@ const apiToken = ${JSON.stringify(connection.apiToken)}
 async function d1HttpDriver(sql, params, method) {
   if (method === 'values') method = 'all'
 
-  const { errors, success, result } = await $fetch(\`https://api.cloudflare.com/client/v4/accounts/\${accountId}/d1/db/\${databaseId}/raw\`, {
+  const { errors, success, result } = await $fetch(\`https://api.cloudflare.com/client/v4/accounts/\${accountId}/d1/database/\${databaseId}/raw\`, {
     method: 'POST',
     headers: {
       Authorization: \`Bearer \${apiToken}\`,
