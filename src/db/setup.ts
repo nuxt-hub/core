@@ -74,8 +74,8 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
         }
         break
       }
-      // Cloudflare D1 (production only - dev uses local libsql)
-      if (hub.hosting.includes('cloudflare') && !nuxt.options.dev) {
+      // Cloudflare D1 (production only - dev/prepare uses local libsql)
+      if (hub.hosting.includes('cloudflare') && !nuxt.options.dev && !nuxt.options._prepare) {
         config.driver = 'd1'
         break
       }

@@ -18,10 +18,12 @@ describe('resolveDatabaseConfig', () => {
     process.env = originalEnv
   })
 
-  const createMockNuxt = (layers: any[] = []) => ({
+  const createMockNuxt = (layers: any[] = [], opts: { dev?: boolean, _prepare?: boolean } = {}) => ({
     options: {
       rootDir: '/',
       srcDir: '/app/',
+      dev: opts.dev ?? false,
+      _prepare: opts._prepare ?? false,
       _layers: layers
     }
   }) as any
@@ -104,8 +106,8 @@ describe('resolveDatabaseConfig', () => {
       })
     })
 
-    it('should use D1 driver when hosting is cloudflare', async () => {
-      const nuxt = createMockNuxt()
+    it('should use D1 driver when hosting is cloudflare (production mode)', async () => {
+      const nuxt = createMockNuxt([], { dev: false, _prepare: false })
       const hub = createBaseHubConfig('sqlite')
       hub.hosting = 'cloudflare'
 
@@ -115,6 +117,34 @@ describe('resolveDatabaseConfig', () => {
         dialect: 'sqlite',
         driver: 'd1',
         applyMigrationsDuringBuild: false // D1 disables migrations during build
+      })
+    })
+
+    it('should use libsql when hosting is cloudflare in dev mode', async () => {
+      const nuxt = createMockNuxt([], { dev: true })
+      const hub = createBaseHubConfig('sqlite')
+      hub.hosting = 'cloudflare'
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'sqlite',
+        driver: 'libsql',
+        connection: { url: 'file:/tmp/test-hub/db/sqlite.db' }
+      })
+    })
+
+    it('should use libsql when hosting is cloudflare in prepare mode', async () => {
+      const nuxt = createMockNuxt([], { dev: false, _prepare: true })
+      const hub = createBaseHubConfig('sqlite')
+      hub.hosting = 'cloudflare'
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'sqlite',
+        driver: 'libsql',
+        connection: { url: 'file:/tmp/test-hub/db/sqlite.db' }
       })
     })
 
