@@ -1,2 +1,6 @@
 @import 'tailwindcss';
 @import '@nuxt/ui';
+
+:root {
+  --ui-primary: #00DC82;
+}
