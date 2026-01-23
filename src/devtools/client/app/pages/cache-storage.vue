@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useToast } from '@nuxt/ui/runtime/composables/useToast'
+import { AlertDialogRoot, AlertDialogPortal, AlertDialogOverlay, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel } from 'reka-ui'
 import { useApiBase } from '~/composables/useApiBase'
 
 interface CacheItem { key: string, value: unknown }
@@ -219,60 +220,58 @@ async function confirmClear() {
       </template>
     </UModal>
 
-    <!-- Delete Modal -->
-    <UModal
-      v-model:open="deleteOpen"
-      title="Delete Cache Entry?"
-      :transition="false"
-    >
-      <template #body>
-        <p class="text-muted">
-          Are you sure you want to delete <code class="font-mono bg-elevated px-1.5 py-0.5 rounded text-sm text-highlighted break-all">{{ selectedItem?.key }}</code>?
-        </p>
-      </template>
-      <template #footer>
-        <UButton
-          color="neutral"
-          variant="ghost"
-          @click="deleteOpen = false"
-        >
-          Cancel
-        </UButton>
-        <UButton
-          color="error"
-          @click="confirmDelete"
-        >
-          Delete
-        </UButton>
-      </template>
-    </UModal>
+    <!-- Delete AlertDialog -->
+    <AlertDialogRoot v-model:open="deleteOpen">
+      <AlertDialogPortal>
+        <AlertDialogOverlay class="fixed inset-0 bg-black/50 z-50" />
+        <AlertDialogContent class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-elevated rounded-lg p-6 max-w-md z-50 shadow-lg">
+          <AlertDialogTitle class="text-lg font-semibold text-highlighted">
+            Delete Cache Entry?
+          </AlertDialogTitle>
+          <AlertDialogDescription class="text-muted mt-2">
+            Are you sure you want to delete <code class="font-mono bg-accented px-1.5 py-0.5 rounded text-sm text-highlighted break-all">{{ selectedItem?.key }}</code>?
+          </AlertDialogDescription>
+          <div class="flex justify-end gap-2 mt-4">
+            <AlertDialogCancel as-child>
+              <UButton color="neutral" variant="ghost">
+                Cancel
+              </UButton>
+            </AlertDialogCancel>
+            <AlertDialogAction as-child>
+              <UButton color="error" @click="confirmDelete">
+                Delete
+              </UButton>
+            </AlertDialogAction>
+          </div>
+        </AlertDialogContent>
+      </AlertDialogPortal>
+    </AlertDialogRoot>
 
-    <!-- Clear All Modal -->
-    <UModal
-      v-model:open="clearOpen"
-      title="Clear All Cache?"
-      :transition="false"
-    >
-      <template #body>
-        <p class="text-muted">
-          This will delete <strong class="text-highlighted">ALL {{ items.length }} cache entries</strong>. This action cannot be undone.
-        </p>
-      </template>
-      <template #footer>
-        <UButton
-          color="neutral"
-          variant="ghost"
-          @click="clearOpen = false"
-        >
-          Cancel
-        </UButton>
-        <UButton
-          color="error"
-          @click="confirmClear"
-        >
-          Clear All
-        </UButton>
-      </template>
-    </UModal>
+    <!-- Clear All AlertDialog -->
+    <AlertDialogRoot v-model:open="clearOpen">
+      <AlertDialogPortal>
+        <AlertDialogOverlay class="fixed inset-0 bg-black/50 z-50" />
+        <AlertDialogContent class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-elevated rounded-lg p-6 max-w-md z-50 shadow-lg">
+          <AlertDialogTitle class="text-lg font-semibold text-highlighted">
+            Clear All Cache?
+          </AlertDialogTitle>
+          <AlertDialogDescription class="text-muted mt-2">
+            This will delete <strong class="text-highlighted">ALL {{ items.length }} cache entries</strong>. This action cannot be undone.
+          </AlertDialogDescription>
+          <div class="flex justify-end gap-2 mt-4">
+            <AlertDialogCancel as-child>
+              <UButton color="neutral" variant="ghost">
+                Cancel
+              </UButton>
+            </AlertDialogCancel>
+            <AlertDialogAction as-child>
+              <UButton color="error" @click="confirmClear">
+                Clear All
+              </UButton>
+            </AlertDialogAction>
+          </div>
+        </AlertDialogContent>
+      </AlertDialogPortal>
+    </AlertDialogRoot>
   </div>
 </template>

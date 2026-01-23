@@ -3,5 +3,5 @@
   "private": true,
   "type": "module",
   "scripts": { "dev": "nuxi dev", "build": "nuxi generate" },
-  "dependencies": { "@nuxt/ui": "^3.0.0", "nuxt": "^4.2.2" }
+  "dependencies": { "@nuxt/ui": "^3.0.0", "nuxt": "^4.2.2", "reka-ui": "^2.0.0" }
 }
