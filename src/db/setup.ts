@@ -294,6 +294,8 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
           const schemaTypes = await readFile(schemaDtsSource, 'utf-8')
           await writeFile(join(physicalDbDir, 'schema.d.mts'), schemaTypes)
         } catch {
+          // During tests, don't overwrite existing types with stub (preserves dev-generated types)
+          if (nuxt.options.test) return
           // Fallback: create a simple re-export if .d.mts doesn't exist yet
           await writeFile(join(physicalDbDir, 'schema.d.mts'), `export * from './schema.mjs'`)
         }
