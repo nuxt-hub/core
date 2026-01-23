@@ -80,7 +80,7 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubCon
   }
 }
 
-export async function buildDatabaseSchema(buildDir: string, { relativeDir }: { relativeDir?: string } = {}) {
+export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias }: { relativeDir?: string, alias?: Record<string, string> } = {}) {
   relativeDir = relativeDir || buildDir
   const entry = join(buildDir, 'hub/db/schema.entry.ts')
   await build({
@@ -93,6 +93,7 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir }: { r
       dts: '.d.mts'
     }),
     alias: {
+      ...alias,
       'hub:db:schema': entry
     },
     platform: 'neutral',
