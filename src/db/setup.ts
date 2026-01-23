@@ -274,11 +274,14 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
     write: true
   })
 
+  // Build schema types during prepare/dev/build
+  nuxt.hooks.hookOnce('app:templatesGenerated', async () => {
+    await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir })
+  })
+
+  // Copy schema to node_modules/@nuxthub/db/ for workflow compatibility
   if (!nuxt.options._prepare) {
     nuxt.hooks.hookOnce('app:templatesGenerated', async () => {
-      await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir })
-
-      // Also copy schema.mjs to node_modules/@nuxthub/db/ for workflow compatibility
       const physicalDbDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db')
       await mkdir(physicalDbDir, { recursive: true })
 
