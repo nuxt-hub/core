@@ -280,30 +280,28 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
   })
 
   // Copy schema to node_modules/@nuxthub/db/ for workflow compatibility
-  if (!nuxt.options._prepare) {
-    nuxt.hooks.hookOnce('app:templatesGenerated', async () => {
-      const physicalDbDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db')
-      await mkdir(physicalDbDir, { recursive: true })
+  nuxt.hooks.hookOnce('app:templatesGenerated', async () => {
+    const physicalDbDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db')
+    await mkdir(physicalDbDir, { recursive: true })
 
+    try {
+      await copyFile(join(nuxt.options.buildDir, 'hub/db/schema.mjs'), join(physicalDbDir, 'schema.mjs'))
+
+      // Copy the generated .d.mts file for TypeScript support (overwrites stub from setupDatabaseClient)
+      const schemaDtsSource = join(nuxt.options.buildDir, 'hub/db/schema.d.mts')
       try {
-        await copyFile(join(nuxt.options.buildDir, 'hub/db/schema.mjs'), join(physicalDbDir, 'schema.mjs'))
-
-        // Copy the generated .d.mts file for TypeScript support (overwrites stub from setupDatabaseClient)
-        const schemaDtsSource = join(nuxt.options.buildDir, 'hub/db/schema.d.mts')
-        try {
-          const schemaTypes = await readFile(schemaDtsSource, 'utf-8')
-          await writeFile(join(physicalDbDir, 'schema.d.mts'), schemaTypes)
-        } catch {
-          // During tests, don't overwrite existing types with stub (preserves dev-generated types)
-          if (nuxt.options.test) return
-          // Fallback: create a simple re-export if .d.mts doesn't exist yet
-          await writeFile(join(physicalDbDir, 'schema.d.mts'), `export * from './schema.mjs'`)
-        }
-      } catch (error) {
-        log.warn(`Failed to copy schema to node_modules/.hub/: ${error}`)
+        const schemaTypes = await readFile(schemaDtsSource, 'utf-8')
+        await writeFile(join(physicalDbDir, 'schema.d.mts'), schemaTypes)
+      } catch {
+        // During tests, don't overwrite existing types with stub (preserves dev-generated types)
+        if (nuxt.options.test) return
+        // Fallback: create a simple re-export if .d.mts doesn't exist yet
+        await writeFile(join(physicalDbDir, 'schema.d.mts'), `export * from './schema.mjs'`)
       }
-    })
-  }
+    } catch (error) {
+      log.warn(`Failed to copy schema to node_modules/.hub/: ${error}`)
+    }
+  })
 
   nuxt.options.alias ||= {}
   // Create hub:db:schema alias to @nuxthub/db/schema for backwards compatibility
