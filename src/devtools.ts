@@ -1,3 +1,4 @@
+import { join } from 'pathe'
 import { logger } from '@nuxt/kit'
 import type { Nuxt } from 'nuxt/schema'
 import type { HubConfig, ResolvedDatabaseConfig } from '@nuxthub/core'
@@ -19,16 +20,19 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
 
   try {
     const { dialect, driver, connection } = dbConfig
-    const { schema } = await import(nuxt.options.alias!['hub:db'] as string)
+    const schemaPath = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db', 'db.mjs')
+    const { schema } = await import(schemaPath)
 
     // Launch Drizzle Studio based on dialect and driver
+    // Some drivers require launching from within Nitro (where the binding/client lives)
+    const nitroDevUrl = `${nuxt.options.devServer.https ? 'https' : 'http'}://localhost:${nuxt.options.devServer.port || 3000}`
+
     if (dialect === 'postgresql') {
       if (driver === 'pglite') {
         log.info(`Launching Drizzle Studio with PGlite...`)
 
         // Trigger studio launch in the Nitro process for PGlite instance
-        const nitroDevUrl = `${nuxt.options.devServer.https ? 'https' : 'http'}://localhost:${nuxt.options.devServer.port || 3000}`
-        await fetch(`${nitroDevUrl}/api/_hub/db/launch-studio?port=${port}`, {
+        await fetch(`${nitroDevUrl}/api/_hub/db/launch-studio?port=${port}&driver=pglite`, {
           method: 'POST'
         })
       } else {
@@ -42,14 +46,22 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
       log.info(`Launching Drizzle Studio with MySQL...`)
       await startStudioMySQLServer(schema, connection, { port })
     } else if (dialect === 'sqlite') {
-      const { startStudioSQLiteServer } = await import('drizzle-kit/api')
-      log.info(`Launching Drizzle Studio with SQLite (${driver})...`)
-      // drizzle-kit auto-detects libsql from @libsql/client package
-      // Only pass driver for d1-http, otherwise just pass connection
-      const studioConnection = driver === 'd1-http'
-        ? { driver: 'd1-http', ...connection }
-        : connection
-      await startStudioSQLiteServer(schema, studioConnection as any, { port })
+      if (driver === 'd1') {
+        log.info(`Launching Drizzle Studio with D1 binding...`)
+        // Trigger studio launch in the Nitro process for D1 binding access
+        await fetch(`${nitroDevUrl}/api/_hub/db/launch-studio?port=${port}&driver=d1`, {
+          method: 'POST'
+        })
+      } else {
+        const { startStudioSQLiteServer } = await import('drizzle-kit/api')
+        log.info(`Launching Drizzle Studio with SQLite (${driver})...`)
+        // drizzle-kit auto-detects libsql from @libsql/client package
+        // Only pass driver for d1-http, otherwise just pass connection
+        const studioConnection = driver === 'd1-http'
+          ? { driver: 'd1-http', ...connection }
+          : connection
+        await startStudioSQLiteServer(schema, studioConnection as any, { port })
+      }
     } else {
       throw new Error(`Unsupported database dialect: ${dialect}`)
     }
