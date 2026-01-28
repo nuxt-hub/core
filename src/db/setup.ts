@@ -400,11 +400,22 @@ export { db, schema }
   if (driver === 'neon-http') {
     const urlExpr = connection.url ? `'${connection.url}'` : `process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL`
     drizzleOrmContent = generateLazyDbTemplate(
-      `import { neon } from '@neondatabase/serverless'\nimport { drizzle } from 'drizzle-orm/neon-http'`,
+      `import { neon } from '@neondatabase/serverless'
+import { drizzle } from 'drizzle-orm/neon-http'
+import { withReplicas } from 'drizzle-orm/pg-core'`,
       `    const url = ${urlExpr}
     if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
     const sql = neon(url)
-    _db = drizzle(sql, { schema${casingOption} })`
+    const primary = drizzle(sql, { schema${casingOption} })
+
+    const replicaUrl = process.env.DATABASE_URL_REPLICA || process.env.POSTGRES_URL_REPLICA || process.env.POSTGRESQL_URL_REPLICA
+    if (replicaUrl) {
+      const replicaSql = neon(replicaUrl)
+      const replica = drizzle(replicaSql, { schema${casingOption} })
+      _db = withReplicas(primary, [replica])
+    } else {
+      _db = primary
+    }`
     )
   }
   if (driver === 'd1') {
@@ -484,31 +495,61 @@ export { db, schema }
   if (driver === 'postgres-js' && !nuxt.options.dev && !hub.hosting.includes('cloudflare')) {
     const urlExpr = connection.url ? `'${connection.url}'` : `process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL`
     drizzleOrmContent = generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/postgres-js'\nimport postgres from 'postgres'`,
+      `import { drizzle } from 'drizzle-orm/postgres-js'
+import { withReplicas } from 'drizzle-orm/pg-core'
+import postgres from 'postgres'`,
       `    const url = ${urlExpr}
     if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
     const client = postgres(url, { onnotice: () => {} })
-    _db = drizzle({ client, schema${casingOption} })`
+    const primary = drizzle({ client, schema${casingOption} })
+
+    const replicaUrl = process.env.DATABASE_URL_REPLICA || process.env.POSTGRES_URL_REPLICA || process.env.POSTGRESQL_URL_REPLICA
+    if (replicaUrl) {
+      const replicaClient = postgres(replicaUrl, { onnotice: () => {} })
+      const replica = drizzle({ client: replicaClient, schema${casingOption} })
+      _db = withReplicas(primary, [replica])
+    } else {
+      _db = primary
+    }`
     )
   }
   // Non-CF mysql2: lazy env resolution for Docker/multi-deploy scenarios
   if (driver === 'mysql2' && !nuxt.options.dev && !hub.hosting.includes('cloudflare')) {
     const uriExpr = connection.uri ? `'${connection.uri}'` : `process.env.MYSQL_URL || process.env.DATABASE_URL`
     drizzleOrmContent = generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/mysql2'`,
+      `import { drizzle } from 'drizzle-orm/mysql2'
+import { withReplicas } from 'drizzle-orm/mysql-core'`,
       `    const uri = ${uriExpr}
     if (!uri) throw new Error('DATABASE_URL or MYSQL_URL required')
-    _db = drizzle({ connection: { uri }, schema${modeOption}${casingOption} })`
+    const primary = drizzle({ connection: { uri }, schema${modeOption}${casingOption} })
+
+    const replicaUri = process.env.DATABASE_URL_REPLICA || process.env.MYSQL_URL_REPLICA
+    if (replicaUri) {
+      const replica = drizzle({ connection: { uri: replicaUri }, schema${modeOption}${casingOption} })
+      _db = withReplicas(primary, [replica])
+    } else {
+      _db = primary
+    }`
     )
   }
   // libsql: lazy env resolution for Docker/multi-deploy scenarios (when no URL baked in)
   if (driver === 'libsql' && !connection.url) {
     drizzleOrmContent = generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/libsql'`,
+      `import { drizzle } from 'drizzle-orm/libsql'
+import { withReplicas } from 'drizzle-orm/sqlite-core'`,
       `    const url = process.env.TURSO_DATABASE_URL || process.env.LIBSQL_URL || process.env.DATABASE_URL
     const authToken = process.env.TURSO_AUTH_TOKEN || process.env.LIBSQL_AUTH_TOKEN
     if (!url) throw new Error('Database URL not found. Set TURSO_DATABASE_URL, LIBSQL_URL, or DATABASE_URL')
-    _db = drizzle({ connection: { url, authToken }, schema${casingOption} })`
+    const primary = drizzle({ connection: { url, authToken }, schema${casingOption} })
+
+    const replicaUrl = process.env.TURSO_DATABASE_URL_REPLICA || process.env.LIBSQL_URL_REPLICA || process.env.DATABASE_URL_REPLICA
+    if (replicaUrl) {
+      const replicaAuthToken = process.env.TURSO_AUTH_TOKEN_REPLICA || process.env.LIBSQL_AUTH_TOKEN_REPLICA || authToken
+      const replica = drizzle({ connection: { url: replicaUrl, authToken: replicaAuthToken }, schema${casingOption} })
+      _db = withReplicas(primary, [replica])
+    } else {
+      _db = primary
+    }`
     )
   }
 
