@@ -326,7 +326,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
 }
 
 async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
-  const { dialect, driver, connection, mode, casing } = hub.db as ResolvedDatabaseConfig
+  const { dialect, driver, connection, mode, casing, replicas } = hub.db as ResolvedDatabaseConfig
 
   // For types, d1-http uses sqlite-proxy
   const driverForTypes = driver === 'd1-http' ? 'sqlite-proxy' : driver
@@ -372,16 +372,46 @@ export { db, schema, client }
   }
   if (driver === 'postgres-js' && nuxt.options.dev) {
     // disable notice logger for postgres-js in dev
+    const replicaUrls = (replicas || []).filter(Boolean)
+    const hasReplicas = replicaUrls.length > 0
+
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/postgres-js'
-import postgres from 'postgres'
+${hasReplicas ? `import { withReplicas } from 'drizzle-orm/pg-core'\n` : ''}import postgres from 'postgres'
 import * as schema from './db/schema.mjs'
 
-const client = postgres('${connection.url}', {
-  onnotice: () => {}
+const client = postgres('${connection.url}', { onnotice: () => {} })
+${hasReplicas
+  ? `const primary = drizzle({ client, schema${casingOption} })
+
+const replicaUrls = ${JSON.stringify(replicaUrls)}
+const replicaConnections = replicaUrls.map(replicaUrl => {
+  const replicaClient = postgres(replicaUrl, { onnotice: () => {} })
+  return drizzle({ client: replicaClient, schema${casingOption} })
 })
-const db = drizzle({ client, schema${casingOption} });
+const db = withReplicas(primary, replicaConnections)`
+  : `const db = drizzle({ client, schema${casingOption} })`}
 export { db, schema }
 `
+  }
+  if (driver === 'mysql2' && nuxt.options.dev) {
+    const replicaUrls = (replicas || []).filter(Boolean)
+    const hasReplicas = replicaUrls.length > 0
+
+    if (hasReplicas) {
+      drizzleOrmContent = `import { drizzle } from 'drizzle-orm/mysql2'
+import { withReplicas } from 'drizzle-orm/mysql-core'
+import * as schema from './db/schema.mjs'
+
+const primary = drizzle({ connection: ${JSON.stringify(connection)}, schema${modeOption}${casingOption} })
+
+const replicaUrls = ${JSON.stringify(replicaUrls)}
+const replicaConnections = replicaUrls.map(replicaUrl => {
+  return drizzle({ connection: { uri: replicaUrl }, schema${modeOption}${casingOption} })
+})
+const db = withReplicas(primary, replicaConnections)
+export { db, schema }
+`
+    }
   }
   if (driver === 'neon-http') {
     const urlExpr = connection.url ? `'${connection.url}'` : `process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL`
@@ -469,22 +499,46 @@ export { db, schema }
   // Non-CF postgres-js: lazy env resolution for Docker/multi-deploy scenarios
   if (driver === 'postgres-js' && !nuxt.options.dev && !hub.hosting.includes('cloudflare')) {
     const urlExpr = connection.url ? `'${connection.url}'` : `process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL`
+    const replicaUrls = (replicas || []).filter(Boolean)
+    const hasReplicas = replicaUrls.length > 0
+
     drizzleOrmContent = generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/postgres-js'\nimport postgres from 'postgres'`,
+      `import { drizzle } from 'drizzle-orm/postgres-js'
+${hasReplicas ? `import { withReplicas } from 'drizzle-orm/pg-core'\n` : ''}import postgres from 'postgres'`,
       `    const url = ${urlExpr}
     if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
     const client = postgres(url, { onnotice: () => {} })
-    _db = drizzle({ client, schema${casingOption} })`
+${hasReplicas
+  ? `    const primary = drizzle({ client, schema${casingOption} })
+
+    const replicaUrls = ${JSON.stringify(replicaUrls)}
+    const replicaConnections = replicaUrls.map(replicaUrl => {
+      const replicaClient = postgres(replicaUrl, { onnotice: () => {} })
+      return drizzle({ client: replicaClient, schema${casingOption} })
+    })
+    _db = withReplicas(primary, replicaConnections)`
+  : `    _db = drizzle({ client, schema${casingOption} })`}`
     )
   }
   // Non-CF mysql2: lazy env resolution for Docker/multi-deploy scenarios
   if (driver === 'mysql2' && !nuxt.options.dev && !hub.hosting.includes('cloudflare')) {
     const uriExpr = connection.uri ? `'${connection.uri}'` : `process.env.MYSQL_URL || process.env.DATABASE_URL`
+    const replicaUrls = (replicas || []).filter(Boolean)
+    const hasReplicas = replicaUrls.length > 0
+
     drizzleOrmContent = generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/mysql2'`,
+      `import { drizzle } from 'drizzle-orm/mysql2'${hasReplicas ? `\nimport { withReplicas } from 'drizzle-orm/mysql-core'` : ''}`,
       `    const uri = ${uriExpr}
     if (!uri) throw new Error('DATABASE_URL or MYSQL_URL required')
-    _db = drizzle({ connection: { uri }, schema${modeOption}${casingOption} })`
+${hasReplicas
+  ? `    const primary = drizzle({ connection: { uri }, schema${modeOption}${casingOption} })
+
+    const replicaUrls = ${JSON.stringify(replicaUrls)}
+    const replicaConnections = replicaUrls.map(replicaUrl => {
+      return drizzle({ connection: { uri: replicaUrl }, schema${modeOption}${casingOption} })
+    })
+    _db = withReplicas(primary, replicaConnections)`
+  : `    _db = drizzle({ connection: { uri }, schema${modeOption}${casingOption} })`}`
     )
   }
   // libsql: lazy env resolution for Docker/multi-deploy scenarios (when no URL baked in)
