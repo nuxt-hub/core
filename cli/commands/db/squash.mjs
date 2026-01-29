@@ -5,21 +5,7 @@ import { readFile, writeFile, rm } from 'node:fs/promises'
 import { join, resolve } from 'pathe'
 import { buildDatabaseSchema, createDrizzleClient } from '@nuxthub/core/db'
 import { sql } from 'drizzle-orm'
-
-async function getTsconfigAliases(cwd) {
-  try {
-    const tsconfig = JSON.parse(await readFile(join(cwd, '.nuxt/tsconfig.json'), 'utf-8'))
-    const paths = tsconfig.compilerOptions?.paths || {}
-    const alias = {}
-    for (const [key, values] of Object.entries(paths)) {
-      const resolvedPath = key.endsWith('/*') ? values[0].replace(/\/\*$/, '') : values[0]
-      alias[key.replace(/\/\*$/, '')] = resolve(join(cwd, '.nuxt'), resolvedPath)
-    }
-    return alias
-  } catch {
-    return {}
-  }
-}
+import { getTsconfigAliases } from '../../utils/db.mjs'
 
 export default defineCommand({
   meta: {

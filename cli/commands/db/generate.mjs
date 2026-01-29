@@ -1,24 +1,9 @@
-import { readFile } from 'node:fs/promises'
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
 import { execa } from 'execa'
 import { join, resolve } from 'pathe'
 import { buildDatabaseSchema } from '@nuxthub/core/db'
-
-async function getTsconfigAliases(cwd) {
-  try {
-    const tsconfig = JSON.parse(await readFile(join(cwd, '.nuxt/tsconfig.json'), 'utf-8'))
-    const paths = tsconfig.compilerOptions?.paths || {}
-    const alias = {}
-    for (const [key, values] of Object.entries(paths)) {
-      const resolvedPath = key.endsWith('/*') ? values[0].replace(/\/\*$/, '') : values[0]
-      alias[key.replace(/\/\*$/, '')] = resolve(join(cwd, '.nuxt'), resolvedPath)
-    }
-    return alias
-  } catch {
-    return {}
-  }
-}
+import { getTsconfigAliases } from '../../utils/db.mjs'
 
 export default defineCommand({
   meta: {
