@@ -206,6 +206,18 @@ export type DatabaseConfig = {
    * @see https://orm.drizzle.team/docs/sql-schema-declaration#camel-and-snake-casing
    */
   casing?: 'snake_case' | 'camelCase'
+  /**
+   * Read replica connection URLs for PostgreSQL (postgres-js) and MySQL (mysql2) drivers.
+   * When configured, read queries are automatically routed to replicas while writes go to the primary.
+   *
+   * @example
+   * ```ts
+   * replicas: [process.env.DATABASE_URL_REPLICA_1, process.env.DATABASE_URL_REPLICA_2].filter(Boolean)
+   * ```
+   *
+   * @see https://orm.drizzle.team/docs/read-replicas
+   */
+  replicas?: string[]
 }
 
 export type ResolvedDatabaseConfig = DatabaseConfig & {
@@ -216,4 +228,5 @@ export type ResolvedDatabaseConfig = DatabaseConfig & {
   queriesPaths: string[]
   applyMigrationsDuringBuild: boolean
   casing?: 'snake_case' | 'camelCase'
+  replicas?: string[]
 }

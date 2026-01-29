@@ -2,6 +2,7 @@ import { logger } from '@nuxt/kit'
 import type { Nuxt } from 'nuxt/schema'
 import type { HubConfig, ResolvedDatabaseConfig } from '@nuxthub/core'
 import { getPort } from 'get-port-please'
+import { glob } from 'tinyglobby'
 
 let isReady = false
 let promise: Promise<any> | null = null
@@ -44,11 +45,25 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
     } else if (dialect === 'sqlite') {
       const { startStudioSQLiteServer } = await import('drizzle-kit/api')
       log.info(`Launching Drizzle Studio with SQLite (${driver})...`)
-      // drizzle-kit auto-detects libsql from @libsql/client package
-      // Only pass driver for d1-http, otherwise just pass connection
-      const studioConnection = driver === 'd1-http'
-        ? { driver: 'd1-http', ...connection }
-        : connection
+
+      let studioConnection: any
+      if (driver === 'd1-http') {
+        studioConnection = { driver: 'd1-http', ...connection }
+      } else if (driver === 'd1') {
+        // Find wrangler D1 sqlite file for local development
+        const d1Files = await glob('.wrangler/state/v3/d1/miniflare-D1DatabaseObject/*.sqlite', {
+          cwd: nuxt.options.rootDir,
+          absolute: true
+        })
+        if (!d1Files.length) {
+          log.warn('D1 database file not found. Run the dev server first to create it.')
+          return
+        }
+        studioConnection = { url: `file:${d1Files[0]}` }
+      } else {
+        studioConnection = connection
+      }
+
       await startStudioSQLiteServer(schema, studioConnection as any, { port })
     } else {
       throw new Error(`Unsupported database dialect: ${dialect}`)
