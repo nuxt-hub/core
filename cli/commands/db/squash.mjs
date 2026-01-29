@@ -6,6 +6,21 @@ import { join, resolve } from 'pathe'
 import { buildDatabaseSchema, createDrizzleClient } from '@nuxthub/core/db'
 import { sql } from 'drizzle-orm'
 
+async function getTsconfigAliases(cwd) {
+  try {
+    const tsconfig = JSON.parse(await readFile(join(cwd, '.nuxt/tsconfig.json'), 'utf-8'))
+    const paths = tsconfig.compilerOptions?.paths || {}
+    const alias = {}
+    for (const [key, values] of Object.entries(paths)) {
+      const resolvedPath = key.endsWith('/*') ? values[0].replace(/\/\*$/, '') : values[0]
+      alias[key.replace(/\/\*$/, '')] = resolve(join(cwd, '.nuxt'), resolvedPath)
+    }
+    return alias
+  } catch {
+    return {}
+  }
+}
+
 export default defineCommand({
   meta: {
     name: 'squash',
@@ -171,7 +186,8 @@ export default defineCommand({
     consola.debug('Updated journal file')
 
     // Build schema and generate fresh migration
-    await buildDatabaseSchema(join(cwd, '.nuxt'), { relativeDir: cwd })
+    const alias = await getTsconfigAliases(cwd)
+    await buildDatabaseSchema(join(cwd, '.nuxt'), { relativeDir: cwd, alias })
     consola.info('Generating new migration...')
     const { stderr } = await execa({
       ...execaOptions,
