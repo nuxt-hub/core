@@ -395,7 +395,7 @@ import * as schema from './db/schema.mjs'
 
 const client = postgres('${connection.url}', { onnotice: () => {} })
 ${hasReplicas
-? `const primary = drizzle({ client, schema${casingOption} })
+  ? `const primary = drizzle({ client, schema${casingOption} })
 
 const replicaUrls = ${JSON.stringify(replicaUrls)}
 const replicaConnections = replicaUrls.map(replicaUrl => {
@@ -403,7 +403,7 @@ const replicaConnections = replicaUrls.map(replicaUrl => {
   return drizzle({ client: replicaClient, schema${casingOption} })
 })
 const db = withReplicas(primary, replicaConnections)`
-: `const db = drizzle({ client, schema${casingOption} })`}
+  : `const db = drizzle({ client, schema${casingOption} })`}
 export { db, schema }
 `
   }
@@ -523,7 +523,7 @@ ${hasReplicas ? `import { withReplicas } from 'drizzle-orm/pg-core'\n` : ''}impo
     if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
     const client = postgres(url, { onnotice: () => {} })
 ${hasReplicas
-? `    const primary = drizzle({ client, schema${casingOption} })
+  ? `    const primary = drizzle({ client, schema${casingOption} })
 
     const replicaUrls = ${JSON.stringify(replicaUrls)}
     const replicaConnections = replicaUrls.map(replicaUrl => {
@@ -531,7 +531,7 @@ ${hasReplicas
       return drizzle({ client: replicaClient, schema${casingOption} })
     })
     _db = withReplicas(primary, replicaConnections)`
-: `    _db = drizzle({ client, schema${casingOption} })`}`
+  : `    _db = drizzle({ client, schema${casingOption} })`}`
     )
   }
   // Non-CF mysql2: lazy env resolution for Docker/multi-deploy scenarios
@@ -545,14 +545,14 @@ ${hasReplicas
       `    const uri = ${uriExpr}
     if (!uri) throw new Error('DATABASE_URL or MYSQL_URL required')
 ${hasReplicas
-? `    const primary = drizzle({ connection: { uri }, schema${modeOption}${casingOption} })
+  ? `    const primary = drizzle({ connection: { uri }, schema${modeOption}${casingOption} })
 
     const replicaUrls = ${JSON.stringify(replicaUrls)}
     const replicaConnections = replicaUrls.map(replicaUrl => {
       return drizzle({ connection: { uri: replicaUrl }, schema${modeOption}${casingOption} })
     })
     _db = withReplicas(primary, replicaConnections)`
-: `    _db = drizzle({ connection: { uri }, schema${modeOption}${casingOption} })`}`
+  : `    _db = drizzle({ connection: { uri }, schema${modeOption}${casingOption} })`}`
     )
   }
   // libsql: lazy env resolution for Docker/multi-deploy scenarios (when no URL baked in)
