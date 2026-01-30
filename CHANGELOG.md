@@ -1,6 +1,38 @@
 # Changelog
 
 
+## v0.10.6
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.10.5...v0.10.6)
+
+### 🚀 Enhancements
+
+- **db:** Add support for database replica ([#808](https://github.com/nuxt-hub/core/pull/808))
+
+### 🩹 Fixes
+
+- **db:** Generate schema types during prepare ([#795](https://github.com/nuxt-hub/core/pull/795))
+- Change Cloudflare D1 API URI ([#794](https://github.com/nuxt-hub/core/pull/794))
+- **devtools:** Point Drizzle Studio to correct D1 database file ([#806](https://github.com/nuxt-hub/core/pull/806))
+- **db:** Create package.json during prepare ([#797](https://github.com/nuxt-hub/core/pull/797))
+- **db:** Resolve Nuxt aliases in schema bundling ([#802](https://github.com/nuxt-hub/core/pull/802))
+
+### 📖 Documentation
+
+- Fix typo in schema documentation ([#807](https://github.com/nuxt-hub/core/pull/807))
+
+### 🏡 Chore
+
+- Update deps ([7a8ec94](https://github.com/nuxt-hub/core/commit/7a8ec94))
+- Update deps" ([a5f46e9](https://github.com/nuxt-hub/core/commit/a5f46e9))
+
+### ❤️ Contributors
+
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+- Max <maximogarciamtnez@gmail.com>
+- Jens Becker <mail@jens.pub>
+- Nogic ([@nogic1008](https://github.com/nogic1008))
+
 ## v0.10.5
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.10.4...v0.10.5)
