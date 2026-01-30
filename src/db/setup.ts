@@ -253,7 +253,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
       log.info('Make sure to run `npx nuxt db generate` to generate the database migrations.')
       schemaPaths = await getSchemaPaths()
       await updateTemplates({ filter: template => template.filename.includes('hub/db/schema.entry.ts') })
-      await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir })
+      await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir, alias: nuxt.options.alias })
 
       // Also copy to node_modules/@nuxthub/db/ for workflow compatibility
       const physicalDbDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db')
@@ -276,8 +276,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
 
   // Build schema types during prepare/dev/build, then copy to node_modules
   nuxt.hooks.hookOnce('app:templatesGenerated', async () => {
-    // Build first
-    await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir })
+    await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir, alias: nuxt.options.alias })
 
     // Then copy to node_modules/@nuxthub/db/ for workflow compatibility
     const physicalDbDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db')

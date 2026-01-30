@@ -3,6 +3,7 @@ import { consola } from 'consola'
 import { execa } from 'execa'
 import { join, resolve } from 'pathe'
 import { buildDatabaseSchema } from '@nuxthub/core/db'
+import { getTsconfigAliases } from '../../utils/db.mjs'
 
 export default defineCommand({
   meta: {
@@ -36,7 +37,8 @@ export default defineCommand({
     }
     consola.info('Ensuring database schema is generated...')
     await execa(options)`nuxt prepare`
-    await buildDatabaseSchema(join(options.cwd, '.nuxt'), { relativeDir: cwd })
+    const alias = await getTsconfigAliases(cwd)
+    await buildDatabaseSchema(join(options.cwd, '.nuxt'), { relativeDir: cwd, alias })
     consola.info('Generating database migrations...')
     const { stderr } = await execa({
       ...options,

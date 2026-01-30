@@ -5,6 +5,7 @@ import { readFile, writeFile, rm } from 'node:fs/promises'
 import { join, resolve } from 'pathe'
 import { buildDatabaseSchema, createDrizzleClient } from '@nuxthub/core/db'
 import { sql } from 'drizzle-orm'
+import { getTsconfigAliases } from '../../utils/db.mjs'
 
 export default defineCommand({
   meta: {
@@ -171,7 +172,8 @@ export default defineCommand({
     consola.debug('Updated journal file')
 
     // Build schema and generate fresh migration
-    await buildDatabaseSchema(join(cwd, '.nuxt'), { relativeDir: cwd })
+    const alias = await getTsconfigAliases(cwd)
+    await buildDatabaseSchema(join(cwd, '.nuxt'), { relativeDir: cwd, alias })
     consola.info('Generating new migration...')
     const { stderr } = await execa({
       ...execaOptions,
