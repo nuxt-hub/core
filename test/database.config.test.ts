@@ -118,6 +118,23 @@ describe('resolveDatabaseConfig', () => {
       })
     })
 
+    it('should auto-detect D1 driver when databaseId is present (non-cloudflare)', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'sqlite',
+        connection: { databaseId: 'test-db-id' }
+      })
+      // Note: hosting is empty string (not cloudflare)
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'sqlite',
+        driver: 'd1',
+        applyMigrationsDuringBuild: false
+      })
+    })
+
     it('should preserve custom driver when specified', async () => {
       const nuxt = createMockNuxt()
       const hub = createBaseHubConfig({
@@ -236,6 +253,22 @@ describe('resolveDatabaseConfig', () => {
         connection: {
           dataDir: '/tmp/test-hub/db/pglite'
         }
+      })
+    })
+
+    it('should auto-detect postgres-js with hyperdriveId (non-cloudflare)', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'postgresql',
+        connection: { hyperdriveId: 'test-hyperdrive-id' }
+      })
+      // Note: hosting is empty string (not cloudflare)
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'postgresql',
+        driver: 'postgres-js'
       })
     })
 
@@ -401,6 +434,22 @@ describe('resolveDatabaseConfig', () => {
         dialect: 'mysql',
         driver: 'mysql2',
         applyMigrationsDuringBuild: false
+      })
+    })
+
+    it('should auto-detect mysql2 with hyperdriveId (non-cloudflare)', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'mysql',
+        connection: { hyperdriveId: 'test-hyperdrive-id' }
+      })
+      // Note: hosting is empty string (not cloudflare)
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'mysql',
+        driver: 'mysql2'
       })
     })
 
