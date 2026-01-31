@@ -595,6 +595,8 @@ export const db: ReturnType<typeof drizzleCore<typeof schema>>
   }
   try {
     await writeFile(join(physicalDbDir, 'package.json'), JSON.stringify(packageJson, null, 2))
+    // Write index.d.ts for TypeScript to resolve relative directory imports
+    await writeFile(join(physicalDbDir, 'index.d.ts'), `export * from './db'`)
     // Stub schema files only if they don't exist (real types written by app:templatesGenerated hook)
     const schemaPath = join(physicalDbDir, 'schema.mjs')
     const schemaDtsPath = join(physicalDbDir, 'schema.d.mts')
