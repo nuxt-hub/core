@@ -3,6 +3,7 @@ import type { FSDriverOptions } from '@nuxthub/core/blob/drivers/fs'
 import type { S3DriverOptions } from '@nuxthub/core/blob/drivers/s3'
 import type { VercelDriverOptions } from '@nuxthub/core/blob/drivers/vercel-blob'
 import type { CloudflareDriverOptions } from '@nuxthub/core/blob/drivers/cloudflare-r2'
+import type { Driver, OrmType } from '../db/adapters/interface'
 
 export interface HubConfig {
   blob: boolean | BlobConfig
@@ -161,6 +162,11 @@ type DatabaseConnection = {
 
 export type DatabaseConfig = {
   /**
+   * ORM to use for database operations
+   * @default 'drizzle'
+   */
+  orm?: OrmType
+  /**
    * Database dialect
    */
   dialect: 'sqlite' | 'postgresql' | 'mysql'
@@ -171,11 +177,17 @@ export type DatabaseConfig = {
    * PostgreSQL drivers: 'postgres-js', 'pglite', 'neon-http'
    * MySQL drivers: 'mysql2'
    */
-  driver?: 'better-sqlite3' | 'libsql' | 'bun-sqlite' | 'd1' | 'd1-http' | 'postgres-js' | 'pglite' | 'neon-http' | 'mysql2'
+  driver?: Driver
   /**
    * Database connection configuration
    */
   connection?: DatabaseConnection
+  /**
+   * Read replica URLs for horizontal read scaling.
+   * Uses Drizzle's withReplicas() to route reads to replicas and writes to primary.
+   * Only supported for 'postgres-js' and 'mysql2' drivers.
+   */
+  replicas?: string[]
   /**
    * The directories to scan for database migrations.
    * @default ['server/db/migrations']
@@ -221,8 +233,9 @@ export type DatabaseConfig = {
 }
 
 export type ResolvedDatabaseConfig = DatabaseConfig & {
+  orm: OrmType
   dialect: 'sqlite' | 'postgresql' | 'mysql'
-  driver: 'better-sqlite3' | 'libsql' | 'bun-sqlite' | 'd1' | 'd1-http' | 'postgres-js' | 'pglite' | 'neon-http' | 'mysql2'
+  driver: Driver
   connection: DatabaseConnection
   migrationsDirs: string[]
   queriesPaths: string[]
