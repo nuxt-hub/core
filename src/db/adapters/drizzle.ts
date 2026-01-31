@@ -73,8 +73,29 @@ export { db, schema, client, executeRaw, getRows }
     }
 
     if (driver === 'postgres-js' && ctx.nuxt.options.dev) {
-      // disable notice logger for postgres-js in dev
-      code = `import { drizzle } from 'drizzle-orm/postgres-js'
+      const replicaUrls = (dbConfig.replicas || []).filter(Boolean)
+      const hasReplicas = replicaUrls.length > 0
+
+      if (hasReplicas) {
+        code = `import { drizzle } from 'drizzle-orm/postgres-js'
+import { sql } from 'drizzle-orm'
+import { withReplicas } from 'drizzle-orm/pg-core'
+import postgres from 'postgres'
+import * as schema from './db/schema.mjs'
+
+const primaryClient = postgres(${JSON.stringify(connection.url)}, { onnotice: () => {} })
+const primary = drizzle({ client: primaryClient, schema${casingOption} })
+const replicas = [${replicaUrls.map(url => `drizzle({ client: postgres(${JSON.stringify(url)}, { onnotice: () => {} }), schema${casingOption} })`).join(', ')}]
+const db = withReplicas(primary, replicas)
+
+async function executeRaw(query) { return primary.${executeMethod}(sql.raw(query)) }
+const getRows = ${getRowsCode}
+
+export { db, schema, executeRaw, getRows }
+`
+      }
+      else {
+        code = `import { drizzle } from 'drizzle-orm/postgres-js'
 import { sql } from 'drizzle-orm'
 import postgres from 'postgres'
 import * as schema from './db/schema.mjs'
@@ -89,6 +110,29 @@ const getRows = ${getRowsCode}
 
 export { db, schema, executeRaw, getRows }
 `
+      }
+    }
+
+    if (driver === 'mysql2' && ctx.nuxt.options.dev) {
+      const replicaUrls = (dbConfig.replicas || []).filter(Boolean)
+      const hasReplicas = replicaUrls.length > 0
+
+      if (hasReplicas) {
+        code = `import { drizzle } from 'drizzle-orm/mysql2'
+import { sql } from 'drizzle-orm'
+import { withReplicas } from 'drizzle-orm/mysql-core'
+import * as schema from './db/schema.mjs'
+
+const primary = drizzle({ connection: ${JSON.stringify(connection)}, schema${modeOption}${casingOption} })
+const replicas = [${replicaUrls.map(url => `drizzle({ connection: { uri: ${JSON.stringify(url)} }, schema${modeOption}${casingOption} })`).join(', ')}]
+const db = withReplicas(primary, replicas)
+
+async function executeRaw(query) { return primary.${executeMethod}(sql.raw(query)) }
+const getRows = ${getRowsCode}
+
+export { db, schema, executeRaw, getRows }
+`
+      }
     }
 
     if (driver === 'neon-http') {

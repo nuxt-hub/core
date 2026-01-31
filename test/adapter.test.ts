@@ -15,6 +15,7 @@ type MockContextOptions = {
   mode?: 'default' | 'planetscale'
   hosting?: string
   dev?: boolean
+  replicas?: string[]
 }
 
 function createMockContext(options: MockContextOptions): HubDbAdapterContext {
@@ -28,6 +29,7 @@ function createMockContext(options: MockContextOptions): HubDbAdapterContext {
       connection: options.connection ?? {},
       casing: options.casing,
       mode: options.mode,
+      replicas: options.replicas,
       migrationsDirs: [],
       queriesPaths: [],
       applyMigrationsDuringBuild: true
@@ -153,6 +155,48 @@ describe('Drizzle Adapter', () => {
       const ctx = createMockContext({ driver: 'mysql2', dialect: 'mysql', connection: { uri: 'mysql://localhost' }, mode: 'planetscale' })
       const code = drizzleAdapter.createClientCode(ctx)
       expect(code).toContain('mode: \'planetscale\'')
+    })
+
+    it('should generate postgres-js with replicas', () => {
+      const ctx = createMockContext({
+        driver: 'postgres-js',
+        dialect: 'postgresql',
+        connection: { url: 'postgres://primary' },
+        replicas: ['postgres://replica1', 'postgres://replica2'],
+        dev: true
+      })
+      const code = drizzleAdapter.createClientCode(ctx)
+      expect(code).toContain('withReplicas')
+      expect(code).toContain('drizzle-orm/pg-core')
+      expect(code).toContain('postgres://replica1')
+      expect(code).toContain('postgres://replica2')
+    })
+
+    it('should generate mysql2 with replicas', () => {
+      const ctx = createMockContext({
+        driver: 'mysql2',
+        dialect: 'mysql',
+        connection: { uri: 'mysql://primary' },
+        replicas: ['mysql://replica1', 'mysql://replica2'],
+        dev: true
+      })
+      const code = drizzleAdapter.createClientCode(ctx)
+      expect(code).toContain('withReplicas')
+      expect(code).toContain('drizzle-orm/mysql-core')
+      expect(code).toContain('mysql://replica1')
+      expect(code).toContain('mysql://replica2')
+    })
+
+    it('should not add replicas for unsupported drivers', () => {
+      const ctx = createMockContext({
+        driver: 'pglite',
+        dialect: 'postgresql',
+        connection: { dataDir: '/tmp/pglite' },
+        replicas: ['postgres://replica1'],
+        dev: true
+      })
+      const code = drizzleAdapter.createClientCode(ctx)
+      expect(code).not.toContain('withReplicas')
     })
   })
 

@@ -183,6 +183,12 @@ export type DatabaseConfig = {
    */
   connection?: DatabaseConnection
   /**
+   * Read replica URLs for horizontal read scaling.
+   * Uses Drizzle's withReplicas() to route reads to replicas and writes to primary.
+   * Only supported for 'postgres-js' and 'mysql2' drivers.
+   */
+  replicas?: string[]
+  /**
    * The directories to scan for database migrations.
    * @default ['server/db/migrations']
    */
