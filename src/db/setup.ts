@@ -1,4 +1,4 @@
-import { mkdir, copyFile, writeFile, readFile, stat } from 'node:fs/promises'
+import { mkdir, copyFile, writeFile, readFile } from 'node:fs/promises'
 import chokidar from 'chokidar'
 import { glob } from 'tinyglobby'
 import { join, resolve as resolveFs, relative } from 'pathe'

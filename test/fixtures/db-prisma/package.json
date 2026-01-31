@@ -2,11 +2,11 @@
   "name": "fixture-db-prisma",
   "private": true,
   "dependencies": {
-    "@prisma/client": "^7.2.0",
-    "@prisma/adapter-libsql": "^7.2.0",
+    "@prisma/client": "^6.9.0",
+    "@prisma/adapter-libsql": "^6.9.0",
     "@libsql/client": "^0.17.0"
   },
   "devDependencies": {
-    "prisma": "^7.2.0"
+    "prisma": "^6.9.0"
   }
 }
