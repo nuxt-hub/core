@@ -6,7 +6,7 @@ import type { Casing } from 'drizzle-orm'
 async function createD1HttpClient(accountId: string, databaseId: string, apiToken: string, casing?: string) {
   const d1HttpDriver = async (sql: string, params: unknown[], method: string) => {
     if (method === 'values') method = 'all'
-    const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/db/${databaseId}/raw`, {
+    const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/raw`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiToken}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ sql, params })
