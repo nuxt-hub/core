@@ -203,7 +203,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
       const dbBinding = d1Databases.find(db => db.binding === 'DB')
       if (dbBinding) {
         dbBinding.migrations_table ||= '_hub_migrations'
-        dbBinding.migrations_dir ||= '.output/server/db/migrations/'
+        dbBinding.migrations_dir ||= 'db/migrations/sqlite/'
       }
     })
   }
