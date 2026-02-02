@@ -11,7 +11,7 @@ NuxtHub provides a CLI for managing your database migrations and running SQL que
 Generate database migrations from the schema.
 
 ```bash [Terminal]
-USAGE db generate [OPTIONS] [CUSTOM] [NAME]
+USAGE db generate [OPTIONS]
 
 OPTIONS
        --custom    Whether to generate an empty migration file for custom SQL.
