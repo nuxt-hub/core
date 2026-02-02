@@ -11,12 +11,20 @@ NuxtHub provides a CLI for managing your database migrations and running SQL que
 Generate database migrations from the schema.
 
 ```bash [Terminal]
-USAGE db generate [OPTIONS]
+USAGE db generate [OPTIONS] [CUSTOM] [NAME]
+
+ARGUMENTS
+  CUSTOM  Whether to generate an empty migration file for custom SQL. (optional)
+  NAME    Custom name for the migration file. (optional)
 
 OPTIONS
           --cwd    The directory to run the command in.
   -v, --verbose    Show verbose output.
 ```
+
+::note
+Read more about generating migrations in the [Drizzle Kit's official documentation](https://orm.drizzle.team/docs/drizzle-kit-generate).
+::
 
 ## `nuxt db migrate`
 
