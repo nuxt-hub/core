@@ -20,7 +20,18 @@ OPTIONS
   -v, --verbose    Show verbose output.
 ```
 
-::note
+Example usage:
+
+```bash [Terminal]
+# Generate a migration with default name
+npx nuxt db generate
+# Generate a migration based on schema changes
+npx nuxt db generate --name add_new_column
+# Generate an empty migration file for custom SQL
+npx nuxt db generate --custom --name seed_initial_data
+```
+
+::tip
 Read more about generating migrations in the [Drizzle Kit's official documentation](https://orm.drizzle.team/docs/drizzle-kit-generate).
 ::
 
