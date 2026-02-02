@@ -48,7 +48,7 @@ Mark local database migration(s) as applied to the database.
 USAGE db mark-as-migrated [OPTIONS] [NAME]
 
 ARGUMENTS
-  NAME    The name of the migration to mark as applied.
+  NAME    The name of the migration to mark as applied. If not provided, marks all pending migrations as applied. (optional)
 
 OPTIONS
           --cwd    The directory to run the command in.
