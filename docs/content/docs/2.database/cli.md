@@ -13,11 +13,9 @@ Generate database migrations from the schema.
 ```bash [Terminal]
 USAGE db generate [OPTIONS] [CUSTOM] [NAME]
 
-ARGUMENTS
-  CUSTOM  Whether to generate an empty migration file for custom SQL. (optional)
-  NAME    Custom name for the migration file. (optional)
-
 OPTIONS
+       --custom    Whether to generate an empty migration file for custom SQL.
+         --name    Custom name for the migration file.
           --cwd    The directory to run the command in.
   -v, --verbose    Show verbose output.
 ```
