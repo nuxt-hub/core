@@ -17,6 +17,11 @@ export interface CloudflareHooks {
    * Called during Cloudflare builds after Nitro generates the initial wrangler.json.
    */
   'wrangler:config': (config: WranglerConfig) => void | Promise<void>
+  /**
+   * Write additional files to the wrangler output directory.
+   * Called after wrangler.json is written, provides the output directory path.
+   */
+  'wrangler:files': (outputDir: string) => void | Promise<void>
 }
 
 export const cloudflareHooks = createHooks<CloudflareHooks>()
@@ -134,11 +139,18 @@ export function processWranglerConfigEnv(config: WranglerConfigWithEnv, targetEn
 }
 
 async function processWranglerConfigFile(nuxt: Nuxt, targetEnv?: string) {
-  // Nitro outputs wrangler.json to .output/server/
-  const wranglerPath = join(nuxt.options.rootDir, '.output', 'server', 'wrangler.json')
+  // Nitro outputs wrangler.json to different paths depending on preset:
+  // - cloudflare-module/cloudflare: .output/server/wrangler.json
+  // - cloudflare-pages: dist/_worker.js/wrangler.json
+  const possiblePaths = [
+    join(nuxt.options.rootDir, '.output', 'server', 'wrangler.json'),
+    join(nuxt.options.rootDir, 'dist', '_worker.js', 'wrangler.json')
+  ]
 
-  if (!existsSync(wranglerPath)) {
-    log.warn(`No wrangler.json found at ${wranglerPath}, skipping wrangler processing`)
+  const wranglerPath = possiblePaths.find(p => existsSync(p))
+
+  if (!wranglerPath) {
+    log.warn(`No wrangler.json found, skipping wrangler processing`)
     return
   }
 
@@ -166,6 +178,10 @@ async function processWranglerConfigFile(nuxt: Nuxt, targetEnv?: string) {
 
     // Write the processed config back
     await writeFile(wranglerPath, JSON.stringify(config, null, 2), 'utf-8')
+
+    // Allow modules to write additional files to the output directory
+    const outputDir = join(wranglerPath, '..')
+    await cloudflareHooks.callHook('wrangler:files', outputDir)
   } catch (error) {
     log.error(`Failed to process wrangler config: ${error}`)
   }

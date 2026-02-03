@@ -9,6 +9,7 @@ export interface HubConfig {
   cache: boolean | CacheConfig
   db: false | 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig
   kv: boolean | KVConfig
+  sandbox: boolean | SandboxConfig
   dir: string
   hosting: string
 }
@@ -18,6 +19,7 @@ export interface ResolvedHubConfig extends HubConfig {
   cache: ResolvedCacheConfig | false
   db: ResolvedDatabaseConfig | false
   kv: ResolvedKVConfig | false
+  sandbox: ResolvedSandboxConfig | false
   dir: string
 }
 
@@ -58,6 +60,14 @@ export interface ModuleOptions {
    * @see https://hub.nuxt.com/docs/kv
    */
   kv?: boolean | KVConfig
+  /**
+   * Set `true` to enable sandbox with auto-configuration.
+   * Or provide a SandboxConfig object with provider and options.
+   *
+   * @default false
+   * @see https://hub.nuxt.com/docs/sandbox
+   */
+  sandbox?: boolean | SandboxConfig
   /**
    * The directory used for storage (database, kv, etc.) during local development.
    * @default '.data'
@@ -230,3 +240,82 @@ export type ResolvedDatabaseConfig = DatabaseConfig & {
   casing?: 'snake_case' | 'camelCase'
   replicas?: string[]
 }
+
+export type SandboxConfig = {
+  /**
+   * Sandbox provider. Auto-detected from hosting if not specified.
+   */
+  provider?: 'vercel' | 'cloudflare'
+  /**
+   * Runtime environment for the sandbox.
+   * @default 'node24' for Vercel
+   */
+  runtime?: string
+  /**
+   * Timeout in milliseconds for sandbox operations.
+   */
+  timeout?: number
+  /**
+   * Memory allocation in MB.
+   */
+  memory?: number
+  /**
+   * CPU allocation.
+   */
+  cpu?: number
+  /**
+   * Ports to expose (Vercel only).
+   */
+  ports?: number[]
+  /**
+   * Custom sandbox ID (Cloudflare only).
+   */
+  sandboxId?: string
+  /**
+   * Cloudflare sandbox options.
+   */
+  cloudflare?: {
+    sleepAfter?: string | number
+    keepAlive?: boolean
+    normalizeId?: boolean
+  }
+}
+
+export type ResolvedSandboxConfig = SandboxConfig & {
+  provider: 'vercel' | 'cloudflare'
+}
+
+// Sandbox runtime types - re-exported from unagent
+export type { Sandbox, SandboxOptions, SandboxExecResult, SandboxProvider, SandboxDetectionResult } from 'unagent/sandbox'
+
+export interface HubSandboxOptions {
+  /** Durable Object namespace binding (auto-injected from event context) */
+  namespace?: unknown
+  /** Override provider at runtime */
+  provider?: 'vercel' | 'cloudflare'
+  /** Custom sandbox ID */
+  sandboxId?: string
+  /** Runtime (Vercel only) */
+  runtime?: string
+  /** Timeout in ms (Vercel only) */
+  timeout?: number
+  /** CPU allocation (Vercel only) */
+  cpu?: number
+  /** Ports to expose (Vercel only) */
+  ports?: number[]
+  /** Cloudflare sandbox options */
+  cloudflare?: {
+    sleepAfter?: string | number
+    keepAlive?: boolean
+    normalizeId?: boolean
+  }
+}
+
+/** Create a sandbox instance for running isolated code */
+export declare function hubSandbox(options?: HubSandboxOptions): Promise<import('unagent/sandbox').Sandbox>
+
+/** Check if a sandbox provider SDK is available */
+export declare function isSandboxAvailable(provider: 'vercel' | 'cloudflare'): boolean
+
+/** Detect current sandbox environment */
+export declare function detectSandbox(): import('unagent/sandbox').SandboxDetectionResult

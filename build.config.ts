@@ -50,6 +50,12 @@ export default defineBuildConfig({
       input: 'src/cache/runtime/',
       outDir: 'dist/cache/runtime',
       builder: 'mkdist'
+    },
+    // Sandbox
+    {
+      input: 'src/sandbox/runtime/',
+      outDir: 'dist/sandbox/runtime',
+      builder: 'mkdist'
     }
   ]
 })

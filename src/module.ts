@@ -9,6 +9,7 @@ import { setupCache } from './cache/setup'
 import { setupDatabase } from './db/setup'
 import { setupKV } from './kv/setup'
 import { setupBlob } from './blob/setup'
+import { setupSandbox } from './sandbox/setup'
 import type { ModuleOptions, HubConfig, ResolvedHubConfig } from '@nuxthub/core'
 import { addDevToolsCustomTabs } from './devtools'
 import { setupCloudflare } from './hosting/cloudflare'
@@ -44,7 +45,8 @@ export default defineNuxtModule<ModuleOptions>({
       blob: false,
       cache: false,
       db: false,
-      kv: false
+      kv: false,
+      sandbox: false
     }) as HubConfig
     // resolve the hub directory
     hub.dir = await resolveFs(nuxt.options.rootDir, hub.dir)
@@ -61,6 +63,7 @@ export default defineNuxtModule<ModuleOptions>({
     await setupCache(nuxt, hub as HubConfig, deps)
     await setupDatabase(nuxt, hub as HubConfig, deps)
     await setupKV(nuxt, hub as HubConfig, deps)
+    await setupSandbox(nuxt, hub as HubConfig, deps)
 
     const runtimeConfig = nuxt.options.runtimeConfig
     runtimeConfig.hub = hub as ResolvedHubConfig
