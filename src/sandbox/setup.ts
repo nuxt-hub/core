@@ -40,7 +40,7 @@ export function resolveSandboxConfig(hub: HubConfig): ResolvedSandboxConfig | fa
 }
 
 function generateSandboxCode(config: ResolvedSandboxConfig): string {
-  const cloudflareImport = config.provider === 'cloudflare' ? "import { getSandbox } from '@cloudflare/sandbox'\\n" : ''
+  const cloudflareImport = config.provider === 'cloudflare' ? 'import { getSandbox } from \'@cloudflare/sandbox\'\\n' : ''
   const cloudflareGetSandbox = config.provider === 'cloudflare' ? 'getSandbox' : 'undefined'
   return `import { createSandbox, detectSandbox, isSandboxAvailable } from 'unagent/sandbox'
 ${cloudflareImport}import { useEvent } from 'nitropack/runtime'
