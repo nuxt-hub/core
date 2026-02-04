@@ -48,8 +48,14 @@ pnpm i
 # Generate type stubs
 pnpm dev:prepare
 
-# Develop with the playground
+# Develop with the playground + devtools
 pnpm dev
+
+# Playground only
+pnpm dev:playground
+
+# Devtools only
+pnpm dev:devtools
 
 # Build the playground
 pnpm dev:build
