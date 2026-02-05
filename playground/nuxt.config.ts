@@ -1,5 +1,5 @@
 import { createResolver } from '@nuxt/kit'
-import module from '../src/module'
+import module from '../src/nuxt/module'
 
 const resolver = createResolver(import.meta.url)
 
