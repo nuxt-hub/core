@@ -1,5 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
+import { navigateTo, useRouter } from '#app'
+
 // Redirect to first available storage page
 // Order: kv -> blob -> cache (most commonly used first)
 const pages = ['/kv-storage', '/blob-storage', '/cache-storage']
