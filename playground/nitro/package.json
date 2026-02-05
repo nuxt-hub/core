@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "name": "nuxthub-playground-nitro",
+  "type": "module",
+  "scripts": {
+    "dev": "nitro dev",
+    "build": "nitro build",
+    "build:vercel": "NITRO_PRESET=vercel nitro build",
+    "preview": "nitro preview"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.15.15",
+    "@nuxthub/core": "^0.10.6",
+    "drizzle-orm": "^0.45.1",
+    "nitropack": "^2.13.1"
+  }
+}

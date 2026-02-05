@@ -3,14 +3,14 @@ import { existsSync } from 'node:fs'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { createHooks } from 'hookable'
-import { logger } from '@nuxt/kit'
+import { consola } from 'consola'
 import type { Nuxt } from '@nuxt/schema'
 import type { Nitro } from 'nitropack/types'
 import type { EnvironmentNonInheritable } from 'nitropack/presets/cloudflare/wrangler/environment'
 import type { WranglerConfig } from 'nitropack/presets/cloudflare/types'
 import type { HubConfig } from '../types'
 
-const log = logger.withTag('nuxt:hub')
+const log = consola.withTag('nuxt:hub')
 
 export interface CloudflareHooks {
   /**

@@ -65,9 +65,11 @@
   ],
   "scripts": {
     "prepack": "nuxt-module-build build",
-    "dev:prepare": "nuxt-module-build build --stub && mkdist --src=src/blob/lib --dist=dist/blob/lib -d && mkdist --src=src/db/lib --dist=dist/db/lib -d && nuxt-module-build prepare && nuxi prepare playground",
-    "dev": "nuxi dev playground",
-    "dev:build": "nuxi build playground",
+    "dev:prepare": "nuxt-module-build build --stub && mkdist --src=src/blob/lib --dist=dist/blob/lib -d && mkdist --src=src/db/lib --dist=dist/db/lib -d && nuxi prepare playground/nuxt",
+    "dev": "nuxi dev playground/nuxt",
+    "dev:nitro": "pnpm -C playground/nitro dev",
+    "dev:build": "nuxi build playground/nuxt",
+    "build:nitro": "pnpm -C playground/nitro build",
     "docs": "PORT=4000 nuxi dev docs",
     "docs:build": "nuxi generate docs",
     "release": "npm run lint && npm run test && changelogen --release && npm publish && git push --follow-tags",
@@ -75,7 +77,7 @@
     "lint:fix": "eslint . --fix",
     "test": "vitest run --test-timeout=60000",
     "test:watch": "vitest watch",
-    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
+    "test:types": "vue-tsc --noEmit && cd playground/nuxt && vue-tsc --noEmit",
     "hub": "./cli/bin/nuxthub.mjs",
     "db": "./cli/bin/nuxt-db.mjs"
   },

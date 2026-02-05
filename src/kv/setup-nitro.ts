@@ -3,7 +3,7 @@ import { join } from 'pathe'
 import { defu } from 'defu'
 import type { Nitro } from 'nitropack/types'
 import type { HubConfig, ResolvedKVConfig } from '@nuxthub/core'
-import { resolveKVConfig } from './setup'
+import { resolveKVConfig } from './resolve'
 import { resolve, addWranglerBindingNitro } from '../utils-nitro'
 
 export async function setupKVNitro(nitro: Nitro, hub: HubConfig, deps: Record<string, string>) {

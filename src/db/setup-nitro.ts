@@ -6,10 +6,18 @@ import { defu } from 'defu'
 import type { Nitro } from 'nitropack/types'
 import type { HubConfig, ResolvedHubConfig, ResolvedDatabaseConfig } from '@nuxthub/core'
 import { resolve, addWranglerBindingNitro } from '../utils-nitro'
-import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
 import { cloudflareHooks } from '../hosting/cloudflare'
 
 const logTag = 'nitro:hub'
+
+type DatabaseLib = typeof import('./lib')
+
+let databaseLibPromise: Promise<DatabaseLib> | undefined
+
+async function loadDatabaseLib() {
+  databaseLibPromise ||= import('./lib')
+  return databaseLibPromise
+}
 
 function resolveRuntimePath(path: string) {
   const candidates = [
@@ -164,18 +172,20 @@ export async function setupDatabaseNitro(nitro: Nitro, hub: HubConfig, deps: Rec
     nitro.options.plugins.push(migrationsPlugin)
   }
 
-  await generateDatabaseSchemaEntry(nitro, hub as ResolvedHubConfig)
+  const dbLib = await loadDatabaseLib()
+
+  await generateDatabaseSchemaEntry(nitro, hub as ResolvedHubConfig, dbLib)
   await nitro.hooks.callHook('hub:db:migrations:dirs', migrationsDirs)
-  await copyDatabaseMigrationsToHubDir(hub as ResolvedHubConfig)
+  await dbLib.copyDatabaseMigrationsToHubDir(hub as ResolvedHubConfig)
   await nitro.hooks.callHook('hub:db:queries:paths', queriesPaths, dialect)
-  await copyDatabaseQueriesToHubDir(hub as ResolvedHubConfig)
+  await dbLib.copyDatabaseQueriesToHubDir(hub as ResolvedHubConfig)
 
   nitro.hooks.hook('build:before', async () => {
-    await generateDatabaseSchemaEntry(nitro, hub as ResolvedHubConfig)
-    await buildDatabaseSchema(nitro.options.buildDir, { relativeDir: nitro.options.rootDir, alias: nitro.options.alias })
+    await generateDatabaseSchemaEntry(nitro, hub as ResolvedHubConfig, dbLib)
+    await dbLib.buildDatabaseSchema(nitro.options.buildDir, { relativeDir: nitro.options.rootDir, alias: nitro.options.alias })
     await copyDatabaseSchemaToNodeModules(nitro)
-    await copyDatabaseAssets(nitro, hub as ResolvedHubConfig)
-    await applyBuildTimeMigrations(nitro, hub as ResolvedHubConfig)
+    await dbLib.copyDatabaseAssets(nitro, hub as ResolvedHubConfig)
+    await dbLib.applyBuildTimeMigrations(nitro, hub as ResolvedHubConfig)
   })
 
   if (driver === 'd1') {
@@ -201,7 +211,7 @@ export async function setupDatabaseNitro(nitro: Nitro, hub: HubConfig, deps: Rec
   await setupDatabaseConfigNitro(nitro, hub as ResolvedHubConfig)
 }
 
-async function generateDatabaseSchemaEntry(nitro: Nitro, hub: ResolvedHubConfig) {
+async function generateDatabaseSchemaEntry(nitro: Nitro, hub: ResolvedHubConfig, dbLib: DatabaseLib) {
   if (!hub.db) return
   const dialect = hub.db.dialect
 
@@ -215,7 +225,7 @@ async function generateDatabaseSchemaEntry(nitro: Nitro, hub: ResolvedHubConfig)
   await nitro.hooks.callHook('hub:db:schema:extend', { dialect, paths: schemaPaths })
 
   schemaPaths = schemaPaths.filter((path) => {
-    const meta = getDatabaseSchemaPathMetadata(path)
+    const meta = dbLib.getDatabaseSchemaPathMetadata(path)
     return !meta.dialect || meta.dialect === dialect
   })
 
@@ -531,6 +541,10 @@ async function copyDatabaseSchemaToNodeModules(nitro: Nitro) {
 async function setupDatabaseConfigNitro(nitro: Nitro, hub: ResolvedHubConfig) {
   const { dialect, casing } = hub.db as ResolvedDatabaseConfig
   const casingConfig = casing ? `\n  casing: '${casing}',` : ''
+  const migrationsDir = relative(
+    nitro.options.rootDir,
+    resolveFs(nitro.options.rootDir, `server/db/migrations/${dialect}`)
+  )
   const configPath = join(nitro.options.buildDir, 'hub/db/drizzle.config.ts')
   await mkdir(join(nitro.options.buildDir, 'hub/db'), { recursive: true })
   await writeFile(configPath, `import { defineConfig } from 'drizzle-kit'
@@ -538,6 +552,6 @@ async function setupDatabaseConfigNitro(nitro: Nitro, hub: ResolvedHubConfig) {
 export default defineConfig({
   dialect: '${dialect}',${casingConfig}
   schema: '${relative(nitro.options.rootDir, resolveFs(nitro.options.buildDir, 'hub/db/schema.mjs'))}',
-  out: '${relative(nitro.options.rootDir, resolveFs(nitro.options.rootDir, \`server/db/migrations/${dialect}\`))}'
+  out: '${migrationsDir}'
 });`)
 }

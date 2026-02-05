@@ -2,7 +2,7 @@ import { defu } from 'defu'
 import type { Nitro } from 'nitropack/types'
 import type { HubConfig, ResolvedCacheConfig } from '@nuxthub/core'
 import { addWranglerBindingNitro } from '../utils-nitro'
-import { resolveCacheConfig } from './setup'
+import { resolveCacheConfig } from './resolve'
 
 export async function setupCacheNitro(nitro: Nitro, hub: HubConfig, _deps: Record<string, string>) {
   hub.cache = resolveCacheConfig(hub)
