@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useFetch } from '#app'
 import { useToast } from '@nuxt/ui/runtime/composables/useToast'
 import { AlertDialogRoot, AlertDialogPortal, AlertDialogOverlay, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel } from 'reka-ui'
 import { useApiBase } from '~/composables/useApiBase'
