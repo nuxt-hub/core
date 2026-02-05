@@ -1,12 +1,16 @@
+import { fileURLToPath } from 'node:url'
+import { dirname, resolve } from 'pathe'
 import { defineNitroConfig } from 'nitropack/config'
-import module from '../../src/module'
 
 const isMinimal = process.env.PLAYGROUND_MINIMAL === '1'
+const moduleEntry = process.env.VERCEL
+  ? '@nuxthub/core'
+  : resolve(dirname(fileURLToPath(import.meta.url)), '../../src/module')
 
 export default defineNitroConfig({
   srcDir: 'server',
   compatibilityDate: '2025-12-11',
-  modules: [module],
+  modules: [moduleEntry],
   hub: isMinimal
     ? {
         db: false,

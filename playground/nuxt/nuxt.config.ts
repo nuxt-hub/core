@@ -1,15 +1,15 @@
 import { createResolver } from '@nuxt/kit'
-import module from '../../src/nuxt/module'
 
 const resolver = createResolver(import.meta.url)
 const isMinimal = process.env.PLAYGROUND_MINIMAL === '1'
+const moduleEntry = process.env.VERCEL ? '@nuxthub/core/nuxt' : resolver.resolve('../../src/nuxt/module')
 
 export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
     '@vueuse/nuxt',
     'nuxt-auth-utils',
-    module
+    moduleEntry
   ],
   devtools: { enabled: true },
   css: ['~/assets/main.css'],
