@@ -1,0 +1,53 @@
+diff --git a/dist/sandbox-Dyz9jTaL.mjs b/dist/sandbox-Dyz9jTaL.mjs
+index d14ce6e1d62bfe5397a466a3c2a942bb6862c01d..2434868ade001f84eeb2327fc5c61bf4564d30f6 100644
+--- a/dist/sandbox-Dyz9jTaL.mjs
++++ b/dist/sandbox-Dyz9jTaL.mjs
+@@ -54,22 +54,27 @@ var VercelSandbox = class {
+ 		this.instance = instance;
+ 	}
+ 	async exec(command, args) {
+-		const result = await this.instance.exec(command, args);
++		const result = await this.instance.runCommand(command, args);
++		const [stdout, stderr] = await Promise.all([result.stdout(), result.stderr()]);
+ 		return {
+ 			ok: result.exitCode === 0,
+-			stdout: result.stdout ?? "",
+-			stderr: result.stderr ?? "",
++			stdout: stdout ?? "",
++			stderr: stderr ?? "",
+ 			code: result.exitCode
+ 		};
+ 	}
+ 	async writeFile(path, content) {
+-		await this.instance.writeFile(path, content);
++		const buf = typeof content === 'string' ? Buffer.from(content) : content;
++		await this.instance.writeFiles([{ path, content: buf }]);
+ 	}
+ 	async readFile(path) {
+-		return await this.instance.readFile(path);
++		const buf = await this.instance.readFileToBuffer({ path });
++		return buf ? buf.toString() : null;
+ 	}
+ 	async stop() {
+-		await this.instance.close?.();
++		if (this.instance[Symbol.asyncDispose]) {
++			await this.instance[Symbol.asyncDispose]();
++		}
+ 	}
+ };
+ function shellQuote(arg) {
+@@ -107,11 +112,11 @@ var CloudflareSandbox = class {
+ async function createSandbox(options) {
+ 	const { provider, runtime, timeout, memory, cpu } = options;
+ 	const id = `${provider}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+-	if (provider === "vercel") return new VercelSandbox(id, await (await loadVercelSandbox()).createSandbox({
++	if (provider === "vercel") return new VercelSandbox(id, await (await loadVercelSandbox()).Sandbox.create({
+ 		runtime: runtime ?? "node24",
+ 		timeout: timeout ?? 3e5,
+-		...memory && { memory },
+-		...cpu && { cpu }
++		...memory && { resources: { vcpus: memory } },
++		...cpu && { resources: { vcpus: cpu } }
+ 	}));
+ 	if (provider === "cloudflare") return new CloudflareSandbox(id, await (await loadCloudflareSandbox()).createSandbox({
+ 		runtime: runtime ?? "python",

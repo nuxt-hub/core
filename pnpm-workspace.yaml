@@ -1,7 +1,11 @@
 packages:
-  - "docs/"
-  - "playground/"
-  - "./"
+  - docs/
+  - playground/
+  - ./
+
 onlyBuiltDependencies:
-  - "better-sqlite3"
-  - "sharp"
+  - better-sqlite3
+  - sharp
+
+patchedDependencies:
+  unagent: patches/unagent.patch
