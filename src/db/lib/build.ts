@@ -105,7 +105,7 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias
     inputOptions: (opts) => {
       // Consumers can override rolldown (Vite 8 / rc.*) where `debug` is not a valid input key.
       // tsdown may still set it (often to `undefined`), so strip it to avoid validation warnings/errors.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       delete (opts as any).debug
       return opts
     },
