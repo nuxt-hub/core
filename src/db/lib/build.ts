@@ -82,12 +82,15 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubCon
 
 export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias }: { relativeDir?: string, alias?: Record<string, string> } = {}) {
   relativeDir = relativeDir || buildDir
-  const entry = join(buildDir, 'hub/db/schema.entry.ts')
+  const outDir = join(buildDir, 'hub/db')
+  const entry = join(outDir, 'schema.entry.ts')
+  const tsconfigPath = join(outDir, 'tsconfig.json')
+
   await build({
     entry: {
       schema: entry
     },
-    outDir: join(buildDir, 'hub/db'),
+    outDir,
     outExtensions: () => ({
       js: '.mjs',
       dts: '.d.mts'
@@ -99,14 +102,21 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias
     platform: 'neutral',
     format: 'esm',
     skipNodeModulesBundle: true,
-    tsconfig: false,
+    inputOptions: (opts) => {
+      // Consumers can override rolldown (Vite 8 / rc.*) where `debug` is not a valid input key.
+      // tsdown may still set it (often to `undefined`), so strip it to avoid validation warnings/errors.
+
+      delete (opts as any).debug
+      return opts
+    },
+    tsconfig: tsconfigPath,
     dts: {
       build: false,
-      tsconfig: false,
+      tsconfig: tsconfigPath,
       newContext: true
     },
     clean: false,
     logLevel: 'warn'
   })
-  consola.debug(`Database schema built successfully at \`${relative(relativeDir, join(buildDir, 'hub/db/schema.mjs'))}\``)
+  consola.debug(`Database schema built successfully at \`${relative(relativeDir, join(outDir, 'schema.mjs'))}\``)
 }
