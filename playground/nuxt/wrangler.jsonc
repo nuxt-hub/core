@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "playground",
+  "name": "nuxthub-playground-nuxt",
+  "account_id": "ba6e044dfdaaffec3cac45e9feccd237",
   "observability": {
     "logs": {
       "enabled": true,
@@ -12,46 +13,29 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_id": "adc66aba-ce5f-40bc-bffc-bc80eb17e0b7",
+      "database_id": "5573be1d-aa4d-4ae1-bf78-6937bf559882",
+      "preview_database_id": "73b379be-1532-46f5-9d37-cf783c144d1d",
       "migrations_table": "_hub_migrations",
-      "migrations_dir": ".output/server/db/migrations/"
+      "migrations_dir": "db/migrations/sqlite/"
     }
   ],
   "r2_buckets": [
     {
       "binding": "BLOB",
-      "bucket_name": "playground"
+      "bucket_name": "nuxthub-playground-nuxt",
+      "preview_bucket_name": "nuxthub-playground-nuxt-preview"
     }
   ],
   "kv_namespaces": [
     {
       "binding": "KV",
-      "id": "919a41f11e5649deace923de93d8d9ec"
+      "id": "af2d359a5e834b39aeaf6e11f0d8ce39",
+      "preview_id": "99f159f46a17496c83724bb259639f15"
     },
     {
       "binding": "CACHE",
-      "id": "c59a5cea9d0f44ad92b92e328c7e8b67"
+      "id": "d2f8d19f249c4e32985a3124f37a9bbb",
+      "preview_id": "822619636ca742239a276d85099ef169"
     }
-  ],
-  "env": {
-    "preview": {
-      "name": "playground-preview",
-      "d1_databases": [
-        {
-          "binding": "DB",
-          "database_id": "adc66aba-ce5f-40bc-bffc-bc80eb171234"
-        }
-      ],
-      "kv_namespaces": [
-        {
-          "binding": "KV",
-          "id": "919a41f11e5649deace923de93d81234"
-        },
-        {
-          "binding": "CACHE",
-          "id": "c59a5cea9d0f44ad92b92e328c7e1234"
-        }
-      ],
-    }
-  }
+  ]
 }

@@ -1,6 +1,7 @@
-import { writeFile, readFile, mkdir } from 'node:fs/promises'
+import { writeFile, readFile, mkdir, readdir } from 'node:fs/promises'
+import { existsSync } from 'node:fs'
 import { defineNuxtModule, logger, addTemplate } from '@nuxt/kit'
-import { join, relative, resolve as resolveFs } from 'pathe'
+import { dirname, join, relative, resolve as resolveFs } from 'pathe'
 import { defu } from 'defu'
 import { findWorkspaceDir, readPackageJSON } from 'pkg-types'
 import { provider } from 'std-env'
@@ -10,11 +11,22 @@ import { setupDatabase } from '../db/setup'
 import { setupKV } from '../kv/setup'
 import { setupBlob } from '../blob/setup'
 import type { ModuleOptions, HubConfig, ResolvedHubConfig } from '@nuxthub/core'
-import { addDevToolsCustomTabs, setupDevTools, addDevToolsStorageTabs } from '../devtools'
+import { addDevToolsCustomTabs } from '../devtools'
 import { setupCloudflare } from '../hosting/cloudflare'
 import type { NuxtModule } from '@nuxt/schema'
+import { resolve } from '../utils'
 
 const log = logger.withTag('nuxt:hub')
+
+function resolveRuntimePath(path: string) {
+  const candidates = [
+    resolve(`${path}.mjs`),
+    resolve(`${path}.js`),
+    resolve(`${path}.ts`),
+    resolve(path)
+  ]
+  return candidates.find(candidate => existsSync(candidate)) || resolve(path)
+}
 
 export * from '../types/index'
 
@@ -81,8 +93,6 @@ export default defineNuxtModule<ModuleOptions>({
     // Add custom tabs to Nuxt DevTools
     if (nuxt.options.dev) {
       addDevToolsCustomTabs(nuxt, hub)
-      await setupDevTools(nuxt, hub)
-      addDevToolsStorageTabs(nuxt, hub)
     }
 
     // Enable Async Local Storage
@@ -91,6 +101,99 @@ export default defineNuxtModule<ModuleOptions>({
 
     if (!nuxt.options.dev && hub.hosting.includes('cloudflare')) {
       setupCloudflare(nuxt, hub)
+      const nodeConsoleShim = resolveRuntimePath('runtime/shims/node-console')
+      nuxt.options.nitro.alias ||= {}
+      // Cloudflare's Node.js compat exposes `node:console` with `createTask` that throws.
+      // Alias it to a safe shim during bundling.
+      nuxt.options.nitro.alias['node:console'] = nodeConsoleShim
+      nuxt.options.nitro.externals ||= {}
+      nuxt.options.nitro.externals.inline ||= []
+      if (!nuxt.options.nitro.externals.inline.includes('node:console')) {
+        nuxt.options.nitro.externals.inline.push('node:console')
+      }
+      // Also override unenv's builtin mapping so Nitro's own runtime bundle doesn't keep `node:console`.
+      const unenvPresets = nuxt.options.nitro.unenv
+      // `unenvWorkerdWithNodeCompat` marks `node:console` as external; use unenv's `!` negation to remove it.
+      const shimAliasPreset = { alias: { 'node:console': nodeConsoleShim }, external: ['!node:console'] }
+      if (Array.isArray(unenvPresets)) {
+        unenvPresets.push(shimAliasPreset as any)
+      } else if (unenvPresets) {
+        nuxt.options.nitro.unenv = [unenvPresets as any, shimAliasPreset as any]
+      } else {
+        nuxt.options.nitro.unenv = [shimAliasPreset as any]
+      }
+      nuxt.options.nitro.plugins ||= []
+      nuxt.options.nitro.plugins.push(resolveRuntimePath('runtime/plugins/console-create-task'))
+
+      // Nuxt applies Nitro presets after modules have run, which can overwrite `nitro.unenv`.
+      // Apply the `!node:console` external override at the Nitro config hook stage as well.
+      nuxt.hook('nitro:config', (nitroConfig) => {
+        nitroConfig.alias ||= {}
+        nitroConfig.alias['node:console'] = nodeConsoleShim
+        // Nitro's Cloudflare node-compat preset may inline a shim that imports `#workerd/node:console`.
+        // Alias that too so we never touch Cloudflare's throwing `createTask`.
+        nitroConfig.alias['#workerd/node:console'] = nodeConsoleShim
+        const presets = Array.isArray(nitroConfig.unenv)
+          ? nitroConfig.unenv
+          : nitroConfig.unenv
+            ? [nitroConfig.unenv as any]
+            : []
+        presets.push({ external: ['!node:console'] } as any)
+        nitroConfig.unenv = presets as any
+      })
+
+      // Build output patch: Nitro's Cloudflare presets can still externalize `node:console`,
+      // which keeps Cloudflare's throwing `createTask` alive in the runtime bundle.
+      // Patch the compiled output to import our safe shim instead.
+      nuxt.hook('nitro:init', (nitro) => {
+        if (nitro.options.dev || !nitro.options.preset?.includes('cloudflare')) {
+          return
+        }
+        nitro.hooks.hook('compiled', async (nitro) => {
+          const serverDir = nitro.options.output.serverDir
+          const shimChunkPath = join(serverDir, 'chunks/_/node-console.mjs')
+          if (!existsSync(shimChunkPath)) {
+            return
+          }
+
+          async function walk(dir: string): Promise<string[]> {
+            const entries = await readdir(dir, { withFileTypes: true })
+            const out: string[] = []
+            for (const ent of entries) {
+              const p = join(dir, ent.name)
+              if (ent.isDirectory()) {
+                out.push(...await walk(p))
+              } else {
+                out.push(p)
+              }
+            }
+            return out
+          }
+
+          const files = await walk(serverDir)
+          await Promise.all(files.map(async (file) => {
+            if (file === shimChunkPath) {
+              return
+            }
+            if (!file.endsWith('.mjs') && !file.endsWith('.js')) {
+              return
+            }
+            let contents = await readFile(file, 'utf-8')
+            if (!contents.includes('node:console') && !contents.includes('#workerd/node:console')) {
+              return
+            }
+            const relToShimRaw = relative(dirname(file), shimChunkPath)
+            const relToShim = relToShimRaw.startsWith('.') ? relToShimRaw : `./${relToShimRaw}`
+
+            const patched = contents
+              .replace(/(["'])node:console\1/g, `$1${relToShim}$1`)
+              .replace(/(["'])#workerd\/node:console\1/g, `$1${relToShim}$1`)
+            if (patched !== contents) {
+              await writeFile(file, patched, 'utf-8')
+            }
+          }))
+        })
+      })
     }
 
     // Add .data to .gitignore

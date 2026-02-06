@@ -51,6 +51,12 @@ export default defineBuildConfig({
       input: 'src/cache/runtime/',
       outDir: 'dist/cache/runtime',
       builder: 'mkdist'
+    },
+    // Runtime (Nitro plugins, etc.)
+    {
+      input: 'src/runtime/',
+      outDir: 'dist/runtime',
+      builder: 'mkdist'
     }
   ]
 })

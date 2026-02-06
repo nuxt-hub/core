@@ -14,7 +14,7 @@
     "@iconify-json/simple-icons": "^1.2.63",
     "@libsql/client": "^0.15.15",
     "@nuxt/ui": "^4.2.1",
-    "@nuxthub/core": "^0.10.6",
+    "@nuxthub/core": "file:./vendor/nuxthub-core-0.10.6.tgz",
     "@upstash/redis": "^1.35.8",
     "@vercel/blob": "^2.0.0",
     "@vueuse/core": "^14.1.0",

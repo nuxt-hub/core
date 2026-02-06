@@ -15,7 +15,8 @@ type DatabaseLib = typeof import('./lib')
 let databaseLibPromise: Promise<DatabaseLib> | undefined
 
 async function loadDatabaseLib() {
-  databaseLibPromise ||= import('./lib')
+  // ESM does not support directory imports (e.g. `./db/lib`), so always import the entry file.
+  databaseLibPromise ||= import('./lib/index')
   return databaseLibPromise
 }
 
