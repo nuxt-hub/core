@@ -6,35 +6,54 @@ import { glob } from 'tinyglobby'
 
 let isReady = false
 let promise: Promise<any> | null = null
+// Default port for database studio (Drizzle Studio uses this convention)
 let port = 4983
 
 const log = logger.withTag('nuxt:hub')
 
-async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
+async function launchDatabaseStudio(nuxt: Nuxt, hub: HubConfig) {
   const dbConfig = hub.db as ResolvedDatabaseConfig
-  if (!dbConfig || typeof dbConfig === 'boolean' || typeof dbConfig === 'string') {
+  if (!dbConfig) {
     throw new Error('Database configuration not resolved properly. Please ensure database is configured in hub.db')
   }
 
   port = await getPort({ port: 4983 })
+  const { orm, dialect, driver, connection } = dbConfig
 
   try {
-    const { dialect, driver, connection } = dbConfig
+    // Prisma Studio
+    if (orm === 'prisma') {
+      log.info(`Launching Prisma Studio on port ${port}...`)
+      const { execa } = await import('execa')
+      // Use execa with array args to avoid shell injection, don't await - studio runs in background
+      const childProcess = execa('npx', ['prisma', 'studio', '--port', String(port)], {
+        cwd: nuxt.options.rootDir,
+        stdio: 'inherit',
+        reject: false
+      })
+      // Wait briefly for studio to start, then mark as ready
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      if (childProcess.exitCode !== null && childProcess.exitCode !== 0) {
+        throw new Error(`Prisma Studio failed to start (exit code: ${childProcess.exitCode})`)
+      }
+      isReady = true
+      return
+    }
+
+    // Drizzle Studio
     const { schema } = await import(nuxt.options.alias!['hub:db'] as string)
 
-    // Launch Drizzle Studio based on dialect and driver
     if (dialect === 'postgresql') {
       if (driver === 'pglite') {
         log.info(`Launching Drizzle Studio with PGlite...`)
-
-        // Trigger studio launch in the Nitro process for PGlite instance
         const nitroDevUrl = `${nuxt.options.devServer.https ? 'https' : 'http'}://localhost:${nuxt.options.devServer.port || 3000}`
-        await fetch(`${nitroDevUrl}/api/_hub/db/launch-studio?port=${port}`, {
-          method: 'POST'
-        })
+        try {
+          await fetch(`${nitroDevUrl}/api/_hub/db/launch-studio?port=${port}`, { method: 'POST' })
+        } catch (fetchError) {
+          throw new Error(`Failed to launch PGlite studio - is the dev server running? ${fetchError}`)
+        }
       } else {
         const { startStudioPostgresServer } = await import('drizzle-kit/api')
-        // For postgres-js and other PostgreSQL drivers
         log.info(`Launching Drizzle Studio with PostgreSQL...`)
         await startStudioPostgresServer(schema, connection, { port })
       }
@@ -71,47 +90,53 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
 
     isReady = true
   } catch (error) {
-    log.error('Failed to launch Drizzle Studio:', error)
+    log.error('Failed to launch database studio:', error)
     throw error
   }
 }
 
 export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
   nuxt.hook('devtools:customTabs', (tabs) => {
-    if (nuxt.options.nitro.experimental?.openAPI)({
-      category: 'server',
-      name: 'hub-open-api',
-      title: 'OpenAPI',
-      icon: 'i-lucide-file-text',
-      view: {
-        type: 'iframe',
-        src: `/_scalar`
-      }
-    })
+    if (nuxt.options.nitro.experimental?.openAPI) {
+      tabs.push({
+        category: 'server',
+        name: 'hub-open-api',
+        title: 'OpenAPI',
+        icon: 'i-lucide-file-text',
+        view: {
+          type: 'iframe',
+          src: `/_scalar`
+        }
+      })
+    }
 
-    if (hub.db) tabs.push({
-      category: 'server',
-      name: 'hub-db',
-      title: 'Database',
-      icon: 'i-lucide-database',
-      view: isReady && port
-        ? {
-            type: 'iframe',
-            src: `https://local.drizzle.studio?port=${port}`,
-            permissions: ['local-network-access https://local.drizzle.studio']
-          }
-        : {
-            type: 'launch',
-            description: 'Launch Drizzle Studio',
-            actions: [{
-              label: promise ? 'Starting...' : 'Launch',
-              pending: isReady,
-              handle() {
-                promise = promise || launchDrizzleStudio(nuxt, hub)
-                return promise
-              }
-            }]
-          }
-    })
+    if (hub.db) {
+      const dbConfig = hub.db as ResolvedDatabaseConfig
+      const orm = dbConfig?.orm || 'drizzle'
+      const studioName = orm === 'prisma' ? 'Prisma Studio' : 'Drizzle Studio'
+      const studioUrl = orm === 'prisma' ? `http://localhost:${port}` : `https://local.drizzle.studio?port=${port}`
+      const permissions = orm === 'prisma' ? [] : ['local-network-access https://local.drizzle.studio']
+
+      tabs.push({
+        category: 'server',
+        name: 'hub-db',
+        title: 'Database',
+        icon: 'i-lucide-database',
+        view: isReady && port
+          ? { type: 'iframe', src: studioUrl, permissions }
+          : {
+              type: 'launch',
+              description: `Launch ${studioName}`,
+              actions: [{
+                label: promise ? 'Starting...' : 'Launch',
+                pending: !!promise && !isReady,
+                handle() {
+                  promise = promise || launchDatabaseStudio(nuxt, hub)
+                  return promise
+                }
+              }]
+            }
+      })
+    }
   })
 }
