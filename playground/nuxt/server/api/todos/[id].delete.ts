@@ -1,10 +1,17 @@
 import { eq, and } from 'drizzle-orm'
-import { db, schema } from 'hub:db'
 
 export default eventHandler(async (event) => {
+  const hub = useRuntimeConfig().hub
+  if (!hub?.db) {
+    return { disabled: true }
+  }
+
   const { id } = await getValidatedRouterParams(event, z.object({
     id: z.string().min(1)
   }).parse)
+
+  const hubDbId = 'hub:' + 'db'
+  const { db, schema } = await import(/* @vite-ignore */ hubDbId)
 
   // List todos for the current user
   const deletedTodo = await db.delete(schema.todos).where(and(

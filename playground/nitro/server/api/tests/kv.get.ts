@@ -6,7 +6,8 @@ export default defineEventHandler(async () => {
     return { disabled: true }
   }
 
-  const { kv } = await import('hub:kv')
+  const hubKvId = 'hub:' + 'kv'
+  const { kv } = await import(/* @vite-ignore */ hubKvId)
 
   await kv.set('framework:nuxt', { year: 2016 })
   await kv.set('framework:vue', { year: 2014 })

@@ -2,7 +2,7 @@ import { createResolver } from '@nuxt/kit'
 
 const resolver = createResolver(import.meta.url)
 const isMinimal = process.env.PLAYGROUND_MINIMAL === '1'
-const moduleEntry = process.env.VERCEL ? '@nuxthub/core/nuxt' : resolver.resolve('../../src/nuxt/module')
+const moduleEntry = resolver.resolve('../../src/nuxt/module')
 
 export default defineNuxtConfig({
   modules: [
@@ -22,6 +22,9 @@ export default defineNuxtConfig({
 
   nitro: {
     // preset: 'cloudflare-module',
+    output: process.env.NITRO_PRESET === 'vercel'
+      ? { dir: resolver.resolve('.vercel/output') }
+      : undefined,
     experimental: {
       websocket: true
     }

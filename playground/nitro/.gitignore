@@ -1,2 +1,5 @@
 .vercel
+.nitro
+.output
+.data
 .env*.local

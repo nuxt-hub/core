@@ -1,13 +1,20 @@
-import { db, schema } from 'hub:db'
 import { eq } from 'drizzle-orm'
 
 export default eventHandler(async (event) => {
+  const hub = useRuntimeConfig().hub
+  if (!hub?.db) {
+    return { disabled: true }
+  }
+
   const { id } = await getValidatedRouterParams(event, z.object({
     id: z.string().min(0)
   }).parse)
   const { completed } = await readValidatedBody(event, z.object({
     completed: z.number().int().min(0).max(1)
   }).parse)
+
+  const hubDbId = 'hub:' + 'db'
+  const { db, schema } = await import(/* @vite-ignore */ hubDbId)
 
   // List todos for the current user
   const todo = await db.update(schema.todos).set({

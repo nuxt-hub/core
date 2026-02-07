@@ -3,7 +3,7 @@
   "name": "nuxthub-playground-nuxt",
   "type": "module",
   "scripts": {
-    "postinstall": "node -e \"if (!process.env.VERCEL) require('child_process').execSync('pnpm -C ../.. run dev:prepare', { stdio: 'inherit' })\"",
+    "postinstall": "node -e \"if (!process.env.VERCEL && !process.env.CI) require('child_process').execSync('pnpm -C ../.. run dev:prepare', { stdio: 'inherit' })\"",
     "dev": "nuxi dev",
     "build": "nuxi build",
     "build:vercel": "NITRO_PRESET=vercel nuxi build",
@@ -14,7 +14,7 @@
     "@iconify-json/simple-icons": "^1.2.63",
     "@libsql/client": "^0.15.15",
     "@nuxt/ui": "^4.2.1",
-    "@nuxthub/core": "^0.10.6",
+    "@nuxthub/core": "workspace:*",
     "@upstash/redis": "^1.35.8",
     "@vercel/blob": "^2.0.0",
     "@vueuse/core": "^14.1.0",

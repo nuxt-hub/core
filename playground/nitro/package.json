@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@libsql/client": "^0.15.15",
-    "@nuxthub/core": "^0.10.6",
+    "@nuxthub/core": "workspace:*",
     "drizzle-orm": "^0.45.1",
     "nitropack": "^2.13.1"
   }

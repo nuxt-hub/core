@@ -1,0 +1,107 @@
+name: deploy-playgrounds
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: deploy-playgrounds-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PLAYGROUND_MINIMAL: "1"
+
+jobs:
+  vercel-nuxt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm i -g --force corepack && corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+      - name: Generate session secret
+        run: echo "NUXT_SESSION_PASSWORD=$(openssl rand -base64 32 | tr -d '\n')" >> "$GITHUB_ENV"
+      - run: pnpm install
+      - run: pnpm playground:nuxt:build:vercel
+      - run: npm i -g vercel@latest
+      - name: Deploy (Vercel, Nuxt)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_NUXT }}
+        run: vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN" --cwd playground/nuxt
+
+  vercel-nitro:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm i -g --force corepack && corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+      - name: Generate session secret
+        run: echo "NUXT_SESSION_PASSWORD=$(openssl rand -base64 32 | tr -d '\n')" >> "$GITHUB_ENV"
+      - run: pnpm install
+      - run: pnpm playground:nitro:build:vercel
+      - run: npm i -g vercel@latest
+      - name: Deploy (Vercel, Nitro)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_NITRO }}
+        run: vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN" --cwd playground/nitro
+
+  cloudflare-nuxt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm i -g --force corepack && corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+      - name: Generate session secret
+        run: echo "NUXT_SESSION_PASSWORD=$(openssl rand -base64 32 | tr -d '\n')" >> "$GITHUB_ENV"
+      - run: pnpm install
+      - run: pnpm playground:nuxt:build:cloudflare
+      - run: npm i -g wrangler@3
+      - name: Deploy (Cloudflare Workers, Nuxt)
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -f playground/nuxt/.output/server/wrangler.json ]; then
+            wrangler deploy --config playground/nuxt/.output/server/wrangler.json --name nuxthub-playground-nuxt-cf
+          else
+            wrangler deploy playground/nuxt/.output/server/index.mjs --name nuxthub-playground-nuxt-cf --account-id "$CLOUDFLARE_ACCOUNT_ID"
+          fi
+
+  cloudflare-nitro:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm i -g --force corepack && corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+      - name: Generate session secret
+        run: echo "NUXT_SESSION_PASSWORD=$(openssl rand -base64 32 | tr -d '\n')" >> "$GITHUB_ENV"
+      - run: pnpm install
+      - run: pnpm playground:nitro:build:cloudflare
+      - run: npm i -g wrangler@3
+      - name: Deploy (Cloudflare Workers, Nitro)
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -f playground/nitro/.output/server/wrangler.json ]; then
+            wrangler deploy --config playground/nitro/.output/server/wrangler.json --name nuxthub-playground-nitro-cf
+          else
+            wrangler deploy playground/nitro/.output/server/index.mjs --name nuxthub-playground-nitro-cf --account-id "$CLOUDFLARE_ACCOUNT_ID"
+          fi

@@ -6,6 +6,7 @@ export default defineEventHandler(async () => {
     return { disabled: true }
   }
 
-  const { blob } = await import('hub:blob')
+  const hubBlobId = 'hub:' + 'blob'
+  const { blob } = await import(/* @vite-ignore */ hubBlobId)
   return blob.list({ limit: 5 })
 })

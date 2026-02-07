@@ -9,7 +9,8 @@ export default defineEventHandler(async () => {
     return { error: 'SQLite is not enabled', dialect: hub.db.dialect }
   }
 
-  const { db, schema } = await import('hub:db')
+  const hubDbId = 'hub:' + 'db'
+  const { db, schema } = await import(/* @vite-ignore */ hubDbId)
 
   await db.run(`CREATE TABLE IF NOT EXISTS todos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
