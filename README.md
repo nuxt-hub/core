@@ -51,6 +51,9 @@ pnpm dev:prepare
 # Develop with the playground
 pnpm dev
 
+# Playground only
+pnpm dev:playground
+
 # Build the playground
 pnpm dev:build
 

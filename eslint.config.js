@@ -16,6 +16,13 @@ export default createConfigForNuxt({
       './docs'
     ]
   }
+}).append({
+  ignores: [
+    '**/.nuxt/**',
+    '**/.output/**',
+    '**/dist/**',
+    '**/.wrangler/**'
+  ]
 }).overrideRules({
   '@typescript-eslint/no-explicit-any': 'off',
   '@typescript-eslint/no-unused-vars': ['error', {

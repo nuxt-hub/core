@@ -1,5 +1,8 @@
-import { mkdir, writeFile, copyFile } from 'node:fs/promises'
-import { join } from 'pathe'
+import { mkdir, writeFile, copyFile, symlink } from 'node:fs/promises'
+import { createRequire } from 'node:module'
+import { join, dirname } from 'pathe'
+import { sep } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defu } from 'defu'
 import { addTypeTemplate, addServerImports } from '@nuxt/kit'
 import { resolve, logWhenReady, addWranglerBinding } from '../utils'
@@ -139,6 +142,56 @@ export const kv = createStorage({
     join(physicalKvDir, 'package.json'),
     JSON.stringify(packageJson, null, 2)
   )
+
+  const getPackageDirFromResolved = (resolved: string, pkgName: string) => {
+    const marker = `${sep}node_modules${sep}${pkgName}${sep}`
+    const idx = resolved.lastIndexOf(marker)
+    if (idx === -1) return
+    return resolved.slice(0, idx + marker.length - 1)
+  }
+
+  // pnpm uses isolated dependency graphs. The generated physical package lives in the project
+  // root and won't see @nuxthub/core's dependencies unless we link them explicitly.
+  // Best-effort: do not fail user dev servers if symlinks aren't supported.
+  try {
+    const selfPath = fileURLToPath(import.meta.url)
+    const selfMarker = `${sep}node_modules${sep}@nuxthub${sep}core${sep}`
+    const selfIdx = selfPath.lastIndexOf(selfMarker)
+    const pnpmDepsDir = selfIdx === -1 ? undefined : `${selfPath.slice(0, selfIdx)}${sep}node_modules`
+
+    const resolveFromEsm = (specifier: string) => {
+      const r = (import.meta as any).resolve?.(specifier)
+      if (!r) return
+      try {
+        return fileURLToPath(r)
+      } catch {
+        try {
+          return fileURLToPath(new URL(r))
+        } catch {
+          return
+        }
+      }
+    }
+
+    const req = createRequire(import.meta.url)
+    const unstorageDir = pnpmDepsDir
+      ? join(pnpmDepsDir, 'unstorage')
+      : (
+          (() => {
+            const unstorageResolved = resolveFromEsm('unstorage') || req.resolve('unstorage')
+            return getPackageDirFromResolved(unstorageResolved, 'unstorage') || dirname(unstorageResolved)
+          })()
+        )
+
+    const physicalKvNodeModules = join(physicalKvDir, 'node_modules')
+    await mkdir(physicalKvNodeModules, { recursive: true })
+    await symlink(unstorageDir, join(physicalKvNodeModules, 'unstorage'), 'dir').catch((e: any) => {
+      if (e?.code !== 'EEXIST') throw e
+    })
+  } catch (e) {
+    // debug-only: this is a compatibility helper
+    logWhenReady(nuxt, `Failed to symlink unstorage for @nuxthub/kv: ${String((e as any)?.message || e)}`, 'debug')
+  }
 
   // Create hub:kv alias to @nuxthub/kv for backwards compatibility
   nuxt.options.alias!['hub:kv'] = '@nuxthub/kv'
