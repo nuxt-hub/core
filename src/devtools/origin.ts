@@ -5,6 +5,11 @@ export type ResolveDevtoolsAppOriginOptions = {
    */
   appOrigin?: string
   https?: boolean
+  /**
+   * Full dev server URL from Nuxt (e.g. "http://0.0.0.0:3010/").
+   * Prefer this when available as it reflects the actual listening port.
+   */
+  devServerUrl?: string
   devServerPort?: number | string
   argv?: string[]
   env?: Record<string, string | undefined>
@@ -49,6 +54,17 @@ function normalizeOrigin(value: string): string | undefined {
   }
 }
 
+function portFromDevServerUrl(value: string): number | undefined {
+  try {
+    const u = new URL(value)
+    // Nuxt should always provide an explicit port for dev server URLs, but keep a safe fallback.
+    const raw = u.port || (u.protocol === 'https:' ? '443' : '80')
+    return parsePort(raw)
+  } catch {
+    return
+  }
+}
+
 export function resolveDevtoolsAppOrigin(opts: ResolveDevtoolsAppOriginOptions = {}) {
   const normalizedOverride = opts.appOrigin ? normalizeOrigin(opts.appOrigin) : undefined
   if (normalizedOverride) return normalizedOverride
@@ -56,6 +72,7 @@ export function resolveDevtoolsAppOrigin(opts: ResolveDevtoolsAppOriginOptions =
   const protocol = opts.https ? 'https' : 'http'
   const defaultPort = opts.defaultPort ?? 3000
 
+  const devServerUrlPort = typeof opts.devServerUrl === 'string' ? portFromDevServerUrl(opts.devServerUrl) : undefined
   const nuxtPort = parsePort(opts.devServerPort)
   const argvPort = opts.argv ? portFromArgv(opts.argv) : undefined
   const envPort = opts.env
@@ -66,6 +83,12 @@ export function resolveDevtoolsAppOrigin(opts: ResolveDevtoolsAppOriginOptions =
         || parsePort(opts.env.npm_config_port)
       )
     : undefined
+
+  // If Nuxt provides a dev server URL, trust its port (it reflects the actual listening port,
+  // even when Nuxt auto-selects a non-default port because 3000 is busy).
+  if (devServerUrlPort) {
+    return `${protocol}://localhost:${devServerUrlPort}`
+  }
 
   // If Nuxt port is the default (3000), but the CLI explicitly sets a port, prefer CLI.
   const port = (nuxtPort && nuxtPort !== defaultPort) ? nuxtPort : (argvPort || nuxtPort || envPort || defaultPort)
