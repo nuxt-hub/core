@@ -2,6 +2,17 @@ import { describe, expect, it } from 'vitest'
 import { resolveDevtoolsAppOrigin } from '../src/devtools/origin'
 
 describe('resolveDevtoolsAppOrigin', () => {
+  it('prefers devServer.url port (actual listening port)', () => {
+    const origin = resolveDevtoolsAppOrigin({
+      https: false,
+      devServerUrl: 'http://0.0.0.0:3010/',
+      devServerPort: 3000,
+      argv: ['node', 'nuxt', 'dev'],
+      env: { PORT: '3000' }
+    })
+    expect(origin).toBe('http://localhost:3010')
+  })
+
   it('uses argv --port when devServer.port is missing', () => {
     const origin = resolveDevtoolsAppOrigin({
       https: false,
@@ -64,8 +75,9 @@ describe('resolveDevtoolsAppOrigin', () => {
   it('uses https when enabled', () => {
     const origin = resolveDevtoolsAppOrigin({
       https: true,
+      devServerUrl: 'https://127.0.0.1:4443/',
       argv: ['node', 'nuxt', 'dev', '--port', '3010']
     })
-    expect(origin).toBe('https://localhost:3010')
+    expect(origin).toBe('https://localhost:4443')
   })
 })

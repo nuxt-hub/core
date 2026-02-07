@@ -19,6 +19,7 @@ function getLocalOrigin(nuxt: Nuxt, hub: HubConfig) {
   return resolveDevtoolsAppOrigin({
     appOrigin,
     https: Boolean(nuxt.options.devServer.https),
+    devServerUrl: nuxt.options.devServer.url,
     devServerPort: nuxt.options.devServer.port,
     argv: process.argv,
     env: process.env,
