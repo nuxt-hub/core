@@ -55,7 +55,8 @@ Temporary Items
 
 *.tgz
 
-playground/.data
+playground/nuxt/.data
+playground/nitro/.data
 test/fixtures/basic/.data
 test/fixtures/kv/.data
 test/fixtures/blob/.data

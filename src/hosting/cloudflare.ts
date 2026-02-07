@@ -3,13 +3,14 @@ import { existsSync } from 'node:fs'
 import { join } from 'pathe'
 import { defu } from 'defu'
 import { createHooks } from 'hookable'
-import { logger } from '@nuxt/kit'
+import { consola } from 'consola'
 import type { Nuxt } from '@nuxt/schema'
+import type { Nitro } from 'nitropack/types'
 import type { EnvironmentNonInheritable } from 'nitropack/presets/cloudflare/wrangler/environment'
 import type { WranglerConfig } from 'nitropack/presets/cloudflare/types'
 import type { HubConfig } from '../types'
 
-const log = logger.withTag('nuxt:hub')
+const log = consola.withTag('nuxt:hub')
 
 export interface CloudflareHooks {
   /**
@@ -43,7 +44,29 @@ export function setupCloudflare(nuxt: Nuxt, hub: HubConfig) {
 
   nuxt.hook('close', async (nuxt) => {
     const cloudflareEnv = process.env.CLOUDFLARE_ENV
-    await processWranglerConfigFile(nuxt, cloudflareEnv)
+    await processWranglerConfigFile(nuxt.options.rootDir, cloudflareEnv)
+  })
+}
+
+export function setupCloudflareNitro(nitro: Nitro, hub: HubConfig) {
+  nitro.options.cloudflare ||= {}
+  nitro.options.cloudflare.nodeCompat = true
+  nitro.options.cloudflare.deployConfig = true
+  nitro.options.prerender ||= {}
+  nitro.options.prerender.autoSubfolderIndex ||= false
+  if (!hub.hosting.includes('pages')) {
+    nitro.options.cloudflare.wrangler = defu(nitro.options.cloudflare.wrangler, {
+      compatibility_flags: ['nodejs_compat']
+    })
+  }
+
+  if (nitro.options.dev) {
+    return
+  }
+
+  nitro.hooks.hook('close', async () => {
+    const cloudflareEnv = process.env.CLOUDFLARE_ENV
+    await processWranglerConfigFile(nitro.options.rootDir, cloudflareEnv)
   })
 }
 
@@ -133,9 +156,9 @@ export function processWranglerConfigEnv(config: WranglerConfigWithEnv, targetEn
   return { ...filteredConfig, ...envConfig } as WranglerConfig
 }
 
-async function processWranglerConfigFile(nuxt: Nuxt, targetEnv?: string) {
+async function processWranglerConfigFile(rootDir: string, targetEnv?: string) {
   // Nitro outputs wrangler.json to .output/server/
-  const wranglerPath = join(nuxt.options.rootDir, '.output', 'server', 'wrangler.json')
+  const wranglerPath = join(rootDir, '.output', 'server', 'wrangler.json')
 
   if (!existsSync(wranglerPath)) {
     log.warn(`No wrangler.json found at ${wranglerPath}, skipping wrangler processing`)

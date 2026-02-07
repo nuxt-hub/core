@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     '../basic'
   ],
   modules: [
-    '../../../src/module'
+    '../../../src/nuxt/module'
   ],
   hub: {
     blob: true
