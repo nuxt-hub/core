@@ -58,7 +58,10 @@ export default defineBuildConfig({
     {
       input: 'src/devtools/',
       outDir: 'dist/devtools',
-      builder: 'mkdist'
+      builder: 'mkdist',
+      // Only ship the Nuxt DevTools integration code.
+      // Avoid accidentally bundling local/generated UI artifacts (e.g. `src/devtools/client/.nuxt`).
+      pattern: ['*.ts']
     },
     {
       input: 'src/devtools-runtime/',
