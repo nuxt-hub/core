@@ -1,7 +1,9 @@
 import { eventHandler, getRouterParam, createError } from 'h3'
 import { useStorage } from 'nitropack/runtime'
+import { handleCors } from '../../utils/cors'
 
 export default eventHandler(async (event) => {
+  if (handleCors(event)) return
   const method = event.method
   const key = decodeURIComponent(getRouterParam(event, 'key') || '')
   if (!key) throw createError({ statusCode: 400, message: 'Key is required' })
