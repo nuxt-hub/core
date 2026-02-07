@@ -44,7 +44,9 @@ export default defineNuxtModule<ModuleOptions>({
       blob: false,
       cache: false,
       db: false,
-      kv: false
+      kv: false,
+      // Nuxt DevTools integration (KV/Blob/Cache tabs)
+      devtools: {}
     }) as HubConfig
     // resolve the hub directory
     hub.dir = await resolveFs(nuxt.options.rootDir, hub.dir)
@@ -79,7 +81,7 @@ export default defineNuxtModule<ModuleOptions>({
     }
 
     // Add custom tabs to Nuxt DevTools
-    if (nuxt.options.dev) {
+    if (nuxt.options.dev && hub.devtools !== false) {
       addDevToolsCustomTabs(nuxt, hub)
       await setupDevTools(nuxt, hub)
       addDevToolsStorageTabs(nuxt, hub)

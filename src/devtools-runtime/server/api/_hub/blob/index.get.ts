@@ -1,6 +1,6 @@
 import { eventHandler, getQuery } from 'h3'
 import { blob } from 'hub:blob'
-import { handleCors } from '../../utils/cors'
+import { handleCors } from '../../../utils/cors'
 
 export default eventHandler(async (event) => {
   if (handleCors(event)) return

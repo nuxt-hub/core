@@ -1,7 +1,6 @@
 packages:
   - "docs/"
   - "playground/"
-  - "src/devtools/client/"
   - "./"
 onlyBuiltDependencies:
   - "better-sqlite3"
