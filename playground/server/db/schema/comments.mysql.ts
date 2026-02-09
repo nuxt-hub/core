@@ -1,5 +1,6 @@
 import { pages } from 'hub:db:schema'
 import { int, mysqlTable, text, timestamp } from 'drizzle-orm/mysql-core'
+import { defineRelationsPart } from 'drizzle-orm'
 
 export { glasses } from '../glasses'
 
@@ -11,3 +12,12 @@ export const comments = mysqlTable('comments', {
   createdAt: timestamp().notNull().defaultNow(),
   updatedAt: timestamp().notNull().defaultNow()
 })
+
+export const relation = defineRelationsPart({ comments, pages }, r => ({
+  comments: {
+    pages: r.one.pages({
+      from: r.comments.pageId,
+      to: r.pages.id
+    })
+  }
+}))

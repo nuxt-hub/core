@@ -218,6 +218,13 @@ export type DatabaseConfig = {
    * @see https://orm.drizzle.team/docs/read-replicas
    */
   replicas?: string[]
+  /**
+   * Whether to support relations v2 currently in drizzle 1.0.0-beta
+   *
+   * @default false
+   * @see https://orm.drizzle.team/docs/relations-v2
+   */
+  useRelationsV2?: boolean
 }
 
 export type ResolvedDatabaseConfig = DatabaseConfig & {
@@ -229,4 +236,5 @@ export type ResolvedDatabaseConfig = DatabaseConfig & {
   applyMigrationsDuringBuild: boolean
   casing?: 'snake_case' | 'camelCase'
   replicas?: string[]
+  useRelationsV2: boolean
 }

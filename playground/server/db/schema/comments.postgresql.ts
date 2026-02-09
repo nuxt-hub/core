@@ -1,5 +1,6 @@
 import { pages } from 'hub:db:schema'
 import { pgTable, text, timestamp, serial } from 'drizzle-orm/pg-core'
+import { defineRelationsPart } from 'drizzle-orm'
 
 export { glasses } from '../glasses'
 
@@ -10,3 +11,12 @@ export const comments = pgTable('comments', {
   createdAt: timestamp().notNull().defaultNow(),
   updatedAt: timestamp().notNull().defaultNow()
 })
+
+export const relation = defineRelationsPart({ comments, pages }, r => ({
+  comments: {
+    pages: r.one.pages({
+      from: r.comments.pageId,
+      to: r.pages.id
+    })
+  }
+}))

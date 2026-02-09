@@ -1,5 +1,5 @@
 import { pages } from '@nuxthub/db/schema'
-import { sql } from 'drizzle-orm'
+import { defineRelationsPart, sql } from 'drizzle-orm'
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
 export const comments = sqliteTable('comments', {
@@ -10,3 +10,12 @@ export const comments = sqliteTable('comments', {
   createdAt: integer({ mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
   updatedAt: integer({ mode: 'timestamp' }).notNull().default(sql`(unixepoch())`)
 })
+
+export const relation = defineRelationsPart({ comments, pages }, r => ({
+  comments: {
+    pages: r.one.pages({
+      from: r.comments.pageId,
+      to: r.pages.id
+    })
+  }
+}))
