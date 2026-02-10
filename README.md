@@ -64,7 +64,7 @@ pnpm test:watch
 
 ## 📄 License
 
-[Apache 2.0](./LICENSE)
+[MIT](./LICENSE)
 
 <!-- Badges -->
 [npm-version-src]: https://img.shields.io/npm/v/@nuxthub/core/latest.svg?style=flat&colorA=020420&colorB=00DC82
