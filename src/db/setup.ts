@@ -17,10 +17,11 @@ const log = logger.withTag('nuxt:hub')
  * Generate a lazy-initialized db template with Proxy wrapper
  * Used for runtime env resolution (Docker/multi-deploy) and CF bindings
  */
-function generateLazyDbTemplate(imports: string, getDbBody: string): string {
+function generateLazyDbTemplate(imports: string, getDbBody: string, options?: { moduleScope?: string, schemaExport?: string }): string {
+  const { moduleScope = '', schemaExport = 'schema' } = options || {}
   return `${imports}
 import * as schema from './db/schema.mjs'
-
+${moduleScope}
 let _db
 function getDb() {
   if (!_db) {
@@ -31,7 +32,7 @@ ${getDbBody}
   return _db
 }
 const db = new Proxy({}, { get(_, prop) { return getDb()[prop] } })
-export { db, schema }
+export { db, ${schemaExport} }
 `
 }
 
@@ -358,7 +359,7 @@ async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
   // Setup Drizzle ORM
 
   // Generate simplified drizzle() implementation
-  const modeOption = dialect === 'mysql' ? `, mode: '${mode || 'default'}'` : ''
+  const modeOption = dialect === 'mysql' && !useRelationsV2 ? `, mode: '${mode || 'default'}'` : ''
   const relationsImport = !useRelationsV2 ? '' : `\nimport { defineRelationsPart, extractTablesFromSchema } from 'drizzle-orm'`
   const relationsOperations = !useRelationsV2
     ? ''
@@ -449,9 +450,9 @@ export {db, ${schemaExport} }
       `import { neon } from '@neondatabase/serverless'\nimport { drizzle } from 'drizzle-orm/neon-http'${relationsImport}`,
       `    const url = ${urlExpr}
     if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
-    ${relationsOperations}
     const sql = neon(url)
-    _db = drizzle(sql, { ${schemaOption}${casingOption}${relationsOption} })`
+    _db = drizzle(sql, { ${schemaOption}${casingOption}${relationsOption} })`,
+      { moduleScope: relationsOperations, schemaExport }
     )
   }
   if (driver === 'd1') {
@@ -459,8 +460,8 @@ export {db, ${schemaExport} }
       `import { drizzle } from 'drizzle-orm/d1'${relationsImport}`,
       `    const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
     if (!binding) throw new Error('DB binding not found')
-    ${relationsOperations}
-    _db = drizzle(binding, { ${schemaOption}${casingOption}${relationsOption} })`
+    _db = drizzle(binding, { ${schemaOption}${casingOption}${relationsOption} })`,
+      { moduleScope: relationsOperations, schemaExport }
     )
   }
   if (driver === 'd1-http') {
@@ -524,9 +525,9 @@ export {db, ${schemaExport} }
     drizzleOrmContent = generateLazyDbTemplate(
       `import { drizzle } from 'drizzle-orm/${driver}'${relationsImport}`,
       `    const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
-    ${relationsOperations}
     if (!hyperdrive) throw new Error('${bindingName} binding not found')
-    _db = drizzle({ connection: hyperdrive.connectionString, ${schemaOption}${modeOption}${casingOption}${relationsOption} })`
+    _db = drizzle({ connection: hyperdrive.connectionString, ${schemaOption}${modeOption}${casingOption}${relationsOption} })`,
+      { moduleScope: relationsOperations, schemaExport }
     )
   }
   // Non-CF postgres-js: lazy env resolution for Docker/multi-deploy scenarios
@@ -540,7 +541,6 @@ export {db, ${schemaExport} }
 ${hasReplicas ? `import { withReplicas } from 'drizzle-orm/pg-core'\n` : ''}import postgres from 'postgres'${relationsImport}`,
       `    const url = ${urlExpr}
     if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
-    ${relationsOperations}
     const client = postgres(url, { onnotice: () => {} })
 ${hasReplicas
   ? `    const primary = drizzle({ client, ${schemaOption}${casingOption}${relationsOption} })
@@ -551,7 +551,8 @@ ${hasReplicas
       return drizzle({ client: replicaClient, ${schemaOption}${casingOption}${relationsOption} })
     })
     _db = withReplicas(primary, replicaConnections)`
-  : `    _db = drizzle({ client, ${schemaOption}${casingOption}${relationsOption} })`}`
+  : `    _db = drizzle({ client, ${schemaOption}${casingOption}${relationsOption} })`}`,
+      { moduleScope: relationsOperations, schemaExport }
     )
   }
   // Non-CF mysql2: lazy env resolution for Docker/multi-deploy scenarios
@@ -564,16 +565,16 @@ ${hasReplicas
       `import { drizzle } from 'drizzle-orm/mysql2'${hasReplicas ? `\nimport { withReplicas } from 'drizzle-orm/mysql-core'` : ''}${relationsImport}`,
       `    const uri = ${uriExpr}
     if (!uri) throw new Error('DATABASE_URL or MYSQL_URL required')
-    ${relationsOperations}
 ${hasReplicas
-  ? `    const primary = drizzle({ connection: { uri }, ${schemaOption}${modeOption}${casingOption}${relationsImport} })
+  ? `    const primary = drizzle({ connection: { uri }, ${schemaOption}${modeOption}${casingOption}${relationsOption} })
 
     const replicaUrls = ${JSON.stringify(replicaUrls)}
     const replicaConnections = replicaUrls.map(replicaUrl => {
-      return drizzle({ connection: { uri: replicaUrl }, ${schemaOption}${modeOption}${casingOption}${relationsImport} })
+      return drizzle({ connection: { uri: replicaUrl }, ${schemaOption}${modeOption}${casingOption}${relationsOption} })
     })
     _db = withReplicas(primary, replicaConnections)`
-  : `    _db = drizzle({ connection: { uri }, ${schemaOption}${modeOption}${casingOption}${relationsImport} })`}`
+  : `    _db = drizzle({ connection: { uri }, ${schemaOption}${modeOption}${casingOption}${relationsOption} })`}`,
+      { moduleScope: relationsOperations, schemaExport }
     )
   }
   // libsql: lazy env resolution for Docker/multi-deploy scenarios (when no URL baked in)
@@ -583,8 +584,8 @@ ${hasReplicas
       `    const url = process.env.TURSO_DATABASE_URL || process.env.LIBSQL_URL || process.env.DATABASE_URL
     const authToken = process.env.TURSO_AUTH_TOKEN || process.env.LIBSQL_AUTH_TOKEN
     if (!url) throw new Error('Database URL not found. Set TURSO_DATABASE_URL, LIBSQL_URL, or DATABASE_URL')
-    ${relationsOperations}
-    _db = drizzle({ connection: { url, authToken }, ${schemaOption}${casingOption}${relationsOperations} })`
+    _db = drizzle({ connection: { url, authToken }, ${schemaOption}${casingOption}${relationsOption} })`,
+      { moduleScope: relationsOperations, schemaExport }
     )
   }
 
