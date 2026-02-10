@@ -365,13 +365,12 @@ async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
     ? ''
     : `
 const tables = extractTablesFromSchema(schema)
-const deepRelations = Object.keys(schema)
-  .filter(it => !(it in tables))
-  .reduce((prev, cur) => ({ ...prev, [cur]: schema[cur] }), {})
-const mainRelation = defineRelationsPart(schema)
-const flatRelations = Object.keys(deepRelations)
-  .reduce((prev, cur) => ({ ...prev, ...deepRelations[cur] }), {})
-const relations = { ...mainRelation, ...flatRelations }
+const relations = Object.keys(schema)
+  .filter(key => !(key in tables))
+  .reduce((acc, key) => {
+    for (const [tbl, rels] of Object.entries(schema[key])) acc[tbl] = { ...acc[tbl], ...rels }
+    return acc
+  }, defineRelationsPart(schema))
 `
   const relationsOption = !useRelationsV2 ? '' : ', relations'
   const schemaOption = !useRelationsV2 ? 'schema' : 'schema: tables'
@@ -604,7 +603,7 @@ ${hasReplicas
     ? ''
     : `
 type Tables = ExtractTablesFromSchema<typeof schema>
-type FlatRelations = Omit<typeof schema, keyof Tables> extends infer T ? T[keyof T] & T[keyof T] : never
+type FlatRelations = Omit<typeof schema, keyof Tables> extends infer T ? T[keyof T] : never
 type Relations = ExtractTablesWithRelationsParts<IncludeEveryTable<Tables>, Tables> & FlatRelations
 `
 

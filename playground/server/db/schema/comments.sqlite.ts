@@ -11,7 +11,7 @@ export const comments = sqliteTable('comments', {
   updatedAt: integer({ mode: 'timestamp' }).notNull().default(sql`(unixepoch())`)
 })
 
-export const relation = defineRelationsPart({ comments, pages }, r => ({
+export const commentsRelations = defineRelationsPart({ comments, pages }, r => ({
   comments: {
     pages: r.one.pages({
       from: r.comments.pageId,

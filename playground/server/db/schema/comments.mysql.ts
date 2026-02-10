@@ -13,7 +13,7 @@ export const comments = mysqlTable('comments', {
   updatedAt: timestamp().notNull().defaultNow()
 })
 
-export const relation = defineRelationsPart({ comments, pages }, r => ({
+export const commentsRelations = defineRelationsPart({ comments, pages }, r => ({
   comments: {
     pages: r.one.pages({
       from: r.comments.pageId,
