@@ -220,8 +220,8 @@ export type DatabaseConfig = {
   replicas?: string[]
   /**
    * Whether to support relations v2 currently in drizzle 1.0.0-beta
+   * Automatically enabled when drizzle-orm v1+ is detected
    *
-   * @default false
    * @see https://orm.drizzle.team/docs/relations-v2
    */
   useRelationsV2?: boolean
