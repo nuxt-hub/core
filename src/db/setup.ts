@@ -135,8 +135,17 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
 }
 
 export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>) {
+  const userSetRelationsV2 = typeof hub.db === 'object' && hub.db && 'useRelationsV2' in hub.db
   hub.db = await resolveDatabaseConfig(nuxt, hub)
   if (!hub.db) return
+
+  // Auto-enable useRelationsV2 when drizzle-orm v1+ is detected and user hasn't explicitly set it
+  if (!userSetRelationsV2 && deps['drizzle-orm']) {
+    const majorVersion = Number(deps['drizzle-orm']?.match(/\d/)?.[0])
+    if (majorVersion >= 1) {
+      (hub.db as ResolvedDatabaseConfig).useRelationsV2 = true
+    }
+  }
 
   const { dialect, driver, connection, migrationsDirs, queriesPaths, useRelationsV2 } = hub.db as ResolvedDatabaseConfig
 
