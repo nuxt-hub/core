@@ -28,8 +28,7 @@ describe('buildDatabaseSchema', () => {
       await rm(schemaSource, { force: true })
       const builtModule = await import(pathToFileURL(outputPath).href)
       expect(builtModule.schemaBuildMarker).toBe('ok')
-    }
-    finally {
+    } finally {
       await rm(rootDir, { recursive: true, force: true })
     }
   })
@@ -58,8 +57,7 @@ describe('buildDatabaseSchema', () => {
       const builtModule = await import(pathToFileURL(outputPath).href)
       expect(builtModule.pages.id).toBe('local-pages')
       expect(builtModule.pageIdFromAlias).toBe('local-pages')
-    }
-    finally {
+    } finally {
       await rm(rootDir, { recursive: true, force: true })
     }
   })
