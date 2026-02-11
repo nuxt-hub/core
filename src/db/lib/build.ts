@@ -94,6 +94,7 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias
     }),
     alias: {
       ...alias,
+      '@nuxthub/db/schema': entry,
       'hub:db:schema': entry
     },
     platform: 'neutral',
