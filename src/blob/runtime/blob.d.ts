@@ -1,4 +1,4 @@
-import type { BlobStorage, BlobEnsureOptions } from '@nuxthub/core/blob'
+import type { BlobStorage } from '@nuxthub/core/blob'
 
 /**
  * The Blob storage instance.
@@ -26,4 +26,4 @@ export const blob: BlobStorage
  *
  * @see https://hub.nuxt.com/docs/blob/usage#validation
  */
-export const ensureBlob: (blob: Blob, options: BlobEnsureOptions) => void
+export { ensureBlob } from '@nuxthub/core/blob'
