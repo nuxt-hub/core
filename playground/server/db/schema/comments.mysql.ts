@@ -1,4 +1,4 @@
-import { pages, author } from 'hub:db:schema'
+import { pages, author } from '@nuxthub/db/schema'
 import { int, mysqlTable, text, timestamp } from 'drizzle-orm/mysql-core'
 import { defineRelationsPart } from 'drizzle-orm'
 

@@ -1,4 +1,4 @@
-import { author, pages } from 'hub:db:schema'
+import { author, pages } from '@nuxthub/db/schema'
 import { pgTable, text, timestamp, serial } from 'drizzle-orm/pg-core'
 import { defineRelationsPart } from 'drizzle-orm'
 
