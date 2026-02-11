@@ -54,7 +54,7 @@ export default defineCommand({
       ...options,
       stdin: 'inherit',
       stdout: 'inherit'
-    })`drizzle-kit generate --config=./.nuxt/hub/db/drizzle.config.ts ${args.custom ? '--custom' : ''} ${args.name ? `--name=${args.name}` : ''}`
+    })`drizzle-kit generate --config=./.nuxt/hub/db/drizzle.config.ts${args.custom ? ' --custom' : ''}${args.name ? ` --name=${args.name}` : ''}`
     // Drizzle-kit does not exit with an error code when there is an error, so we need to check the stderr
     if (stderr) {
       consola.error(stderr)
