@@ -1,3 +1,6 @@
+import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { logger } from '@nuxt/kit'
 import type { Nuxt } from 'nuxt/schema'
 import type { HubConfig, ResolvedDatabaseConfig } from '@nuxthub/core'
@@ -20,7 +23,11 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
 
   try {
     const { dialect, driver, connection } = dbConfig
-    const { schema } = await import(nuxt.options.alias!['hub:db'] as string)
+    const dbEntry = resolve(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db', 'db.mjs')
+    if (!existsSync(dbEntry)) {
+      throw new Error(`Cannot find @nuxthub/db at ${dbEntry}. Run \`nuxi prepare\` to generate it.`)
+    }
+    const { schema } = await import(pathToFileURL(dbEntry).href)
 
     // Launch Drizzle Studio based on dialect and driver
     if (dialect === 'postgresql') {
