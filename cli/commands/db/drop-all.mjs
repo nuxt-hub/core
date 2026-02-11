@@ -1,11 +1,11 @@
-import { defineCommand } from 'citty'
-import { consola } from 'consola'
-import { execa } from 'execa'
-import { readFile } from 'node:fs/promises'
-import { join } from 'pathe'
-import { createDrizzleClient } from '@nuxthub/core/db'
-import { sql } from 'drizzle-orm'
-import { loadDotenv, dotenvArg } from '../../utils/dotenv.mjs'
+import {defineCommand} from 'citty'
+import {consola} from 'consola'
+import {execa} from 'execa'
+import {readFile} from 'node:fs/promises'
+import {join} from 'pathe'
+import {createDrizzleClient} from '@nuxthub/core/db'
+import {sql} from 'drizzle-orm'
+import {loadDotenv, dotenvArg} from '../../utils/dotenv.mjs'
 
 /**
  * Get the query to list all tables based on the database dialect
@@ -14,11 +14,19 @@ function getListTablesQuery(dialect) {
   switch (dialect) {
     case 'sqlite':
     case 'libsql':
-      return `SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%';`
+      return `SELECT name
+              FROM sqlite_master
+              WHERE type = 'table'
+                AND name NOT LIKE 'sqlite_%'
+                AND name NOT LIKE '_cf_%';`
     case 'postgresql':
-      return `SELECT tablename as name FROM pg_tables WHERE schemaname = 'public';`
+      return `SELECT tablename as name
+              FROM pg_tables
+              WHERE schemaname = 'public';`
     case 'mysql':
-      return `SELECT table_name as name FROM information_schema.tables WHERE table_schema = DATABASE();`
+      return `SELECT table_name as name
+              FROM information_schema.tables
+              WHERE table_schema = DATABASE();`
     default:
       throw new Error(`Unsupported database dialect: ${dialect}`)
   }
@@ -41,6 +49,11 @@ export default defineCommand({
       type: 'boolean',
       description: 'Show verbose output.',
       required: false
+    },
+    force: {
+      type: 'boolean',
+      description: 'Force by skipping confirmation prompt.',
+      required: false,
     }
   },
   async run({ args }) {
@@ -52,15 +65,19 @@ export default defineCommand({
 
     consola.warn('This command will drop all tables. ALL DATA STORED IN THE DATABASE WILL BE LOST!')
 
-    const confirmation = await consola.prompt('Type "confirm" to drop all tables:', {
-      type: 'text',
-      placeholder: 'confirm',
-      cancel: 'null'
-    })
+    if (args.force) {
+      consola.warn('Skipping confirmation prompt due to --force flag. Dropping all tables without confirmation.')
+    } else {
+      const confirmation = await consola.prompt('Type "confirm" to drop all tables:', {
+        type: 'text',
+        placeholder: 'confirm',
+        cancel: 'null'
+      })
 
-    if (confirmation !== 'confirm') {
-      consola.info('Operation cancelled.')
-      return
+      if (confirmation !== 'confirm') {
+        consola.info('Operation cancelled.')
+        return
+      }
     }
 
     consola.info('Preparing database configuration...')
