@@ -10,11 +10,11 @@ export default defineEventHandler(async () => {
 
   const todos = await db.select().from(schema.todos).limit(3)
 
-  const commentsWithPages = await db.query.comments.findMany({ with: { pages: true }, limit: 5 })
+  const authorsWithComments = await db.query.author.findMany({ with: { comments: { with: { pages: true } } } })
 
   return {
     drizzleTables: rows,
     todos,
-    commentsWithPages
+    authorsWithComments
   }
 })

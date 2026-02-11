@@ -1,4 +1,4 @@
-import { pages } from 'hub:db:schema'
+import { author, pages } from 'hub:db:schema'
 import { pgTable, text, timestamp, serial } from 'drizzle-orm/pg-core'
 import { defineRelationsPart } from 'drizzle-orm'
 
@@ -10,7 +10,9 @@ export const comments = pgTable('comments', {
   pageId: serial().references(() => pages.id),
   content: text().notNull(),
   createdAt: timestamp().notNull().defaultNow(),
-  updatedAt: timestamp().notNull().defaultNow()
+  updatedAt: timestamp().notNull().defaultNow(),
+  // @ts-expect-error - ignore as it depends of current dialect
+  authorId: serial().references(() => author.id)
 })
 
 export const commentsRelations = defineRelationsPart({ comments, pages }, r => ({
@@ -18,6 +20,15 @@ export const commentsRelations = defineRelationsPart({ comments, pages }, r => (
     pages: r.one.pages({
       from: r.comments.pageId,
       to: r.pages.id
+    })
+  }
+}))
+
+export const authorCommentsRelations = defineRelationsPart({ comments, author }, r => ({
+  author: {
+    comments: r.many.comments({
+      from: r.author.id,
+      to: r.comments.authorId
     })
   }
 }))

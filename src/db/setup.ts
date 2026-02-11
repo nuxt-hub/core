@@ -603,7 +603,9 @@ ${hasReplicas
     ? ''
     : `
 type Tables = ExtractTablesFromSchema<typeof schema>
-type FlatRelations = Omit<typeof schema, keyof Tables> extends infer T ? T[keyof T] : never
+type SchemaRelations = Omit<typeof schema, keyof Tables>
+type RelationsKeys = keyof SchemaRelations extends infer T ? T extends keyof SchemaRelations ? keyof SchemaRelations[T] : never : never
+type FlatRelations = { [Key in RelationsKeys]: keyof SchemaRelations extends infer T ? T extends keyof SchemaRelations ? Key extends keyof SchemaRelations[T] ? SchemaRelations[T][Key] : never : never : never }
 type Relations = ExtractTablesWithRelationsParts<IncludeEveryTable<Tables>, Tables> & FlatRelations
 `
 
