@@ -98,7 +98,7 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias
     },
     platform: 'neutral',
     format: 'esm',
-    skipNodeModulesBundle: true,
+    skipNodeModulesBundle: false,
     tsconfig: false,
     dts: {
       build: false,
