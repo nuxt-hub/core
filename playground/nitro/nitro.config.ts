@@ -4,8 +4,8 @@ import { defineNitroConfig } from 'nitropack/config'
 
 const isMinimal = process.env.PLAYGROUND_MINIMAL === '1'
 const moduleEntry = process.env.VERCEL
-  ? '@nuxthub/core'
-  : resolve(dirname(fileURLToPath(import.meta.url)), '../../src/module')
+  ? '@nuxthub/core/nitro'
+  : resolve(dirname(fileURLToPath(import.meta.url)), '../../src/nitro/module')
 
 export default defineNitroConfig({
   srcDir: 'server',

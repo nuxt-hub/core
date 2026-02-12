@@ -211,8 +211,11 @@ importers:
         specifier: ^0.15.15
         version: 0.15.15
       '@nuxthub/core':
-        specifier: file:./vendor/nuxthub-core-0.10.6.tgz
-        version: file:playground/nitro/vendor/nuxthub-core-0.10.6.tgz(@upstash/redis@1.35.8)(@vercel/blob@2.0.0)(aws4fetch@1.0.20)(db0@0.3.4(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(better-sqlite3@12.5.0)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251219.0)(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(better-sqlite3@12.5.0)(mysql2@3.15.3)(postgres@3.4.7))(mysql2@3.15.3))(ioredis@5.9.2)(magicast@0.5.1)(nitropack@2.13.1(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(@vercel/blob@2.0.0)(aws4fetch@1.0.20)(better-sqlite3@12.5.0)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251219.0)(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(better-sqlite3@12.5.0)(mysql2@3.15.3)(postgres@3.4.7))(mysql2@3.15.3)(rolldown@1.0.0-beta.55))(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
+        specifier: workspace:*
+        version: link:../..
+      drizzle-kit:
+        specifier: ^0.31.8
+        version: 0.31.8
       drizzle-orm:
         specifier: ^0.45.1
         version: 0.45.1(@cloudflare/workers-types@4.20251219.0)(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(better-sqlite3@12.5.0)(mysql2@3.15.3)(postgres@3.4.7)
@@ -235,8 +238,8 @@ importers:
         specifier: ^4.2.1
         version: 4.2.1(ce5e0e5d7482f2919b2663ab5c647330)
       '@nuxthub/core':
-        specifier: file:./vendor/nuxthub-core-0.10.6.tgz
-        version: file:playground/nuxt/vendor/nuxthub-core-0.10.6.tgz(@upstash/redis@1.35.8)(@vercel/blob@2.0.0)(aws4fetch@1.0.20)(db0@0.3.4(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(better-sqlite3@12.5.0)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251219.0)(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(better-sqlite3@12.5.0)(mysql2@3.15.3)(postgres@3.4.7))(mysql2@3.15.3))(ioredis@5.8.2)(magicast@0.5.1)(nitropack@2.13.1(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(@vercel/blob@2.0.0)(aws4fetch@1.0.20)(better-sqlite3@12.5.0)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251219.0)(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(better-sqlite3@12.5.0)(mysql2@3.15.3)(postgres@3.4.7))(mysql2@3.15.3)(rolldown@1.0.0-beta.55))(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
+        specifier: workspace:*
+        version: link:../..
       '@upstash/redis':
         specifier: ^1.35.8
         version: 1.35.8
@@ -1749,20 +1752,6 @@ packages:
     peerDependenciesMeta:
       rolldown:
         optional: true
-
-  '@nuxthub/core@file:playground/nitro/vendor/nuxthub-core-0.10.6.tgz':
-    resolution: {integrity: sha512-qpTKOJgoPxgo4emZK8FgB4YfCaqTlRk6TCrhzQsNsMygXpKKk5g8NErkp6QnRALqiL3hXakMeb9doSJapNM7UQ==, tarball: file:playground/nitro/vendor/nuxthub-core-0.10.6.tgz}
-    version: 0.10.6
-    hasBin: true
-    peerDependencies:
-      nitropack: '>=2.12.9'
-
-  '@nuxthub/core@file:playground/nuxt/vendor/nuxthub-core-0.10.6.tgz':
-    resolution: {integrity: sha512-GCj3anttB9GAILDipPqppzFcYby5/oU/hPldVFGrQSMLg/96wBicJx+/DDs049uNDqYCdgjCbsHWHlR15uXb5Q==, tarball: file:playground/nuxt/vendor/nuxthub-core-0.10.6.tgz}
-    version: 0.10.6
-    hasBin: true
-    peerDependencies:
-      nitropack: '>=2.12.9'
 
   '@nuxtjs/color-mode@3.5.2':
     resolution: {integrity: sha512-cC6RfgZh3guHBMLLjrBB2Uti5eUoGM9KyauOaYS9ETmxNWBMTvpgjvSiSJp1OFljIXPIqVTJ3xtJpSNZiO3ZaA==}
@@ -9853,128 +9842,6 @@ snapshots:
       - vti
       - vue-tsc
       - yaml
-
-  '@nuxthub/core@file:playground/nitro/vendor/nuxthub-core-0.10.6.tgz(@upstash/redis@1.35.8)(@vercel/blob@2.0.0)(aws4fetch@1.0.20)(db0@0.3.4(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(better-sqlite3@12.5.0)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251219.0)(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(better-sqlite3@12.5.0)(mysql2@3.15.3)(postgres@3.4.7))(mysql2@3.15.3))(ioredis@5.9.2)(magicast@0.5.1)(nitropack@2.13.1(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(@vercel/blob@2.0.0)(aws4fetch@1.0.20)(better-sqlite3@12.5.0)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251219.0)(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(better-sqlite3@12.5.0)(mysql2@3.15.3)(postgres@3.4.7))(mysql2@3.15.3)(rolldown@1.0.0-beta.55))(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))':
-    dependencies:
-      '@cloudflare/workers-types': 4.20251219.0
-      '@nuxt/kit': 4.2.2(magicast@0.5.1)
-      '@uploadthing/mime-types': 0.3.6
-      c12: 3.3.3(magicast@0.5.1)
-      chokidar: 5.0.0
-      citty: 0.1.6
-      consola: 3.4.2
-      defu: 6.1.4
-      execa: 9.6.1
-      get-port-please: 3.2.0
-      h3: 1.15.5
-      hookable: 6.0.1
-      mime: 4.1.0
-      nitropack: 2.13.1(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(@vercel/blob@2.0.0)(aws4fetch@1.0.20)(better-sqlite3@12.5.0)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251219.0)(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(better-sqlite3@12.5.0)(mysql2@3.15.3)(postgres@3.4.7))(mysql2@3.15.3)(rolldown@1.0.0-beta.55)
-      nypm: 0.6.2
-      ofetch: 1.5.1
-      pathe: 2.0.3
-      pkg-types: 2.3.0
-      scule: 1.3.0
-      std-env: 3.10.0
-      tinyglobby: 0.2.15
-      tsdown: 0.18.1(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
-      ufo: 1.6.3
-      uncrypto: 0.1.3
-      unstorage: 1.17.4(@upstash/redis@1.35.8)(@vercel/blob@2.0.0)(aws4fetch@1.0.20)(db0@0.3.4(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(better-sqlite3@12.5.0)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251219.0)(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(better-sqlite3@12.5.0)(mysql2@3.15.3)(postgres@3.4.7))(mysql2@3.15.3))(ioredis@5.9.2)
-      zod: 4.2.1
-    transitivePeerDependencies:
-      - '@arethetypeswrong/core'
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@deno/kv'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@ts-macro/tsc'
-      - '@typescript/native-preview'
-      - '@upstash/redis'
-      - '@vercel/blob'
-      - '@vercel/functions'
-      - '@vercel/kv'
-      - '@vitejs/devtools'
-      - aws4fetch
-      - db0
-      - idb-keyval
-      - ioredis
-      - magicast
-      - oxc-resolver
-      - publint
-      - synckit
-      - typescript
-      - unplugin-lightningcss
-      - unplugin-unused
-      - uploadthing
-      - vue-tsc
-
-  '@nuxthub/core@file:playground/nuxt/vendor/nuxthub-core-0.10.6.tgz(@upstash/redis@1.35.8)(@vercel/blob@2.0.0)(aws4fetch@1.0.20)(db0@0.3.4(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(better-sqlite3@12.5.0)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251219.0)(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(better-sqlite3@12.5.0)(mysql2@3.15.3)(postgres@3.4.7))(mysql2@3.15.3))(ioredis@5.8.2)(magicast@0.5.1)(nitropack@2.13.1(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(@vercel/blob@2.0.0)(aws4fetch@1.0.20)(better-sqlite3@12.5.0)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251219.0)(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(better-sqlite3@12.5.0)(mysql2@3.15.3)(postgres@3.4.7))(mysql2@3.15.3)(rolldown@1.0.0-beta.55))(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))':
-    dependencies:
-      '@cloudflare/workers-types': 4.20251219.0
-      '@nuxt/kit': 4.2.2(magicast@0.5.1)
-      '@uploadthing/mime-types': 0.3.6
-      c12: 3.3.3(magicast@0.5.1)
-      chokidar: 5.0.0
-      citty: 0.1.6
-      consola: 3.4.2
-      defu: 6.1.4
-      execa: 9.6.1
-      get-port-please: 3.2.0
-      h3: 1.15.5
-      hookable: 6.0.1
-      mime: 4.1.0
-      nitropack: 2.13.1(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(@vercel/blob@2.0.0)(aws4fetch@1.0.20)(better-sqlite3@12.5.0)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251219.0)(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(better-sqlite3@12.5.0)(mysql2@3.15.3)(postgres@3.4.7))(mysql2@3.15.3)(rolldown@1.0.0-beta.55)
-      nypm: 0.6.2
-      ofetch: 1.5.1
-      pathe: 2.0.3
-      pkg-types: 2.3.0
-      scule: 1.3.0
-      std-env: 3.10.0
-      tinyglobby: 0.2.15
-      tsdown: 0.18.1(typescript@5.9.3)(vue-tsc@3.1.8(typescript@5.9.3))
-      ufo: 1.6.3
-      uncrypto: 0.1.3
-      unstorage: 1.17.4(@upstash/redis@1.35.8)(@vercel/blob@2.0.0)(aws4fetch@1.0.20)(db0@0.3.4(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(better-sqlite3@12.5.0)(drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251219.0)(@electric-sql/pglite@0.3.14)(@libsql/client@0.15.15)(@upstash/redis@1.35.8)(better-sqlite3@12.5.0)(mysql2@3.15.3)(postgres@3.4.7))(mysql2@3.15.3))(ioredis@5.8.2)
-      zod: 4.2.1
-    transitivePeerDependencies:
-      - '@arethetypeswrong/core'
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@deno/kv'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@ts-macro/tsc'
-      - '@typescript/native-preview'
-      - '@upstash/redis'
-      - '@vercel/blob'
-      - '@vercel/functions'
-      - '@vercel/kv'
-      - '@vitejs/devtools'
-      - aws4fetch
-      - db0
-      - idb-keyval
-      - ioredis
-      - magicast
-      - oxc-resolver
-      - publint
-      - synckit
-      - typescript
-      - unplugin-lightningcss
-      - unplugin-unused
-      - uploadthing
-      - vue-tsc
 
   '@nuxtjs/color-mode@3.5.2(magicast@0.5.1)':
     dependencies:

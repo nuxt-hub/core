@@ -2,7 +2,7 @@ import { createResolver } from '@nuxt/kit'
 
 const resolver = createResolver(import.meta.url)
 const isMinimal = process.env.PLAYGROUND_MINIMAL === '1'
-const moduleEntry = process.env.VERCEL ? '@nuxthub/core/nuxt' : resolver.resolve('../../src/nuxt/module')
+const moduleEntry = process.env.VERCEL ? '@nuxthub/core' : resolver.resolve('../../src/module')
 
 export default defineNuxtConfig({
   modules: [

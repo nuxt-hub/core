@@ -3,7 +3,6 @@ definePageMeta({
   layout: 'blank'
 })
 
-// TODO: Fetch data from API instead of hardcoding
 const currentDate = ref(new Date().toLocaleDateString())
 const items = ref([
   { name: 'Item 1', quantity: 2, price: 10.00 },
