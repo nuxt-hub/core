@@ -2,13 +2,13 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "nuxthub-playground-nuxt-nitro",
   "compatibility_date": "2025-12-11",
-  "compatibility_flags": [
-    "nodejs_compat",
-    "no_nodejs_compat_v2"
-  ],
+  "compatibility_flags": ["nodejs_compat", "no_nodejs_compat_v2"],
   "main": ".output/server/index.mjs",
-  "assets": {
-    "directory": ".output/public"
-  }
+  "assets": { "directory": ".output/public" },
+  "d1_databases": [{ "binding": "DB", "database_name": "nuxthub-playground-nuxt-nitro-db", "database_id": "cb88243a-00af-44b8-88cd-4c1ace3b5b6b" }],
+  "kv_namespaces": [
+    { "binding": "KV", "id": "532214f059bc430e9bd1626d45debe1b" },
+    { "binding": "CACHE", "id": "f61930ecf2564495967b07df9557f21c" }
+  ],
+  "r2_buckets": [{ "binding": "BLOB", "bucket_name": "nuxthub-playground-nuxt-nitro-blob" }]
 }
-

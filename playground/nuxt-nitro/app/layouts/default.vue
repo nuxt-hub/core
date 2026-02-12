@@ -10,7 +10,7 @@ useHead({
 })
 
 useSeoMeta({
-  title: 'NuxtHub Demo',
+  title: 'NuxtHub Demo (Nuxt + Nitro)',
   description:
     'A Nuxt demo hosted with Edge-side rendering, authentication and queyring a SQLite database'
 })
@@ -27,7 +27,9 @@ const links = [
   <UContainer class="min-h-screen md:pt-12 max-w-screen-md">
     <div class="flex justify-between">
       <UNavigationMenu :items="links" />
-      <ColorScheme>
+      <div class="flex items-center gap-2">
+        <UBadge label="Nitro Module" color="sky" variant="subtle" size="sm" />
+        <ColorScheme>
         <UButton
           square
           variant="ghost"
@@ -36,6 +38,7 @@ const links = [
           @click="toggleColorMode"
         />
       </ColorScheme>
+      </div>
     </div>
     <slot />
 
