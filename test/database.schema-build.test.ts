@@ -1,9 +1,14 @@
 import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { dirname, join, relative } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { buildDatabaseSchema } from '../src/db/lib/build'
+
+function toImportSpecifier(fromFile: string, toFile: string) {
+  const relativePath = relative(dirname(fromFile), toFile).replace(/\\/g, '/')
+  return relativePath.startsWith('.') ? relativePath : `./${relativePath}`
+}
 
 describe('buildDatabaseSchema', () => {
   it('bundles cache-based schema paths so output stays importable', async () => {
@@ -18,7 +23,7 @@ describe('buildDatabaseSchema', () => {
       await mkdir(join(buildDir, 'hub/db'), { recursive: true })
 
       await writeFile(schemaSource, 'export const schemaBuildMarker = "ok"\n')
-      await writeFile(entryPath, `export * from '${schemaSource}'\n`)
+      await writeFile(entryPath, `export * from '${toImportSpecifier(entryPath, schemaSource)}'\n`)
 
       await buildDatabaseSchema(buildDir, { relativeDir: rootDir })
 
@@ -50,7 +55,10 @@ describe('buildDatabaseSchema', () => {
       await writeFile(localSchemaPath, 'export const pages = { id: "local-pages" }\n')
       await writeFile(localConsumerPath, 'import { pages } from \'@nuxthub/db/schema\'\nexport const pageIdFromAlias = pages.id\n')
       await writeFile(externalSchemaPath, 'export const externalOnly = true\n')
-      await writeFile(entryPath, `export * from '${localSchemaPath}'\nexport * from '${localConsumerPath}'\n`)
+      await writeFile(
+        entryPath,
+        `export * from '${toImportSpecifier(entryPath, localSchemaPath)}'\nexport * from '${toImportSpecifier(entryPath, localConsumerPath)}'\n`
+      )
 
       await buildDatabaseSchema(buildDir, { relativeDir: rootDir })
 
