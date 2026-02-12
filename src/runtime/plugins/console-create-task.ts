@@ -1,6 +1,4 @@
-import { defineNitroPlugin } from 'nitropack/runtime'
-
-export default defineNitroPlugin(async () => {
+export default async () => {
   const globalConsole = console as any
   const noopTask = {
     end() {},
@@ -60,4 +58,4 @@ export default defineNitroPlugin(async () => {
   } catch {
     // ignore
   }
-})
+}

@@ -167,12 +167,6 @@ export async function setupDatabaseNitro(nitro: Nitro, hub: HubConfig, deps: Rec
     log.error('Please run `npx nypm i @libsql/client` to use SQLite as database.')
   }
 
-  nitro.options.plugins ||= []
-  const migrationsPlugin = resolveRuntimePath('db/runtime/plugins/migrations.dev')
-  if (!nitro.options.plugins.includes(migrationsPlugin)) {
-    nitro.options.plugins.push(migrationsPlugin)
-  }
-
   const dbLib = await loadDatabaseLib()
 
   await generateDatabaseSchemaEntry(nitro, hub as ResolvedHubConfig, dbLib)
