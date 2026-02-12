@@ -45,7 +45,7 @@ export default defineCommand({
     force: {
       type: 'boolean',
       description: 'Force by skipping confirmation prompt.',
-      required: false,
+      required: false
     }
   },
   async run({ args }) {
