@@ -16,8 +16,10 @@ cli/dist
 
 # Nuxt
 .nuxt
+.nitro
 .output
 .data
+.wrangler
 .vercel_build_output
 .build-*
 .netlify

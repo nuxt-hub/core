@@ -16,7 +16,7 @@ export default createConfigForNuxt({
       './docs'
     ]
   }
-}).overrideRules({
+}, { ignores: ['**/.wrangler/**'] }).overrideRules({
   '@typescript-eslint/no-explicit-any': 'off',
   '@typescript-eslint/no-unused-vars': ['error', {
     caughtErrors: 'none',
