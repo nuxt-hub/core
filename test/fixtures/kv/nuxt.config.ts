@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     '../basic'
   ],
   modules: [
-    '../../../src/nuxt/module'
+    '../../../src/module'
   ],
   hub: {
     kv: true

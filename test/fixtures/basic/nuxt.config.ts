@@ -2,6 +2,6 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
   modules: [
-    '../../../src/nuxt/module'
+    '../../../src/module'
   ]
 })

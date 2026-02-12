@@ -18,10 +18,14 @@ export default defineNitroPlugin(async () => {
         writable: true
       })
       return
-    } catch {}
+    } catch {
+      void 0
+    }
     try {
       target.createTask = () => noopTask
-    } catch {}
+    } catch {
+      void 0
+    }
   }
 
   function overrideConsolePrototype(target: any) {

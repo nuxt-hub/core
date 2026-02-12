@@ -19,6 +19,10 @@
       "types": "./dist/nuxt.d.mts",
       "import": "./dist/nuxt.mjs"
     },
+    "./nitro": {
+      "types": "./dist/nitro.d.mts",
+      "import": "./dist/nitro.mjs"
+    },
     "./blob": {
       "types": "./dist/blob/lib/index.d.ts",
       "import": "./dist/blob/lib/index.mjs"
@@ -43,6 +47,9 @@
       ],
       "nuxt": [
         "./dist/nuxt.d.mts"
+      ],
+      "nitro": [
+        "./dist/nitro.d.mts"
       ]
     }
   },
@@ -65,6 +72,7 @@
   ],
   "scripts": {
     "prepack": "nuxt-module-build build",
+    "core:prepare": "nuxt-module-build build",
     "dev:prepare": "nuxt-module-build build --stub && mkdist --src=src/blob/lib --dist=dist/blob/lib -d && mkdist --src=src/db/lib --dist=dist/db/lib -d && nuxi prepare playground/nuxt",
     "dev": "nuxi dev playground/nuxt",
     "dev:nitro": "pnpm -C playground/nitro dev",

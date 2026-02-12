@@ -13,6 +13,7 @@ export default defineBuildConfig({
   entries: [
     'src/module',
     { input: 'src/nuxt/module', name: 'nuxt' },
+    { input: 'src/nitro/module', name: 'nitro' },
     // DB
     {
       input: 'src/db/lib/',
