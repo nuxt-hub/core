@@ -54,6 +54,12 @@ pnpm dev
 # Build the playground
 pnpm dev:build
 
+# Develop with the Nitro playground
+pnpm dev:nitro
+
+# Build the Nitro playground
+pnpm build:nitro
+
 # Run ESLint
 pnpm lint
 
