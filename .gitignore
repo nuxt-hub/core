@@ -60,6 +60,7 @@ Temporary Items
 playground/nuxt/.data
 playground/nitro/.data
 playground/nitro/wrangler.local.json
+playground/nuxt-nitro/wrangler.local.json
 test/fixtures/basic/.data
 test/fixtures/kv/.data
 test/fixtures/blob/.data

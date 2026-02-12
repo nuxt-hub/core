@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "nuxthub-playground-nuxt",
+  "name": "nuxthub-playground-nuxt-nitro",
   "type": "module",
   "scripts": {
     "dev": "nuxi dev",

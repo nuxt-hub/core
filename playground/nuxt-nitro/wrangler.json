@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nuxthub-playground-nuxt-nitro",
+  "compatibility_date": "2025-12-11",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "no_nodejs_compat_v2"
+  ],
+  "main": ".output/server/index.mjs",
+  "assets": {
+    "directory": ".output/public"
+  }
+}
+

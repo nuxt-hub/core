@@ -51,6 +51,9 @@ pnpm dev:prepare
 # Develop with the playground
 pnpm dev
 
+# Develop with the Nuxt UI playground powered by the Nitro module
+pnpm dev:nuxt-nitro
+
 # Build the playground
 pnpm dev:build
 

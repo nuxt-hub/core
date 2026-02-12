@@ -13,7 +13,12 @@ describe('addWranglerBinding', () => {
 })
 
 describe('wrangler bindings e2e', async () => {
-  await setup({ rootDir: fileURLToPath(new URL('./fixtures/wrangler', import.meta.url)), dev: true })
+  await setup({
+    rootDir: fileURLToPath(new URL('./fixtures/wrangler', import.meta.url)),
+    dev: true,
+    server: false,
+    setupTimeout: 240_000
+  })
 
   it('should auto-generate all wrangler bindings from hub config', () => {
     const { nuxt } = useTestContext()

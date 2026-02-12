@@ -2,6 +2,7 @@ packages:
   - "docs/"
   - "playground/nuxt"
   - "playground/nitro"
+  - "playground/nuxt-nitro"
   - "./"
 onlyBuiltDependencies:
   - "better-sqlite3"
