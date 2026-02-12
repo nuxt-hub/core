@@ -81,6 +81,7 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubCon
 }
 
 export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias }: { relativeDir?: string, alias?: Record<string, string> } = {}) {
+  const startTime = Date.now()
   relativeDir = relativeDir || buildDir
   const entry = join(buildDir, 'hub/db/schema.entry.ts')
   await build({
@@ -94,11 +95,12 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias
     }),
     alias: {
       ...alias,
-      'hub:db:schema': entry
+      'hub:db:schema': entry,
+      '@nuxthub/db/schema': entry
     },
     platform: 'neutral',
     format: 'esm',
-    skipNodeModulesBundle: true,
+    skipNodeModulesBundle: false,
     tsconfig: false,
     dts: {
       build: false,
@@ -108,5 +110,6 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias
     clean: false,
     logLevel: 'warn'
   })
-  consola.debug(`Database schema built successfully at \`${relative(relativeDir, join(buildDir, 'hub/db/schema.mjs'))}\``)
+  const duration = Date.now() - startTime
+  consola.debug(`Database schema built successfully at \`${relative(relativeDir, join(buildDir, 'hub/db/schema.mjs'))}\` (${duration}ms)`)
 }
