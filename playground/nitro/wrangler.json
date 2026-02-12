@@ -1,7 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "nuxthub-playground-nitro",
-  "account_id": "ba6e044dfdaaffec3cac45e9feccd237",
   "compatibility_date": "2025-12-11",
   "compatibility_flags": [
     "nodejs_compat",
@@ -12,4 +11,3 @@
     "directory": ".output/public"
   }
 }
-
