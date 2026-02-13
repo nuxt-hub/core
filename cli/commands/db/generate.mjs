@@ -11,6 +11,16 @@ export default defineCommand({
     description: 'Generate database migrations from the schema.'
   },
   args: {
+    custom: {
+      type: 'boolean',
+      description: 'Whether to generate an empty migration file for custom SQL.',
+      required: false
+    },
+    name: {
+      type: 'string',
+      description: 'Custom name for the migration file.',
+      required: false
+    },
     cwd: {
       type: 'option',
       description: 'The directory to run the command in.',
@@ -44,7 +54,7 @@ export default defineCommand({
       ...options,
       stdin: 'inherit',
       stdout: 'inherit'
-    })`drizzle-kit generate --config=./.nuxt/hub/db/drizzle.config.ts`
+    })`drizzle-kit generate --config=./.nuxt/hub/db/drizzle.config.ts${args.custom ? ' --custom' : ''}${args.name ? ` --name=${args.name}` : ''}`
     // Drizzle-kit does not exit with an error code when there is an error, so we need to check the stderr
     if (stderr) {
       consola.error(stderr)
