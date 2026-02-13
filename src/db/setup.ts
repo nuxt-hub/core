@@ -276,7 +276,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
   addTypeTemplate({
     filename: 'hub/db/schema.d.ts',
     getContents: () => `declare module '@nuxthub/db/schema' {
-  export * from '#build/hub/db/schema.mjs'
+  export * from '#build/hub/db/schema.d.mts'
 }
 
 declare module 'hub:db:schema' {
@@ -296,9 +296,13 @@ async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
   const driverForTypes = driver === 'd1-http' ? 'sqlite-proxy' : driver
 
   // Setup Database Types for @nuxthub/db and hub:db
-  const databaseTypes = `declare module '@nuxthub/db' {
-  export const db: any
-  export const schema: any
+  const databaseTypes = `import { drizzle as drizzleCore } from 'drizzle-orm/${driverForTypes}'
+
+type DbSchema = typeof import('@nuxthub/db/schema')
+
+declare module '@nuxthub/db' {
+  export const schema: DbSchema
+  export const db: ReturnType<typeof drizzleCore<DbSchema>>
 }
 
 declare module 'hub:db' {
