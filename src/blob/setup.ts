@@ -1,7 +1,8 @@
 import { join } from 'pathe'
+import { createHash } from 'node:crypto'
 import { mkdir, writeFile, copyFile } from 'node:fs/promises'
 import { defu } from 'defu'
-import { addTypeTemplate, addServerImports, addImportsDir, logger } from '@nuxt/kit'
+import { addTemplate, addTypeTemplate, addServerImports, addImportsDir, logger } from '@nuxt/kit'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig, ResolvedBlobConfig, CloudflareR2BlobConfig } from '@nuxthub/core'
@@ -93,19 +94,36 @@ export { ensureBlob } from "@nuxthub/core/blob";
 export const blob = createBlobStorage(createDriver(${JSON.stringify(driverOptions)}));
 `
 
-  const physicalBlobDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'blob')
-  await mkdir(physicalBlobDir, { recursive: true })
+  const blobHash = createHash('sha256').update(blobContent).digest('hex').slice(0, 12)
+  const blobShimTemplate = addTemplate({
+    filename: `hub/blob.${blobHash}.mjs`,
+    write: true,
+    getContents: () => blobContent
+  })
 
-  // Write the blob.mjs file
-  await writeFile(join(physicalBlobDir, 'blob.mjs'), blobContent)
+  // Avoid relying on a physical package during dev/typecheck; keep this import working in Nuxt.
+  nuxt.options.alias!['@nuxthub/blob'] = blobShimTemplate.dst
+  nuxt.options.alias!['hub:blob'] = blobShimTemplate.dst
 
-  // Copy blob.d.ts for TypeScript support
-  await copyFile(
-    resolve('blob/runtime/blob.d.ts'),
-    join(physicalBlobDir, 'blob.d.ts')
-  )
+  addServerImports({ name: 'blob', from: '@nuxthub/blob', meta: { description: `The Blob storage instance.` } })
+  addServerImports({ name: 'ensureBlob', from: '@nuxthub/blob', meta: { description: `Ensure the blob is valid and meets the specified requirements.` } })
 
-  // Write package.json for the physical package
+  // Generate type declarations for both `@nuxthub/blob` and `hub:blob`.
+  addTypeTemplate({
+    filename: 'hub/blob.d.ts',
+    getContents: () => `import type { BlobStorage } from '@nuxthub/core/blob'
+
+declare module '@nuxthub/blob' {
+  export const blob: BlobStorage
+  export { ensureBlob } from '@nuxthub/core/blob'
+}
+
+declare module 'hub:blob' {
+  export * from '@nuxthub/blob'
+}
+`
+  }, { nitro: true, nuxt: true })
+
   const packageJson = {
     name: '@nuxthub/blob',
     version: '0.0.0',
@@ -117,21 +135,19 @@ export const blob = createBlobStorage(createDriver(${JSON.stringify(driverOption
       }
     }
   }
-  await writeFile(join(physicalBlobDir, 'package.json'), JSON.stringify(packageJson, null, 2))
 
-  // Add alias to map hub:blob to @nuxthub/blob
-  nuxt.options.alias!['hub:blob'] = '@nuxthub/blob'
+  // Only materialize a physical package during build. Avoid mutating `node_modules/` for `nuxt typecheck`.
+  nuxt.hook('nitro:build:before', async () => {
+    const physicalBlobDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'blob')
+    await mkdir(physicalBlobDir, { recursive: true })
 
-  addServerImports({ name: 'blob', from: '@nuxthub/blob', meta: { description: `The Blob storage instance.` } })
-  addServerImports({ name: 'ensureBlob', from: '@nuxthub/blob', meta: { description: `Ensure the blob is valid and meets the specified requirements.` } })
-
-  // Generate type declaration for hub:blob virtual module
-  addTypeTemplate({
-    filename: 'hub/blob.d.ts',
-    getContents: () => `declare module 'hub:blob' {
-  export * from '@nuxthub/blob'
-}`
-  }, { nitro: true, nuxt: true })
+    await writeFile(join(physicalBlobDir, 'blob.mjs'), blobContent)
+    await copyFile(
+      resolve('blob/runtime/blob.d.ts'),
+      join(physicalBlobDir, 'blob.d.ts')
+    )
+    await writeFile(join(physicalBlobDir, 'package.json'), JSON.stringify(packageJson, null, 2))
+  })
 
   // Set blob provider in runtime config for client-side composables
   if (blobConfig.driver === 'vercel-blob') {
