@@ -47,6 +47,7 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
     migrationsDirs: getLayerDirectories(nuxt).map(layer => join(layer.server, 'db/migrations')),
     queriesPaths: [],
     applyMigrationsDuringBuild: true,
+    applyMigrationsDuringDev: true,
     useRelationsV2: false
   })
 

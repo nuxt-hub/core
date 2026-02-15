@@ -192,6 +192,12 @@ export type DatabaseConfig = {
    */
   applyMigrationsDuringBuild?: boolean
   /**
+   * Set `false` to disable applying database migrations during development (`nuxt dev`).
+   *
+   * @default true
+   */
+  applyMigrationsDuringDev?: boolean
+  /**
    * MySQL mode for Drizzle ORM relational queries.
    * Only applicable when dialect is 'mysql'.
    *
@@ -234,6 +240,7 @@ export type ResolvedDatabaseConfig = DatabaseConfig & {
   migrationsDirs: string[]
   queriesPaths: string[]
   applyMigrationsDuringBuild: boolean
+  applyMigrationsDuringDev: boolean
   casing?: 'snake_case' | 'camelCase'
   replicas?: string[]
   useRelationsV2: boolean
