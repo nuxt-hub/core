@@ -74,14 +74,14 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
         }
         break
       }
+      // User explicitly set libsql (e.g. Turso with inline config)
+      if (userExplicitLibsql) {
+        config.connection = defu(config.connection, { url: '' })
+        break
+      }
       // Cloudflare D1 (production only - dev/prepare uses local libsql)
       if (hub.hosting.includes('cloudflare') && !nuxt.options.dev && !nuxt.options._prepare) {
         config.driver = 'd1'
-        break
-      }
-      // User explicitly set libsql without env vars - allow lazy resolution at runtime
-      if (userExplicitLibsql) {
-        config.connection = defu(config.connection, { url: '' })
         break
       }
       config.driver ||= 'libsql'
