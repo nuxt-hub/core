@@ -43,7 +43,6 @@ Apply database migrations to the database.
 USAGE db migrate [OPTIONS]
 
 OPTIONS
-
           --cwd    The directory to run the command in.
        --dotenv    Point to another .env file to load.
   -v, --verbose    Show verbose output.
