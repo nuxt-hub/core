@@ -5,7 +5,6 @@ import { logger } from '@nuxt/kit'
 import type { Nuxt } from 'nuxt/schema'
 import type { HubConfig, ResolvedDatabaseConfig } from '@nuxthub/core'
 import { getPort } from 'get-port-please'
-import { glob } from 'tinyglobby'
 
 let isReady = false
 let promise: Promise<any> | null = null
