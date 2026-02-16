@@ -30,6 +30,7 @@
     "zod": "^4.2.1"
   },
   "devDependencies": {
-    "@nuxt/devtools": "latest"
+    "@nuxt/devtools": "latest",
+    "wrangler": "^4.65.0"
   }
 }

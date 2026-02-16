@@ -2,7 +2,7 @@ import { eventHandler, getQuery } from 'h3'
 import { startStudioPostgresServer, startStudioSQLiteServer } from 'drizzle-kit/api'
 
 // @ts-expect-error - dynamically generated
-import { client, schema } from 'hub:db'
+import { schema } from '@nuxthub/db'
 
 export default eventHandler(async (event) => {
   const query = getQuery(event)
@@ -28,6 +28,8 @@ export default eventHandler(async (event) => {
     }, { port })
   } else {
     // PGlite - use the client instance from hub:db
+    // @ts-expect-error - dynamically generated
+    const client = await import('@nuxthub/db').then(m => m.client)
     await startStudioPostgresServer(schema, {
       driver: 'pglite',
       client
