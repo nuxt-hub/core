@@ -20,18 +20,18 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-12-11',
 
   nitro: {
-    preset: 'cloudflare-module',
+    // preset: 'cloudflare-module',
     experimental: {
       websocket: true
     }
   },
 
   hub: {
-    // db: 'sqlite',
-    db: {
-      dialect: 'sqlite',
-      driver: 'd1'
-    },
+    db: 'sqlite',
+    // db: {
+    //   dialect: 'sqlite',
+    //   driver: 'd1'
+    // },
     blob: true,
     kv: true,
     cache: true
