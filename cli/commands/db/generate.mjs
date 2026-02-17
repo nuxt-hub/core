@@ -31,6 +31,11 @@ export default defineCommand({
       type: 'boolean',
       description: 'Show verbose output.',
       required: false
+    },
+    dialect: {
+      type: 'string',
+      description: 'Database dialect, one of postgresql mysql sqlite',
+      required: false
     }
   },
   async run({ args }) {
@@ -43,23 +48,48 @@ export default defineCommand({
       stdout: 'pipe',
       stderr: 'pipe',
       preferLocal: true,
-      cwd
+      cwd,
+      env: {
+        ...process.env,
+        ...(args.dialect ? { NUXT_HUB_DB: args.dialect } : {})
+      }
     }
-    consola.info('Ensuring database schema is generated...')
-    await execa(options)`nuxt prepare`
-    const alias = await getTsconfigAliases(cwd)
-    await buildDatabaseSchema(join(options.cwd, '.nuxt'), { relativeDir: cwd, alias })
-    consola.info('Generating database migrations...')
-    const { stderr } = await execa({
-      ...options,
-      stdin: 'inherit',
-      stdout: 'inherit'
-    })`drizzle-kit generate --config=./.nuxt/hub/db/drizzle.config.ts${args.custom ? ' --custom' : ''}${args.name ? ` --name=${args.name}` : ''}`
-    // Drizzle-kit does not exit with an error code when there is an error, so we need to check the stderr
-    if (stderr) {
-      consola.error(stderr)
-      process.exit(1)
+
+    async function GenerateMigration(dialect) {
+      consola.info(`Ensuring database schema is generated${dialect ? ' for ' + dialect : ''}...`)
+      await execa(options)`nuxt prepare`
+      const alias = await getTsconfigAliases(cwd)
+      await buildDatabaseSchema(join(options.cwd, '.nuxt'), { relativeDir: cwd, alias })
+      consola.info(`Generating database migrations${dialect ? ' for ' + dialect : ''}...`)
+      const { stderr } = await execa({
+        ...options,
+        stdin: 'inherit',
+        stdout: 'inherit'
+      })`drizzle-kit generate --config=./.nuxt/hub/db/drizzle.config.ts${args.custom ? ' --custom' : ''}${args.name ? ` --name=${args.name}` : ''}`
+      // Drizzle-kit does not exit with an error code when there is an error, so we need to check the stderr
+      if (stderr) {
+        consola.error(stderr)
+        process.exit(1)
+      }
     }
+
+    if (args.dialect === "all") {
+      for (dialect in ["postgresql", "mysql", "sqlite"]) {
+        await GenerateMigration(dialect)
+      }
+    } else {
+      await GenerateMigration(args.dialect)
+    }
+
+
+    if (args.dialect) {
+      consola.info('Resetting .nuxt with original db dialect')
+      await execa({
+        ...options,
+        env: {}
+      })`nuxt prepare`
+    }
+
     consola.success('Database migrations generated successfully.')
     consola.info('Run `npx nuxt dev` or run `npx nuxt db migrate` to apply the migrations.')
   }

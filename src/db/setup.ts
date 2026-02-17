@@ -39,6 +39,8 @@ export { db, schema }
  * Resolve database configuration from string or object format
  */
 export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise<ResolvedDatabaseConfig | false> {
+  // Env explicitly set db. Used by cli db generate command
+  if(process.env.NUXT_HUB_DB) hub.db = process.env.NUXT_HUB_DB
   if (!hub.db) return false
 
   let config = typeof hub.db === 'string' ? { dialect: hub.db } : hub.db
