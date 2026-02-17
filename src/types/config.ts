@@ -3,6 +3,7 @@ import type { FSDriverOptions } from '@nuxthub/core/blob/drivers/fs'
 import type { S3DriverOptions } from '@nuxthub/core/blob/drivers/s3'
 import type { VercelDriverOptions } from '@nuxthub/core/blob/drivers/vercel-blob'
 import type { CloudflareDriverOptions } from '@nuxthub/core/blob/drivers/cloudflare-r2'
+import type { Config as DrizzleConfig } from "drizzle-kit"
 
 export interface HubConfig {
   blob: boolean | BlobConfig
@@ -224,6 +225,15 @@ export type DatabaseConfig = {
    * @see https://orm.drizzle.team/docs/read-replicas
    */
   replicas?: string[]
+  /**
+   * Drizzle config that will be passed down to the generated drizzle.config.ts
+   * 
+   * @see https://orm.drizzle.team/docs/drizzle-config-file
+   */
+  drizzle?: Pick<
+    DrizzleConfig,
+    "entities" | "schemaFilter" | "tablesFilter" | "extensionsFilters"
+  >;
 }
 
 export type ResolvedDatabaseConfig = DatabaseConfig & {
