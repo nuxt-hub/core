@@ -33,10 +33,11 @@ export default defineCommand({
       required: false
     },
     dialect: {
-      type: 'string',
+      type: 'enum',
+      options: ["sqlite", "postgresql", "mysql", "all"],
       description: 'Database dialect, one of postgresql mysql sqlite',
       required: false
-    }
+    },
   },
   async run({ args }) {
     if (args.verbose) {
@@ -44,18 +45,20 @@ export default defineCommand({
       consola.level = 4
     }
     const cwd = args.cwd ? resolve(process.cwd(), args.cwd) : process.cwd()
-    const options = {
+    let options = {
       stdout: 'pipe',
       stderr: 'pipe',
       preferLocal: true,
       cwd,
-      env: {
-        ...process.env,
-        ...(args.dialect ? { NUXT_HUB_DB: args.dialect } : {})
-      }
+      env: {}
     }
 
     async function GenerateMigration(dialect) {
+      if (dialect)
+        options.env = {
+          ...process.env,
+          NUXT_HUB_DB: dialect
+        }
       consola.info(`Ensuring database schema is generated${dialect ? ' for ' + dialect : ''}...`)
       await execa(options)`nuxt prepare`
       const alias = await getTsconfigAliases(cwd)
@@ -71,11 +74,12 @@ export default defineCommand({
         consola.error(stderr)
         process.exit(1)
       }
+      delete options.env.NUXT_HUB_DB
     }
 
     if (args.dialect === "all") {
-      for (dialect in ["postgresql", "mysql", "sqlite"]) {
-        await GenerateMigration(dialect)
+      for (const _dialect of ["sqlite", "postgresql", "mysql"]) {
+        await GenerateMigration(_dialect)
       }
     } else {
       await GenerateMigration(args.dialect)
@@ -84,10 +88,7 @@ export default defineCommand({
 
     if (args.dialect) {
       consola.info('Resetting .nuxt with original db dialect')
-      await execa({
-        ...options,
-        env: {}
-      })`nuxt prepare`
+      await execa(options)`nuxt prepare`
     }
 
     consola.success('Database migrations generated successfully.')
