@@ -603,10 +603,10 @@ ${hasReplicas
   const relationsTypes = !useRelationsV2
     ? ''
     : `
-type Tables = ExtractTablesFromSchema<typeof schema>
-type SchemaRelations = Omit<typeof schema, keyof Tables>
-type RelationsKeys = keyof SchemaRelations extends infer T ? T extends keyof SchemaRelations ? keyof SchemaRelations[T] : never : never
-type FlatRelations = { [Key in RelationsKeys]: keyof SchemaRelations extends infer T ? T extends keyof SchemaRelations ? Key extends keyof SchemaRelations[T] ? SchemaRelations[T][Key] : never : never : never }
+type SchemaType = typeof schema
+type Tables = ExtractTablesFromSchema<SchemaType>
+type RelationsKeys = keyof SchemaType extends infer Key ?  Key extends keyof SchemaType ?  SchemaType[Key] extends ExtractTablesWithRelationsParts<any, any> ?  Key : never : never : never
+type FlatRelations = { [Key in keyof SchemaType[RelationsKeys]]: keyof SchemaType extends infer T ? T extends keyof SchemaType ? Key extends keyof SchemaType[T] ? SchemaType[T][Key] : never : never : never }
 type Relations = ExtractTablesWithRelationsParts<IncludeEveryTable<Tables>, Tables> & FlatRelations
 `
 
@@ -644,6 +644,7 @@ export const db: ReturnType<typeof drizzleCore<${useRelationsV2 ? 'Tables, Relat
   }
   try {
     await writeFile(join(physicalDbDir, 'package.json'), JSON.stringify(packageJson, null, 2))
+    await writeFile(join(physicalDbDir, 'index.d.ts'), `export * from './db'`)
     // Stub schema files only if they don't exist (real types written by app:templatesGenerated hook)
     const schemaPath = join(physicalDbDir, 'schema.mjs')
     const schemaDtsPath = join(physicalDbDir, 'schema.d.mts')
