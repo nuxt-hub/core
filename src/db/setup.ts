@@ -1,15 +1,15 @@
-import { mkdir, copyFile, writeFile, readFile, stat } from 'node:fs/promises'
+import { addServerHandler, addServerImports, addServerPlugin, addTemplate, addTypeTemplate, getLayerDirectories, logger, updateTemplates } from '@nuxt/kit'
 import chokidar from 'chokidar'
-import { glob } from 'tinyglobby'
-import { join, resolve as resolveFs, relative } from 'pathe'
 import { defu } from 'defu'
-import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
-import { resolve, resolvePath, logWhenReady, addWranglerBinding } from '../utils'
-import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
+import { copyFile, mkdir, readFile, stat, writeFile } from 'node:fs/promises'
+import { join, relative, resolve as resolveFs } from 'pathe'
+import { glob } from 'tinyglobby'
 import { cloudflareHooks } from '../hosting/cloudflare'
+import { addWranglerBinding, logWhenReady, resolve, resolvePath } from '../utils'
+import { applyBuildTimeMigrations, buildDatabaseSchema, copyDatabaseAssets, copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, getDatabaseSchemaPathMetadata } from './lib'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig, ResolvedHubConfig, ResolvedDatabaseConfig, DatabaseConfig } from '@nuxthub/core'
+import type { DatabaseConfig, HubConfig, ResolvedDatabaseConfig, ResolvedHubConfig } from '@nuxthub/core'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -366,10 +366,14 @@ async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
     ? ''
     : `
 const tables = extractTablesFromSchema(schema)
+const tablesKeys = new Set(Object.keys(tables))
+const isRelation = (obj) => typeof obj === 'object' && 'table' in obj && 'relations' in obj
 const relations = Object.keys(schema)
   .filter(key => !(key in tables))
-  .reduce((acc, key) => {
-    for (const [tbl, rels] of Object.entries(schema[key])) acc[tbl] = { ...acc[tbl], ...rels }
+  .map(key => schema[key])
+  .filter(entry => Object.entries(entry).every(([key, val]) => tablesKeys.has(key) && isRelation(val)))
+  .reduce((acc, entry) => {
+    for (const [tbl, rels] of Object.entries(entry)) acc[tbl] = { ...acc[tbl], ...rels }
     return acc
   }, defineRelationsPart(schema))
 `
