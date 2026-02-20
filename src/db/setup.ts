@@ -77,6 +77,16 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
         }
         break
       }
+      // Cloudflare D1 via binding - explicit driver setting
+      // In dev mode, set `driver: 'd1'` explicitly to enable D1 binding (for wrangler dev)
+      if (config.driver === 'd1') {
+        break
+      }
+      // Cloudflare D1 (production only - dev uses local libsql by default)
+      if (hub.hosting.includes('cloudflare') && !nuxt.options.dev) {
+        config.driver = 'd1'
+        break
+      }
       // User explicitly set libsql (e.g. Turso with inline config)
       if (userExplicitLibsql) {
         config.connection = defu(config.connection, { url: '' })
@@ -399,6 +409,14 @@ const db = drizzle({ client, ${schemaOption}${casingOption}${relationsOption} })
 export {db, ${schemaExport}, client }
 `
 
+    addServerHandler({
+      handler: await resolvePath('db/runtime/api/launch-studio.post.dev'),
+      method: 'post',
+      route: '/api/_hub/db/launch-studio'
+    })
+  }
+  // Add server handler for D1 binding in dev mode (for wrangler dev)
+  if (driver === 'd1' && nuxt.options.dev) {
     addServerHandler({
       handler: await resolvePath('db/runtime/api/launch-studio.post.dev'),
       method: 'post',
