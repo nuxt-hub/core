@@ -1,15 +1,15 @@
-import { mkdir, copyFile, writeFile, readFile, stat } from 'node:fs/promises'
+import { addServerHandler, addServerImports, addServerPlugin, addTemplate, addTypeTemplate, getLayerDirectories, logger, updateTemplates } from '@nuxt/kit'
 import chokidar from 'chokidar'
-import { glob } from 'tinyglobby'
-import { join, resolve as resolveFs, relative } from 'pathe'
 import { defu } from 'defu'
-import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
-import { resolve, resolvePath, logWhenReady, addWranglerBinding } from '../utils'
-import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
+import { copyFile, mkdir, readFile, stat, writeFile } from 'node:fs/promises'
+import { join, relative, resolve as resolveFs } from 'pathe'
+import { glob } from 'tinyglobby'
 import { cloudflareHooks } from '../hosting/cloudflare'
+import { addWranglerBinding, logWhenReady, resolve, resolvePath } from '../utils'
+import { applyBuildTimeMigrations, buildDatabaseSchema, copyDatabaseAssets, copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, getDatabaseSchemaPathMetadata } from './lib'
 
 import type { Nuxt } from '@nuxt/schema'
-import type { HubConfig, ResolvedHubConfig, ResolvedDatabaseConfig } from '@nuxthub/core'
+import type { DatabaseConfig, HubConfig, ResolvedDatabaseConfig, ResolvedHubConfig } from '@nuxthub/core'
 
 const log = logger.withTag('nuxt:hub')
 
@@ -17,10 +17,11 @@ const log = logger.withTag('nuxt:hub')
  * Generate a lazy-initialized db template with Proxy wrapper
  * Used for runtime env resolution (Docker/multi-deploy) and CF bindings
  */
-function generateLazyDbTemplate(imports: string, getDbBody: string): string {
+function generateLazyDbTemplate(imports: string, getDbBody: string, options?: { moduleScope?: string, schemaExport?: string }): string {
+  const { moduleScope = '', schemaExport = 'schema' } = options || {}
   return `${imports}
 import * as schema from './db/schema.mjs'
-
+${moduleScope}
 let _db
 function getDb() {
   if (!_db) {
@@ -31,7 +32,7 @@ ${getDbBody}
   return _db
 }
 const db = new Proxy({}, { get(_, prop) { return getDb()[prop] } })
-export { db, schema }
+export { db, ${schemaExport} }
 `
 }
 
@@ -41,12 +42,13 @@ export { db, schema }
 export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise<ResolvedDatabaseConfig | false> {
   if (!hub.db) return false
 
-  let config = typeof hub.db === 'string' ? { dialect: hub.db } : hub.db
+  let config: DatabaseConfig = typeof hub.db === 'string' ? { dialect: hub.db } : hub.db
   config = defu(config, {
     migrationsDirs: getLayerDirectories(nuxt).map(layer => join(layer.server, 'db/migrations')),
     queriesPaths: [],
     applyMigrationsDuringBuild: true,
-    applyMigrationsDuringDev: true
+    applyMigrationsDuringDev: true,
+    useRelationsV2: false
   })
 
   switch (config.dialect) {
@@ -145,10 +147,19 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
 }
 
 export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<string, string>) {
+  const userSetRelationsV2 = typeof hub.db === 'object' && hub.db && 'useRelationsV2' in hub.db
   hub.db = await resolveDatabaseConfig(nuxt, hub)
   if (!hub.db) return
 
-  const { dialect, driver, connection, migrationsDirs, queriesPaths } = hub.db as ResolvedDatabaseConfig
+  // Auto-enable useRelationsV2 when drizzle-orm v1+ is detected and user hasn't explicitly set it
+  if (!userSetRelationsV2 && deps['drizzle-orm']) {
+    const majorVersion = Number(deps['drizzle-orm']?.match(/\d/)?.[0])
+    if (majorVersion >= 1) {
+      (hub.db as ResolvedDatabaseConfig).useRelationsV2 = true
+    }
+  }
+
+  const { dialect, driver, connection, migrationsDirs, queriesPaths, useRelationsV2 } = hub.db as ResolvedDatabaseConfig
 
   logWhenReady(nuxt, `\`hub:db\` using \`${dialect}\` database with \`${driver}\` driver`, 'info')
 
@@ -174,6 +185,9 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
     logWhenReady(nuxt, 'Please run `npx nypm i mysql2` to use MySQL as database.', 'error')
   } else if (driver === 'libsql' && !deps['@libsql/client']) {
     logWhenReady(nuxt, 'Please run `npx nypm i @libsql/client` to use SQLite as database.', 'error')
+  }
+  if (useRelationsV2 && Number(deps['drizzle-orm']?.match(/\d/)?.[0]) < 1) {
+    logWhenReady(nuxt, '"useRelationsV2" requires drizzle-orm@1.0.0-beta or higher', 'error')
   }
 
   // Add Server scanning
@@ -235,9 +249,11 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
     ]).flat()
     let schemaPaths = await glob(schemaPatterns, { absolute: true, onlyFiles: true })
 
-    await nuxt.callHook('hub:db:schema:extend', { dialect, paths: schemaPaths })
+    const extendedPaths: string[] = []
+    await nuxt.callHook('hub:db:schema:extend', { dialect, paths: extendedPaths })
 
-    schemaPaths = schemaPaths.filter((path) => {
+    // Order is important, if we have extendedPaths last, we may reference columns in relations that do not yet exist
+    schemaPaths = [extendedPaths, schemaPaths].flat().filter((path) => {
       const meta = getDatabaseSchemaPathMetadata(path)
       return !meta.dialect || meta.dialect === dialect
     })
@@ -336,7 +352,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
 }
 
 async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
-  const { dialect, driver, connection, mode, casing, replicas } = hub.db as ResolvedDatabaseConfig
+  const { dialect, driver, connection, mode, casing, replicas, useRelationsV2 } = hub.db as ResolvedDatabaseConfig
 
   // For types, d1-http uses sqlite-proxy
   const driverForTypes = driver === 'd1-http' ? 'sqlite-proxy' : driver
@@ -354,24 +370,43 @@ async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
   // Setup Drizzle ORM
 
   // Generate simplified drizzle() implementation
-  const modeOption = dialect === 'mysql' ? `, mode: '${mode || 'default'}'` : ''
+  const modeOption = dialect === 'mysql' && !useRelationsV2 ? `, mode: '${mode || 'default'}'` : ''
+  const relationsImport = !useRelationsV2 ? '' : `\nimport { defineRelationsPart, extractTablesFromSchema } from 'drizzle-orm'`
+  const relationsOperations = !useRelationsV2
+    ? ''
+    : `
+const tables = extractTablesFromSchema(schema)
+const tablesKeys = new Set(Object.keys(tables))
+const isRelation = (obj) => typeof obj === 'object' && 'table' in obj && 'relations' in obj
+const relations = Object.keys(schema)
+  .filter(key => !(key in tables))
+  .map(key => schema[key])
+  .filter(entry => Object.entries(entry).every(([key, val]) => tablesKeys.has(key) && isRelation(val)))
+  .reduce((acc, entry) => {
+    for (const [tbl, rels] of Object.entries(entry)) acc[tbl] = { ...acc[tbl], ...rels }
+    return acc
+  }, defineRelationsPart(schema))
+`
+  const relationsOption = !useRelationsV2 ? '' : ', relations'
+  const schemaOption = !useRelationsV2 ? 'schema' : 'schema: tables'
+  const schemaExport = !useRelationsV2 ? 'schema' : 'tables as schema'
   const casingOption = casing ? `, casing: '${casing}'` : ''
-  let drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
+  let drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'${relationsImport}
 import * as schema from './db/schema.mjs'
-
-const db = drizzle({ connection: ${JSON.stringify(connection)}, schema${modeOption}${casingOption} })
-export { db, schema }
+${relationsOperations}
+const db = drizzle({ connection: ${JSON.stringify(connection)}, ${schemaOption}${modeOption}${casingOption}${relationsOption} })
+export { db, ${schemaExport} }
 `
 
   if (driver === 'pglite' && nuxt.options.dev) {
     // PGlite instance exported for use in devtools Drizzle Studio
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/pglite'
-import { PGlite } from '@electric-sql/pglite'
+import { PGlite } from '@electric-sql/pglite'${relationsImport}
 import * as schema from './db/schema.mjs'
-
+${relationsOperations}
 const client = new PGlite(${JSON.stringify(connection.dataDir)})
-const db = drizzle({ client, schema${casingOption} })
-export { db, schema, client }
+const db = drizzle({ client, ${schemaOption}${casingOption}${relationsOption} })
+export {db, ${schemaExport}, client }
 `
 
     addServerHandler({
@@ -394,21 +429,21 @@ export { db, schema, client }
     const hasReplicas = replicaUrls.length > 0
 
     drizzleOrmContent = `import { drizzle } from 'drizzle-orm/postgres-js'
-${hasReplicas ? `import { withReplicas } from 'drizzle-orm/pg-core'\n` : ''}import postgres from 'postgres'
+${hasReplicas ? `import { withReplicas } from 'drizzle-orm/pg-core'\n` : ''}import postgres from 'postgres'${relationsImport}
 import * as schema from './db/schema.mjs'
-
+${relationsOperations}
 const client = postgres('${connection.url}', { onnotice: () => {} })
 ${hasReplicas
-  ? `const primary = drizzle({ client, schema${casingOption} })
+  ? `const primary = drizzle({ client, ${schemaOption}${casingOption}${relationsOption} })
 
 const replicaUrls = ${JSON.stringify(replicaUrls)}
 const replicaConnections = replicaUrls.map(replicaUrl => {
   const replicaClient = postgres(replicaUrl, { onnotice: () => {} })
-  return drizzle({ client: replicaClient, schema${casingOption} })
+  return drizzle({ client: replicaClient, ${schemaOption}${casingOption}${relationsOption} })
 })
 const db = withReplicas(primary, replicaConnections)`
-  : `const db = drizzle({ client, schema${casingOption} })`}
-export { db, schema }
+  : `const db = drizzle({ client, ${schemaOption}${casingOption}${relationsOption} })`}
+export {db, ${schemaExport} }
 `
   }
   if (driver === 'mysql2' && nuxt.options.dev) {
@@ -416,44 +451,46 @@ export { db, schema }
     const hasReplicas = replicaUrls.length > 0
 
     if (hasReplicas) {
-      drizzleOrmContent = `import { drizzle } from 'drizzle-orm/mysql2'
+      drizzleOrmContent = `import { drizzle } from 'drizzle-orm/mysql2'${relationsImport}
 import { withReplicas } from 'drizzle-orm/mysql-core'
 import * as schema from './db/schema.mjs'
-
-const primary = drizzle({ connection: ${JSON.stringify(connection)}, schema${modeOption}${casingOption} })
+${relationsOperations}
+const primary = drizzle({ connection: ${JSON.stringify(connection)}, ${schemaOption}${modeOption}${casingOption}${relationsOption} })
 
 const replicaUrls = ${JSON.stringify(replicaUrls)}
 const replicaConnections = replicaUrls.map(replicaUrl => {
-  return drizzle({ connection: { uri: replicaUrl }, schema${modeOption}${casingOption} })
+  return drizzle({ connection: { uri: replicaUrl }, ${schemaOption}${modeOption}${casingOption}${relationsOption} })
 })
 const db = withReplicas(primary, replicaConnections)
-export { db, schema }
+export {db, ${schemaExport} }
 `
     }
   }
   if (driver === 'neon-http') {
     const urlExpr = connection.url ? `'${connection.url}'` : `process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL`
     drizzleOrmContent = generateLazyDbTemplate(
-      `import { neon } from '@neondatabase/serverless'\nimport { drizzle } from 'drizzle-orm/neon-http'`,
+      `import { neon } from '@neondatabase/serverless'\nimport { drizzle } from 'drizzle-orm/neon-http'${relationsImport}`,
       `    const url = ${urlExpr}
     if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
     const sql = neon(url)
-    _db = drizzle(sql, { schema${casingOption} })`
+    _db = drizzle(sql, { ${schemaOption}${casingOption}${relationsOption} })`,
+      { moduleScope: relationsOperations, schemaExport }
     )
   }
   if (driver === 'd1') {
     drizzleOrmContent = generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/d1'`,
+      `import { drizzle } from 'drizzle-orm/d1'${relationsImport}`,
       `    const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
     if (!binding) throw new Error('DB binding not found')
-    _db = drizzle(binding, { schema${casingOption} })`
+    _db = drizzle(binding, { ${schemaOption}${casingOption}${relationsOption} })`,
+      { moduleScope: relationsOperations, schemaExport }
     )
   }
   if (driver === 'd1-http') {
     // D1 over HTTP using sqlite-proxy
-    drizzleOrmContent = `import { drizzle } from 'drizzle-orm/sqlite-proxy'
+    drizzleOrmContent = `import { drizzle } from 'drizzle-orm/sqlite-proxy'${relationsImport}
 import * as schema from './db/schema.mjs'
-
+${relationsOperations}
 const accountId = ${JSON.stringify(connection.accountId)}
 const databaseId = ${JSON.stringify(connection.databaseId)}
 const apiToken = ${JSON.stringify(connection.apiToken)}
@@ -500,18 +537,19 @@ async function d1HttpDriver(sql, params, method) {
   return { rows }
 }
 
-const db = drizzle(d1HttpDriver, { schema${casingOption} })
+const db = drizzle(d1HttpDriver, { ${schemaOption}${casingOption}${relationsOption} })
 
-export { db, schema }
+export {db, ${schemaExport} }
 `
   }
   if (['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare') && connection?.hyperdriveId) {
     const bindingName = driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL'
     drizzleOrmContent = generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/${driver}'`,
+      `import { drizzle } from 'drizzle-orm/${driver}'${relationsImport}`,
       `    const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
     if (!hyperdrive) throw new Error('${bindingName} binding not found')
-    _db = drizzle({ connection: hyperdrive.connectionString, schema${modeOption}${casingOption} })`
+    _db = drizzle({ connection: hyperdrive.connectionString, ${schemaOption}${modeOption}${casingOption}${relationsOption} })`,
+      { moduleScope: relationsOperations, schemaExport }
     )
   }
   // Non-CF postgres-js: lazy env resolution for Docker/multi-deploy scenarios
@@ -522,20 +560,21 @@ export { db, schema }
 
     drizzleOrmContent = generateLazyDbTemplate(
       `import { drizzle } from 'drizzle-orm/postgres-js'
-${hasReplicas ? `import { withReplicas } from 'drizzle-orm/pg-core'\n` : ''}import postgres from 'postgres'`,
+${hasReplicas ? `import { withReplicas } from 'drizzle-orm/pg-core'\n` : ''}import postgres from 'postgres'${relationsImport}`,
       `    const url = ${urlExpr}
     if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
     const client = postgres(url, { onnotice: () => {} })
 ${hasReplicas
-  ? `    const primary = drizzle({ client, schema${casingOption} })
+  ? `    const primary = drizzle({ client, ${schemaOption}${casingOption}${relationsOption} })
 
     const replicaUrls = ${JSON.stringify(replicaUrls)}
     const replicaConnections = replicaUrls.map(replicaUrl => {
       const replicaClient = postgres(replicaUrl, { onnotice: () => {} })
-      return drizzle({ client: replicaClient, schema${casingOption} })
+      return drizzle({ client: replicaClient, ${schemaOption}${casingOption}${relationsOption} })
     })
     _db = withReplicas(primary, replicaConnections)`
-  : `    _db = drizzle({ client, schema${casingOption} })`}`
+  : `    _db = drizzle({ client, ${schemaOption}${casingOption}${relationsOption} })`}`,
+      { moduleScope: relationsOperations, schemaExport }
     )
   }
   // Non-CF mysql2: lazy env resolution for Docker/multi-deploy scenarios
@@ -545,28 +584,30 @@ ${hasReplicas
     const hasReplicas = replicaUrls.length > 0
 
     drizzleOrmContent = generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/mysql2'${hasReplicas ? `\nimport { withReplicas } from 'drizzle-orm/mysql-core'` : ''}`,
+      `import { drizzle } from 'drizzle-orm/mysql2'${hasReplicas ? `\nimport { withReplicas } from 'drizzle-orm/mysql-core'` : ''}${relationsImport}`,
       `    const uri = ${uriExpr}
     if (!uri) throw new Error('DATABASE_URL or MYSQL_URL required')
 ${hasReplicas
-  ? `    const primary = drizzle({ connection: { uri }, schema${modeOption}${casingOption} })
+  ? `    const primary = drizzle({ connection: { uri }, ${schemaOption}${modeOption}${casingOption}${relationsOption} })
 
     const replicaUrls = ${JSON.stringify(replicaUrls)}
     const replicaConnections = replicaUrls.map(replicaUrl => {
-      return drizzle({ connection: { uri: replicaUrl }, schema${modeOption}${casingOption} })
+      return drizzle({ connection: { uri: replicaUrl }, ${schemaOption}${modeOption}${casingOption}${relationsOption} })
     })
     _db = withReplicas(primary, replicaConnections)`
-  : `    _db = drizzle({ connection: { uri }, schema${modeOption}${casingOption} })`}`
+  : `    _db = drizzle({ connection: { uri }, ${schemaOption}${modeOption}${casingOption}${relationsOption} })`}`,
+      { moduleScope: relationsOperations, schemaExport }
     )
   }
   // libsql: lazy env resolution for Docker/multi-deploy scenarios (when no URL baked in)
   if (driver === 'libsql' && !connection.url) {
     drizzleOrmContent = generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/libsql'`,
+      `import { drizzle } from 'drizzle-orm/libsql'${relationsImport}`,
       `    const url = process.env.TURSO_DATABASE_URL || process.env.LIBSQL_URL || process.env.DATABASE_URL
     const authToken = process.env.TURSO_AUTH_TOKEN || process.env.LIBSQL_AUTH_TOKEN
     if (!url) throw new Error('Database URL not found. Set TURSO_DATABASE_URL, LIBSQL_URL, or DATABASE_URL')
-    _db = drizzle({ connection: { url, authToken }, schema${casingOption} })`
+    _db = drizzle({ connection: { url, authToken }, ${schemaOption}${casingOption}${relationsOption} })`,
+      { moduleScope: relationsOperations, schemaExport }
     )
   }
 
@@ -580,11 +621,22 @@ ${hasReplicas
     drizzleOrmContent.replace(/from '\.\/db\/schema\.mjs'/g, 'from \'./schema.mjs\'')
   )
 
+  const relationsTypesImports = !useRelationsV2 ? '' : ', ExtractTablesFromSchema, ExtractTablesWithRelationsParts, IncludeEveryTable'
+  const relationsTypes = !useRelationsV2
+    ? ''
+    : `
+type SchemaType = typeof schema
+type Tables = ExtractTablesFromSchema<SchemaType>
+type RelationsKeys = keyof SchemaType extends infer Key ?  Key extends keyof SchemaType ?  SchemaType[Key] extends ExtractTablesWithRelationsParts<any, any> ?  Key : never : never : never
+type FlatRelations = { [Key in keyof SchemaType[RelationsKeys]]: keyof SchemaType extends infer T ? T extends keyof SchemaType ? Key extends keyof SchemaType[T] ? SchemaType[T][Key] : never : never : never }
+type Relations = ExtractTablesWithRelationsParts<IncludeEveryTable<Tables>, Tables> & FlatRelations
+`
+
   // Write db.d.ts for TypeScript support
-  const physicalDbTypes = `import type { DrizzleConfig } from 'drizzle-orm'
+  const physicalDbTypes = `import type { DrizzleConfig${relationsTypesImports} } from 'drizzle-orm'
 import { drizzle as drizzleCore } from 'drizzle-orm/${driverForTypes}'
 import * as schema from './schema.mjs'
-
+${relationsTypes}
 /**
  * The database schema object
  * Defined in server/db/schema.ts and server/db/schema/*.ts
@@ -593,7 +645,7 @@ export { schema }
 /**
  * The ${driver} database client.
  */
-export const db: ReturnType<typeof drizzleCore<typeof schema>>
+export const db: ReturnType<typeof drizzleCore<${useRelationsV2 ? 'Tables, Relations' : 'typeof schema'}>>
 `
 
   await writeFile(
@@ -614,6 +666,7 @@ export const db: ReturnType<typeof drizzleCore<typeof schema>>
   }
   try {
     await writeFile(join(physicalDbDir, 'package.json'), JSON.stringify(packageJson, null, 2))
+    await writeFile(join(physicalDbDir, 'index.d.ts'), `export * from './db'`)
     // Stub schema files only if they don't exist (real types written by app:templatesGenerated hook)
     const schemaPath = join(physicalDbDir, 'schema.mjs')
     const schemaDtsPath = join(physicalDbDir, 'schema.d.mts')
