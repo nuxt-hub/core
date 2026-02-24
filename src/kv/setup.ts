@@ -1,7 +1,8 @@
 import { mkdir, writeFile, copyFile } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
 import { join } from 'pathe'
 import { defu } from 'defu'
-import { addTypeTemplate, addServerImports } from '@nuxt/kit'
+import { addTemplate, addTypeTemplate, addServerImports } from '@nuxt/kit'
 import { resolve, logWhenReady, addWranglerBinding } from '../utils'
 
 import type { Nuxt } from '@nuxt/schema'
@@ -107,21 +108,16 @@ export const kv = createStorage({
 });
 `
 
-  // Write to node_modules/@nuxthub/kv/ for direct imports (workflow compatibility)
-  const physicalKvDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'kv')
-  await mkdir(physicalKvDir, { recursive: true })
+  const kvHash = createHash('sha256').update(kvContent).digest('hex').slice(0, 12)
+  const kvShimTemplate = addTemplate({
+    filename: `hub/kv.${kvHash}.mjs`,
+    write: true,
+    getContents: () => kvContent
+  })
 
-  // Write kv.mjs to node_modules/@nuxthub/kv/
-  await writeFile(
-    join(physicalKvDir, 'kv.mjs'),
-    kvContent
-  )
-
-  // Copy kv.d.ts for TypeScript support
-  await copyFile(
-    resolve('kv/runtime/kv.d.ts'),
-    join(physicalKvDir, 'kv.d.ts')
-  )
+  nuxt.options.alias ||= {}
+  nuxt.options.alias['@nuxthub/kv'] = kvShimTemplate.dst
+  nuxt.options.alias['hub:kv'] = kvShimTemplate.dst
 
   // Create package.json for Node.js module resolution
   const packageJson = {
@@ -135,24 +131,32 @@ export const kv = createStorage({
       }
     }
   }
-  await writeFile(
-    join(physicalKvDir, 'package.json'),
-    JSON.stringify(packageJson, null, 2)
-  )
-
-  // Create hub:kv alias to @nuxthub/kv for backwards compatibility
-  nuxt.options.alias!['hub:kv'] = '@nuxthub/kv'
 
   // Add auto-imports for both @nuxthub/kv and hub:kv
   addServerImports({ name: 'kv', from: '@nuxthub/kv', meta: { description: `The Key-Value storage instance.` } })
 
-  // Setup KV Types for hub:kv - point to @nuxthub/kv for type definitions
+  // Setup KV Types for @nuxthub/kv and hub:kv.
   addTypeTemplate({
     filename: 'hub/kv.d.ts',
-    getContents: () => `declare module 'hub:kv' {
+    getContents: () => `import type { KVStorage } from '@nuxthub/core/kv'
+
+declare module '@nuxthub/kv' {
+  export const kv: KVStorage
+}
+
+declare module 'hub:kv' {
   export * from '@nuxthub/kv'
 }`
   }, { nitro: true, nuxt: true })
+
+  // Only materialize a physical package during build.
+  nuxt.hook('nitro:build:before', async () => {
+    const physicalKvDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'kv')
+    await mkdir(physicalKvDir, { recursive: true })
+    await writeFile(join(physicalKvDir, 'kv.mjs'), kvContent)
+    await copyFile(resolve('kv/runtime/kv.d.ts'), join(physicalKvDir, 'kv.d.ts'))
+    await writeFile(join(physicalKvDir, 'package.json'), JSON.stringify(packageJson, null, 2))
+  })
 
   logWhenReady(nuxt, `\`hub:kv\` using \`${driver}\` driver`)
 }
