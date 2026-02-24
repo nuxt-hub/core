@@ -32,8 +32,6 @@ async function createD1HttpClient(accountId: string, databaseId: string, apiToke
  */
 export async function createDrizzleClient(config: ResolvedDatabaseConfig, hubDir: string) {
   const { driver, connection, casing } = config
-  let client
-
   let pkg = ''
   if (driver === 'd1' || driver === 'd1-http') {
     // Get credentials from config or env vars
@@ -45,14 +43,9 @@ export async function createDrizzleClient(config: ResolvedDatabaseConfig, hubDir
     }
     return createD1HttpClient(accountId, databaseId, apiToken, casing)
   } else if (driver === 'postgres-js') {
-    const clientPkg = 'postgres'
-    const { default: postgres } = await import(clientPkg)
-    client = postgres(connection.url, {
-      onnotice: () => {}
-    })
     pkg = 'drizzle-orm/postgres-js'
     const { drizzle } = await import(pkg)
-    return drizzle({ client, casing })
+    return drizzle({ connection: { ...connection, onnotice: () => {} }, casing })
   } else if (driver === 'neon-http') {
     const clientPkg = '@neondatabase/serverless'
     const { neon } = await import(clientPkg)
