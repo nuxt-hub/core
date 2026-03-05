@@ -13,8 +13,10 @@
   "exports": {
     ".": {
       "types": "./dist/types.d.mts",
-      "import": "./dist/module.mjs"
+      "import": "./dist/module.mjs",
+      "default": "./dist/module.mjs"
     },
+    "./package.json": "./package.json",
     "./blob": {
       "types": "./dist/blob/lib/index.d.ts",
       "import": "./dist/blob/lib/index.mjs"
