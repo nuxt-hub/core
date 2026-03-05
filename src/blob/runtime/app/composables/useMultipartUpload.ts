@@ -5,6 +5,32 @@ import { readonly, ref, type Ref } from 'vue'
 import type { SerializeObject } from 'nitropack'
 import type { BlobUploadedPart, BlobObject } from '@nuxthub/core/blob'
 import { useRuntimeConfig } from '#imports'
+
+type VercelBlobUpload = (pathname: string, body: File, options: {
+  access: 'public' | 'private'
+  multipart: boolean
+  handleUploadUrl: string
+  onUploadProgress: (uploadProgress: { percentage: number }) => void
+}) => Promise<SerializeObject<BlobObject>>
+
+type RuntimeImporter = (specifier: string) => Promise<{ upload?: VercelBlobUpload }>
+
+const runtimeImport: RuntimeImporter = (specifier) => {
+  return new Function('modulePath', 'return import(modulePath)')(specifier) as Promise<{ upload?: VercelBlobUpload }>
+}
+
+export async function loadVercelBlobClient(importer: RuntimeImporter = runtimeImport): Promise<VercelBlobUpload> {
+  try {
+    const mod = await importer('@vercel/blob/client')
+    if (typeof mod.upload !== 'function') {
+      throw new TypeError('Missing upload export in @vercel/blob/client')
+    }
+    return mod.upload
+  } catch (error) {
+    const message = '@vercel/blob is required to use `useMultipartUpload` with Vercel Blob. Install it with `pnpm add @vercel/blob`.'
+    throw new Error(message, { cause: error as Error })
+  }
+}
 /**
  * Create a multipart uploader.
  */
@@ -130,17 +156,14 @@ export function useMultipartUpload(
     const start = async () => {
       const hub = useRuntimeConfig().public.hub
       if (hub.blobProvider === 'vercel-blob') {
-        // #809 - variable indirection to avoid Vite static analysis
-        const pkg = '@vercel/blob/client'
-        return import(/* @vite-ignore */ pkg).then(({ upload }) => {
-          return upload(file.name, file, {
-            access: 'public',
-            multipart: true,
-            handleUploadUrl: joinURL(baseURL, 'multipart', file.name || ''),
-            onUploadProgress: (uploadProgress) => {
-              progress.value = uploadProgress.percentage
-            }
-          })
+        const upload = await loadVercelBlobClient()
+        return upload(file.name, file, {
+          access: 'public',
+          multipart: true,
+          handleUploadUrl: joinURL(baseURL, 'multipart', file.name || ''),
+          onUploadProgress: (uploadProgress) => {
+            progress.value = uploadProgress.percentage
+          }
         })
       }
 
