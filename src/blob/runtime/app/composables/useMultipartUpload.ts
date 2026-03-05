@@ -130,7 +130,9 @@ export function useMultipartUpload(
     const start = async () => {
       const hub = useRuntimeConfig().public.hub
       if (hub.blobProvider === 'vercel-blob') {
-        return import('@vercel/blob/client').then(({ upload }) => {
+        // #809 - variable indirection to avoid Vite static analysis
+        const pkg = '@vercel/blob/client'
+        return import(/* @vite-ignore */ pkg).then(({ upload }) => {
           return upload(file.name, file, {
             access: 'public',
             multipart: true,
