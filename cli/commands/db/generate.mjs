@@ -31,7 +31,13 @@ export default defineCommand({
       type: 'boolean',
       description: 'Show verbose output.',
       required: false
-    }
+    },
+    dialect: {
+      type: 'enum',
+      options: ["sqlite", "postgresql", "mysql", "all"],
+      description: 'Database dialect, one of postgresql mysql sqlite',
+      required: false
+    },
   },
   async run({ args }) {
     if (args.verbose) {
@@ -39,27 +45,52 @@ export default defineCommand({
       consola.level = 4
     }
     const cwd = args.cwd ? resolve(process.cwd(), args.cwd) : process.cwd()
-    const options = {
+    let options = {
       stdout: 'pipe',
       stderr: 'pipe',
       preferLocal: true,
-      cwd
+      cwd,
+      env: {}
     }
-    consola.info('Ensuring database schema is generated...')
-    await execa(options)`nuxt prepare`
-    const alias = await getTsconfigAliases(cwd)
-    await buildDatabaseSchema(join(options.cwd, '.nuxt'), { relativeDir: cwd, alias })
-    consola.info('Generating database migrations...')
-    const { stderr } = await execa({
-      ...options,
-      stdin: 'inherit',
-      stdout: 'inherit'
-    })`drizzle-kit generate --config=./.nuxt/hub/db/drizzle.config.ts${args.custom ? ' --custom' : ''}${args.name ? ` --name=${args.name}` : ''}`
-    // Drizzle-kit does not exit with an error code when there is an error, so we need to check the stderr
-    if (stderr) {
-      consola.error(stderr)
-      process.exit(1)
+
+    async function GenerateMigration(dialect) {
+      if (dialect)
+        options.env = {
+          ...process.env,
+          NUXT_HUB_DB: dialect
+        }
+      consola.info(`Ensuring database schema is generated${dialect ? ' for ' + dialect : ''}...`)
+      await execa(options)`nuxt prepare`
+      const alias = await getTsconfigAliases(cwd)
+      await buildDatabaseSchema(join(options.cwd, '.nuxt'), { relativeDir: cwd, alias })
+      consola.info(`Generating database migrations${dialect ? ' for ' + dialect : ''}...`)
+      const { stderr } = await execa({
+        ...options,
+        stdin: 'inherit',
+        stdout: 'inherit'
+      })`drizzle-kit generate --config=./.nuxt/hub/db/drizzle.config.ts${args.custom ? ' --custom' : ''}${args.name ? ` --name=${args.name}` : ''}`
+      // Drizzle-kit does not exit with an error code when there is an error, so we need to check the stderr
+      if (stderr) {
+        consola.error(stderr)
+        process.exit(1)
+      }
+      delete options.env.NUXT_HUB_DB
     }
+
+    if (args.dialect === "all") {
+      for (const _dialect of ["sqlite", "postgresql", "mysql"]) {
+        await GenerateMigration(_dialect)
+      }
+    } else {
+      await GenerateMigration(args.dialect)
+    }
+
+
+    if (args.dialect) {
+      consola.info('Resetting .nuxt with original db dialect')
+      await execa(options)`nuxt prepare`
+    }
+
     consola.success('Database migrations generated successfully.')
     consola.info('Run `npx nuxt dev` or run `npx nuxt db migrate` to apply the migrations.')
   }
