@@ -45,7 +45,8 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
   config = defu(config, {
     migrationsDirs: getLayerDirectories(nuxt).map(layer => join(layer.server, 'db/migrations')),
     queriesPaths: [],
-    applyMigrationsDuringBuild: true
+    applyMigrationsDuringBuild: true,
+    applyMigrationsDuringDev: true
   })
 
   switch (config.dialect) {
@@ -74,14 +75,24 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
         }
         break
       }
-      // Cloudflare D1 (production only - dev/prepare uses local libsql)
-      if (hub.hosting.includes('cloudflare') && !nuxt.options.dev && !nuxt.options._prepare) {
+      // Cloudflare D1 via binding - explicit driver setting
+      // In dev mode, set `driver: 'd1'` explicitly to enable D1 binding (for wrangler dev)
+      if (config.driver === 'd1') {
+        break
+      }
+      // Cloudflare D1 (production only - dev uses local libsql by default)
+      if (hub.hosting.includes('cloudflare') && !nuxt.options.dev) {
         config.driver = 'd1'
         break
       }
-      // User explicitly set libsql without env vars - allow lazy resolution at runtime
+      // User explicitly set libsql (e.g. Turso with inline config)
       if (userExplicitLibsql) {
         config.connection = defu(config.connection, { url: '' })
+        break
+      }
+      // Cloudflare D1 (production only - dev/prepare uses local libsql)
+      if (hub.hosting.includes('cloudflare') && !nuxt.options.dev && !nuxt.options._prepare) {
+        config.driver = 'd1'
         break
       }
       config.driver ||= 'libsql'
@@ -327,6 +338,12 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
 async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
   const { dialect, driver, connection, mode, casing, replicas } = hub.db as ResolvedDatabaseConfig
 
+  const postgresOpts = (() => {
+    if (driver !== 'postgres-js' || !connection) return '{ onnotice: () => {} }'
+    const { url: _, ...rest } = connection as Record<string, unknown>
+    return Object.keys(rest).length ? `{ onnotice: () => {}, ...${JSON.stringify(rest)} }` : '{ onnotice: () => {} }'
+  })()
+
   // For types, d1-http uses sqlite-proxy
   const driverForTypes = driver === 'd1-http' ? 'sqlite-proxy' : driver
 
@@ -369,28 +386,43 @@ export { db, schema, client }
       route: '/api/_hub/db/launch-studio'
     })
   }
+  // Add server handler for D1 binding in dev mode (for wrangler dev)
+  if (driver === 'd1' && nuxt.options.dev) {
+    addServerHandler({
+      handler: await resolvePath('db/runtime/api/launch-studio.post.dev'),
+      method: 'post',
+      route: '/api/_hub/db/launch-studio'
+    })
+  }
   if (driver === 'postgres-js' && nuxt.options.dev) {
-    // disable notice logger for postgres-js in dev
     const replicaUrls = (replicas || []).filter(Boolean)
     const hasReplicas = replicaUrls.length > 0
 
-    drizzleOrmContent = `import { drizzle } from 'drizzle-orm/postgres-js'
-${hasReplicas ? `import { withReplicas } from 'drizzle-orm/pg-core'\n` : ''}import postgres from 'postgres'
+    if (hasReplicas) {
+      drizzleOrmContent = `import { drizzle } from 'drizzle-orm/postgres-js'
+import { withReplicas } from 'drizzle-orm/pg-core'
+import postgres from 'postgres'
 import * as schema from './db/schema.mjs'
 
-const client = postgres('${connection.url}', { onnotice: () => {} })
-${hasReplicas
-  ? `const primary = drizzle({ client, schema${casingOption} })
+const client = postgres('${connection.url}', ${postgresOpts})
+const primary = drizzle({ client, schema${casingOption} })
 
 const replicaUrls = ${JSON.stringify(replicaUrls)}
 const replicaConnections = replicaUrls.map(replicaUrl => {
-  const replicaClient = postgres(replicaUrl, { onnotice: () => {} })
+  const replicaClient = postgres(replicaUrl, ${postgresOpts})
   return drizzle({ client: replicaClient, schema${casingOption} })
 })
-const db = withReplicas(primary, replicaConnections)`
-  : `const db = drizzle({ client, schema${casingOption} })`}
+const db = withReplicas(primary, replicaConnections)
 export { db, schema }
 `
+    } else {
+      drizzleOrmContent = `import { drizzle } from 'drizzle-orm/postgres-js'
+import * as schema from './db/schema.mjs'
+
+const db = drizzle({ connection: { ...${JSON.stringify(connection)}, onnotice: () => {} }, schema${casingOption} })
+export { db, schema }
+`
+    }
   }
   if (driver === 'mysql2' && nuxt.options.dev) {
     const replicaUrls = (replicas || []).filter(Boolean)
@@ -506,13 +538,13 @@ export { db, schema }
 ${hasReplicas ? `import { withReplicas } from 'drizzle-orm/pg-core'\n` : ''}import postgres from 'postgres'`,
       `    const url = ${urlExpr}
     if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
-    const client = postgres(url, { onnotice: () => {} })
+    const client = postgres(url, ${postgresOpts})
 ${hasReplicas
   ? `    const primary = drizzle({ client, schema${casingOption} })
 
     const replicaUrls = ${JSON.stringify(replicaUrls)}
     const replicaConnections = replicaUrls.map(replicaUrl => {
-      const replicaClient = postgres(replicaUrl, { onnotice: () => {} })
+      const replicaClient = postgres(replicaUrl, ${postgresOpts})
       return drizzle({ client: replicaClient, schema${casingOption} })
     })
     _db = withReplicas(primary, replicaConnections)`

@@ -68,7 +68,7 @@ const links = computed(() => [
 
 <template>
   <UApp>
-    <UBanner
+    <!-- <UBanner
       id="nuxthub-multi-vendor"
       title="NuxtHub multi-vendor is now available"
       icon="i-lucide-globe"
@@ -83,7 +83,7 @@ const links = computed(() => [
           to: '/changelog/nuxthub-multi-vendor'
         }
       ]"
-    />
+    /> -->
 
     <AppHeader />
     <UMain class="relative">

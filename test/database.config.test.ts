@@ -61,7 +61,8 @@ describe('resolveDatabaseConfig', () => {
         connection: {
           url: 'file:/tmp/test-hub/db/sqlite.db'
         },
-        applyMigrationsDuringBuild: true
+        applyMigrationsDuringBuild: true,
+        applyMigrationsDuringDev: true
       })
       expect(result).not.toBe(false)
       if (result !== false) {
@@ -471,6 +472,21 @@ describe('resolveDatabaseConfig', () => {
       }
     })
 
+    it('should respect custom applyMigrationsDuringDev', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'sqlite',
+        applyMigrationsDuringDev: false
+      })
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).not.toBe(false)
+      if (result !== false) {
+        expect(result.applyMigrationsDuringDev).toBe(false)
+      }
+    })
+
     it('should handle multiple layers for migrationsDirs', async () => {
       const nuxt = createMockNuxt([
         { config: { srcDir: '/app', rootDir: '/app', serverDir: '/app/server' } },
@@ -687,6 +703,7 @@ describe('resolveDatabaseConfig', () => {
       expect(result).not.toBe(false)
       if (result !== false) {
         expect(result.applyMigrationsDuringBuild).toBe(false)
+        expect(result.applyMigrationsDuringDev).toBe(true)
       }
     })
   })

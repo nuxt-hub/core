@@ -42,6 +42,7 @@ export async function setupDevTools(nuxt: Nuxt, hub: HubConfig) {
     addServerHandler({ route: '/_hub/devtools/kv/:key', handler: resolve('../devtools-runtime/server/api/kv/[key]') })
 
     // Hosted DevTools UI compatibility (hub.nuxt.com)
+    addServerHandler({ route: '/api/_hub/kv', method: 'get', handler: resolve('../devtools-runtime/server/api/_hub/kv/[...key]') })
     addServerHandler({ route: '/api/_hub/kv/**:key', handler: resolve('../devtools-runtime/server/api/_hub/kv/[...key]') })
   }
   if (hub.blob) {
@@ -62,6 +63,7 @@ export async function setupDevTools(nuxt: Nuxt, hub: HubConfig) {
     // Hosted DevTools UI compatibility (hub.nuxt.com)
     addServerHandler({ route: '/api/_hub/cache', method: 'get', handler: resolve('../devtools-runtime/server/api/_hub/cache/index.get') })
     addServerHandler({ route: '/api/_hub/cache/batch-delete', method: 'post', handler: resolve('../devtools-runtime/server/api/_hub/cache/batch-delete.post') })
+    addServerHandler({ route: '/api/_hub/cache/clear', method: 'delete', handler: resolve('../devtools-runtime/server/api/_hub/cache/clear.delete') })
     addServerHandler({ route: '/api/_hub/cache/clear/**:base', method: 'delete', handler: resolve('../devtools-runtime/server/api/_hub/cache/clear.delete') })
     addServerHandler({ route: '/api/_hub/cache/**:key', handler: resolve('../devtools-runtime/server/api/_hub/cache/[...key]') })
   }

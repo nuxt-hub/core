@@ -1,6 +1,63 @@
 # Changelog
 
 
+## v0.10.7
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.10.5...v0.10.7)
+
+### 🚀 Enhancements
+
+- **db:** Add support for database replica ([#808](https://github.com/nuxt-hub/core/pull/808))
+- **cli:** Add "name" and "custom" arguments for db generate cli command ([#816](https://github.com/nuxt-hub/core/pull/816))
+- **cli:** Add `--force` flag to skip confirmation when dropping all tables ([#834](https://github.com/nuxt-hub/core/pull/834))
+- **db:** Add `hub.db.applyMigrationsDuringDev: boolean` option ([#837](https://github.com/nuxt-hub/core/pull/837))
+- **db:** Use drizzle studio d1 driver ([#846](https://github.com/nuxt-hub/core/pull/846))
+
+### 🩹 Fixes
+
+- **db:** Generate schema types during prepare ([#795](https://github.com/nuxt-hub/core/pull/795))
+- Change Cloudflare D1 API URI ([#794](https://github.com/nuxt-hub/core/pull/794))
+- **devtools:** Point Drizzle Studio to correct D1 database file ([#806](https://github.com/nuxt-hub/core/pull/806))
+- **db:** Create package.json during prepare ([#797](https://github.com/nuxt-hub/core/pull/797))
+- **db:** Resolve Nuxt aliases in schema bundling ([#802](https://github.com/nuxt-hub/core/pull/802))
+- **db:** Correct D1 migrations_dir path in wrangler.json ([#814](https://github.com/nuxt-hub/core/pull/814))
+- **playground:** Fix get todos database query ([#819](https://github.com/nuxt-hub/core/pull/819))
+- Fix incorrect license in README ([#829](https://github.com/nuxt-hub/core/pull/829))
+- **db:** Resolve @nuxthub/db from rootDir for pnpm workspaces ([#828](https://github.com/nuxt-hub/core/pull/828))
+- **db:** Bundle cache schema entries ([#833](https://github.com/nuxt-hub/core/pull/833))
+- **db:** Respect explicit libsql driver on Cloudflare ([#842](https://github.com/nuxt-hub/core/pull/842))
+- **db:** Pass driver options to postgres-js ([#844](https://github.com/nuxt-hub/core/pull/844))
+
+### 📖 Documentation
+
+- Fix typo in schema documentation ([#807](https://github.com/nuxt-hub/core/pull/807))
+- Add environments, CI/CD guide, and env vars reference ([#804](https://github.com/nuxt-hub/core/pull/804))
+- Add nuxt-studio ([64f9105](https://github.com/nuxt-hub/core/commit/64f9105))
+- Make formatting in db migrate command usage consistant ([#822](https://github.com/nuxt-hub/core/pull/822))
+- Update migration handling for Cloudflare D1 ([#848](https://github.com/nuxt-hub/core/pull/848))
+- **blob:** Clarify nuxt image dev config ([#851](https://github.com/nuxt-hub/core/pull/851))
+- Fix typo in url ([d4e24b3](https://github.com/nuxt-hub/core/commit/d4e24b3))
+
+### 🏡 Chore
+
+- Update deps ([7a8ec94](https://github.com/nuxt-hub/core/commit/7a8ec94))
+- Update deps" ([a5f46e9](https://github.com/nuxt-hub/core/commit/a5f46e9))
+- **release:** V0.10.6 ([ea6305c](https://github.com/nuxt-hub/core/commit/ea6305c))
+- Don't pass empty params to kit cli ([43dc045](https://github.com/nuxt-hub/core/commit/43dc045))
+
+### ❤️ Contributors
+
+- Rihan Arfan ([@RihanArfan](https://github.com/RihanArfan))
+- Max <maximogarciamtnez@gmail.com>
+- M Reinhard ([@michaelreinhard1](https://github.com/michaelreinhard1))
+- Branislav Juhás ([@branislavjuhaas](https://github.com/branislavjuhaas))
+- Miguelrk <miguelromerokaram@gmail.com>
+- Hareland ([@hareland](https://github.com/hareland))
+- Darius Haskell ([@hsklnet](https://github.com/hsklnet))
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+- Jens Becker <mail@jens.pub>
+- Nogic ([@nogic1008](https://github.com/nogic1008))
+
 ## v0.10.6
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.10.5...v0.10.6)

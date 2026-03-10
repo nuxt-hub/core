@@ -7,6 +7,7 @@ export default defineNitroPlugin(async () => {
 
   const hub = useRuntimeConfig().hub as ResolvedHubConfig
   if (!hub.db) return
+  if (!hub.db.applyMigrationsDuringDev) return
 
   let db
   try {

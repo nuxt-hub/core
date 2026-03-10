@@ -41,6 +41,11 @@ export default defineCommand({
       type: 'boolean',
       description: 'Show verbose output.',
       required: false
+    },
+    force: {
+      type: 'boolean',
+      description: 'Force by skipping confirmation prompt.',
+      required: false
     }
   },
   async run({ args }) {
@@ -52,15 +57,19 @@ export default defineCommand({
 
     consola.warn('This command will drop all tables. ALL DATA STORED IN THE DATABASE WILL BE LOST!')
 
-    const confirmation = await consola.prompt('Type "confirm" to drop all tables:', {
-      type: 'text',
-      placeholder: 'confirm',
-      cancel: 'null'
-    })
+    if (args.force) {
+      consola.warn('Skipping confirmation prompt due to --force flag. Dropping all tables without confirmation.')
+    } else {
+      const confirmation = await consola.prompt('Type "confirm" to drop all tables:', {
+        type: 'text',
+        placeholder: 'confirm',
+        cancel: 'null'
+      })
 
-    if (confirmation !== 'confirm') {
-      consola.info('Operation cancelled.')
-      return
+      if (confirmation !== 'confirm') {
+        consola.info('Operation cancelled.')
+        return
+      }
     }
 
     consola.info('Preparing database configuration...')

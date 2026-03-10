@@ -12,7 +12,7 @@ NuxtHub supercharges your Nuxt development workflow so you can focus on shipping
 ## ✨ Key Features
 
 NuxtHub provides optional features to help you build full-stack applications:
-- [**SQL database**](https://hub.nuxt.com/docs/database) to store your application's data with [automatic migrations](https://hub.nuxt.com/docs/databas/migrations)
+- [**SQL database**](https://hub.nuxt.com/docs/database) to store your application's data with [automatic migrations](https://hub.nuxt.com/docs/database/migrations)
 - [**Files storage**](https://hub.nuxt.com/docs/blob) to store static assets, such as images, videos and more
 - [**Caching system**](https://hub.nuxt.com/docs/cache) for your Nuxt pages, API routes or server functions
 - [**Key-Value**](https://hub.nuxt.com/docs/kv) to store JSON data accessible globally with low-latency
@@ -67,7 +67,7 @@ pnpm test:watch
 
 ## 📄 License
 
-[Apache 2.0](./LICENSE)
+[MIT](./LICENSE)
 
 <!-- Badges -->
 [npm-version-src]: https://img.shields.io/npm/v/@nuxthub/core/latest.svg?style=flat&colorA=020420&colorB=00DC82

@@ -28,6 +28,10 @@ export default defineNuxtConfig({
 
   hub: {
     db: 'sqlite',
+    // db: {
+    //   dialect: 'sqlite',
+    //   driver: 'd1'
+    // },
     blob: true,
     kv: true,
     cache: true
