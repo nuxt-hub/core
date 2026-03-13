@@ -1,4 +1,4 @@
-import { writeFile, readFile } from 'node:fs/promises'
+import { writeFile, readFile, mkdir } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { join } from 'pathe'
 import { defu } from 'defu'
@@ -36,8 +36,32 @@ export function setupCloudflare(nuxt: Nuxt, hub: HubConfig) {
     })
   }
 
-  // Setup wrangler.json processing (environment flattening + feature hooks)
-  if (nuxt.options.dev || nuxt.options._prepare) {
+  if (nuxt.options._prepare) {
+    return
+  }
+
+  if (nuxt.options.dev) {
+    const configPath = join(nuxt.options.buildDir, 'wrangler.json')
+    nuxt.options.nitro.cloudflare.dev ||= {}
+    nuxt.options.nitro.cloudflare.dev.configPath ||= configPath
+
+    nuxt.hook('nitro:config', async (nitroConfig) => {
+      nitroConfig.cloudflare ||= {}
+      nitroConfig.cloudflare.dev ||= {}
+      nitroConfig.cloudflare.dev.configPath ||= configPath
+
+      const wranglerConfig = nitroConfig.cloudflare.wrangler || nuxt.options.nitro.cloudflare?.wrangler
+      if (!wranglerConfig) {
+        return
+      }
+
+      await mkdir(nuxt.options.buildDir, { recursive: true })
+      await writeFile(configPath, JSON.stringify({
+        compatibility_date: resolveCloudflareCompatibilityDate(nuxt),
+        ...wranglerConfig
+      }, null, 2), 'utf-8')
+    })
+
     return
   }
 
@@ -45,6 +69,15 @@ export function setupCloudflare(nuxt: Nuxt, hub: HubConfig) {
     const cloudflareEnv = process.env.CLOUDFLARE_ENV
     await processWranglerConfigFile(nuxt, cloudflareEnv)
   })
+}
+
+function resolveCloudflareCompatibilityDate(nuxt: Nuxt) {
+  const compatibilityDate = nuxt.options.compatibilityDate
+  if (typeof compatibilityDate === 'string') {
+    return compatibilityDate
+  }
+
+  return compatibilityDate.cloudflare || compatibilityDate.default
 }
 
 /**
