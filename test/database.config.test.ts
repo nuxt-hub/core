@@ -340,6 +340,54 @@ describe('resolveDatabaseConfig', () => {
         applyMigrationsDuringBuild: false
       })
     })
+
+    it('should disable build migrations for Cloudflare Hyperdrive without a direct URL', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'postgresql',
+        connection: {
+          hyperdriveId: 'hyperdrive-id'
+        }
+      })
+      hub.hosting = 'cloudflare'
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'postgresql',
+        driver: 'postgres-js',
+        connection: {
+          hyperdriveId: 'hyperdrive-id',
+          url: ''
+        },
+        applyMigrationsDuringBuild: false
+      })
+    })
+
+    it('should keep build migrations enabled for Cloudflare Hyperdrive when DATABASE_URL is set', async () => {
+      process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/db'
+
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'postgresql',
+        connection: {
+          hyperdriveId: 'hyperdrive-id'
+        }
+      })
+      hub.hosting = 'cloudflare'
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'postgresql',
+        driver: 'postgres-js',
+        connection: {
+          hyperdriveId: 'hyperdrive-id',
+          url: 'postgresql://user:pass@localhost:5432/db'
+        },
+        applyMigrationsDuringBuild: true
+      })
+    })
   })
 
   describe('MySQL dialect', () => {
@@ -401,6 +449,29 @@ describe('resolveDatabaseConfig', () => {
       expect(result).toMatchObject({
         dialect: 'mysql',
         driver: 'mysql2',
+        applyMigrationsDuringBuild: false
+      })
+    })
+
+    it('should disable build migrations for Cloudflare Hyperdrive MySQL without a direct URL', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'mysql',
+        connection: {
+          hyperdriveId: 'hyperdrive-id'
+        }
+      })
+      hub.hosting = 'cloudflare'
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'mysql',
+        driver: 'mysql2',
+        connection: {
+          hyperdriveId: 'hyperdrive-id',
+          uri: ''
+        },
         applyMigrationsDuringBuild: false
       })
     })
