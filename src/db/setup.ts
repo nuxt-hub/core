@@ -102,7 +102,7 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
     }
     case 'postgresql': {
       config.connection = defu(config.connection, { url: process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL || '' })
-      if (hub.hosting.includes('cloudflare') && config.connection?.hyperdriveId && !config.connection.url) {
+      if (hub.hosting.includes('cloudflare') && config.connection?.hyperdriveId && !config.connection.url && (!config.driver || config.driver === 'postgres-js')) {
         config.driver ||= 'postgres-js'
         config.applyMigrationsDuringBuild = false
         break

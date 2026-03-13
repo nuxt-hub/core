@@ -388,6 +388,23 @@ describe('resolveDatabaseConfig', () => {
         applyMigrationsDuringBuild: true
       })
     })
+
+    it('should still require a direct URL for explicit neon-http with Hyperdrive', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'postgresql',
+        driver: 'neon-http',
+        connection: {
+          hyperdriveId: 'hyperdrive-id'
+        },
+        applyMigrationsDuringBuild: true
+      })
+      hub.hosting = 'cloudflare'
+
+      await expect(resolveDatabaseConfig(nuxt, hub)).rejects.toThrow(
+        '`neon-http` driver requires `DATABASE_URL`, `POSTGRES_URL`, or `POSTGRESQL_URL` environment variable when `applyMigrationsDuringBuild` is enabled'
+      )
+    })
   })
 
   describe('MySQL dialect', () => {
