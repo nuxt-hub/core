@@ -2,8 +2,8 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
   extends: ['../basic'],
-  compatibilityDate: '2025-07-15',
   modules: ['../../../src/module'],
+  compatibilityDate: '2025-07-15',
   nitro: {
     preset: 'cloudflare_module'
   },
