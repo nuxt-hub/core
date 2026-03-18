@@ -139,6 +139,8 @@ export const kv = createStorage({
     join(physicalKvDir, 'package.json'),
     JSON.stringify(packageJson, null, 2)
   )
+  // Write index.d.ts for TypeScript to resolve relative directory imports
+  await writeFile(join(physicalKvDir, 'index.d.ts'), `export * from './kv'`)
 
   // Create hub:kv alias to @nuxthub/kv for backwards compatibility
   nuxt.options.alias!['hub:kv'] = '@nuxthub/kv'
