@@ -3,6 +3,10 @@ import { defineNuxtConfig } from 'nuxt/config'
 export default defineNuxtConfig({
   extends: ['../basic'],
   modules: ['../../../src/module'],
+  compatibilityDate: '2025-07-15',
+  nitro: {
+    preset: 'cloudflare_module'
+  },
   hub: {
     blob: { driver: 'cloudflare-r2', bucketName: 'test-bucket', binding: 'BLOB' },
     kv: { driver: 'cloudflare-kv-binding', namespaceId: 'test-kv-id', binding: 'KV' },
