@@ -44,69 +44,70 @@ NuxtHub is a Nuxt module giving you all the features required to ship full-stack
 
 #default
 ::tabs{class="xl:-mt-10"}
-:::tabs-item{label="Database" icon="i-lucide-database"}
-```ts
-import { eq, desc } from 'drizzle-orm'
-import { db, schema } from '@nuxthub/db'
+  :::tabs-item{label="Database" icon="i-lucide-database"}
+  ```ts
+  import { eq, desc } from 'drizzle-orm'
+  import { db, schema } from '@nuxthub/db'
 
-// Type-safe queries with Drizzle ORM
-const todos = await db.query.todos.findMany({
-  where: eq(schema.todos.completed, false),
-  orderBy: [desc(schema.todos.createdAt)]
-})
+  // Type-safe queries with Drizzle ORM
+  const todos = await db.query.todos.findMany({
+    where: eq(schema.todos.completed, false),
+    orderBy: [desc(schema.todos.createdAt)]
+  })
 
-// Insert with automatic type inference
-await db.insert(schema.todos).values({
-  title: 'Ship my app',
-  completed: false,
-})
-```
-:::
-:::tabs-item{label="Blob" icon="i-lucide-shapes"}
-```ts
-import { blob } from 'hub:blob'
+  // Insert with automatic type inference
+  await db.insert(schema.todos).values({
+    title: 'Ship my app',
+    completed: false,
+  })
+  ```
+  :::
+  :::tabs-item{label="Blob" icon="i-lucide-shapes"}
+  ```ts
+  import { blob } from 'hub:blob'
 
-// Ensure the blob is valid
-ensureBlob(imageData, { maxSize: '1MB', types: ['image'] })
+  // Ensure the blob is valid
+  ensureBlob(imageData, { maxSize: '1MB', types: ['image'] })
 
-// Upload files with ease
-const file = await blob.put('avatars/user-1.png', imageData, {
-  access: 'public'
-})
+  // Upload files with ease
+  const file = await blob.put('avatars/user-1.png', imageData, {
+    access: 'public'
+  })
 
-// List avatars
-const avatars = await blob.list({ prefix: 'avatars/', limit: 10 })
+  // List avatars
+  const avatars = await blob.list({ prefix: 'avatars/', limit: 10 })
 
-// Serve the avatar with streaming
-return blob.serve(event, 'avatars/atinux.png')
-```
-:::
-:::tabs-item{label="KV" icon="i-lucide-list"}
-```ts
-import { kv } from '@nuxthub/kv'
+  // Serve the avatar with streaming
+  return blob.serve(event, 'avatars/atinux.png')
+  ```
+  :::
+  :::tabs-item{label="KV" icon="i-lucide-list"}
+  ```ts
+  import { kv } from '@nuxthub/kv'
 
-// Store and retrieve any data
-await kv.set('user:1:session', { token, expiresAt })
+  // Store and retrieve any data
+  await kv.set('user:1:session', { token, expiresAt })
 
-const session = await kv.get('user:1:session')
+  const session = await kv.get('user:1:session')
 
-// With TTL support
-await kv.set('rate-limit:ip', count, { ttl: 60 })
-```
-:::
-:::tabs-item{label="Cache" icon="i-lucide-zap"}
-```ts
-// Cache API responses for 1 hour
-export default defineCachedEventHandler(async () => {
-  const data = await $fetch('https://api.example.com')
-  return data
-}, { maxAge: 60 * 60 })
+  // With TTL support
+  await kv.set('rate-limit:ip', count, { ttl: 60 })
+  ```
+  :::
+  :::tabs-item{label="Cache" icon="i-lucide-zap"}
+  ```ts
+  // Cache API responses for 1 hour
+  export default defineCachedEventHandler(async () => {
+    const data = await $fetch('https://api.example.com')
+    return data
+  }, { maxAge: 60 * 60 })
 
-// Or cache any function
-const getStats = defineCachedFunction(fetchStats, {
-  maxAge: 60 * 5,
-})
-```
+  // Or cache any function
+  const getStats = defineCachedFunction(fetchStats, {
+    maxAge: 60 * 5,
+  })
+  ```
+  :::
 ::
 ::
 
