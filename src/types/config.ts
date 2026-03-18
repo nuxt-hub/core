@@ -8,6 +8,12 @@ export interface HubConfig {
   blob: boolean | BlobConfig
   cache: boolean | CacheConfig
   db: false | 'postgresql' | 'sqlite' | 'mysql' | DatabaseConfig
+  /**
+   * Nuxt DevTools integration for storage management tabs.
+   *
+   * Set `false` to disable KV/Blob/Cache tabs.
+   */
+  devtools?: false | DevToolsConfig
   kv: boolean | KVConfig
   dir: string
   hosting: string
@@ -59,6 +65,13 @@ export interface ModuleOptions {
    */
   kv?: boolean | KVConfig
   /**
+   * Nuxt DevTools integration for storage management tabs.
+   *
+   * By default, the UI is loaded from `https://hub.nuxt.com` and embedded as an iframe.
+   * Set to `false` to disable.
+   */
+  devtools?: false | DevToolsConfig
+  /**
    * The directory used for storage (database, kv, etc.) during local development.
    * @default '.data'
    */
@@ -68,6 +81,27 @@ export interface ModuleOptions {
    * This is automatically determined using the NITRO_PRESET or the detected provider during the CI/CD.
    */
   hosting?: string
+}
+
+export type DevToolsConfig = {
+  /**
+   * Base URL for the hosted DevTools UI.
+   *
+   * @default 'https://hub.nuxt.com'
+   */
+  remoteBaseUrl?: string
+  /**
+   * Path prefix for the hosted DevTools UI.
+   *
+   * @default '/devtools'
+   */
+  remotePathPrefix?: string
+  /**
+   * Full local app origin override used to build the `?url=` query passed to the hosted UI.
+   *
+   * @example 'http://localhost:3010'
+   */
+  appOrigin?: string
 }
 
 // Blob driver configurations - extend from driver option types
