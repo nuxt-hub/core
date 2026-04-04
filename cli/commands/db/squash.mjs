@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
-import { execa } from 'execa'
+import { x } from 'tinyexec'
 import { readFile, writeFile, rm } from 'node:fs/promises'
 import { join, resolve } from 'pathe'
 import { buildDatabaseSchema, createDrizzleClient } from '@nuxthub/core/db'
@@ -35,12 +35,6 @@ export default defineCommand({
       consola.level = 4
     }
     const cwd = args.cwd ? resolve(process.cwd(), args.cwd) : process.cwd()
-    const execaOptions = {
-      stdout: 'pipe',
-      stderr: 'pipe',
-      preferLocal: true,
-      cwd
-    }
 
     // Parse the number of migrations to drop
     const dropCount = args.last ? Number.parseInt(args.last, 10) : null
@@ -52,7 +46,7 @@ export default defineCommand({
 
     // Ensure database schema is ready and get config
     consola.info('Preparing database schema...')
-    await execa(execaOptions)`nuxt prepare`
+    await x('nuxt', ['prepare'], { nodeOptions: { cwd } })
 
     const hubConfig = JSON.parse(await readFile(join(cwd, '.nuxt/hub/db/config.json'), 'utf-8'))
     const migrationsDir = join(hubConfig.db.migrationsDirs?.[0], hubConfig.db.dialect)
@@ -175,11 +169,9 @@ export default defineCommand({
     const alias = await getTsconfigAliases(cwd)
     await buildDatabaseSchema(join(cwd, '.nuxt'), { relativeDir: cwd, alias })
     consola.info('Generating new migration...')
-    const { stderr } = await execa({
-      ...execaOptions,
-      stdin: 'inherit',
-      stdout: 'inherit'
-    })`drizzle-kit generate --config=./.nuxt/hub/db/drizzle.config.ts`
+    const { stderr } = await x('drizzle-kit', ['generate', '--config=./.nuxt/hub/db/drizzle.config.ts'], {
+      nodeOptions: { cwd, stdio: ['inherit', 'inherit', 'pipe'] }
+    })
 
     if (stderr) {
       consola.error(stderr)
