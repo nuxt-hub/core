@@ -110,8 +110,8 @@ export default defineCommand({
         for (const schema of schemas) {
           try {
             consola.debug(`Dropping schema \`${schema}\`...`)
-            await db[execute](sql.raw(`DROP SCHEMA "${schema}" CASCADE;`))
-            await db[execute](sql.raw(`CREATE SCHEMA "${schema}";`))
+            await db[execute](sql.raw(`DROP SCHEMA \`${schema}\` CASCADE;`))
+            await db[execute](sql.raw(`CREATE SCHEMA \`${schema}\`;`))
             consola.debug(`Cleared schema \`${schema}\``)
           } catch (error) {
             consola.error(`Failed to clear schema \`${schema}\`: ${error.message}`)
@@ -153,7 +153,7 @@ export default defineCommand({
       for (const table of tables) {
         try {
           consola.debug(`Dropping table \`${table}\`...`)
-          await db[execute](sql.raw(`DROP TABLE IF EXISTS "${table}";`))
+          await db[execute](sql.raw(`DROP TABLE IF EXISTS \`${table}\`;`))
           consola.success(`Dropped table \`${table}\``)
         } catch (error) {
           consola.error(`Failed to drop table \`${table}\`: ${error.message}`)
