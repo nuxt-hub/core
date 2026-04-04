@@ -75,7 +75,7 @@ export default defineCommand({
     }
     // If a specific migration is provided, mark it as applied
     if (args.name) {
-      await db[execute](sql.raw(`INSERT INTO "_hub_migrations" (name) values ('${args.name}');`))
+      await db[execute](sql.raw(`INSERT INTO \`_hub_migrations\` (name) VALUES ('${args.name}');`))
       consola.success(`Local migration \`${args.name}\` marked as applied.`)
       return closeDb()
     }
@@ -97,7 +97,7 @@ export default defineCommand({
         consola.info(`Migration \`${migration.name}\` skipped.`)
         continue
       }
-      await db[execute](sql.raw(`INSERT INTO "_hub_migrations" (name) values ('${migration.name}');`))
+      await db[execute](sql.raw(`INSERT INTO \`_hub_migrations\` (name) VALUES ('${migration.name}');`))
       consola.success(`Migration \`${migration.name}\` marked as applied.`)
       migrationsMarkedAsApplied++
     }

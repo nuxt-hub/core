@@ -51,7 +51,7 @@ export default defineCommand({
     const hubDir = join(cwd, hubConfig.dir)
     const db = await createDrizzleClient(hubConfig.db, hubDir)
     const execute = hubConfig.db.dialect === 'sqlite' ? 'run' : 'execute'
-    await db[execute](sql.raw(`DROP TABLE IF EXISTS "${args.table}";`))
+    await db[execute](sql.raw(`DROP TABLE IF EXISTS \`${args.table}\`;`))
     consola.success(`Table \`${args.table}\` dropped successfully.`)
     await db.$client?.end?.()
   }

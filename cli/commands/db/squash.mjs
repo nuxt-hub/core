@@ -204,7 +204,7 @@ export default defineCommand({
         const db = await createDrizzleClient(hubConfig.db, hubDir)
         const dialect = hubConfig.db.dialect
         const execute = dialect === 'sqlite' ? 'run' : 'execute'
-        await db[execute](sql.raw(`INSERT INTO "_hub_migrations" (name) values ('${newMigration.tag}');`))
+        await db[execute](sql.raw(`INSERT INTO \`_hub_migrations\` (name) VALUES ('${newMigration.tag}');`))
         await db.$client?.end?.()
         consola.success(`Migration \`${newMigration.tag}\` marked as applied.`)
       } else {
