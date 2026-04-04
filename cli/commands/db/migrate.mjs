@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
-import { execa } from 'execa'
+import { x } from 'tinyexec'
 import { readFile } from 'node:fs/promises'
 import { join } from 'pathe'
 import { applyDatabaseMigrations, applyDatabaseQueries, createDrizzleClient } from '@nuxthub/core/db'
@@ -33,11 +33,7 @@ export default defineCommand({
     const cwd = args.cwd || process.cwd()
     await loadDotenv({ cwd, dotenv: args.dotenv })
     consola.info('Ensuring database migrations are available...')
-    await execa({
-      stdio: 'pipe',
-      preferLocal: true,
-      cwd
-    })`nuxt prepare`
+    await x('nuxt', ['prepare'], { nodeOptions: { cwd } })
     consola.info('Applying database migrations...')
     const hubConfig = JSON.parse(await readFile(join(cwd, '.nuxt/hub/db/config.json'), 'utf-8'))
     consola.info(`Database: \`${hubConfig.db.dialect}\` with \`${hubConfig.db.driver}\` driver`)
