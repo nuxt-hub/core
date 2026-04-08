@@ -285,6 +285,26 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
     write: true
   })
 
+  // Provide a stable tsconfig for schema type generation (rolldown@rc.* requires one).
+  addTemplate({
+    filename: 'hub/db/tsconfig.json',
+    getContents: () => JSON.stringify({
+      compilerOptions: {
+        target: 'ESNext',
+        module: 'ESNext',
+        moduleResolution: 'Bundler',
+        allowImportingTsExtensions: true,
+        resolveJsonModule: true,
+        skipLibCheck: true,
+        types: []
+      },
+      include: [
+        './schema.entry.ts'
+      ]
+    }, null, 2),
+    write: true
+  })
+
   // Build schema types during prepare/dev/build, then copy to node_modules
   nuxt.hooks.hookOnce('app:templatesGenerated', async () => {
     await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir, alias: nuxt.options.alias })

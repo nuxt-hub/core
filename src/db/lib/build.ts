@@ -1,4 +1,4 @@
-import { cp } from 'node:fs/promises'
+import { cp, stat, writeFile } from 'node:fs/promises'
 import { join, relative, resolve } from 'pathe'
 import type { Nitro } from 'nitropack'
 import type { ResolvedHubConfig } from '@nuxthub/core'
@@ -83,12 +83,24 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubCon
 export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias }: { relativeDir?: string, alias?: Record<string, string> } = {}) {
   const startTime = Date.now()
   relativeDir = relativeDir || buildDir
-  const entry = join(buildDir, 'hub/db/schema.entry.ts')
+  const outDir = join(buildDir, 'hub/db')
+  const entry = join(outDir, 'schema.entry.ts')
+  const tsconfigPath = join(outDir, 'tsconfig.json')
+
+  // Ensure tsconfig exists for direct callers (CLI, tests) where Nuxt templates haven't been written
+  const tsconfigExists = await stat(tsconfigPath).then(() => true, () => false)
+  if (!tsconfigExists) {
+    await writeFile(tsconfigPath, JSON.stringify({
+      compilerOptions: { target: 'ESNext', module: 'ESNext', moduleResolution: 'Bundler', allowImportingTsExtensions: true, resolveJsonModule: true, skipLibCheck: true, types: [] },
+      include: ['./schema.entry.ts']
+    }))
+  }
+
   await build({
     entry: {
       schema: entry
     },
-    outDir: join(buildDir, 'hub/db'),
+    outDir,
     outExtensions: () => ({
       js: '.mjs',
       dts: '.d.mts'
@@ -101,15 +113,23 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias
     platform: 'neutral',
     format: 'esm',
     skipNodeModulesBundle: false,
-    tsconfig: false,
+    inlineOnly: false,
+    inputOptions: (opts) => {
+      // Consumers can override rolldown (Vite 8 / rc.*) where `debug` is not a valid input key.
+      // tsdown may still set it (often to `undefined`), so strip it to avoid validation warnings/errors.
+
+      delete (opts as any).debug
+      return opts
+    },
+    tsconfig: tsconfigPath,
     dts: {
       build: false,
-      tsconfig: false,
+      tsconfig: tsconfigPath,
       newContext: true
     },
     clean: false,
     logLevel: 'warn'
   })
   const duration = Date.now() - startTime
-  consola.debug(`Database schema built successfully at \`${relative(relativeDir, join(buildDir, 'hub/db/schema.mjs'))}\` (${duration}ms)`)
+  consola.debug(`Database schema built successfully at \`${relative(relativeDir, join(outDir, 'schema.mjs'))}\` (${duration}ms)`)
 }
