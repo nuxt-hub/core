@@ -531,13 +531,32 @@ export { db, schema }
     drizzleOrmContent = driver === 'postgres-js'
       ? `import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
+import { useEvent } from 'nitropack/runtime/context'
 import * as schema from './db/schema.mjs'
 
-function getDb() {
+function resolveHyperdrive() {
   const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
   if (!hyperdrive) throw new Error('${bindingName} binding not found')
+  return hyperdrive
+}
+
+function createDb(hyperdrive) {
   const client = postgres(hyperdrive.connectionString, ${hyperdrivePostgresOpts})
   return drizzle({ client, schema${casingOption} })
+}
+
+function getDb() {
+  const hyperdrive = resolveHyperdrive()
+
+  try {
+    const event = useEvent()
+    if (event?.context) {
+      event.context.__nuxthubHyperdrivePostgresDb ??= createDb(hyperdrive)
+      return event.context.__nuxthubHyperdrivePostgresDb
+    }
+  } catch {}
+
+  return createDb(hyperdrive)
 }
 
 const db = new Proxy({}, {
