@@ -343,6 +343,14 @@ async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
     const { url: _, ...rest } = connection as Record<string, unknown>
     return Object.keys(rest).length ? `{ onnotice: () => {}, ...${JSON.stringify(rest)} }` : '{ onnotice: () => {} }'
   })()
+  const hyperdrivePostgresOpts = (() => {
+    if (driver !== 'postgres-js' || !connection) return '{ onnotice: () => {}, prepare: false }'
+    const { url: _, hyperdriveId: __, ...rest } = connection as Record<string, unknown>
+    const hasPrepare = Object.prototype.hasOwnProperty.call(rest, 'prepare')
+    return Object.keys(rest).length
+      ? `{ onnotice: () => {}, ...${JSON.stringify(rest)}${hasPrepare ? '' : ', prepare: false'} }`
+      : '{ onnotice: () => {}, prepare: false }'
+  })()
 
   // For types, d1-http uses sqlite-proxy
   const driverForTypes = driver === 'd1-http' ? 'sqlite-proxy' : driver
@@ -520,12 +528,34 @@ export { db, schema }
   }
   if (['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare') && connection?.hyperdriveId) {
     const bindingName = driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL'
-    drizzleOrmContent = generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/${driver}'`,
-      `    const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
+    drizzleOrmContent = driver === 'postgres-js'
+      ? `import { drizzle } from 'drizzle-orm/postgres-js'
+import postgres from 'postgres'
+import * as schema from './db/schema.mjs'
+
+function getDb() {
+  const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
+  if (!hyperdrive) throw new Error('${bindingName} binding not found')
+  const client = postgres(hyperdrive.connectionString, ${hyperdrivePostgresOpts})
+  return drizzle({ client, schema${casingOption} })
+}
+
+const db = new Proxy({}, {
+  get(_, prop) {
+    const target = getDb()
+    const value = target[prop]
+    return typeof value === 'function' ? value.bind(target) : value
+  }
+})
+
+export { db, schema }
+`
+      : generateLazyDbTemplate(
+          `import { drizzle } from 'drizzle-orm/${driver}'`,
+          `    const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
     if (!hyperdrive) throw new Error('${bindingName} binding not found')
     _db = drizzle({ connection: hyperdrive.connectionString, schema${modeOption}${casingOption} })`
-    )
+        )
   }
   // Non-CF postgres-js: lazy env resolution for Docker/multi-deploy scenarios
   if (driver === 'postgres-js' && !nuxt.options.dev && !hub.hosting.includes('cloudflare')) {
