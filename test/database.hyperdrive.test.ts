@@ -1,7 +1,8 @@
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { createJiti } from 'jiti'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { setup } from '@nuxt/test-utils'
 
@@ -11,7 +12,7 @@ const dbClientPath = fileURLToPath(new URL('./fixtures/hyperdrive-postgres/node_
 async function importDbClientModule(stubs: {
   postgres: (...args: unknown[]) => unknown
   drizzle: (...args: unknown[]) => unknown
-  useEvent: () => unknown
+  getEvent?: () => unknown
 }) {
   const dbClient = await readFile(dbClientPath, 'utf8')
   const tempDir = await mkdtemp(join(tmpdir(), 'nuxthub-hyperdrive-postgres-'))
@@ -20,15 +21,15 @@ async function importDbClientModule(stubs: {
   const rewrittenDbClient = dbClient
     .replace(`from 'drizzle-orm/postgres-js'`, `from './drizzle-stub.mjs'`)
     .replace(`from 'postgres'`, `from './postgres-stub.mjs'`)
-    .replace(`from 'nitropack/runtime/context'`, `from './context-stub.mjs'`)
 
   // @ts-expect-error - test-only global stub registry
   globalThis.__nuxthubHyperdriveTestStubs = stubs
+  // @ts-expect-error - test-only global runtime bridge
+  globalThis.__nuxthubUseNitroEvent = stubs.getEvent
 
   await writeFile(tempModulePath, rewrittenDbClient)
   await writeFile(join(tempDir, 'postgres-stub.mjs'), `export default (...args) => globalThis.__nuxthubHyperdriveTestStubs.postgres(...args)\n`)
   await writeFile(join(tempDir, 'drizzle-stub.mjs'), `export const drizzle = (...args) => globalThis.__nuxthubHyperdriveTestStubs.drizzle(...args)\n`)
-  await writeFile(join(tempDir, 'context-stub.mjs'), `export const useEvent = () => globalThis.__nuxthubHyperdriveTestStubs.useEvent()\n`)
   await writeFile(join(tempDir, 'schema.mjs'), `export const schemaMarker = true\n`)
 
   return {
@@ -52,15 +53,20 @@ describe('hyperdrive postgres runtime client', async () => {
     delete globalThis.POSTGRES
     // @ts-expect-error - test-only global cleanup
     delete globalThis.__nuxthubHyperdriveTestStubs
+    // @ts-expect-error - test-only global cleanup
+    delete globalThis.__nuxthubUseNitroEvent
   })
 
   it('generates a fresh postgres client for the cloudflare hyperdrive path', async () => {
     const dbClient = await readFile(dbClientPath, 'utf8')
 
     expect(dbClient).toContain(`import postgres from 'postgres'`)
-    expect(dbClient).toContain(`import { useEvent } from 'nitropack/runtime/context'`)
-    expect(dbClient).toContain('event.context.__nuxthubHyperdrivePostgresDb ??= createDb(hyperdrive)')
+    expect(dbClient).not.toContain('nitropack/runtime/context')
+    expect(dbClient).not.toContain('useEvent')
+    expect(dbClient).toContain('globalThis.__nuxthubUseNitroEvent')
+    expect(dbClient).toContain('context.__nuxthubHyperdrivePostgresDb ??= createDb(hyperdrive)')
     expect(dbClient).toContain('function getDb() {')
+    expect(dbClient).toContain('function getRequestContext() {')
     expect(dbClient).toContain('function createDb(hyperdrive) {')
     expect(dbClient).toContain('const client = postgres(hyperdrive.connectionString')
     expect(dbClient).toContain('return drizzle({ client, schema')
@@ -81,7 +87,7 @@ describe('hyperdrive postgres runtime client', async () => {
     const { module, cleanup } = await importDbClientModule({
       postgres: postgresMock,
       drizzle: drizzleMock,
-      useEvent: () => event
+      getEvent: () => event
     })
 
     try {
@@ -109,7 +115,7 @@ describe('hyperdrive postgres runtime client', async () => {
     const { module, cleanup } = await importDbClientModule({
       postgres: postgresMock,
       drizzle: drizzleMock,
-      useEvent: () => event
+      getEvent: () => event
     })
 
     try {
@@ -135,10 +141,7 @@ describe('hyperdrive postgres runtime client', async () => {
 
     const { module, cleanup } = await importDbClientModule({
       postgres: postgresMock,
-      drizzle: drizzleMock,
-      useEvent: () => {
-        throw new Error('no request context')
-      }
+      drizzle: drizzleMock
     })
 
     try {
@@ -149,6 +152,39 @@ describe('hyperdrive postgres runtime client', async () => {
       expect(drizzleMock).toHaveBeenCalledTimes(2)
     } finally {
       await cleanup()
+    }
+  })
+
+  it('can be loaded by Jiti without resolving Nitro runtime context', async () => {
+    const dbClient = await readFile(dbClientPath, 'utf8')
+    const tempDir = await mkdtemp(join(tmpdir(), 'nuxthub-hyperdrive-postgres-jiti-'))
+    const tempModulePath = join(tempDir, 'db.mjs')
+    const nitropackDir = join(tempDir, 'node_modules/nitropack')
+
+    const rewrittenDbClient = dbClient
+      .replace(`from 'drizzle-orm/postgres-js'`, `from './drizzle-stub.mjs'`)
+      .replace(`from 'postgres'`, `from './postgres-stub.mjs'`)
+
+    try {
+      await mkdir(nitropackDir, { recursive: true })
+      await writeFile(tempModulePath, rewrittenDbClient)
+      await writeFile(join(tempDir, 'postgres-stub.mjs'), `export default () => ({})\n`)
+      await writeFile(join(tempDir, 'drizzle-stub.mjs'), `export const drizzle = () => ({})\n`)
+      await writeFile(join(tempDir, 'schema.mjs'), `export const schemaMarker = true\n`)
+      await writeFile(join(nitropackDir, 'package.json'), JSON.stringify({
+        name: 'nitropack',
+        version: '0.0.0',
+        type: 'module',
+        exports: {
+          '.': './index.mjs'
+        }
+      }, null, 2))
+
+      const jiti = createJiti(tempModulePath, { moduleCache: false })
+
+      await expect(jiti.import(tempModulePath)).resolves.toHaveProperty('schema')
+    } finally {
+      await rm(tempDir, { recursive: true, force: true })
     }
   })
 })

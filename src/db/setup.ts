@@ -159,6 +159,9 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
     const binding = driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL'
     addWranglerBinding(nuxt, 'hyperdrive', { binding, id: connection.hyperdriveId })
   }
+  if (driver === 'postgres-js' && hub.hosting.includes('cloudflare') && connection?.hyperdriveId) {
+    addServerPlugin(resolve('db/runtime/plugins/request-context'))
+  }
 
   // Verify development database dependencies are installed
   if (!deps['drizzle-orm'] || !deps['drizzle-kit']) {
@@ -531,7 +534,6 @@ export { db, schema }
     drizzleOrmContent = driver === 'postgres-js'
       ? `import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
-import { useEvent } from 'nitropack/runtime/context'
 import * as schema from './db/schema.mjs'
 
 function resolveHyperdrive() {
@@ -545,16 +547,20 @@ function createDb(hyperdrive) {
   return drizzle({ client, schema${casingOption} })
 }
 
+function getRequestContext() {
+  try {
+    return globalThis.__nuxthubUseNitroEvent?.()?.context
+  } catch {}
+}
+
 function getDb() {
   const hyperdrive = resolveHyperdrive()
+  const context = getRequestContext()
 
-  try {
-    const event = useEvent()
-    if (event?.context) {
-      event.context.__nuxthubHyperdrivePostgresDb ??= createDb(hyperdrive)
-      return event.context.__nuxthubHyperdrivePostgresDb
-    }
-  } catch {}
+  if (context) {
+    context.__nuxthubHyperdrivePostgresDb ??= createDb(hyperdrive)
+    return context.__nuxthubHyperdrivePostgresDb
+  }
 
   return createDb(hyperdrive)
 }
