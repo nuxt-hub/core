@@ -12,6 +12,10 @@ const log = logger.withTag('nuxt:hub')
 // Supported blob drivers
 const supportedDrivers = ['fs', 's3', 'vercel-blob', 'cloudflare-r2'] as const
 
+function appendUnique(values: string[] | undefined, entry: string) {
+  return values?.includes(entry) ? values : [...(values || []), entry]
+}
+
 /**
  * Resolve blob configuration from boolean or object format
  */
@@ -135,6 +139,10 @@ export const blob = createBlobStorage(createDriver(${JSON.stringify(driverOption
 
   // Set blob provider in runtime config for client-side composables
   if (blobConfig.driver === 'vercel-blob') {
+    nuxt.options.vite.optimizeDeps ||= {}
+    nuxt.options.vite.optimizeDeps.exclude = appendUnique(nuxt.options.vite.optimizeDeps.exclude, '@vercel/blob/client')
+    nuxt.options.nitro.externals ||= {}
+    nuxt.options.nitro.externals.external = appendUnique(nuxt.options.nitro.externals.external, '@vercel/blob/client')
     nuxt.options.runtimeConfig.public.hub ||= {}
     nuxt.options.runtimeConfig.public.hub.blobProvider = 'vercel-blob'
     logWhenReady(nuxt, 'Files stored in Vercel Blob are public. Manually configure a different storage driver if storing sensitive files.', 'warn')
