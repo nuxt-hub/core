@@ -6,6 +6,7 @@ import { join } from 'pathe'
 import { createDrizzleClient, getDatabaseMigrationFiles, AppliedDatabaseMigrationsQuery } from '@nuxthub/core/db'
 import { sql } from 'drizzle-orm'
 import { loadDotenv, dotenvArg } from '../../utils/dotenv.mjs'
+import { quoteIdentifier } from '../../utils/db.mjs'
 
 export default defineCommand({
   meta: {
@@ -75,7 +76,8 @@ export default defineCommand({
     }
     // If a specific migration is provided, mark it as applied
     if (args.name) {
-      await db[execute](sql.raw(`INSERT INTO "_hub_migrations" (name) values ('${args.name}');`))
+      const migrationsTable = quoteIdentifier('_hub_migrations', dialect)
+      await db[execute](sql.raw(`INSERT INTO ${migrationsTable} (name) VALUES ('${args.name}');`))
       consola.success(`Local migration \`${args.name}\` marked as applied.`)
       return closeDb()
     }
@@ -86,6 +88,7 @@ export default defineCommand({
       return closeDb()
     }
     consola.info(`Found \`${pendingMigrations.length}\` pending migration${pendingMigrations.length === 1 ? '' : 's'}`)
+    const migrationsTable = quoteIdentifier('_hub_migrations', dialect)
     let migrationsMarkedAsApplied = 0
     for (const migration of pendingMigrations) {
       const confirmed = await consola.prompt(`Mark migration \`${migration.name}\` as applied?`, {
@@ -97,7 +100,7 @@ export default defineCommand({
         consola.info(`Migration \`${migration.name}\` skipped.`)
         continue
       }
-      await db[execute](sql.raw(`INSERT INTO "_hub_migrations" (name) values ('${migration.name}');`))
+      await db[execute](sql.raw(`INSERT INTO ${migrationsTable} (name) VALUES ('${migration.name}');`))
       consola.success(`Migration \`${migration.name}\` marked as applied.`)
       migrationsMarkedAsApplied++
     }

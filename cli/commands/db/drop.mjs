@@ -6,6 +6,7 @@ import { join } from 'pathe'
 import { createDrizzleClient } from '@nuxthub/core/db'
 import { sql } from 'drizzle-orm'
 import { loadDotenv, dotenvArg } from '../../utils/dotenv.mjs'
+import { quoteIdentifier } from '../../utils/db.mjs'
 
 export default defineCommand({
   meta: {
@@ -51,7 +52,8 @@ export default defineCommand({
     const hubDir = join(cwd, hubConfig.dir)
     const db = await createDrizzleClient(hubConfig.db, hubDir)
     const execute = hubConfig.db.dialect === 'sqlite' ? 'run' : 'execute'
-    await db[execute](sql.raw(`DROP TABLE IF EXISTS "${args.table}";`))
+    const dialect = hubConfig.db.dialect
+    await db[execute](sql.raw(`DROP TABLE IF EXISTS ${quoteIdentifier(args.table, dialect)};`))
     consola.success(`Table \`${args.table}\` dropped successfully.`)
     await db.$client?.end?.()
   }

@@ -6,6 +6,7 @@ import { join } from 'pathe'
 import { createDrizzleClient } from '@nuxthub/core/db'
 import { sql } from 'drizzle-orm'
 import { loadDotenv, dotenvArg } from '../../utils/dotenv.mjs'
+import { quoteIdentifier } from '../../utils/db.mjs'
 
 /**
  * Get the query to list all tables based on the database dialect
@@ -110,8 +111,8 @@ export default defineCommand({
         for (const schema of schemas) {
           try {
             consola.debug(`Dropping schema \`${schema}\`...`)
-            await db[execute](sql.raw(`DROP SCHEMA "${schema}" CASCADE;`))
-            await db[execute](sql.raw(`CREATE SCHEMA "${schema}";`))
+            await db[execute](sql.raw(`DROP SCHEMA ${quoteIdentifier(schema, dialect)} CASCADE;`))
+            await db[execute](sql.raw(`CREATE SCHEMA ${quoteIdentifier(schema, dialect)};`))
             consola.debug(`Cleared schema \`${schema}\``)
           } catch (error) {
             consola.error(`Failed to clear schema \`${schema}\`: ${error.message}`)
@@ -153,7 +154,7 @@ export default defineCommand({
       for (const table of tables) {
         try {
           consola.debug(`Dropping table \`${table}\`...`)
-          await db[execute](sql.raw(`DROP TABLE IF EXISTS "${table}";`))
+          await db[execute](sql.raw(`DROP TABLE IF EXISTS ${quoteIdentifier(table, dialect)};`))
           consola.success(`Dropped table \`${table}\``)
         } catch (error) {
           consola.error(`Failed to drop table \`${table}\`: ${error.message}`)
