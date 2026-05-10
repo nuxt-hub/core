@@ -1,9 +1,9 @@
-import { pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core'
+import * as d from 'drizzle-orm/pg-core'
 
-export const glasses = pgTable('glasses', {
-  id: serial().primaryKey(),
-  name: text().notNull(),
-  color: text().notNull(),
-  createdAt: timestamp().notNull().defaultNow(),
-  updatedAt: timestamp().notNull().defaultNow()
+export const glasses = d.pgTable('glasses', {
+  id: d.serial().primaryKey(),
+  name: d.text().notNull(),
+  color: d.text().notNull(),
+  createdAt: d.timestamp().notNull().defaultNow(),
+  updatedAt: d.timestamp().notNull().defaultNow()
 })
