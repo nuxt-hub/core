@@ -151,15 +151,14 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   hub.db = await resolveDatabaseConfig(nuxt, hub)
   if (!hub.db) return
 
+  const drizzleMajor = Number(deps['drizzle-orm']?.match(/\d/)?.[0]) || 0
+
   // Auto-enable useRelationsV2 when drizzle-orm v1+ is detected and user hasn't explicitly set it
-  if (!userSetRelationsV2 && deps['drizzle-orm']) {
-    const majorVersion = Number(deps['drizzle-orm']?.match(/\d/)?.[0])
-    if (majorVersion >= 1) {
-      (hub.db as ResolvedDatabaseConfig).useRelationsV2 = true
-    }
+  if (!userSetRelationsV2 && drizzleMajor >= 1) {
+    (hub.db as ResolvedDatabaseConfig).useRelationsV2 = true
   }
 
-  const { dialect, driver, connection, migrationsDirs, queriesPaths, useRelationsV2 } = hub.db as ResolvedDatabaseConfig
+  const { dialect, driver, connection, migrationsDirs, queriesPaths, useRelationsV2, casing } = hub.db as ResolvedDatabaseConfig
 
   logWhenReady(nuxt, `\`hub:db\` using \`${dialect}\` database with \`${driver}\` driver`, 'info')
 
@@ -186,8 +185,12 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   } else if (driver === 'libsql' && !deps['@libsql/client']) {
     logWhenReady(nuxt, 'Please run `npx nypm i @libsql/client` to use SQLite as database.', 'error')
   }
-  if (useRelationsV2 && Number(deps['drizzle-orm']?.match(/\d/)?.[0]) < 1) {
+  if (useRelationsV2 && drizzleMajor < 1) {
     logWhenReady(nuxt, '"useRelationsV2" requires drizzle-orm@1.0.0-beta or higher', 'error')
+  }
+  if (useRelationsV2 && casing) {
+    logWhenReady(nuxt, '`casing` is ignored when `useRelationsV2` is enabled — drizzle-orm v1+ removed runtime casing. Use `snakeCase`/`camelCase` from `drizzle-orm/<dialect>-core` in your schema files instead. See https://orm.drizzle.team/docs/casing', 'warn')
+    ;(hub.db as ResolvedDatabaseConfig).casing = undefined
   }
 
   // Add Server scanning
