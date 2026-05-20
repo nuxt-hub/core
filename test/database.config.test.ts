@@ -277,6 +277,44 @@ describe('resolveDatabaseConfig', () => {
       })
     })
 
+    it('should use node-postgres driver when explicitly set', async () => {
+      process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/db'
+
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'postgresql',
+        driver: 'node-postgres'
+      })
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'postgresql',
+        driver: 'node-postgres',
+        connection: {
+          url: 'postgresql://user:pass@localhost:5432/db'
+        }
+      })
+    })
+
+    it('should allow node-postgres without DATABASE_URL when applyMigrationsDuringBuild is false', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'postgresql',
+        driver: 'node-postgres',
+        applyMigrationsDuringBuild: false
+      })
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        dialect: 'postgresql',
+        driver: 'node-postgres',
+        connection: { url: '' },
+        applyMigrationsDuringBuild: false
+      })
+    })
+
     it('should not use neon-http driver automatically', async () => {
       process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/db'
 
@@ -299,6 +337,22 @@ describe('resolveDatabaseConfig', () => {
       const hub = createBaseHubConfig({
         dialect: 'postgresql',
         driver: 'neon-http',
+        applyMigrationsDuringBuild: true
+      })
+
+      await expect(resolveDatabaseConfig(nuxt, hub)).rejects.toThrow(
+        '`neon-http` driver requires `DATABASE_URL`, `POSTGRES_URL`, or `POSTGRESQL_URL` environment variable when `applyMigrationsDuringBuild` is enabled'
+      )
+    })
+
+    it('should not treat connectionString as DATABASE_URL for neon-http', async () => {
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({
+        dialect: 'postgresql',
+        driver: 'neon-http',
+        connection: {
+          connectionString: 'postgresql://user:pass@localhost:5432/db'
+        },
         applyMigrationsDuringBuild: true
       })
 
