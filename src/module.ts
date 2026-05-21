@@ -27,15 +27,9 @@ export default defineNuxtModule<ModuleOptions>({
   },
   defaults: {},
   async setup(options, nuxt) {
-    // Cannot be used with `nuxt generate`
-    if (nuxt.options.nitro.static || (nuxt.options as any)._generate) {
-      log.error('NuxtHub is not compatible with `nuxt generate` as it needs a server to run.')
-      log.info('To pre-render all pages: `https://hub.nuxt.com/docs/recipes/pre-rendering#pre-render-all-pages`')
-      return process.exit(1)
-    }
-
     const rootDir = nuxt.options.rootDir
     const hosting = process.env.NITRO_PRESET || nuxt.options.nitro.preset || provider
+
     const hub = defu(options, {
       // Local storage
       dir: '.data',
@@ -48,6 +42,20 @@ export default defineNuxtModule<ModuleOptions>({
     }) as HubConfig
     // resolve the hub directory
     hub.dir = await resolveFs(nuxt.options.rootDir, hub.dir)
+
+    // Cannot be used with `nuxt generate`
+    if (
+      !hub.ignoreGenerateWarning
+      && (nuxt.options.nitro.static || (nuxt.options as any)._generate)
+    ) {
+      log.error(
+        'NuxtHub is not compatible with `nuxt generate` as it needs a server to run.'
+      )
+      log.info(
+        'To pre-render all pages: `https://hub.nuxt.com/docs/recipes/pre-rendering#pre-render-all-pages`'
+      )
+      return process.exit(1)
+    }
 
     // Create the hub directory
     await mkdir(hub.dir, { recursive: true })
