@@ -11,6 +11,8 @@ export interface HubConfig {
   kv: boolean | KVConfig
   dir: string
   hosting: string
+  /** Internal: remote wrangler config (set when binding IDs are present in dev) */
+  _remote?: { configPath: string, persistDir: string }
 }
 
 export interface ResolvedHubConfig extends HubConfig {

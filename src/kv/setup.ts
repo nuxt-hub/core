@@ -48,8 +48,9 @@ export function resolveKVConfig(hub: HubConfig): ResolvedKVConfig | false {
     }) as ResolvedKVConfig
   }
 
-  // Cloudflare KV
-  if (hub.hosting.includes('cloudflare')) {
+  // Cloudflare KV (production or dev with namespaceId)
+  const kvConfig = typeof hub.kv === 'object' ? hub.kv : {}
+  if (hub.hosting.includes('cloudflare') || kvConfig.namespaceId) {
     return defu(hub.kv, {
       driver: 'cloudflare-kv-binding',
       binding: 'KV'

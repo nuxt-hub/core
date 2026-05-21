@@ -80,8 +80,8 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
       if (config.driver === 'd1') {
         break
       }
-      // Cloudflare D1 (production only - dev uses local libsql by default)
-      if (hub.hosting.includes('cloudflare') && !nuxt.options.dev) {
+      // Cloudflare D1 (production, or dev with explicit databaseId)
+      if ((hub.hosting.includes('cloudflare') && !nuxt.options.dev && !nuxt.options._prepare) || config.connection?.databaseId) {
         config.driver = 'd1'
         break
       }
@@ -90,19 +90,14 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
         config.connection = defu(config.connection, { url: '' })
         break
       }
-      // Cloudflare D1 (production only - dev/prepare uses local libsql)
-      if (hub.hosting.includes('cloudflare') && !nuxt.options.dev && !nuxt.options._prepare) {
-        config.driver = 'd1'
-        break
-      }
       config.driver ||= 'libsql'
       config.connection = defu(config.connection, { url: `file:${join(hub.dir!, 'db/sqlite.db')}` })
       await mkdir(join(hub.dir, 'db'), { recursive: true })
       break
     }
     case 'postgresql': {
-      // Cloudflare Hyperdrive with explicit hyperdriveId
-      if (hub.hosting.includes('cloudflare') && config.connection?.hyperdriveId && !config.driver) {
+      // Cloudflare Hyperdrive with explicit hyperdriveId (production or dev)
+      if (config.connection?.hyperdriveId && !config.driver) {
         config.driver = 'postgres-js'
         break
       }
@@ -121,8 +116,8 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
       break
     }
     case 'mysql': {
-      // Cloudflare Hyperdrive with explicit hyperdriveId
-      if (hub.hosting.includes('cloudflare') && config.connection?.hyperdriveId && !config.driver) {
+      // Cloudflare Hyperdrive with explicit hyperdriveId (production or dev)
+      if (config.connection?.hyperdriveId && !config.driver) {
         config.driver = 'mysql2'
         break
       }
@@ -518,7 +513,8 @@ const db = drizzle(d1HttpDriver, { schema${casingOption} })
 export { db, schema }
 `
   }
-  if (['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare') && connection?.hyperdriveId) {
+  // Hyperdrive requires lazy binding access - bindings only available in request context on CF Workers
+  if (['postgres-js', 'mysql2'].includes(driver) && (hub.hosting.includes('cloudflare') || connection?.hyperdriveId)) {
     const bindingName = driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL'
     drizzleOrmContent = generateLazyDbTemplate(
       `import { drizzle } from 'drizzle-orm/${driver}'`,
