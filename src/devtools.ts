@@ -5,12 +5,15 @@ import { logger } from '@nuxt/kit'
 import type { Nuxt } from 'nuxt/schema'
 import type { HubConfig, ResolvedDatabaseConfig } from '@nuxthub/core'
 import { getPort } from 'get-port-please'
+import { setupDevTools, addDevToolsStorageTabs } from './devtools/setup'
 
 let isReady = false
 let promise: Promise<any> | null = null
 let port = 4983
 
 const log = logger.withTag('nuxt:hub')
+
+export { setupDevTools, addDevToolsStorageTabs }
 
 async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
   const dbConfig = hub.db as ResolvedDatabaseConfig
@@ -79,16 +82,15 @@ async function launchDrizzleStudio(nuxt: Nuxt, hub: HubConfig) {
 
 export function addDevToolsCustomTabs(nuxt: Nuxt, hub: HubConfig) {
   nuxt.hook('devtools:customTabs', (tabs) => {
-    if (nuxt.options.nitro.experimental?.openAPI)({
-      category: 'server',
-      name: 'hub-open-api',
-      title: 'OpenAPI',
-      icon: 'i-lucide-file-text',
-      view: {
-        type: 'iframe',
-        src: `/_scalar`
-      }
-    })
+    if (nuxt.options.nitro.experimental?.openAPI) {
+      tabs.push({
+        category: 'server',
+        name: 'hub-open-api',
+        title: 'OpenAPI',
+        icon: 'i-lucide-file-text',
+        view: { type: 'iframe', src: `/_scalar` }
+      })
+    }
 
     if (hub.db) tabs.push({
       category: 'server',
