@@ -7,6 +7,7 @@ import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLay
 import { resolve, resolvePath, logWhenReady, addWranglerBinding } from '../utils'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
 import { cloudflareHooks } from '../hosting/cloudflare'
+import { stringifyJSON5 } from "confbox"
 
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig, ResolvedHubConfig, ResolvedDatabaseConfig } from '@nuxthub/core'
@@ -39,6 +40,8 @@ export { db, schema }
  * Resolve database configuration from string or object format
  */
 export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise<ResolvedDatabaseConfig | false> {
+  // Env explicitly set db. Used by cli db generate command
+  if(process.env.NUXT_HUB_DB) hub.db = process.env.NUXT_HUB_DB
   if (!hub.db) return false
 
   let config = typeof hub.db === 'string' ? { dialect: hub.db } : hub.db
@@ -648,16 +651,23 @@ export const db: ReturnType<typeof drizzleCore<typeof schema>>
 
 async function setupDatabaseConfig(nuxt: Nuxt, hub: ResolvedHubConfig) {
   // generate drizzle.config.ts in .nuxt/hub/db/drizzle.config.ts
-  const { dialect, casing } = hub.db as ResolvedDatabaseConfig
-  const casingConfig = casing ? `\n  casing: '${casing}',` : ''
+  const { dialect, casing, drizzle } = hub.db as ResolvedDatabaseConfig
+  
   addTemplate({
     filename: 'hub/db/drizzle.config.ts',
     write: true,
     getContents: () => `import { defineConfig } from 'drizzle-kit'
 
-export default defineConfig({
-  dialect: '${dialect}',${casingConfig}
-  schema: '${relative(nuxt.options.rootDir, resolve(nuxt.options.buildDir, 'hub/db/schema.mjs'))}',
-  out: '${relative(nuxt.options.rootDir, resolve(nuxt.options.rootDir, `server/db/migrations/${dialect}`))}'
+export default defineConfig(${
+  stringifyJSON5(
+    defu(drizzle, 
+      casing && { casing },
+      {
+        dialect,
+        schema: relative(nuxt.options.rootDir, resolve(nuxt.options.buildDir, 'hub/db/schema.mjs')),
+        out: relative(nuxt.options.rootDir, resolve(nuxt.options.rootDir, `server/db/migrations/${dialect}`))
+      }
+    )
+  )
 });` })
 }
