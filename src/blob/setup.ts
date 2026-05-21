@@ -118,6 +118,8 @@ export const blob = createBlobStorage(createDriver(${JSON.stringify(driverOption
     }
   }
   await writeFile(join(physicalBlobDir, 'package.json'), JSON.stringify(packageJson, null, 2))
+  // Write index.d.ts for TypeScript to resolve relative directory imports
+  await writeFile(join(physicalBlobDir, 'index.d.ts'), `export * from './blob'`)
 
   // Add alias to map hub:blob to @nuxthub/blob
   nuxt.options.alias!['hub:blob'] = '@nuxthub/blob'
