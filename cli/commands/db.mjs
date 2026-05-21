@@ -7,6 +7,7 @@ import drop from './db/drop.mjs'
 import dropAll from './db/drop-all.mjs'
 import squash from './db/squash.mjs'
 import sql from './db/sql.mjs'
+import truncate from './db/truncate.mjs'
 
 const { version } = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf-8'))
 
@@ -23,6 +24,7 @@ export default defineCommand({
     drop,
     'drop-all': dropAll,
     squash,
-    sql
+    sql,
+    truncate
   }
 })
