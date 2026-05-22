@@ -1,9 +1,9 @@
 import { sql } from 'drizzle-orm'
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
+import * as d from 'drizzle-orm/sqlite-core'
 
-export const todos = sqliteTable('todos', {
-  id: integer().primaryKey({ autoIncrement: true }),
-  title: text().notNull(),
-  completed: integer({ mode: 'boolean' }).notNull().default(false),
-  createdAt: integer({ mode: 'timestamp' }).notNull().default(sql`(unixepoch())`)
+export const todos = d.snakeCase.table('todos', {
+  id: d.integer().primaryKey({ autoIncrement: true }),
+  title: d.text().notNull(),
+  completed: d.integer({ mode: 'boolean' }).notNull().default(false),
+  createdAt: d.integer({ mode: 'timestamp' }).notNull().default(sql`(unixepoch())`)
 })
