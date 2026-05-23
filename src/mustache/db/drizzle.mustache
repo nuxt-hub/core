@@ -1,0 +1,73 @@
+import { drizzle } from 'drizzle-orm/{{driver}}'
+{{#postgresjs}}
+    {{#lazy}}
+import postgres from 'postgres'
+    {{/lazy}}
+    {{^lazy}}{{^isDev}}
+import postgres from 'postgres'
+    {{/isDev}}{{/lazy}}
+{{/postgresjs}}
+{{#pglite}}{{#isDev}}
+import { PGlite } from '@electric-sql/pglite'
+{{/isDev}}{{/pglite}}
+{{#neonhttp}}
+import { neon } from '@neondatabase/serverless'
+{{/neonhttp}}
+{{#withReplicas}}
+import { withReplicas } from 'drizzle-orm/{{replicaDriver}}'
+{{/withReplicas}}
+import * as schema from './schema.mjs'
+
+const commonDrizzleArgs = { schema{{#mode}}, mode: '{{.}}'{{/mode}}{{#casing}}, casing: '{{.}}'{{/casing}} }
+
+{{#d1http}}
+{{> d1http}}
+{{/d1http}}
+{{^d1http}}
+  {{#lazy}}
+{{> lazy}}
+  {{/lazy}}
+  {{^lazy}}
+    {{#postgresjs}}
+      {{#isDev}}
+const connector = { connection: { ...{{{connectionStringified}}}, onnotice: () => {} } }
+      {{/isDev}}
+      {{^isDev}}
+const connector = { client: postgres('{{{connection.url}}}', {{{postgresOpts}}}) }
+      {{/isDev}}
+    {{/postgresjs}}
+    {{#pglite}}
+        {{#isDev}}
+const connector = { client: new PGlite({{#connection.dataDir}}'{{{.}}}'{{/connection.dataDir}}{{^connection.dataDir}}undefined{{/connection.dataDir}}) }
+        {{/isDev}}
+        {{^isDev}}
+const connector = { connection: {{{connectionStringified}}} }
+        {{/isDev}}
+    {{/pglite}}
+    {{^postgresjs}}{{^pglite}}
+const connector = { connection: {{{connectionStringified}}} }
+    {{/pglite}}{{/postgresjs}}
+const primary = drizzle({ ...connector, ...commonDrizzleArgs })
+    {{#withReplicas}}
+const replicaUrls = {{{replicaUrls}}}
+const replicaConnections = replicaUrls.map(replicaUrl => {
+      {{#postgresjs}}
+  const replicaConnector = { client: postgres(replicaUrl, {{{postgresOpts}}}) }
+      {{/postgresjs}}
+      {{^postgresjs}}
+  const replicaConnector = { connection: { uri: replicaUrl } }
+      {{/postgresjs}}
+  return drizzle({ ...replicaConnector, ...commonDrizzleArgs })
+})
+const db = withReplicas(primary, replicaConnections)
+    {{/withReplicas}}
+    {{^withReplicas}}
+const db = primary
+    {{/withReplicas}}
+  {{/lazy}}
+{{/d1http}}
+
+{{#pglite}}{{#isDev}}
+const client = connector.client
+{{/isDev}}{{/pglite}}
+export { db, schema{{#pglite}}{{#isDev}}, client{{/isDev}}{{/pglite}} }

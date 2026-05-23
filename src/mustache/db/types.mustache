@@ -1,0 +1,13 @@
+import type { DrizzleConfig } from 'drizzle-orm'
+import { drizzle as drizzleCore } from 'drizzle-orm/{{driverForTypes}}'
+import * as schema from './schema.mjs'
+
+/**
+ * The database schema object
+ * Defined in server/db/schema.ts and server/db/schema/*.ts
+ */
+export { schema }
+/**
+ * The {{driver}} database client.
+ */
+export const db: ReturnType<typeof drizzleCore<typeof schema>>

@@ -10,30 +10,9 @@ import { cloudflareHooks } from '../hosting/cloudflare'
 
 import type { Nuxt } from '@nuxt/schema'
 import type { HubConfig, ResolvedHubConfig, ResolvedDatabaseConfig } from '@nuxthub/core'
+import { mustacheFiles, type MustacheViews } from '../mustache'
 
 const log = logger.withTag('nuxt:hub')
-
-/**
- * Generate a lazy-initialized db template with Proxy wrapper
- * Used for runtime env resolution (Docker/multi-deploy) and CF bindings
- */
-function generateLazyDbTemplate(imports: string, getDbBody: string): string {
-  return `${imports}
-import * as schema from './db/schema.mjs'
-
-let _db
-function getDb() {
-  if (!_db) {
-    try {
-${getDbBody}
-    } catch (e) { throw new Error('[nuxt-hub] ' + e.message) }
-  }
-  return _db
-}
-const db = new Proxy({}, { get(_, prop) { return getDb()[prop] } })
-export { db, schema }
-`
-}
 
 /**
  * Resolve database configuration from string or object format
@@ -360,26 +339,35 @@ async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
   // Setup Drizzle ORM
 
   // Generate simplified drizzle() implementation
-  const modeOption = dialect === 'mysql' ? `, mode: '${mode || 'default'}'` : ''
-  const casingOption = casing ? `, casing: '${casing}'` : ''
-  let drizzleOrmContent = `import { drizzle } from 'drizzle-orm/${driver}'
-import * as schema from './db/schema.mjs'
+  const driverToCoreImport: Partial<Record<ResolvedDatabaseConfig['driver'], string>> = {
+    mysql2: 'mysql-core',
+    'postgres-js': 'pg-core'
+  }
 
-const db = drizzle({ connection: ${JSON.stringify(connection)}, schema${modeOption}${casingOption} })
-export { db, schema }
-`
+  const driverToDrizzleImport = (driver: ResolvedDatabaseConfig['driver']) => {
+    if (driver === 'd1-http') return 'sqlite-proxy'
+    return driver
+  }
+
+  const useableReplicas = replicas?.filter(Boolean)
+  const mustacheView: MustacheViews['db']['drizzle'] = {
+    [driver.replace('-', '')]: true,
+    bindingName: driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL',
+    casing,
+    connection,
+    connectionStringified: JSON.stringify(connection)?.replaceAll('"', '\''),
+    driver: driverToDrizzleImport(driver),
+    hyperdrive: !!(['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare') && connection?.hyperdriveId),
+    isDev: nuxt.options.dev,
+    lazy: false,
+    mode: dialect === 'mysql' ? mode || 'default' : '',
+    postgresOpts,
+    replicaDriver: driverToCoreImport[driver],
+    replicaUrls: JSON.stringify(useableReplicas),
+    withReplicas: !!useableReplicas?.length
+  }
 
   if (driver === 'pglite' && nuxt.options.dev) {
-    // PGlite instance exported for use in devtools Drizzle Studio
-    drizzleOrmContent = `import { drizzle } from 'drizzle-orm/pglite'
-import { PGlite } from '@electric-sql/pglite'
-import * as schema from './db/schema.mjs'
-
-const client = new PGlite(${JSON.stringify(connection.dataDir)})
-const db = drizzle({ client, schema${casingOption} })
-export { db, schema, client }
-`
-
     addServerHandler({
       handler: await resolvePath('db/runtime/api/launch-studio.post.dev'),
       method: 'post',
@@ -394,193 +382,26 @@ export { db, schema, client }
       route: '/api/_hub/db/launch-studio'
     })
   }
-  if (driver === 'postgres-js' && nuxt.options.dev) {
-    const replicaUrls = (replicas || []).filter(Boolean)
-    const hasReplicas = replicaUrls.length > 0
-
-    if (hasReplicas) {
-      drizzleOrmContent = `import { drizzle } from 'drizzle-orm/postgres-js'
-import { withReplicas } from 'drizzle-orm/pg-core'
-import postgres from 'postgres'
-import * as schema from './db/schema.mjs'
-
-const client = postgres('${connection.url}', ${postgresOpts})
-const primary = drizzle({ client, schema${casingOption} })
-
-const replicaUrls = ${JSON.stringify(replicaUrls)}
-const replicaConnections = replicaUrls.map(replicaUrl => {
-  const replicaClient = postgres(replicaUrl, ${postgresOpts})
-  return drizzle({ client: replicaClient, schema${casingOption} })
-})
-const db = withReplicas(primary, replicaConnections)
-export { db, schema }
-`
-    } else {
-      drizzleOrmContent = `import { drizzle } from 'drizzle-orm/postgres-js'
-import * as schema from './db/schema.mjs'
-
-const db = drizzle({ connection: { ...${JSON.stringify(connection)}, onnotice: () => {} }, schema${casingOption} })
-export { db, schema }
-`
-    }
-  }
-  if (driver === 'mysql2' && nuxt.options.dev) {
-    const replicaUrls = (replicas || []).filter(Boolean)
-    const hasReplicas = replicaUrls.length > 0
-
-    if (hasReplicas) {
-      drizzleOrmContent = `import { drizzle } from 'drizzle-orm/mysql2'
-import { withReplicas } from 'drizzle-orm/mysql-core'
-import * as schema from './db/schema.mjs'
-
-const primary = drizzle({ connection: ${JSON.stringify(connection)}, schema${modeOption}${casingOption} })
-
-const replicaUrls = ${JSON.stringify(replicaUrls)}
-const replicaConnections = replicaUrls.map(replicaUrl => {
-  return drizzle({ connection: { uri: replicaUrl }, schema${modeOption}${casingOption} })
-})
-const db = withReplicas(primary, replicaConnections)
-export { db, schema }
-`
-    }
-  }
   if (driver === 'neon-http') {
-    const urlExpr = connection.url ? `'${connection.url}'` : `process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL`
-    drizzleOrmContent = generateLazyDbTemplate(
-      `import { neon } from '@neondatabase/serverless'\nimport { drizzle } from 'drizzle-orm/neon-http'`,
-      `    const url = ${urlExpr}
-    if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
-    const sql = neon(url)
-    _db = drizzle(sql, { schema${casingOption} })`
-    )
+    mustacheView.lazy = true
   }
   if (driver === 'd1') {
-    drizzleOrmContent = generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/d1'`,
-      `    const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
-    if (!binding) throw new Error('DB binding not found')
-    _db = drizzle(binding, { schema${casingOption} })`
-    )
-  }
-  if (driver === 'd1-http') {
-    // D1 over HTTP using sqlite-proxy
-    drizzleOrmContent = `import { drizzle } from 'drizzle-orm/sqlite-proxy'
-import * as schema from './db/schema.mjs'
-
-const accountId = ${JSON.stringify(connection.accountId)}
-const databaseId = ${JSON.stringify(connection.databaseId)}
-const apiToken = ${JSON.stringify(connection.apiToken)}
-
-async function d1HttpDriver(sql, params, method) {
-  if (method === 'values') method = 'all'
-
-  const { errors, success, result } = await $fetch(\`https://api.cloudflare.com/client/v4/accounts/\${accountId}/d1/database/\${databaseId}/raw\`, {
-    method: 'POST',
-    headers: {
-      Authorization: \`Bearer \${apiToken}\`,
-      'Content-Type': 'application/json'
-    },
-    async onResponseError({ request, response, options }) {
-      console.error(
-        "D1 HTTP Error:",
-        request,
-        options.body,
-        response.status,
-        response._data,
-      )
-    },
-    body: { sql, params }
-  })
-
-  if (errors?.length > 0 || !success) {
-    throw new Error(\`D1 HTTP error: \${JSON.stringify({ errors, success, result })}\`)
-  }
-
-  const queryResult = result?.[0]
-  if (!queryResult?.success) {
-    throw new Error(\`D1 HTTP error: \${JSON.stringify({ errors, success, result })}\`)
-  }
-
-  const rows = queryResult.results?.rows || []
-
-  if (method === 'get') {
-    if (rows.length === 0) {
-      return { rows: [] }
-    }
-    return { rows: rows[0] }
-  }
-
-  return { rows }
-}
-
-const db = drizzle(d1HttpDriver, { schema${casingOption} })
-
-export { db, schema }
-`
+    mustacheView.lazy = true
   }
   if (['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare') && connection?.hyperdriveId) {
-    const bindingName = driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL'
-    drizzleOrmContent = generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/${driver}'`,
-      `    const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
-    if (!hyperdrive) throw new Error('${bindingName} binding not found')
-    _db = drizzle({ connection: hyperdrive.connectionString, schema${modeOption}${casingOption} })`
-    )
+    mustacheView.lazy = true
   }
   // Non-CF postgres-js: lazy env resolution for Docker/multi-deploy scenarios
   if (driver === 'postgres-js' && !nuxt.options.dev && !hub.hosting.includes('cloudflare')) {
-    const urlExpr = connection.url ? `'${connection.url}'` : `process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL`
-    const replicaUrls = (replicas || []).filter(Boolean)
-    const hasReplicas = replicaUrls.length > 0
-
-    drizzleOrmContent = generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/postgres-js'
-${hasReplicas ? `import { withReplicas } from 'drizzle-orm/pg-core'\n` : ''}import postgres from 'postgres'`,
-      `    const url = ${urlExpr}
-    if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
-    const client = postgres(url, ${postgresOpts})
-${hasReplicas
-  ? `    const primary = drizzle({ client, schema${casingOption} })
-
-    const replicaUrls = ${JSON.stringify(replicaUrls)}
-    const replicaConnections = replicaUrls.map(replicaUrl => {
-      const replicaClient = postgres(replicaUrl, ${postgresOpts})
-      return drizzle({ client: replicaClient, schema${casingOption} })
-    })
-    _db = withReplicas(primary, replicaConnections)`
-  : `    _db = drizzle({ client, schema${casingOption} })`}`
-    )
+    mustacheView.lazy = true
   }
   // Non-CF mysql2: lazy env resolution for Docker/multi-deploy scenarios
   if (driver === 'mysql2' && !nuxt.options.dev && !hub.hosting.includes('cloudflare')) {
-    const uriExpr = connection.uri ? `'${connection.uri}'` : `process.env.MYSQL_URL || process.env.DATABASE_URL`
-    const replicaUrls = (replicas || []).filter(Boolean)
-    const hasReplicas = replicaUrls.length > 0
-
-    drizzleOrmContent = generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/mysql2'${hasReplicas ? `\nimport { withReplicas } from 'drizzle-orm/mysql-core'` : ''}`,
-      `    const uri = ${uriExpr}
-    if (!uri) throw new Error('DATABASE_URL or MYSQL_URL required')
-${hasReplicas
-  ? `    const primary = drizzle({ connection: { uri }, schema${modeOption}${casingOption} })
-
-    const replicaUrls = ${JSON.stringify(replicaUrls)}
-    const replicaConnections = replicaUrls.map(replicaUrl => {
-      return drizzle({ connection: { uri: replicaUrl }, schema${modeOption}${casingOption} })
-    })
-    _db = withReplicas(primary, replicaConnections)`
-  : `    _db = drizzle({ connection: { uri }, schema${modeOption}${casingOption} })`}`
-    )
+    mustacheView.lazy = true
   }
   // libsql: lazy env resolution for Docker/multi-deploy scenarios (when no URL baked in)
   if (driver === 'libsql' && !connection.url) {
-    drizzleOrmContent = generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/libsql'`,
-      `    const url = process.env.TURSO_DATABASE_URL || process.env.LIBSQL_URL || process.env.DATABASE_URL
-    const authToken = process.env.TURSO_AUTH_TOKEN || process.env.LIBSQL_AUTH_TOKEN
-    if (!url) throw new Error('Database URL not found. Set TURSO_DATABASE_URL, LIBSQL_URL, or DATABASE_URL')
-    _db = drizzle({ connection: { url, authToken }, schema${casingOption} })`
-    )
+    mustacheView.lazy = true
   }
 
   // Write to node_modules/@nuxthub/db/ for direct imports (workflow compatibility)
@@ -590,28 +411,13 @@ ${hasReplicas
   // Write db.mjs to node_modules/@nuxthub/db/
   await writeFile(
     join(physicalDbDir, 'db.mjs'),
-    drizzleOrmContent.replace(/from '\.\/db\/schema\.mjs'/g, 'from \'./schema.mjs\'')
+    mustacheFiles.db.drizzle.render(mustacheView)
   )
 
   // Write db.d.ts for TypeScript support
-  const physicalDbTypes = `import type { DrizzleConfig } from 'drizzle-orm'
-import { drizzle as drizzleCore } from 'drizzle-orm/${driverForTypes}'
-import * as schema from './schema.mjs'
-
-/**
- * The database schema object
- * Defined in server/db/schema.ts and server/db/schema/*.ts
- */
-export { schema }
-/**
- * The ${driver} database client.
- */
-export const db: ReturnType<typeof drizzleCore<typeof schema>>
-`
-
   await writeFile(
     join(physicalDbDir, 'db.d.ts'),
-    physicalDbTypes
+    mustacheFiles.db.types.render({ driver, driverForTypes })
   )
 
   // Create package.json and stub schema files for Node.js module resolution

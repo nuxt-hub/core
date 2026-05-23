@@ -1,0 +1,59 @@
+let _db
+function getDb() {
+  if (!_db) {
+    try {
+{{#d1}}
+        const connection = process.env.DB || globalThis.__env__?.DB || globalThis.DB
+        if (!connection) throw new Error('DB binding not found')
+        const connector = { connection }
+{{/d1}}
+{{#hyperdrive}}
+        const hyperdrive = process.env.{{bindingName}} || globalThis.__env__?.{{bindingName}} || globalThis.{{bindingName}}
+        if (!hyperdrive) throw new Error('{{bindingName}} binding not found')
+        const connector = { connection: hyperdrive.connectionString }
+{{/hyperdrive}}
+{{^hyperdrive}}
+	{{#postgresjs}}
+        const url = {{#connection.url}}'{{{.}}}'{{/connection.url}}{{^connection.url}}process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL{{/connection.url}}
+        if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
+        const connector = { client: postgres(url, {{{postgresOpts}}}) }
+	{{/postgresjs}}
+	{{#mysql2}}
+        const uri = {{#connection.uri}}'{{{.}}}'{{/connection.uri}}{{^connection.uri}}process.env.MYSQL_URL || process.env.DATABASE_URL{{/connection.uri}}
+        if (!uri) throw new Error('DATABASE_URL or MYSQL_URL required')
+        const connector = { connection: { uri } }
+	{{/mysql2}}
+{{/hyperdrive}}
+{{#libsql}}
+        const url = process.env.TURSO_DATABASE_URL || process.env.LIBSQL_URL || process.env.DATABASE_URL
+        const authToken = process.env.TURSO_AUTH_TOKEN || process.env.LIBSQL_AUTH_TOKEN
+        if (!url) throw new Error('Database URL not found. Set TURSO_DATABASE_URL, LIBSQL_URL, or DATABASE_URL')
+        const connector = { connection: { url, authToken } }
+{{/libsql}}
+{{#neonhttp}}
+        const url = {{#connection.url}}'{{{.}}}'{{/connection.url}}{{^connection.url}}process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL{{/connection.url}}
+        if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
+        const connector = { client: neon(url) }
+{{/neonhttp}}
+        const primary = drizzle({ ...connector, ...commonDrizzleArgs })
+{{#withReplicas}}
+        const replicaUrls = {{{replicaUrls}}}
+        const replicaConnections = replicaUrls.map(replicaUrl => {
+	{{#postgresjs}}
+          const replicaConnector = { client: postgres(replicaUrl, {{{postgresOpts}}}) }
+	{{/postgresjs}}
+	{{#mysql2}}
+          const replicaConnector = { connection: { uri: replicaUrl } }
+	{{/mysql2}}
+          return drizzle({ ...replicaConnector, ...commonDrizzleArgs })
+        })
+        _db = withReplicas(primary, replicaConnections)
+{{/withReplicas}}
+{{^withReplicas}}
+        _db = primary
+{{/withReplicas}}
+    } catch (e) { throw new Error('[nuxt-hub] ' + e.message) }
+  }
+  return _db
+}
+const db = new Proxy({}, { get(_, prop) { return getDb()[prop] } })

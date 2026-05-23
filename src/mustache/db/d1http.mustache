@@ -1,0 +1,47 @@
+const accountId = '{{{connection.accountId}}}'
+const databaseId = '{{{connection.databaseId}}}'
+const apiToken = '{{{connection.apiToken}}}'
+
+async function d1HttpDriver(sql, params, method) {
+  if (method === 'values') method = 'all'
+
+  const { errors, success, result } = await $fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${databaseId}/raw`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiToken}`,
+      'Content-Type': 'application/json'
+    },
+    async onResponseError({ request, response, options }) {
+      console.error(
+        'D1 HTTP Error:',
+        request,
+        options.body,
+        response.status,
+        response._data,
+      )
+    },
+    body: { sql, params }
+  })
+
+  if (errors?.length > 0 || !success) {
+    throw new Error(`D1 HTTP error: ${JSON.stringify({ errors, success, result })}`)
+  }
+
+  const queryResult = result?.[0]
+  if (!queryResult?.success) {
+    throw new Error(`D1 HTTP error: ${JSON.stringify({ errors, success, result })}`)
+  }
+
+  const rows = queryResult.results?.rows || []
+
+  if (method === 'get') {
+    if (rows.length === 0) {
+      return { rows: [] }
+    }
+    return { rows: rows[0] }
+  }
+
+  return { rows }
+}
+
+const db = drizzle(d1HttpDriver, commonDrizzleArgs)
