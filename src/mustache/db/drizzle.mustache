@@ -38,7 +38,7 @@ const connector = { client: postgres('{{{connection.url}}}', {{{postgresOpts}}})
     {{/postgresjs}}
     {{#pglite}}
         {{#isDev}}
-const connector = { client: new PGlite({{#connection.dataDir}}'{{.}}'{{/connection.dataDir}}{{^connection.dataDir}}undefined{{/connection.dataDir}}) }
+const connector = { client: new PGlite({{#connection.dataDir}}'{{{.}}}'{{/connection.dataDir}}{{^connection.dataDir}}undefined{{/connection.dataDir}}) }
         {{/isDev}}
         {{^isDev}}
 const connector = { connection: {{{connectionStringified}}} }

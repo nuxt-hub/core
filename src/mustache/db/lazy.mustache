@@ -14,12 +14,12 @@ function getDb() {
 {{/hyperdrive}}
 {{^hyperdrive}}
 	{{#postgresjs}}
-        const url = {{#connection.url}}'{{.}}'{{/connection.url}}{{^connection.url}}process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL{{/connection.url}}
+        const url = {{#connection.url}}'{{{.}}}'{{/connection.url}}{{^connection.url}}process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL{{/connection.url}}
         if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
         const connector = { client: postgres(url, {{{postgresOpts}}}) }
 	{{/postgresjs}}
 	{{#mysql2}}
-        const uri = {{#connection.uri}}'{{.}}'{{/connection.uri}}{{^connection.uri}}process.env.MYSQL_URL || process.env.DATABASE_URL{{/connection.uri}}
+        const uri = {{#connection.uri}}'{{{.}}}'{{/connection.uri}}{{^connection.uri}}process.env.MYSQL_URL || process.env.DATABASE_URL{{/connection.uri}}
         if (!uri) throw new Error('DATABASE_URL or MYSQL_URL required')
         const connector = { connection: { uri } }
 	{{/mysql2}}
@@ -31,7 +31,7 @@ function getDb() {
         const connector = { connection: { url, authToken } }
 {{/libsql}}
 {{#neonhttp}}
-        const url = {{#connection.url}}'{{.}}'{{/connection.url}}{{^connection.url}}process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL{{/connection.url}}
+        const url = {{#connection.url}}'{{{.}}}'{{/connection.url}}{{^connection.url}}process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL{{/connection.url}}
         if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
         const connector = { client: neon(url) }
 {{/neonhttp}}

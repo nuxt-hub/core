@@ -314,7 +314,7 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
   nuxt.options.alias['hub:db:schema'] = '@nuxthub/db/schema'
 }
 
-export async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
+async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
   const { dialect, driver, connection, mode, casing, replicas } = hub.db as ResolvedDatabaseConfig
 
   const postgresOpts = (() => {
@@ -355,7 +355,7 @@ export async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
     bindingName: driver === 'postgres-js' ? 'POSTGRES' : 'MYSQL',
     casing,
     connection,
-    connectionStringified: JSON.stringify(connection).replaceAll('"', '\''),
+    connectionStringified: JSON.stringify(connection)?.replaceAll('"', '\''),
     driver: driverToDrizzleImport(driver),
     hyperdrive: !!(['postgres-js', 'mysql2'].includes(driver) && hub.hosting.includes('cloudflare') && connection?.hyperdriveId),
     isDev: nuxt.options.dev,
