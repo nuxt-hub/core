@@ -39,7 +39,7 @@ importers:
         specifier: ^3.2.0
         version: 3.2.0
       h3:
-        specifier: ^1.15.4
+        specifier: ^1.15.11
         version: 1.15.11
       hookable:
         specifier: 6.0.1
