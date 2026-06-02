@@ -130,17 +130,14 @@ export function useMultipartUpload(
     const start = async () => {
       const hub = useRuntimeConfig().public.hub
       if (hub.blobProvider === 'vercel-blob') {
-        // #809 - variable indirection to avoid Vite static analysis
-        const pkg = '@vercel/blob/client'
-        return import(/* @vite-ignore */ pkg).then(({ upload }) => {
-          return upload(file.name, file, {
-            access: 'public',
-            multipart: true,
-            handleUploadUrl: joinURL(baseURL, 'multipart', file.name || ''),
-            onUploadProgress: (uploadProgress) => {
-              progress.value = uploadProgress.percentage
-            }
-          })
+        const { upload } = await import('@vercel/blob/client')
+        return upload(file.name, file, {
+          access: 'public',
+          multipart: true,
+          handleUploadUrl: joinURL(baseURL, 'multipart', file.name || ''),
+          onUploadProgress: (uploadProgress) => {
+            progress.value = uploadProgress.percentage
+          }
         })
       }
 
