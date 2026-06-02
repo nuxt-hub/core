@@ -110,6 +110,10 @@ export const blob = createBlobStorage(createDriver(${JSON.stringify(driverOption
     name: '@nuxthub/blob',
     version: '0.0.0',
     type: 'module',
+    // `main`/`types` resolve nitro's relative directory imports (e.g.
+    // `typeof import('../../node_modules/@nuxthub/blob')`), which bypass `exports`
+    main: './blob.mjs',
+    types: './blob.d.ts',
     exports: {
       '.': {
         types: './blob.d.ts',
