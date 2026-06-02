@@ -620,6 +620,10 @@ export const db: ReturnType<typeof drizzleCore<typeof schema>>
     name: '@nuxthub/db',
     version: '0.0.0',
     type: 'module',
+    // `main`/`types` resolve nitro's relative directory imports (e.g.
+    // `typeof import('../../node_modules/@nuxthub/db')`), which bypass `exports`
+    main: './db.mjs',
+    types: './db.d.ts',
     exports: {
       '.': { types: './db.d.ts', default: './db.mjs' },
       './schema': { types: './schema.d.mts', default: './schema.mjs' }
