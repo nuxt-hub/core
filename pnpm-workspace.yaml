@@ -6,10 +6,7 @@ shamefullyHoist: true
 strictPeerDependencies: false
 shellEmulator: true
 packageConfigs:
-  nuxthub-docs:
-    shamefullyHoist: true
   '@nuxthub/core':
-    shamefullyHoist: true
     strictPeerDependencies: false
     shellEmulator: true
 allowBuilds:
