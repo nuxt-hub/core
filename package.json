@@ -114,7 +114,7 @@
     "destr": "^2.0.5",
     "eslint": "^9.39.2",
     "jiti": "^2.6.1",
-    "nitropack": "^2.13.1",
+    "nitropack": "^2.13.4",
     "nuxt": "^4.3.1",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18",
