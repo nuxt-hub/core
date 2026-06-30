@@ -1,7 +1,27 @@
 import type { Nuxt } from '@nuxt/schema'
 import { logger, createResolver } from '@nuxt/kit'
+import type { HubConfig, ResolvedHubConfig } from '@nuxthub/core'
 
 const log = logger.withTag('nuxt:hub')
+
+/**
+ * Check if any Cloudflare binding ID is configured (databaseId, namespaceId, bucketName, hyperdriveId)
+ * When a binding ID is present, we use remote Cloudflare bindings via getPlatformProxy in dev
+ */
+export function hasRemoteBindingId(hub: HubConfig | ResolvedHubConfig): boolean {
+  const dbConfig = typeof hub.db === 'object' && hub.db ? hub.db : null
+  const kvConfig = typeof hub.kv === 'object' && hub.kv ? hub.kv : null
+  const cacheConfig = typeof hub.cache === 'object' && hub.cache ? hub.cache : null
+  const blobConfig = typeof hub.blob === 'object' && hub.blob ? hub.blob : null
+
+  return !!(
+    dbConfig?.connection?.databaseId
+    || dbConfig?.connection?.hyperdriveId
+    || kvConfig?.namespaceId
+    || cacheConfig?.namespaceId
+    || (blobConfig?.driver === 'cloudflare-r2' && blobConfig.bucketName)
+  )
+}
 
 export function logWhenReady(nuxt: Nuxt, message: string, type: 'info' | 'warn' | 'error' = 'info') {
   if (nuxt.options._prepare) {

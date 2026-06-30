@@ -50,6 +50,12 @@ export default defineBuildConfig({
       input: 'src/cache/runtime/',
       outDir: 'dist/cache/runtime',
       builder: 'mkdist'
+    },
+    // Remote (cloudflare dev bindings)
+    {
+      input: 'src/remote/runtime/',
+      outDir: 'dist/remote/runtime',
+      builder: 'mkdist'
     }
   ]
 })
