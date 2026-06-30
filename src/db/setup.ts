@@ -101,12 +101,12 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
       break
     }
     case 'postgresql': {
-      // Cloudflare Hyperdrive with explicit hyperdriveId
-      if (hub.hosting.includes('cloudflare') && config.connection?.hyperdriveId && !config.driver) {
-        config.driver = 'postgres-js'
+      config.connection = defu(config.connection, { url: process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL || '' })
+      if (hub.hosting.includes('cloudflare') && config.connection?.hyperdriveId && !config.connection.url && (!config.driver || config.driver === 'postgres-js')) {
+        config.driver ||= 'postgres-js'
+        config.applyMigrationsDuringBuild = false
         break
       }
-      config.connection = defu(config.connection, { url: process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL || '' })
       // Only error at build time if migrations need to run
       if (config.applyMigrationsDuringBuild && config.driver && ['neon-http', 'postgres-js'].includes(config.driver) && !config.connection.url) {
         throw new Error(`\`${config.driver}\` driver requires \`DATABASE_URL\`, \`POSTGRES_URL\`, or \`POSTGRESQL_URL\` environment variable when \`applyMigrationsDuringBuild\` is enabled`)
@@ -121,13 +121,13 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
       break
     }
     case 'mysql': {
-      // Cloudflare Hyperdrive with explicit hyperdriveId
-      if (hub.hosting.includes('cloudflare') && config.connection?.hyperdriveId && !config.driver) {
-        config.driver = 'mysql2'
+      config.connection = defu(config.connection, { uri: process.env.MYSQL_URL || process.env.DATABASE_URL || '' })
+      if (hub.hosting.includes('cloudflare') && config.connection?.hyperdriveId && !config.connection.uri) {
+        config.driver ||= 'mysql2'
+        config.applyMigrationsDuringBuild = false
         break
       }
       config.driver ||= 'mysql2'
-      config.connection = defu(config.connection, { uri: process.env.MYSQL_URL || process.env.DATABASE_URL || '' })
       // Only error at build time if migrations need to run
       if (config.applyMigrationsDuringBuild && !config.connection.uri) {
         throw new Error('MySQL requires DATABASE_URL or MYSQL_URL environment variable when `applyMigrationsDuringBuild` is enabled')
