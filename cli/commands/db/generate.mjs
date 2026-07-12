@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
-import { execa } from 'execa'
+import { x } from 'tinyexec'
 import { join, resolve } from 'pathe'
 import { buildDatabaseSchema } from '@nuxthub/core/db'
 import { getTsconfigAliases } from '../../utils/db.mjs'
@@ -39,22 +39,17 @@ export default defineCommand({
       consola.level = 4
     }
     const cwd = args.cwd ? resolve(process.cwd(), args.cwd) : process.cwd()
-    const options = {
-      stdout: 'pipe',
-      stderr: 'pipe',
-      preferLocal: true,
-      cwd
-    }
     consola.info('Ensuring database schema is generated...')
-    await execa(options)`nuxt prepare`
+    await x('nuxt', ['prepare'], { nodeOptions: { cwd } })
     const alias = await getTsconfigAliases(cwd)
-    await buildDatabaseSchema(join(options.cwd, '.nuxt'), { relativeDir: cwd, alias })
+    await buildDatabaseSchema(join(cwd, '.nuxt'), { relativeDir: cwd, alias })
     consola.info('Generating database migrations...')
-    const { stderr } = await execa({
-      ...options,
-      stdin: 'inherit',
-      stdout: 'inherit'
-    })`drizzle-kit generate --config=./.nuxt/hub/db/drizzle.config.ts${args.custom ? ' --custom' : ''}${args.name ? ` --name=${args.name}` : ''}`
+    const drizzleArgs = ['generate', '--config=./.nuxt/hub/db/drizzle.config.ts']
+    if (args.custom) drizzleArgs.push('--custom')
+    if (args.name) drizzleArgs.push(`--name=${args.name}`)
+    const { stderr } = await x('drizzle-kit', drizzleArgs, {
+      nodeOptions: { cwd, stdio: ['inherit', 'inherit', 'pipe'] }
+    })
     // Drizzle-kit does not exit with an error code when there is an error, so we need to check the stderr
     if (stderr) {
       consola.error(stderr)

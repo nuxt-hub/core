@@ -68,6 +68,9 @@ importers:
       std-env:
         specifier: ^3.10.0
         version: 3.10.0
+      tinyexec:
+        specifier: ^1.0.4
+        version: 1.0.4
       tinyglobby:
         specifier: ^0.2.15
         version: 0.2.16
