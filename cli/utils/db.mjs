@@ -34,6 +34,17 @@ export async function getNextMigrationNumber() {
   return (lastSequentialMigrationNumber + 1).toString().padStart(4, '0')
 }
 
+/**
+ * Quote a SQL identifier using the correct syntax for the given dialect.
+ * PostgreSQL uses double quotes, MySQL and SQLite use backticks.
+ */
+export function quoteIdentifier(name, dialect) {
+  if (dialect === 'postgresql') {
+    return `"${name}"`
+  }
+  return `\`${name}\``
+}
+
 export async function getTsconfigAliases(cwd) {
   try {
     const tsconfig = JSON.parse(await readFile(join(cwd, '.nuxt/tsconfig.json'), 'utf-8'))
