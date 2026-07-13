@@ -87,7 +87,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.nitro.experimental = nuxt.options.nitro.experimental || {}
     nuxt.options.nitro.experimental.asyncContext = true
 
-    if (!nuxt.options.dev && hub.hosting.includes('cloudflare')) {
+    if (hub.hosting.includes('cloudflare')) {
       setupCloudflare(nuxt, hub)
     }
 
