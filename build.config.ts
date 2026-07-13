@@ -8,7 +8,10 @@ export default defineBuildConfig({
     'drizzle-orm',
     'drizzle-kit',
     './db/lib',
-    'db/lib'
+    'db/lib',
+    'sirv',
+    './devtools/setup',
+    'devtools/setup'
   ],
   entries: [
     'src/module',
@@ -49,6 +52,20 @@ export default defineBuildConfig({
     {
       input: 'src/cache/runtime/',
       outDir: 'dist/cache/runtime',
+      builder: 'mkdist'
+    },
+    // DevTools
+    {
+      input: 'src/devtools/',
+      outDir: 'dist/devtools',
+      builder: 'mkdist',
+      // Only ship the Nuxt DevTools integration code.
+      // Avoid accidentally bundling local/generated UI artifacts (e.g. `src/devtools/client/.nuxt`).
+      pattern: ['*.ts']
+    },
+    {
+      input: 'src/devtools-runtime/',
+      outDir: 'dist/devtools-runtime',
       builder: 'mkdist'
     }
   ]
