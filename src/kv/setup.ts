@@ -128,6 +128,10 @@ export const kv = createStorage({
     name: '@nuxthub/kv',
     version: '0.0.0',
     type: 'module',
+    // `main`/`types` resolve nitro's relative directory imports (e.g.
+    // `typeof import('../../node_modules/@nuxthub/kv')`), which bypass `exports`
+    main: './kv.mjs',
+    types: './kv.d.ts',
     exports: {
       '.': {
         types: './kv.d.ts',

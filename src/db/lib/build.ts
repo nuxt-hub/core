@@ -98,7 +98,13 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias
       'hub:db:schema': entry,
       '@nuxthub/db/schema': entry
     },
-    platform: 'neutral',
+    // Node builtins bundled from the DB driver (e.g. `postgres`) are already
+    // externalized here, but under the `neutral` platform rolldown/esbuild
+    // cannot resolve them and floods dev/`db:generate` with UNRESOLVED_IMPORT
+    // warnings (os/fs/net/tls/crypto/stream/perf_hooks). The generated
+    // schema.mjs is only ever consumed by the Node server, so target `node`:
+    // builtins become silent externals with no change to runtime output.
+    platform: 'node',
     format: 'esm',
     skipNodeModulesBundle: false,
     tsconfig: false,

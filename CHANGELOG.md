@@ -1,6 +1,45 @@
 # Changelog
 
 
+## v0.10.8
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.10.7...v0.10.8)
+
+### 🩹 Fixes
+
+- **blob:** Use variable for vercel-blob dynamic import ([#810](https://github.com/nuxt-hub/core/pull/810))
+- Resolve module add exports error ([#858](https://github.com/nuxt-hub/core/pull/858))
+- **docs:** Align tab content in examples ([fe2a97f](https://github.com/nuxt-hub/core/commit/fe2a97f))
+- **sql:** Use dialect-aware identifier quoting in CLI commands ([#889](https://github.com/nuxt-hub/core/pull/889))
+- **blob:** Declare @vercel/blob as optional peer dependency ([#904](https://github.com/nuxt-hub/core/pull/904))
+- Resolve types for server auto-imports ([#905](https://github.com/nuxt-hub/core/pull/905))
+- **db:** Avoid reusing hyperdrive postgres client ([#895](https://github.com/nuxt-hub/core/pull/895))
+- **db:** Skip hyperdrive build migrations ([#868](https://github.com/nuxt-hub/core/pull/868))
+- Pin pnpm to 11.7.0 to resolve CI self-installer crash ([#913](https://github.com/nuxt-hub/core/pull/913))
+- **db:** Build schema with platform 'node' to silence UNRESOLVED_IMPORT warnings ([#912](https://github.com/nuxt-hub/core/pull/912))
+
+### 📖 Documentation
+
+- **cloudflare:** Clarify d1 deployment migrations ([#862](https://github.com/nuxt-hub/core/pull/862))
+- Remove sqlite support warning for drizzle studio ([#909](https://github.com/nuxt-hub/core/pull/909))
+- Document cloudflare workers builds d1 pattern ([#897](https://github.com/nuxt-hub/core/pull/897))
+- Add cloudflare hyperdrive docs ([#875](https://github.com/nuxt-hub/core/pull/875))
+
+### 🤖 CI
+
+- Add mkdist as direct devDependency ([#903](https://github.com/nuxt-hub/core/pull/903))
+
+### ❤️ Contributors
+
+- JD Solanki <jdsolanki0001@gmail.com>
+- Alexander Chepurnoy ([@cany748](https://github.com/cany748))
+- Copilot ([@MicrosoftCopilot](https://github.com/MicrosoftCopilot))
+- Max <maximogarciamtnez@gmail.com>
+- Hareland ([@hareland](https://github.com/hareland))
+- Rihan Arfan ([@RihanArfan](https://github.com/RihanArfan))
+- LoryPelli ([@lorypelli](https://github.com/lorypelli))
+- Hugo Richard <hugo.richard@vercel.com>
+
 ## v0.10.7
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.10.5...v0.10.7)
