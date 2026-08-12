@@ -24,4 +24,13 @@ describe('wrangler bindings e2e', async () => {
     expect(wrangler?.kv_namespaces).toContainEqual({ binding: 'CACHE', id: 'test-cache-id' })
     expect(wrangler?.d1_databases).toContainEqual({ binding: 'DB', database_id: 'test-db-id' })
   })
+
+  it('should omit r2 jurisdiction when not configured', () => {
+    const { nuxt } = useTestContext()
+    const wrangler = nuxt?.options.nitro.cloudflare?.wrangler
+    const blobBinding = wrangler?.r2_buckets?.find((b: { binding: string }) => b.binding === 'BLOB')
+
+    expect(blobBinding).toEqual({ binding: 'BLOB', bucket_name: 'test-bucket' })
+    expect(blobBinding).not.toHaveProperty('jurisdiction')
+  })
 })

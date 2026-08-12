@@ -74,7 +74,18 @@ export interface ModuleOptions {
 export type FSBlobConfig = { driver: 'fs' } & FSDriverOptions
 export type S3BlobConfig = { driver: 's3' } & S3DriverOptions
 export type VercelBlobConfig = { driver: 'vercel-blob' } & VercelDriverOptions
-export type CloudflareR2BlobConfig = { driver: 'cloudflare-r2', bucketName?: string } & CloudflareDriverOptions
+export type CloudflareR2BlobConfig = {
+  driver: 'cloudflare-r2'
+  /**
+   * R2 bucket name used to auto-generate wrangler bindings
+   */
+  bucketName?: string
+  /**
+   * R2 jurisdiction for the bucket binding (e.g. `'eu'`)
+   * @see https://developers.cloudflare.com/r2/reference/data-location/#jurisdictional-restrictions
+   */
+  jurisdiction?: string
+} & CloudflareDriverOptions
 
 export type BlobConfig = boolean | FSBlobConfig | S3BlobConfig | VercelBlobConfig | CloudflareR2BlobConfig
 export type ResolvedBlobConfig = FSBlobConfig | S3BlobConfig | VercelBlobConfig | CloudflareR2BlobConfig
