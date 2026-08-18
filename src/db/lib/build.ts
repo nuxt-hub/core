@@ -5,9 +5,12 @@ import type { ResolvedHubConfig } from '@nuxthub/core'
 import { consola } from 'consola'
 import { createDrizzleClient } from './client'
 import { applyDatabaseMigrations, applyDatabaseQueries } from './migrations'
+import { resolveTypescriptVersion, supportsDtsGeneration } from './ts-version'
 import { build } from 'tsdown'
 
 const log = consola.withTag('nuxt:hub')
+
+const generateDts = supportsDtsGeneration(resolveTypescriptVersion())
 
 /**
  * Copies database migrations and queries to the build output directory
@@ -108,11 +111,13 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias
     format: 'esm',
     skipNodeModulesBundle: false,
     tsconfig: false,
-    dts: {
-      build: false,
-      tsconfig: false,
-      newContext: true
-    },
+    dts: generateDts
+      ? {
+          build: false,
+          tsconfig: false,
+          newContext: true
+        }
+      : false,
     clean: false,
     logLevel: 'warn'
   })
