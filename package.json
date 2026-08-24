@@ -29,6 +29,10 @@
       "types": "./dist/db/lib/index.d.ts",
       "import": "./dist/db/lib/index.mjs"
     },
+    "./db/migrations": {
+      "types": "./dist/db/lib/migrations.d.ts",
+      "import": "./dist/db/lib/migrations.mjs"
+    },
     "./kv": {
       "types": "./dist/kv/runtime/kv.d.ts"
     }
