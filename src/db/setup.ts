@@ -193,7 +193,7 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   }
   if (useRelationsV2 && casing) {
     logWhenReady(nuxt, '`casing` is ignored when `useRelationsV2` is enabled — drizzle-orm v1+ removed runtime casing. Use `snakeCase`/`camelCase` from `drizzle-orm/<dialect>-core` in your schema files instead. See https://orm.drizzle.team/docs/casing', 'warn')
-    ;(hub.db as ResolvedDatabaseConfig).casing = undefined
+      ; (hub.db as ResolvedDatabaseConfig).casing = undefined
   }
 
   // Add Server scanning
@@ -257,7 +257,8 @@ import * as schema from './schema.mjs'
 type SchemaType = typeof schema
 export type Tables = ExtractTablesFromSchema<SchemaType>
 type RelationsKeys = keyof SchemaType extends infer Key ?  Key extends keyof SchemaType ?  SchemaType[Key] extends ExtractTablesWithRelationsParts<any, any> ?  Key : never : never : never
-type FlatRelations = { [Key in keyof SchemaType[RelationsKeys]]: keyof SchemaType extends infer T ? T extends keyof SchemaType ? Key extends keyof SchemaType[T] ? SchemaType[T][Key] : never : never : never }
+type InnerRelationsKeys = RelationsKeys extends Key ? Key extends RelationsKeys ? keyof SchemaType[Key] : never : never;
+type FlatRelations = { [Key in keyof InnerRelationsKeys]: keyof SchemaType extends infer T ? T extends keyof SchemaType ? Key extends keyof SchemaType[T] ? SchemaType[T][Key] : never : never : never }
 export type Relations = ExtractTablesWithRelationsParts<IncludeEveryTable<Tables>, Tables> & FlatRelations
 
 export const relations: Relations
@@ -525,7 +526,7 @@ export {db, schema${relationExport} }
       `    const url = ${urlExpr}
     if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
     const sql = neon(url)
-    _db = drizzle(sql, { ${casingOption}${relationsOption} })`,
+    _db = drizzle(sql, { schema${casingOption}${relationsOption} })`,
       { relationExport }
     )
   }
@@ -534,7 +535,7 @@ export {db, schema${relationExport} }
       `import { drizzle } from 'drizzle-orm/d1'${relationsImport}`,
       `    const binding = process.env.DB || globalThis.__env__?.DB || globalThis.DB
     if (!binding) throw new Error('DB binding not found')
-    _db = drizzle(binding, { ${casingOption}${relationsOption} })`,
+    _db = drizzle(binding, { schema${casingOption}${relationsOption} })`,
       { relationExport }
     )
   }
@@ -589,7 +590,7 @@ async function d1HttpDriver(sql, params, method) {
   return { rows }
 }
 
-const db = drizzle(d1HttpDriver, { ${casingOption}${relationsOption} })
+const db = drizzle(d1HttpDriver, { schema${casingOption}${relationsOption} })
 
 export {db, schema${relationExport} }
 `
@@ -641,12 +642,12 @@ const db = new Proxy({}, {
 export { db, schema${relationExport} }
 `
       : generateLazyDbTemplate(
-      `import { drizzle } from 'drizzle-orm/${driver}'${relationsImport}`,
-      `    const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
+        `import { drizzle } from 'drizzle-orm/${driver}'${relationsImport}`,
+        `    const hyperdrive = process.env.${bindingName} || globalThis.__env__?.${bindingName} || globalThis.${bindingName}
     if (!hyperdrive) throw new Error('${bindingName} binding not found')
     _db = drizzle({ connection: hyperdrive.connectionString, schema${modeOption}${casingOption}${relationsOption} })`,
-      { relationExport }
-        )
+        { relationExport }
+      )
   }
   // Non-CF postgres-js: lazy env resolution for Docker/multi-deploy scenarios
   if (driver === 'postgres-js' && !nuxt.options.dev && !hub.hosting.includes('cloudflare')) {
@@ -661,7 +662,7 @@ ${hasReplicas ? `import { withReplicas } from 'drizzle-orm/pg-core'\n` : ''}impo
     if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
     const client = postgres(url, ${postgresOpts})
 ${hasReplicas
-  ? `    const primary = drizzle({ client, schema${casingOption}${relationsOption} })
+        ? `    const primary = drizzle({ client, schema${casingOption}${relationsOption} })
 
     const replicaUrls = ${JSON.stringify(replicaUrls)}
     const replicaConnections = replicaUrls.map(replicaUrl => {
@@ -669,7 +670,7 @@ ${hasReplicas
       return drizzle({ client: replicaClient, schema${casingOption}${relationsOption} })
     })
     _db = withReplicas(primary, replicaConnections)`
-  : `    _db = drizzle({ client, schema${casingOption}${relationsOption} })`}`,
+        : `    _db = drizzle({ client, schema${casingOption}${relationsOption} })`}`,
       { relationExport }
     )
   }
@@ -684,14 +685,14 @@ ${hasReplicas
       `    const uri = ${uriExpr}
     if (!uri) throw new Error('DATABASE_URL or MYSQL_URL required')
 ${hasReplicas
-  ? `    const primary = drizzle({ connection: { uri }, schema${modeOption}${casingOption}${relationsOption} })
+        ? `    const primary = drizzle({ connection: { uri }, schema${modeOption}${casingOption}${relationsOption} })
 
     const replicaUrls = ${JSON.stringify(replicaUrls)}
     const replicaConnections = replicaUrls.map(replicaUrl => {
       return drizzle({ connection: { uri: replicaUrl }, schema${modeOption}${casingOption}${relationsOption} })
     })
     _db = withReplicas(primary, replicaConnections)`
-  : `    _db = drizzle({ connection: { uri }, schema${modeOption}${casingOption}${relationsOption} })`}`,
+        : `    _db = drizzle({ connection: { uri }, schema${modeOption}${casingOption}${relationsOption} })`}`,
       { relationExport }
     )
   }
@@ -718,6 +719,8 @@ ${hasReplicas
   )
 
   const relationsTypesImports = !useRelationsV2 ? '' : `import { relations } from './relations.mjs'`
+  const isPgDriver = ['neon-http', 'postgres-js', 'pglite'].includes(driver)
+  const drizzleCoreType = !useRelationsV2 ? 'typeof schema' : isPgDriver ? 'typeof relations' : 'typeof schema, typeof relations'
 
   // Write db.d.ts for TypeScript support
   const physicalDbTypes = `import type { DrizzleConfig } from 'drizzle-orm'
@@ -733,7 +736,7 @@ export { schema${relationExport} }
 /**
  * The ${driver} database client.
  */
-export const db: ReturnType<typeof drizzleCore<${useRelationsV2 ? 'typeof schema, typeof relations' : 'typeof schema'}>>
+export const db: ReturnType<typeof drizzleCore<${drizzleCoreType}>>
 `
 
   await writeFile(
