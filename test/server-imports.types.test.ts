@@ -37,6 +37,8 @@ describe('server auto-import types', async () => {
   it('@nuxthub/kv exposes atomic operations to TypeScript consumers', () => {
     const { nuxt } = useTestContext()
     const filename = join(nuxt!.options.rootDir, 'atomic-kv-consumer.ts')
+    const normalizedFilename = filename.replace(/\\/g, '/').toLowerCase()
+    const isSourceFile = (path: string) => path.replace(/\\/g, '/').toLowerCase() === normalizedFilename
     const source = `import { kv } from '@nuxthub/kv'
 void kv.getAndDelete?.<{ value: boolean }>('token')
 void kv.increment?.('counter', 60)
@@ -51,9 +53,9 @@ void kv.increment?.('counter', 60)
     }
     const host = ts.createCompilerHost(options)
     const getSourceFile = host.getSourceFile.bind(host)
-    host.fileExists = path => path === filename || ts.sys.fileExists(path)
-    host.readFile = path => path === filename ? source : ts.sys.readFile(path)
-    host.getSourceFile = (path, languageVersion, onError, shouldCreateNewSourceFile) => path === filename
+    host.fileExists = path => isSourceFile(path) || ts.sys.fileExists(path)
+    host.readFile = path => isSourceFile(path) ? source : ts.sys.readFile(path)
+    host.getSourceFile = (path, languageVersion, onError, shouldCreateNewSourceFile) => isSourceFile(path)
       ? ts.createSourceFile(path, source, languageVersion, true)
       : getSourceFile(path, languageVersion, onError, shouldCreateNewSourceFile)
 
