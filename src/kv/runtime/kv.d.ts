@@ -1,4 +1,5 @@
 import type { Storage } from 'unstorage'
+import type { AtomicKVOperations } from './atomic.mjs'
 
 /**
  * The KV storage instance.
@@ -15,7 +16,7 @@ import type { Storage } from 'unstorage'
  */
 export const kv: KVStorage
 
-export interface KVStorage extends Storage {
+export interface KVStorage extends Storage, Partial<AtomicKVOperations> {
   /**
    * Get all keys from the storage.
    *

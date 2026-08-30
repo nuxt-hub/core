@@ -101,10 +101,11 @@ export async function setupKV(nuxt: Nuxt, hub: HubConfig, deps: Record<string, s
   // Generate KV content
   const kvContent = `import { createStorage } from "unstorage"
 import driver from "unstorage/drivers/${driver}";
+import { addAtomicKVOperations } from "./atomic.mjs";
 
-export const kv = createStorage({
-  driver: driver(${JSON.stringify(driverOptions)}),
-});
+const options = ${JSON.stringify(driverOptions)};
+const kvDriver = driver(options);
+export const kv = addAtomicKVOperations(createStorage({ driver: kvDriver }), kvDriver, ${JSON.stringify(driver)}, options);
 `
 
   // Write to node_modules/@nuxthub/kv/ for direct imports (workflow compatibility)
@@ -121,6 +122,14 @@ export const kv = createStorage({
   await copyFile(
     resolve('kv/runtime/kv.d.ts'),
     join(physicalKvDir, 'kv.d.ts')
+  )
+  await copyFile(
+    resolve('kv/runtime/atomic.mjs'),
+    join(physicalKvDir, 'atomic.mjs')
+  )
+  await copyFile(
+    resolve('kv/runtime/atomic.d.ts'),
+    join(physicalKvDir, 'atomic.d.ts')
   )
 
   // Create package.json for Node.js module resolution
