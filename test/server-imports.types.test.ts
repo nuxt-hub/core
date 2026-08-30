@@ -3,6 +3,7 @@ import { access, readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { setup, useTestContext } from '@nuxt/test-utils'
+import ts from 'typescript'
 
 // Nitro generates server auto-import types as relative directory imports, e.g.
 // `const db: typeof import('../../node_modules/@nuxthub/db').db`. TypeScript
@@ -31,5 +32,32 @@ describe('server auto-import types', async () => {
     // the referenced files must actually exist on disk
     await expect(access(join(dir, pkg.main))).resolves.toBeUndefined()
     await expect(access(join(dir, pkg.types))).resolves.toBeUndefined()
+  })
+
+  it('@nuxthub/kv exposes atomic operations to TypeScript consumers', () => {
+    const { nuxt } = useTestContext()
+    const filename = join(nuxt!.options.rootDir, 'atomic-kv-consumer.ts')
+    const source = `import { kv } from '@nuxthub/kv'
+void kv.getAndDelete?.<{ value: boolean }>('token')
+void kv.increment?.('counter', 60)
+`
+    const options: ts.CompilerOptions = {
+      module: ts.ModuleKind.NodeNext,
+      moduleResolution: ts.ModuleResolutionKind.NodeNext,
+      target: ts.ScriptTarget.ESNext,
+      strict: true,
+      skipLibCheck: true,
+      noEmit: true
+    }
+    const host = ts.createCompilerHost(options)
+    const getSourceFile = host.getSourceFile.bind(host)
+    host.fileExists = path => path === filename || ts.sys.fileExists(path)
+    host.readFile = path => path === filename ? source : ts.sys.readFile(path)
+    host.getSourceFile = (path, languageVersion, onError, shouldCreateNewSourceFile) => path === filename
+      ? ts.createSourceFile(path, source, languageVersion, true)
+      : getSourceFile(path, languageVersion, onError, shouldCreateNewSourceFile)
+
+    const diagnostics = ts.getPreEmitDiagnostics(ts.createProgram([filename], options, host))
+    expect(diagnostics.map(diagnostic => ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'))).toEqual([])
   })
 })

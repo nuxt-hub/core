@@ -127,10 +127,6 @@ export const kv = addAtomicKVOperations(createStorage({ driver: kvDriver }), kvD
     resolve('kv/runtime/atomic.mjs'),
     join(physicalKvDir, 'atomic.mjs')
   )
-  await copyFile(
-    resolve('kv/runtime/atomic.d.ts'),
-    join(physicalKvDir, 'atomic.d.ts')
-  )
 
   // Create package.json for Node.js module resolution
   const packageJson = {
