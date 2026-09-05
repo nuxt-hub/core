@@ -1,4 +1,5 @@
 import { joinKeys } from 'unstorage'
+import { destr } from 'destr'
 
 const getAndDeleteScript = `
 local value = redis.call('GET', KEYS[1])
@@ -14,23 +15,6 @@ if exists == 0 then
 end
 return value
 `
-
-function parseValue(value) {
-  if (typeof value !== 'string') return value
-  if (value === 'undefined') return undefined
-  if (value === 'NaN') return Number.NaN
-  if (value === 'Infinity') return Number.POSITIVE_INFINITY
-  if (value === '-Infinity') return Number.NEGATIVE_INFINITY
-
-  try {
-    return JSON.parse(value, (key, child) => {
-      if (key === '__proto__' || (key === 'constructor' && child && typeof child === 'object' && 'prototype' in child)) return undefined
-      return child
-    })
-  } catch {
-    return value
-  }
-}
 
 function normalizeTTL(ttl) {
   if (!Number.isFinite(ttl) || ttl <= 0) {
@@ -53,7 +37,7 @@ function redisOperations(driver, options, upstash) {
       const value = upstash
         ? await instance.getdel(resolvedKey)
         : await instance.eval(getAndDeleteScript, 1, resolvedKey)
-      return parseValue(value)
+      return destr(value)
     },
     async increment(key, ttl) {
       const seconds = normalizeTTL(ttl)

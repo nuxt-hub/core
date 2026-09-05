@@ -1,7 +1,38 @@
 import { describe, expect, it, vi } from 'vitest'
+import { createStorage } from 'unstorage'
 import { addAtomicKVOperations } from '../src/kv/runtime/atomic.mjs'
 
 describe('atomic KV operations', () => {
+  describe.each(['redis', 'upstash'])('%s decoding', (driverName) => {
+    it.each([
+      { name: 'large numeric strings', value: '12345678901234567890', expected: '12345678901234567890' },
+      { name: 'whitespace booleans', value: ' TRUE ', expected: true },
+      { name: 'whitespace NaN', value: ' NaN ', expected: Number.NaN },
+      { name: 'whitespace undefined', value: ' undefined ', expected: undefined },
+      { name: 'JSON objects', value: '{"value":true}', expected: { value: true } },
+      { name: 'decoded objects', value: { value: true }, expected: { value: true } },
+      { name: 'missing values', value: null, expected: null },
+      { name: 'prototype keys', value: '{"__proto__":{"polluted":true},"value":true}', expected: { value: true } },
+      { name: 'constructor prototypes', value: '{"constructor":{"prototype":{"polluted":true}},"value":true}', expected: { value: true } }
+    ])('matches ordinary reads for $name', async ({ value, expected }) => {
+      const getItem = vi.fn(async () => value)
+      const command = vi.fn(async () => value)
+      const driver = {
+        getItem,
+        getInstance: () => driverName === 'redis' ? { eval: command } : { getdel: command }
+      }
+      const storage = addAtomicKVOperations(createStorage({ driver }), driver, driverName)
+
+      const ordinaryValue = await storage.getItem('token')
+      const atomicValue = await storage.getAndDelete('token')
+
+      expect(ordinaryValue).toEqual(expected)
+      expect(atomicValue).toEqual(ordinaryValue)
+      expect(getItem).toHaveBeenCalledTimes(1)
+      expect(command).toHaveBeenCalledTimes(1)
+    })
+  })
+
   it('uses Redis scripts for atomic deletion and fixed-window increments', async () => {
     const evalCommand = vi.fn()
       .mockResolvedValueOnce('{"value":true}')
