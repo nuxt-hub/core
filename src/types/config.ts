@@ -182,6 +182,14 @@ export type DatabaseConfig = {
    */
   migrationsDirs?: string[]
   /**
+   * PostgreSQL schema for the migration history table. Does not change application tables.
+   * When set, creates the schema and moves existing public._hub_migrations into it.
+   * If both history tables exist, migration execution stops for manual reconciliation.
+   * SQL creating this schema must use CREATE SCHEMA IF NOT EXISTS, since it exists before migrations run.
+   * Omit to keep using the connection's search_path.
+   */
+  migrationsSchema?: string
+  /**
    * The paths to the SQL queries to apply after the database migrations complete.
    */
   queriesPaths?: string[]

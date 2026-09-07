@@ -1,7 +1,7 @@
 import { consola } from 'consola'
 import { join, relative } from 'pathe'
 import type { ResolvedHubConfig } from '@nuxthub/core'
-import { AppliedDatabaseMigrationsQuery, getCreateMigrationsTableQuery, splitSqlQueries } from './utils'
+import { getAppliedMigrationsQuery, getCreateMigrationsTableQuery, getMigrationsTableName, dollarQuote, splitSqlQueries } from './utils'
 import { useDatabaseMigrationsStorage, getDatabaseMigrationFiles, useDatabaseQueriesStorage, getDatabaseQueryFiles } from './storage'
 
 function getRelativePath(fullPath: string) {
@@ -18,12 +18,13 @@ export async function applyDatabaseMigrations(hub: ResolvedHubConfig, db: any) {
   const execute = dialect === 'sqlite' ? 'run' : 'execute'
   const getRows = (result: any) => (dialect === 'mysql' ? result[0] : result.results || result.rows || result) || []
 
-  const createMigrationsTableQuery = getCreateMigrationsTableQuery({ dialect: hub.db.dialect })
+  const migrationsTable = getMigrationsTableName(hub.db)
+  const createMigrationsTableStatement = getCreateMigrationsTableQuery(hub.db)
   log.debug('Creating migrations table if not exists...')
   const drizzleOrmPkg = 'drizzle-orm'
   const sql = await import(drizzleOrmPkg).then(m => m.sql)
   try {
-    await db[execute](sql.raw(createMigrationsTableQuery))
+    await db[execute](sql.raw(createMigrationsTableStatement))
   } catch (error: any) {
     const message = error.cause?.message || error.message
     log.error(`Failed to create migrations table\n${message}`)
@@ -33,7 +34,7 @@ export async function applyDatabaseMigrations(hub: ResolvedHubConfig, db: any) {
 
   let appliedRows = []
   try {
-    appliedRows = getRows(await db[execute](sql.raw(AppliedDatabaseMigrationsQuery)))
+    appliedRows = getRows(await db[execute](sql.raw(getAppliedMigrationsQuery(hub.db))))
   } catch (error: any) {
     const message = error.cause?.message || error.message
     log.error(`Failed to fetch applied migrations\n${message}`)
@@ -54,10 +55,19 @@ export async function applyDatabaseMigrations(hub: ResolvedHubConfig, db: any) {
   }
 
   for (const migration of pendingMigrations) {
-    let query = await migrationsStorage.getItem<string>(migration.filename)
+    const query = await migrationsStorage.getItem<string>(migration.filename)
     if (!query) continue
-    query += `\nINSERT INTO _hub_migrations (name) values ('${migration.name}');`
-    const queries = splitSqlQueries(query)
+    const queries = dialect === 'postgresql'
+      ? [`DO ${dollarQuote(`
+BEGIN
+  PERFORM pg_advisory_xact_lock(hashtext('nuxthub'), hashtext('migrations'));
+  IF NOT EXISTS (SELECT 1 FROM ${migrationsTable} WHERE name = ${dollarQuote(migration.name)}) THEN
+    EXECUTE ${dollarQuote(query)};
+    INSERT INTO ${migrationsTable} (name) VALUES (${dollarQuote(migration.name)});
+  END IF;
+END
+`)};`]
+      : splitSqlQueries(`${query}\nINSERT INTO _hub_migrations (name) values ('${migration.name}');`)
 
     try {
       log.debug(`Applying database migration \`${getRelativePath(join(hub.dir!, 'db/migrations', migration.filename))}\`...`)
