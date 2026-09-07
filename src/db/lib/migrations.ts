@@ -1,17 +1,11 @@
 import { consola } from 'consola'
 import { join, relative } from 'pathe'
 import type { ResolvedHubConfig } from '@nuxthub/core'
-import { AppliedDatabaseMigrationsQuery, getCreateMigrationsTableQuery, splitSqlQueries } from './utils'
+import { getAppliedMigrationsQuery, getCreateMigrationsTableQuery, getMigrationsTableName, dollarQuote, splitSqlQueries } from './utils'
 import { useDatabaseMigrationsStorage, getDatabaseMigrationFiles, useDatabaseQueriesStorage, getDatabaseQueryFiles } from './storage'
 
 function getRelativePath(fullPath: string) {
   return relative(process.cwd(), fullPath)
-}
-
-function dollarQuote(value: string) {
-  let tag = '$nuxthub$'
-  while (value.includes(tag)) tag = `${tag.slice(0, -1)}_$`
-  return `${tag}${value}${tag}`
 }
 
 export async function applyDatabaseMigrations(hub: ResolvedHubConfig, db: any) {
@@ -24,15 +18,8 @@ export async function applyDatabaseMigrations(hub: ResolvedHubConfig, db: any) {
   const execute = dialect === 'sqlite' ? 'run' : 'execute'
   const getRows = (result: any) => (dialect === 'mysql' ? result[0] : result.results || result.rows || result) || []
 
-  const createMigrationsTableQuery = getCreateMigrationsTableQuery({ dialect: hub.db.dialect })
-  const createMigrationsTableStatement = dialect === 'postgresql'
-    ? `DO ${dollarQuote(`
-BEGIN
-  PERFORM pg_advisory_xact_lock(hashtext('nuxthub'), hashtext('migrations'));
-  ${createMigrationsTableQuery}
-END
-`)};`
-    : createMigrationsTableQuery
+  const migrationsTable = getMigrationsTableName(hub.db)
+  const createMigrationsTableStatement = getCreateMigrationsTableQuery(hub.db)
   log.debug('Creating migrations table if not exists...')
   const drizzleOrmPkg = 'drizzle-orm'
   const sql = await import(drizzleOrmPkg).then(m => m.sql)
@@ -47,7 +34,7 @@ END
 
   let appliedRows = []
   try {
-    appliedRows = getRows(await db[execute](sql.raw(AppliedDatabaseMigrationsQuery)))
+    appliedRows = getRows(await db[execute](sql.raw(getAppliedMigrationsQuery(hub.db))))
   } catch (error: any) {
     const message = error.cause?.message || error.message
     log.error(`Failed to fetch applied migrations\n${message}`)
@@ -74,9 +61,9 @@ END
       ? [`DO ${dollarQuote(`
 BEGIN
   PERFORM pg_advisory_xact_lock(hashtext('nuxthub'), hashtext('migrations'));
-  IF NOT EXISTS (SELECT 1 FROM _hub_migrations WHERE name = ${dollarQuote(migration.name)}) THEN
+  IF NOT EXISTS (SELECT 1 FROM ${migrationsTable} WHERE name = ${dollarQuote(migration.name)}) THEN
     EXECUTE ${dollarQuote(query)};
-    INSERT INTO _hub_migrations (name) VALUES (${dollarQuote(migration.name)});
+    INSERT INTO ${migrationsTable} (name) VALUES (${dollarQuote(migration.name)});
   END IF;
 END
 `)};`]
