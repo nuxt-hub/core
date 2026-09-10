@@ -1,9 +1,9 @@
-import { mysqlTable, text, int, timestamp } from 'drizzle-orm/mysql-core'
+import * as d from 'drizzle-orm/mysql-core'
 
-export const todos = mysqlTable('todos', {
-  id: int().primaryKey().autoincrement(),
-  title: text().notNull(),
-  completed: int().notNull().default(0),
-  createdAt: timestamp().notNull().defaultNow(),
-  updatedAt: timestamp().notNull().defaultNow()
+export const todos = d.snakeCase.table('todos', {
+  id: d.int().primaryKey().autoincrement(),
+  title: d.text().notNull(),
+  completed: d.int().notNull().default(0),
+  createdAt: d.timestamp().notNull().defaultNow(),
+  updatedAt: d.timestamp().notNull().defaultNow()
 })

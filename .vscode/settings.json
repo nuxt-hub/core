@@ -1,3 +1,7 @@
 {
-  "eslint.useFlatConfig": true
+  "eslint.useFlatConfig": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.prettier": "never",
+    "source.sortImports": "never"
+  }
 }
