@@ -303,6 +303,89 @@ describe('Blob', async () => {
     })
   })
 
+  describe('nuxt/server handlers', () => {
+    const pathname = 'nuxt server.txt'
+    const content = 'Hello from nuxt/server'
+
+    async function multipartUpload(base: string, pathname: string) {
+      const created = await fetch(url(`${base}/create/${pathname}`), { method: 'POST' })
+      const { uploadId } = await created.json()
+      const uploaded = await fetch(url(`${base}/upload/${pathname}?uploadId=${uploadId}&partNumber=1`), { method: 'PUT', body: content })
+      const part = await uploaded.json()
+      const completed = await fetch(url(`${base}/complete/${pathname}?uploadId=${uploadId}`), {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ parts: [part] })
+      })
+      const aborted = await fetch(url(`${base}/create/${pathname}`), { method: 'POST' })
+        .then(res => res.json())
+        .then(({ uploadId }) => fetch(url(`${base}/abort/${pathname}?uploadId=${uploadId}`), { method: 'DELETE' }))
+      const notAllowed = await fetch(url(`${base}/create/${pathname}`))
+
+      return {
+        created: [created.status, created.headers.get('content-type')],
+        uploaded: [uploaded.status, uploaded.headers.get('content-type'), part.partNumber],
+        completed: [completed.status, completed.headers.get('content-type'), await completed.json()],
+        aborted: [aborted.status, await aborted.text()],
+        notAllowed: notAllowed.status
+      }
+    }
+
+    it('handleUpload', async () => {
+      const form = new FormData()
+      form.append('file', new File([content], pathname, { type: 'text/plain' }))
+      const result = await $fetch('/api/nuxt-server/blob', { method: 'POST', body: form })
+      expect(result).toMatchObject([{ pathname, contentType: 'text/plain', size: content.length }])
+    })
+
+    it('handleUpload validates like an h3 handler', async () => {
+      const form = new FormData()
+      form.append('file', new File([content], 'a.txt', { type: 'text/plain' }))
+      form.append('file', new File([content], 'b.txt', { type: 'text/plain' }))
+      const response = await fetch(url('/api/nuxt-server/blob'), { method: 'POST', body: form })
+      expect(response.status).toBe(400)
+      expect(await response.json()).toMatchObject({ message: 'Multiple files are not allowed' })
+    })
+
+    it('serve sends the same response as an h3 handler', async () => {
+      const [h3Response, response] = await Promise.all([
+        fetch(url(`/api/blob/${encodeURIComponent(pathname)}`)),
+        fetch(url(`/api/nuxt-server/blob/${encodeURIComponent(pathname)}`))
+      ])
+      expect(response.status).toBe(200)
+      expect(await response.text()).toBe(content)
+      expect(response.headers.get('content-security-policy')).toBe('default-src \'none\';')
+      for (const header of ['content-type', 'content-length', 'etag']) {
+        expect(response.headers.get(header)).toBe(h3Response.headers.get(header))
+      }
+      expect(await h3Response.text()).toBe(content)
+    })
+
+    it('serve returns a 404 for a missing file', async () => {
+      const response = await fetch(url('/api/nuxt-server/blob/missing.txt'))
+      expect(response.status).toBe(404)
+    })
+
+    it('handleMultipartUpload sends the same responses as an h3 handler', async () => {
+      const h3Result = await multipartUpload('/api/blob/multipart', 'multipart-h3.txt')
+      const result = await multipartUpload('/api/nuxt-server/blob/multipart', 'multipart-nuxt-server.txt')
+
+      expect(result.completed[2]).toMatchObject({ pathname: 'multipart-nuxt-server.txt', size: content.length })
+      expect(result.aborted).toEqual([204, ''])
+      expect(result.notAllowed).toBe(405)
+      expect({ ...result, completed: result.completed.slice(0, 2) }).toEqual({ ...h3Result, completed: h3Result.completed.slice(0, 2) })
+
+      expect(await $fetch('/api/blob/multipart-nuxt-server.txt')).toBe(content)
+    })
+
+    it('clean up', async () => {
+      await $fetch('/api/blob/delete', {
+        method: 'POST',
+        body: { pathnames: [pathname, 'multipart-h3.txt', 'multipart-nuxt-server.txt'] }
+      })
+    })
+  })
+
   describe('Delete', () => {
     it('Delete single file', async () => {
       const blobsBeforeDelete = await $fetch<BlobListResult>('/api/blob')
