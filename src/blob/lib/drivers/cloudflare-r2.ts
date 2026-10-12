@@ -58,7 +58,7 @@ export function createDriver(options: CloudflareDriverOptions): BlobDriver<Cloud
 
     async get(pathname: string): Promise<Blob | null> {
       const bucket = getBucket()
-      const object = await bucket.get(decodeURIComponent(pathname))
+      const object = await bucket.get(pathname)
 
       if (!object) {
         return null
@@ -72,7 +72,7 @@ export function createDriver(options: CloudflareDriverOptions): BlobDriver<Cloud
 
     async getArrayBuffer(pathname: string): Promise<ArrayBuffer | null> {
       const bucket = getBucket()
-      const object = await bucket.get(decodeURIComponent(pathname))
+      const object = await bucket.get(pathname)
 
       if (!object) {
         return null
@@ -101,7 +101,7 @@ export function createDriver(options: CloudflareDriverOptions): BlobDriver<Cloud
 
     async head(pathname: string): Promise<BlobObject | null> {
       const bucket = getBucket()
-      const object = await bucket.head(decodeURIComponent(pathname))
+      const object = await bucket.head(pathname)
 
       if (!object) {
         return null
@@ -112,7 +112,7 @@ export function createDriver(options: CloudflareDriverOptions): BlobDriver<Cloud
 
     async hasItem(pathname: string): Promise<boolean> {
       const bucket = getBucket()
-      const object = await bucket.head(decodeURIComponent(pathname))
+      const object = await bucket.head(pathname)
       return object !== null
     },
 
@@ -121,7 +121,7 @@ export function createDriver(options: CloudflareDriverOptions): BlobDriver<Cloud
       const paths = Array.isArray(pathnames) ? pathnames : [pathnames]
 
       await Promise.all(
-        paths.map(p => bucket.delete(decodeURIComponent(p)))
+        paths.map(p => bucket.delete(p))
       )
     },
 

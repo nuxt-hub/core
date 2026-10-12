@@ -2,7 +2,7 @@ import * as z from 'zod'
 import type { BlobStorage, BlobListOptions, BlobMultipartOptions, BlobObject, BlobPutOptions, BlobUploadOptions, HandleMPUResponse } from '../types'
 import type { BlobDriver } from './drivers/types'
 import { defu } from 'defu'
-import { getContentType, streamToArrayBuffer } from './utils'
+import { assertValidPathname, decodePathname, getContentType, streamToArrayBuffer } from './utils'
 import { setHeader, createError, assertMethod, readFormData, getValidatedQuery, readValidatedBody, getRequestWebStream, sendNoContent, getHeader, getValidatedRouterParams } from 'h3'
 import type { H3Event } from 'h3'
 import { parse } from 'pathe'
@@ -20,12 +20,15 @@ export function createBlobStorage(driver: BlobDriver<any>): BlobStorage {
       const resolvedOptions = defu(options, {
         limit: 1000
       })
+      if (resolvedOptions.prefix) {
+        assertValidPathname(resolvedOptions.prefix, { allowEmpty: true })
+      }
 
       return driver.list(resolvedOptions)
     },
 
     async serve(event: H3Event, pathname: string) {
-      pathname = decodeURIComponent(pathname)
+      pathname = decodePathname(pathname)
       const arrayBuffer = await driver.getArrayBuffer(pathname)
 
       if (!arrayBuffer) {
@@ -50,11 +53,11 @@ export function createBlobStorage(driver: BlobDriver<any>): BlobStorage {
     },
 
     async get(pathname: string): Promise<Blob | null> {
-      return driver.get(decodeURIComponent(pathname))
+      return driver.get(decodePathname(pathname))
     },
 
     async put(pathname: string, body: string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob, options: BlobPutOptions = {}) {
-      pathname = decodeURIComponent(pathname)
+      pathname = decodePathname(pathname)
       const { contentType: optionsContentType, contentLength, addRandomSuffix, prefix, customMetadata, access } = options
       const contentType = optionsContentType || (body as Blob).type || getContentType(pathname)
 
@@ -69,7 +72,7 @@ export function createBlobStorage(driver: BlobDriver<any>): BlobStorage {
         pathname = joinURL(prefix, pathname).replace(/\/+/g, '/').replace(/^\/+/, '')
       }
 
-      return driver.put(pathname, body, {
+      return driver.put(assertValidPathname(pathname), body, {
         contentType,
         contentLength,
         customMetadata,
@@ -78,7 +81,7 @@ export function createBlobStorage(driver: BlobDriver<any>): BlobStorage {
     },
 
     async head(pathname: string) {
-      pathname = decodeURIComponent(pathname)
+      pathname = decodePathname(pathname)
       const meta = await driver.head(pathname)
 
       if (!meta) {
@@ -90,7 +93,7 @@ export function createBlobStorage(driver: BlobDriver<any>): BlobStorage {
 
     async del(pathnames: string | string[]) {
       const paths = Array.isArray(pathnames) ? pathnames : [pathnames]
-      await driver.delete(paths.map(p => decodeURIComponent(p)))
+      await driver.delete(paths.map(p => decodePathname(p)))
     },
 
     async delete(pathnames: string | string[]) {
@@ -98,7 +101,7 @@ export function createBlobStorage(driver: BlobDriver<any>): BlobStorage {
     },
 
     async createMultipartUpload(pathname: string, options: BlobMultipartOptions = {}) {
-      pathname = decodeURIComponent(pathname)
+      pathname = decodePathname(pathname)
       const { contentType: optionsContentType, addRandomSuffix, prefix } = options
       const contentType = optionsContentType || getContentType(pathname)
 
@@ -112,14 +115,14 @@ export function createBlobStorage(driver: BlobDriver<any>): BlobStorage {
         pathname = joinURL(prefix, pathname).replace(/\/+/g, '/').replace(/^\/+/, '')
       }
 
-      return driver.createMultipartUpload(pathname, {
+      return driver.createMultipartUpload(assertValidPathname(pathname), {
         ...options,
         contentType
       })
     },
 
     async resumeMultipartUpload(pathname: string, uploadId: string) {
-      return driver.resumeMultipartUpload(decodeURIComponent(pathname), uploadId)
+      return driver.resumeMultipartUpload(decodePathname(pathname), uploadId)
     },
 
     async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
