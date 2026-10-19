@@ -592,8 +592,8 @@ export { db, schema }
       `import { drizzle } from 'drizzle-orm/postgres-js'
 ${hasReplicas ? `import { withReplicas } from 'drizzle-orm/pg-core'\n` : ''}import postgres from 'postgres'`,
       `    const url = ${urlExpr}
-    if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
-    const client = postgres(url, ${postgresOpts})
+    if (!url && !process.env.PGHOST && !process.env.PGPORT && !process.env.PGDATABASE && !process.env.PGUSERNAME && !process.env.PGUSER && !process.env.PGPASSWORD) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
+    const client = url ? postgres(url, ${postgresOpts}) : postgres(${postgresOpts})
 ${hasReplicas
   ? `    const primary = drizzle({ client, schema${casingOption} })
 
