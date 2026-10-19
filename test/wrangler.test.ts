@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { setup, useTestContext } from '@nuxt/test-utils'
@@ -23,5 +25,20 @@ describe('wrangler bindings e2e', async () => {
     expect(wrangler?.kv_namespaces).toContainEqual({ binding: 'KV', id: 'test-kv-id' })
     expect(wrangler?.kv_namespaces).toContainEqual({ binding: 'CACHE', id: 'test-cache-id' })
     expect(wrangler?.d1_databases).toContainEqual({ binding: 'DB', database_id: 'test-db-id' })
+  })
+
+  it('should write a dev wrangler config from hub bindings', async () => {
+    const { nuxt } = useTestContext()
+    const configPath = nuxt?.options.nitro.cloudflare?.dev?.configPath
+
+    expect(configPath).toBeTruthy()
+    expect(existsSync(configPath!)).toBe(true)
+
+    const config = JSON.parse(await readFile(configPath!, 'utf8'))
+    expect(config.compatibility_date).toBe('2025-07-15')
+    expect(config.r2_buckets).toContainEqual({ binding: 'BLOB', bucket_name: 'test-bucket' })
+    expect(config.kv_namespaces).toContainEqual({ binding: 'KV', id: 'test-kv-id' })
+    expect(config.kv_namespaces).toContainEqual({ binding: 'CACHE', id: 'test-cache-id' })
+    expect(config.d1_databases).toContainEqual({ binding: 'DB', database_id: 'test-db-id' })
   })
 })
