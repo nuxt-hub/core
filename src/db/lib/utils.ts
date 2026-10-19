@@ -65,12 +65,45 @@ export function getMigrationMetadata(filename: string): { filename: string, name
 /**
  * Get the appropriate create table query for the migrations table based on the database dialect
  */
-export function getCreateMigrationsTableQuery(db: { dialect: string }): string {
-  const dialect = db.dialect
+type MigrationDatabaseConfig = { dialect: string, migrationsSchema?: string }
 
-  switch (dialect) {
-    case 'postgresql':
-      return CreateDatabaseMigrationsTableQueryPostgresql
+export function dollarQuote(value: string): string {
+  let tag = '$nuxthub$'
+  while (value.includes(tag)) tag = `${tag.slice(0, -1)}_$`
+  return `${tag}${value}${tag}`
+}
+
+export function getMigrationsTableName(db: MigrationDatabaseConfig): string {
+  if (db.dialect !== 'postgresql' || db.migrationsSchema === undefined) return '_hub_migrations'
+  return `"${db.migrationsSchema.replace(/"/g, '""')}"._hub_migrations`
+}
+
+export function getAppliedMigrationsQuery(db: MigrationDatabaseConfig): string {
+  return `select id, name, applied_at from ${getMigrationsTableName(db)} order by id`
+}
+
+export function getCreateMigrationsTableQuery(db: MigrationDatabaseConfig): string {
+  switch (db.dialect) {
+    case 'postgresql': {
+      const table = getMigrationsTableName(db)
+      const schema = db.migrationsSchema === undefined ? undefined : `"${db.migrationsSchema.replace(/"/g, '""')}"`
+      const relocate = schema && db.migrationsSchema !== 'public'
+        ? `
+  IF to_regclass('public._hub_migrations') IS NOT NULL AND to_regclass(${dollarQuote(table)}) IS NOT NULL THEN
+    RAISE EXCEPTION 'Migration history exists in both public and the configured schema; reconcile it before migrating';
+  END IF;
+  CREATE SCHEMA IF NOT EXISTS ${schema};
+  IF to_regclass('public._hub_migrations') IS NOT NULL THEN
+    ALTER TABLE public._hub_migrations SET SCHEMA ${schema};
+  END IF;`
+        : ''
+      return `DO ${dollarQuote(`
+BEGIN
+  PERFORM pg_advisory_xact_lock(hashtext('nuxthub'), hashtext('migrations'));${relocate}
+  ${CreateDatabaseMigrationsTableQueryPostgresql.replace('_hub_migrations', () => table)}
+END
+`)};`
+    }
     case 'mysql':
       return CreateDatabaseMigrationsTableQueryMysql
     case 'sqlite':

@@ -3,9 +3,9 @@ import { consola } from 'consola'
 import { execa } from 'execa'
 import { readFile, writeFile, rm } from 'node:fs/promises'
 import { join, resolve } from 'pathe'
-import { buildDatabaseSchema, createDrizzleClient } from '@nuxthub/core/db'
+import { buildDatabaseSchema, createDrizzleClient, getCreateMigrationsTableQuery, getMigrationsTableName } from '@nuxthub/core/db'
 import { sql } from 'drizzle-orm'
-import { getTsconfigAliases, quoteIdentifier } from '../../utils/db.mjs'
+import { getTsconfigAliases } from '../../utils/db.mjs'
 
 export default defineCommand({
   meta: {
@@ -204,7 +204,9 @@ export default defineCommand({
         const db = await createDrizzleClient(hubConfig.db, hubDir)
         const dialect = hubConfig.db.dialect
         const execute = dialect === 'sqlite' ? 'run' : 'execute'
-        await db[execute](sql.raw(`INSERT INTO ${quoteIdentifier('_hub_migrations', dialect)} (name) VALUES ('${newMigration.tag}');`))
+        if (dialect === 'postgresql')
+          await db[execute](sql.raw(getCreateMigrationsTableQuery(hubConfig.db)))
+        await db[execute](sql.raw(`INSERT INTO ${getMigrationsTableName(hubConfig.db)} (name) VALUES ('${newMigration.tag}');`))
         await db.$client?.end?.()
         consola.success(`Migration \`${newMigration.tag}\` marked as applied.`)
       } else {

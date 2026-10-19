@@ -87,6 +87,9 @@ importers:
         specifier: ^4.2.1
         version: 4.3.6
     devDependencies:
+      '@electric-sql/pglite':
+        specifier: ^0.3.15
+        version: 0.3.15
       '@nuxt/devtools':
         specifier: ^3.1.1
         version: 3.2.4(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.33.0)(terser@5.48.0)(yaml@2.8.2))(vue@3.5.44(typescript@5.9.3))
