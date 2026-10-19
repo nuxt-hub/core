@@ -31,8 +31,8 @@ useSeoMeta({
   ogTitle: `${title} · NuxtHub Changelog`
 })
 
-if (post.value.image && import.meta.server) {
-  defineOgImage({ url: joinURL(url, post.value.image) })
+if (post.value.image) {
+  useSeoMeta({ ogImage: joinURL(url, post.value.image) })
 }
 
 const socialLinks = computed(() => [{
