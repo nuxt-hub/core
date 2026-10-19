@@ -2,6 +2,8 @@
 export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
+    // Registered explicitly so @nuxt/ui does not install its own @nuxt/fonts 0.x
+    '@nuxt/fonts',
     '@nuxt/content',
     '@nuxt/image',
     '@nuxt/scripts',

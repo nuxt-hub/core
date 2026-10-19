@@ -303,6 +303,33 @@ describe('Blob', async () => {
     })
   })
 
+  describe('Pathname validation', () => {
+    it('rejects path traversal when reading', async () => {
+      // Resolves to test/fixtures/blob/package.json without validation
+      for (const pathname of ['..%2F..%2Fpackage.json', '%2e%2e%2F%2e%2e%2Fpackage.json', '..%5C..%5Cpackage.json']) {
+        const error = await $fetch(`/api/blob/${pathname}`).catch(error => error)
+        expect(error.response?.status, pathname).toBe(400)
+      }
+    })
+
+    it('rejects path traversal in uploaded file names', async () => {
+      const outside = fileURLToPath(new URL('./fixtures/blob/.data/evil.txt', import.meta.url))
+      const form = new FormData()
+      form.append('files', new File(['evil'], '..%2Fevil.txt', { type: 'text/plain' }))
+      const error = await $fetch('/api/blob', { method: 'POST', body: form }).catch(error => error)
+      expect(error.response?.status).toBeGreaterThanOrEqual(400)
+      await expect(fs.access(outside)).rejects.toThrow()
+    })
+
+    it('keeps special characters in pathnames', async () => {
+      const pathname = 'special/100% done?#.txt'
+      await $fetch(`/api/blob/${encodeURIComponent(pathname)}`, { method: 'PUT', body: 'hello', headers: { 'content-type': 'text/plain' } })
+      const result = await $fetch<Blob>(`/api/blob/${encodeURIComponent(pathname)}`, { responseType: 'blob' })
+      expect(await result.text()).toBe('hello')
+      await $fetch(`/api/blob/${encodeURIComponent(pathname)}`, { method: 'DELETE' })
+    })
+  })
+
   describe('Delete', () => {
     it('Delete single file', async () => {
       const blobsBeforeDelete = await $fetch<BlobListResult>('/api/blob')

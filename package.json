@@ -98,7 +98,7 @@
     "tsdown": "^0.18.1",
     "ufo": "^1.6.1",
     "uncrypto": "^0.1.3",
-    "unstorage": "^1.17.3",
+    "unstorage": "^1.17.6",
     "zod": "^4.2.1"
   },
   "peerDependencies": {
@@ -113,7 +113,7 @@
     "@nuxt/devtools": "^3.1.1",
     "@nuxt/eslint-config": "^1.15.1",
     "@nuxt/module-builder": "^1.0.2",
-    "@nuxt/schema": "^4.3.1",
+    "@nuxt/schema": "^4.6.2",
     "@nuxt/test-utils": "3.21.0",
     "@nuxthub/core": "link:",
     "@types/node": "^25.2.3",
@@ -124,7 +124,7 @@
     "jiti": "^2.6.1",
     "mkdist": "^2.4.1",
     "nitropack": "^2.13.4",
-    "nuxt": "^4.3.1",
+    "nuxt": "^4.6.2",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18",
     "vue-tsc": "^3.2.4"

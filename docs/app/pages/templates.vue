@@ -39,7 +39,10 @@ useSeoMeta({
   ogDescription: page.value.description
 })
 
-import.meta.server && defineOgImageComponent('Docs')
+import.meta.server && defineOgImage('Docs', {
+  title: page.value.title,
+  description: page.value.description
+})
 </script>
 
 <template>

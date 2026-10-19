@@ -45,7 +45,7 @@ defineProps({
       </defs>
     </svg>
 
-    <div class="w-[700px] pl-[100px]">
+    <div class="box-border w-[700px] pl-[100px]">
       <p class="uppercase text-[24px] text-[#00DC82] mb-4 font-semibold flex items-center gap-2">
         <span>NuxtHub</span>
         <span v-if="category" class="text-gray-400 -mt-1">></span>

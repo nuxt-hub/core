@@ -52,7 +52,7 @@ export function createDriver(options: VercelDriverOptions = {}): BlobDriver<Verc
     async get(pathname: string): Promise<Blob | null> {
       try {
         // Vercel Blob requires the full URL to get content
-        const headResult = await vercelHead(decodeURIComponent(pathname), { token })
+        const headResult = await vercelHead(pathname, { token })
         if (!headResult) return null
 
         const res = await fetch(headResult.url)
@@ -66,7 +66,7 @@ export function createDriver(options: VercelDriverOptions = {}): BlobDriver<Verc
 
     async getArrayBuffer(pathname: string): Promise<ArrayBuffer | null> {
       try {
-        const headResult = await vercelHead(decodeURIComponent(pathname), { token })
+        const headResult = await vercelHead(pathname, { token })
         if (!headResult) return null
 
         const res = await fetch(headResult.url)
@@ -99,7 +99,7 @@ export function createDriver(options: VercelDriverOptions = {}): BlobDriver<Verc
 
     async head(pathname: string): Promise<BlobObject | null> {
       try {
-        const result = await vercelHead(decodeURIComponent(pathname), { token })
+        const result = await vercelHead(pathname, { token })
         if (!result) return null
 
         return mapVercelBlobToBlob(result)
@@ -110,7 +110,7 @@ export function createDriver(options: VercelDriverOptions = {}): BlobDriver<Verc
 
     async hasItem(pathname: string): Promise<boolean> {
       try {
-        const result = await vercelHead(decodeURIComponent(pathname), { token })
+        const result = await vercelHead(pathname, { token })
         return result !== null
       } catch {
         return false
@@ -123,7 +123,7 @@ export function createDriver(options: VercelDriverOptions = {}): BlobDriver<Verc
       // We need to get the URLs first via head or construct them
       for (const pathname of paths) {
         try {
-          const headResult = await vercelHead(decodeURIComponent(pathname), { token })
+          const headResult = await vercelHead(pathname, { token })
           if (headResult) {
             await vercelDel(headResult.url, { token })
           }
