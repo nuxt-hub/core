@@ -4,6 +4,7 @@ import { dirname, join, relative } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { buildDatabaseSchema } from '../src/db/lib/build'
+import { supportsDtsGeneration } from '../src/db/lib/ts-version'
 
 function toImportSpecifier(fromFile: string, toFile: string) {
   const relativePath = relative(dirname(fromFile), toFile).replace(/\\/g, '/')
@@ -68,5 +69,16 @@ describe('buildDatabaseSchema', () => {
     } finally {
       await rm(rootDir, { recursive: true, force: true })
     }
+  })
+
+  it('skips dts generation when TypeScript 7 is resolved', () => {
+    // The native TypeScript port has no JS compiler API, so `rolldown-plugin-dts`
+    // crashes while emitting `.d.ts` files. `.d.mts` types are optional anyway:
+    // `hub:db:schema` falls back to `export * from './schema.mjs'` when missing.
+    expect(supportsDtsGeneration('7.0.2')).toBe(false)
+    expect(supportsDtsGeneration('7.0.0-dev.20251223.1')).toBe(false)
+    expect(supportsDtsGeneration('6.0.0')).toBe(true)
+    expect(supportsDtsGeneration('5.9.3')).toBe(true)
+    expect(supportsDtsGeneration(undefined)).toBe(true)
   })
 })
