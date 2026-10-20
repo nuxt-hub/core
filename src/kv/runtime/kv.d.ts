@@ -16,6 +16,13 @@ import type { Storage } from 'unstorage'
 export const kv: KVStorage
 
 export interface KVStorage extends Storage {
+  /** Atomically returns and removes the value stored at `key`. */
+  getAndDelete?<T = unknown>(key: string): Promise<T | null>
+  /**
+   * Atomically increments `key` and returns its new value.
+   * The TTL is applied only when the counter is created.
+   */
+  increment?(key: string, ttl: number): Promise<number>
   /**
    * Get all keys from the storage.
    *

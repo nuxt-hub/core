@@ -19,4 +19,13 @@ describe('package exports', () => {
 
     expect(resolved.endsWith('/dist/module.mjs')).toBe(true)
   })
+
+  it('can import the atomic KV runtime from its owning package', async () => {
+    const { addAtomicKVOperations } = await import('@nuxthub/core/kv/atomic')
+    const storage = addAtomicKVOperations({}, {
+      getInstance: () => ({ getdel: async () => '12345678901234567890' })
+    }, 'upstash')
+
+    await expect(storage.getAndDelete('token')).resolves.toBe('12345678901234567890')
+  })
 })
