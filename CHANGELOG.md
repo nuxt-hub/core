@@ -1,6 +1,20 @@
 # Changelog
 
 
+## v0.10.10
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.10.9...v0.10.10)
+
+### 🚀 Enhancements
+
+- **blob:** Accept `nuxt/server` events ([#937](https://github.com/nuxt-hub/core/pull/937))
+- **kv:** Add atomic operations ([#927](https://github.com/nuxt-hub/core/pull/927))
+
+### ❤️ Contributors
+
+- Max ([@onmax](https://github.com/onmax))
+- Benjamin Canac ([@benjamincanac](https://github.com/benjamincanac))
+
 ## v0.10.9
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.10.8...v0.10.9)
