@@ -1,7 +1,7 @@
 import { AwsClient } from 'aws4fetch'
 import type { BlobDriver, BlobPutBody } from './types'
 import type { BlobListOptions, BlobListResult, BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobPutOptions, BlobUploadedPart } from '../../types'
-import { getContentType } from '../utils'
+import { assertValidPathname, getContentType } from '../utils'
 import { camelCase, snakeCase } from 'scule'
 
 export interface S3DriverOptions {
@@ -14,7 +14,30 @@ export interface S3DriverOptions {
 
 const xmlTagContent = (xml: string, tag: string): string | undefined => {
   const match = xml.match(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`))
-  return match ? decodeURIComponent(match[1]!) : undefined
+  if (!match) return undefined
+  try {
+    return decodeURIComponent(match[1]!)
+  } catch {
+    // Keys may contain a literal `%`
+    return match[1]!
+  }
+}
+
+const escapeXml = (value: string): string => value.replace(/[<>&"']/g, c => `&#${c.charCodeAt(0)};`)
+
+/**
+ * Build the object URL, percent-encoding each key segment so `?`, `#` and `%`
+ * cannot change the request target (query, fragment, other bucket).
+ */
+const getObjectUrl = (bucketUrl: string, pathname: string): string => {
+  assertValidPathname(pathname)
+  try {
+    // Also encode RFC 3986 reserved chars so the URL matches the path signed by aws4fetch
+    return `${bucketUrl}/${pathname.split('/').map(segment => encodeURIComponent(segment).replace(/[!'()*]/g, c => `%${c.charCodeAt(0).toString(16).toUpperCase()}`)).join('/')}`
+  } catch {
+    // Malformed unicode (lone surrogates)
+    throw new Error('Invalid blob pathname')
+  }
 }
 
 const xmlTagContentRequired = (xml: string, tag: string): string => {
@@ -125,7 +148,7 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
     },
 
     async get(pathname: string): Promise<Blob | null> {
-      const res = await aws.fetch(`${bucketUrl}/${encodeURI(decodeURIComponent(pathname))}`)
+      const res = await aws.fetch(getObjectUrl(bucketUrl, pathname))
 
       if (res.status === 404) {
         return null
@@ -140,7 +163,7 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
     },
 
     async getArrayBuffer(pathname: string): Promise<ArrayBuffer | null> {
-      const res = await aws.fetch(`${bucketUrl}/${encodeURI(decodeURIComponent(pathname))}`)
+      const res = await aws.fetch(getObjectUrl(bucketUrl, pathname))
 
       if (res.status === 404) {
         return null
@@ -191,7 +214,7 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
         headers['x-amz-acl'] = 'public-read'
       }
 
-      const res = await aws.fetch(`${bucketUrl}/${encodeURI(decodeURIComponent(pathname))}`, {
+      const res = await aws.fetch(getObjectUrl(bucketUrl, pathname), {
         method: 'PUT',
         headers,
         body: processedBody
@@ -216,7 +239,7 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
     },
 
     async head(pathname: string): Promise<BlobObject | null> {
-      const res = await aws.fetch(`${bucketUrl}/${encodeURI(decodeURIComponent(pathname))}`, {
+      const res = await aws.fetch(getObjectUrl(bucketUrl, pathname), {
         method: 'HEAD'
       })
 
@@ -242,7 +265,7 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
       })
 
       return {
-        pathname: decodeURIComponent(pathname),
+        pathname,
         contentType,
         size: contentLength,
         httpEtag: etag,
@@ -253,7 +276,7 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
     },
 
     async hasItem(pathname: string): Promise<boolean> {
-      const res = await aws.fetch(`${bucketUrl}/${encodeURI(decodeURIComponent(pathname))}`, {
+      const res = await aws.fetch(getObjectUrl(bucketUrl, pathname), {
         method: 'HEAD'
       })
       return res.ok
@@ -264,7 +287,7 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
 
       if (paths.length === 1) {
         // Single delete
-        const res = await aws.fetch(`${bucketUrl}/${encodeURI(decodeURIComponent(paths[0]!))}`, {
+        const res = await aws.fetch(getObjectUrl(bucketUrl, paths[0]!), {
           method: 'DELETE'
         })
         if (!res.ok && res.status !== 404) {
@@ -274,7 +297,7 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
         // Batch delete
         const deleteXml = `<?xml version="1.0" encoding="UTF-8"?>
 <Delete>
-  ${paths.map(p => `<Object><Key>${decodeURIComponent(p)}</Key></Object>`).join('')}
+  ${paths.map(p => `<Object><Key>${escapeXml(assertValidPathname(p))}</Key></Object>`).join('')}
 </Delete>`
 
         const res = await aws.fetch(`${bucketUrl}?delete`, {
@@ -293,7 +316,7 @@ export function createDriver(options: S3DriverOptions): BlobDriver<S3DriverOptio
     async createMultipartUpload(pathname: string, mpuOptions?: BlobMultipartOptions): Promise<BlobMultipartUpload> {
       const headers = buildCreateHeaders(mpuOptions)
 
-      const res = await aws.fetch(`${bucketUrl}/${encodeURI(decodeURIComponent(pathname))}?uploads`, {
+      const res = await aws.fetch(`${getObjectUrl(bucketUrl, pathname)}?uploads`, {
         method: 'POST',
         headers
       })
@@ -333,7 +356,7 @@ function createMultipartUploadObject(
   uploadId: string,
   mpuOptions?: BlobMultipartOptions
 ): BlobMultipartUpload {
-  const objectUrl = `${bucketUrl}/${encodeURI(decodeURIComponent(pathname))}`
+  const objectUrl = getObjectUrl(bucketUrl, pathname)
 
   return {
     pathname,

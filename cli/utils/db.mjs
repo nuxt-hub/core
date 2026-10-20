@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises'
+import { existsSync } from 'node:fs'
 import { join, resolve } from 'pathe'
 import { createStorage } from 'unstorage'
 import fsDriver from 'unstorage/drivers/fs'
@@ -45,6 +46,14 @@ export function quoteIdentifier(name, dialect) {
   return `\`${name}\``
 }
 
+function resolveWithExtensions(path) {
+  if (existsSync(path)) return path
+  for (const ext of ['.mjs', '.js', '.ts', '.mts', '.json']) {
+    if (existsSync(path + ext)) return path + ext
+  }
+  return path
+}
+
 export async function getTsconfigAliases(cwd) {
   try {
     const tsconfig = JSON.parse(await readFile(join(cwd, '.nuxt/tsconfig.json'), 'utf-8'))
@@ -52,7 +61,7 @@ export async function getTsconfigAliases(cwd) {
     const alias = {}
     for (const [key, values] of Object.entries(paths)) {
       const resolvedPath = key.endsWith('/*') ? values[0].replace(/\/\*$/, '') : values[0]
-      alias[key.replace(/\/\*$/, '')] = resolve(join(cwd, '.nuxt'), resolvedPath)
+      alias[key.replace(/\/\*$/, '')] = resolveWithExtensions(resolve(join(cwd, '.nuxt'), resolvedPath))
     }
     return alias
   } catch {

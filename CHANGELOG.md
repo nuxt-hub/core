@@ -1,6 +1,31 @@
 # Changelog
 
 
+## v0.10.9
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.10.8...v0.10.9)
+
+### 🩹 Fixes
+
+- **blob:** Validate and encode blob pathnames ([#938](https://github.com/nuxt-hub/core/pull/938))
+- **blob:** Pass R2 jurisdiction to generated wrangler bindings ([#908](https://github.com/nuxt-hub/core/pull/908), [#920](https://github.com/nuxt-hub/core/pull/920))
+- **db:** Support PostgreSQL environment variables at runtime ([#923](https://github.com/nuxt-hub/core/pull/923))
+- 'db generate' argument parsing ([#935](https://github.com/nuxt-hub/core/pull/935))
+- **db:** Resolve extensions in tsconfig aliases ([#881](https://github.com/nuxt-hub/core/pull/881))
+- **db:** Skip dts generation when TypeScript 7 is resolved ([#922](https://github.com/nuxt-hub/core/pull/922))
+
+### 🏡 Chore
+
+- Update gitignore ([69b0296](https://github.com/nuxt-hub/core/commit/69b0296))
+
+### ❤️ Contributors
+
+- Bobby Lin ([@BobbyLin23](https://github.com/BobbyLin23))
+- Max ([@onmax](https://github.com/onmax))
+- Rahiem ([@Rahiem8855](https://github.com/Rahiem8855))
+- Pradeep Balaji ([@blue-rigel](https://github.com/blue-rigel))
+- Sébastien Chopin ([@atinux](https://github.com/atinux))
+
 ## v0.10.8
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.10.7...v0.10.8)

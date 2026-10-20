@@ -5,7 +5,7 @@ import fsp from 'node:fs/promises'
 import { randomUUID } from 'uncrypto'
 import type { BlobDriver, BlobPutBody } from './types'
 import type { BlobListOptions, BlobListResult, BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobPutOptions, BlobUploadedPart } from '../../types'
-import { getContentType } from '../utils'
+import { assertValidPathname, getContentType } from '../utils'
 
 export interface FSDriverOptions {
   dir: string
@@ -19,6 +19,7 @@ interface BlobMetadata {
 }
 
 const META_EXTENSION = '.$meta.json'
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 export function createDriver(options: FSDriverOptions): BlobDriver<FSDriverOptions> {
   const dir = options.dir
@@ -31,7 +32,7 @@ export function createDriver(options: FSDriverOptions): BlobDriver<FSDriverOptio
   }
 
   const getFullPath = (pathname: string): string => {
-    return join(dir, pathname)
+    return join(dir, assertValidPathname(pathname))
   }
 
   const getMetaPath = (pathname: string): string => {
@@ -86,7 +87,7 @@ export function createDriver(options: FSDriverOptions): BlobDriver<FSDriverOptio
     async list(listOptions?: BlobListOptions): Promise<BlobListResult> {
       await ensureBase()
 
-      const prefix = listOptions?.prefix || ''
+      const prefix = assertValidPathname(listOptions?.prefix || '', { allowEmpty: true })
       const searchDir = prefix ? join(dir, prefix) : dir
 
       let files: string[]
@@ -154,7 +155,7 @@ export function createDriver(options: FSDriverOptions): BlobDriver<FSDriverOptio
     },
 
     async get(pathname: string): Promise<Blob | null> {
-      const fullPath = getFullPath(decodeURIComponent(pathname))
+      const fullPath = getFullPath(pathname)
       try {
         const buffer = await fsp.readFile(fullPath)
         const meta = await readMeta(pathname)
@@ -167,7 +168,7 @@ export function createDriver(options: FSDriverOptions): BlobDriver<FSDriverOptio
     },
 
     async getArrayBuffer(pathname: string): Promise<ArrayBuffer | null> {
-      const fullPath = getFullPath(decodeURIComponent(pathname))
+      const fullPath = getFullPath(pathname)
       try {
         const buffer = await fsp.readFile(fullPath)
         return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)
@@ -230,7 +231,7 @@ export function createDriver(options: FSDriverOptions): BlobDriver<FSDriverOptio
     },
 
     async head(pathname: string): Promise<BlobObject | null> {
-      const fullPath = getFullPath(decodeURIComponent(pathname))
+      const fullPath = getFullPath(pathname)
       try {
         const stat = await fsp.stat(fullPath)
         const meta = await readMeta(pathname)
@@ -250,7 +251,7 @@ export function createDriver(options: FSDriverOptions): BlobDriver<FSDriverOptio
     },
 
     async hasItem(pathname: string): Promise<boolean> {
-      const fullPath = getFullPath(decodeURIComponent(pathname))
+      const fullPath = getFullPath(pathname)
       try {
         await fsp.access(fullPath)
         return true
@@ -263,7 +264,7 @@ export function createDriver(options: FSDriverOptions): BlobDriver<FSDriverOptio
       const paths = Array.isArray(pathnames) ? pathnames : [pathnames]
       await Promise.all(
         paths.map(async (p) => {
-          const fullPath = getFullPath(decodeURIComponent(p))
+          const fullPath = getFullPath(p)
           try {
             await fsp.unlink(fullPath)
             await deleteMeta(p)
@@ -299,6 +300,11 @@ async function createOrResumeMultipartUpload(
   uploadId: string,
   options?: BlobMultipartOptions
 ): Promise<BlobMultipartUpload> {
+  assertValidPathname(pathname)
+  // Upload IDs are generated with randomUUID(), anything else could escape the storage directory
+  if (!UUID_RE.test(uploadId)) {
+    throw new Error('Invalid multipart upload ID')
+  }
   const metaPath = join(dir, `${pathname}.mpu.${uploadId}.json`)
   const partsDir = join(dir, `.mpu.${uploadId}`)
 

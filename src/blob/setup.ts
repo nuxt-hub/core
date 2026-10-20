@@ -72,13 +72,17 @@ export async function setupBlob(nuxt: Nuxt, hub: HubConfig, deps: Record<string,
   const blobConfig = hub.blob as ResolvedBlobConfig
 
   if (blobConfig.driver === 'cloudflare-r2' && blobConfig.bucketName) {
-    addWranglerBinding(nuxt, 'r2_buckets', { binding: blobConfig.binding || 'BLOB', bucket_name: blobConfig.bucketName })
+    addWranglerBinding(nuxt, 'r2_buckets', {
+      binding: blobConfig.binding || 'BLOB',
+      bucket_name: blobConfig.bucketName,
+      ...(blobConfig.jurisdiction ? { jurisdiction: blobConfig.jurisdiction } : {})
+    })
   }
 
   // Add Composables
   addImportsDir(resolve('blob/runtime/app/composables'))
 
-  const { driver, bucketName: _bucketName, ...driverOptions } = blobConfig as CloudflareR2BlobConfig
+  const { driver, bucketName: _bucketName, jurisdiction: _jurisdiction, ...driverOptions } = blobConfig as CloudflareR2BlobConfig
 
   if (!supportedDrivers.includes(driver as any)) {
     log.error(`Unsupported blob driver: ${driver}. Supported drivers: ${supportedDrivers.join(', ')}`)
