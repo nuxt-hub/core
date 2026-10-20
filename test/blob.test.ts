@@ -389,9 +389,11 @@ describe('Blob', async () => {
   describe('Pathname validation', () => {
     it('rejects path traversal when reading', async () => {
       // Resolves to test/fixtures/blob/package.json without validation
-      for (const pathname of ['..%2F..%2Fpackage.json', '%2e%2e%2F%2e%2e%2Fpackage.json', '..%5C..%5Cpackage.json']) {
-        const error = await $fetch(`/api/blob/${pathname}`).catch(error => error)
-        expect(error.response?.status, pathname).toBe(400)
+      for (const base of ['/api/blob', '/api/nuxt-server/blob']) {
+        for (const pathname of ['..%2F..%2Fpackage.json', '%2e%2e%2F%2e%2e%2Fpackage.json', '..%5C..%5Cpackage.json']) {
+          const error = await $fetch(`${base}/${pathname}`).catch(error => error)
+          expect(error.response?.status, `${base}/${pathname}`).toBe(400)
+        }
       }
     })
 
