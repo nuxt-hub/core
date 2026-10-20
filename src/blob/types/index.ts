@@ -1,10 +1,12 @@
 import type { MimeType } from '@uploadthing/mime-types'
-import type { H3Event } from 'h3'
+import type { BlobEvent } from './event'
 import type { BlobDriver } from '../lib/drivers/types'
 import type { FSDriverOptions } from '../lib/drivers/fs'
 import type { S3DriverOptions } from '../lib/drivers/s3'
 import type { VercelDriverOptions } from '../lib/drivers/vercel-blob'
 import type { CloudflareDriverOptions } from '../lib/drivers/cloudflare-r2'
+
+export type { RequestEvent, BlobEvent } from './event'
 
 // Credits from shared utils of https://github.com/pingdotgg/uploadthing
 export type PowOf2 = 1 | 2 | 4 | 8 | 16 | 32 | 64 | 128 | 256 | 512 | 1024
@@ -301,7 +303,7 @@ export interface BlobStorage {
   /**
    * Serve the blob from the bucket.
    *
-   * @param event The H3 event (needed to set headers for the response)
+   * @param event The event of an h3 or `nuxt/server` handler (needed to set headers for the response)
    * @param pathname The pathname of the blob
    *
    * @example ```ts
@@ -310,7 +312,7 @@ export interface BlobStorage {
    * })
    * ```
    */
-  serve(event: H3Event, pathname: string): Promise<ReadableStream<any>>
+  serve(event: BlobEvent, pathname: string): Promise<ReadableStream<any>>
   /**
    * Put a new blob into the bucket.
    *
@@ -381,14 +383,14 @@ export interface BlobStorage {
    *
    * @see https://hub.nuxt.com/docs/blob/upload#handlemultipartupload
    */
-  handleMultipartUpload(event: H3Event, options?: BlobMultipartOptions): Promise<HandleMPUResponse>
+  handleMultipartUpload(event: BlobEvent, options?: BlobMultipartOptions): Promise<HandleMPUResponse>
   /**
    * Handle a file upload.
    *
-   * @param event The H3 event (needed to set headers for the response)
+   * @param event The event of an h3 or `nuxt/server` handler
    * @param options The upload options
    *
    * @see https://hub.nuxt.com/docs/blob/upload#handleupload
    */
-  handleUpload(event: H3Event, options?: BlobUploadOptions): Promise<BlobObject[]>
+  handleUpload(event: BlobEvent, options?: BlobUploadOptions): Promise<BlobObject[]>
 }

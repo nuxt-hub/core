@@ -1,5 +1,5 @@
 import * as z from 'zod'
-import type { BlobStorage, BlobListOptions, BlobMultipartOptions, BlobObject, BlobPutOptions, BlobUploadOptions, HandleMPUResponse } from '../types'
+import type { BlobEvent, BlobStorage, BlobListOptions, BlobMultipartOptions, BlobObject, BlobPutOptions, BlobUploadOptions, HandleMPUResponse } from '../types'
 import type { BlobDriver } from './drivers/types'
 import { defu } from 'defu'
 import { assertValidPathname, decodePathname, getContentType, streamToArrayBuffer } from './utils'
@@ -11,6 +11,11 @@ import { randomUUID } from 'uncrypto'
 import { ensureBlob } from './ensure'
 
 export type * from '../types'
+
+// Also accepts the event of a `nuxt/server` handler, on Nitro 2 it is a proxy over the h3 event
+function toH3Event(event: BlobEvent) {
+  return event as H3Event
+}
 
 export function createBlobStorage(driver: BlobDriver<any>): BlobStorage {
   const blob = {
@@ -27,7 +32,8 @@ export function createBlobStorage(driver: BlobDriver<any>): BlobStorage {
       return driver.list(resolvedOptions)
     },
 
-    async serve(event: H3Event, pathname: string) {
+    async serve(blobEvent: BlobEvent, pathname: string) {
+      const event = toH3Event(blobEvent)
       pathname = decodePathname(pathname)
       const arrayBuffer = await driver.getArrayBuffer(pathname)
 
@@ -125,7 +131,8 @@ export function createBlobStorage(driver: BlobDriver<any>): BlobStorage {
       return driver.resumeMultipartUpload(decodePathname(pathname), uploadId)
     },
 
-    async handleUpload(event: H3Event, options: BlobUploadOptions = {}) {
+    async handleUpload(blobEvent: BlobEvent, options: BlobUploadOptions = {}) {
+      const event = toH3Event(blobEvent)
       assertMethod(event, ['POST', 'PUT', 'PATCH'])
 
       options = defu(options, {
@@ -302,7 +309,8 @@ function createGenericMultipartUploadHandler(blob: BlobStorage) {
     throw createError({ status: 405 })
   }
 
-  return async (event: H3Event, options?: BlobMultipartOptions): Promise<HandleMPUResponse> => {
+  return async (blobEvent: BlobEvent, options?: BlobMultipartOptions): Promise<HandleMPUResponse> => {
+    const event = toH3Event(blobEvent)
     const result = await handler(event, options)
 
     if (result.data) {

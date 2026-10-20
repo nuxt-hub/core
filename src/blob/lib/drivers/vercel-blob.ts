@@ -3,7 +3,7 @@ import { handleUpload, type HandleUploadBody } from '@vercel/blob/client'
 import type { PutBlobResult, ListBlobResultBlob } from '@vercel/blob'
 import { createError, readBody, type H3Event } from 'h3'
 import type { BlobDriver, BlobPutBody } from './types'
-import type { BlobListOptions, BlobListResult, BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobPutOptions, BlobUploadedPart, HandleMPUResponse } from '../../types'
+import type { BlobEvent, BlobListOptions, BlobListResult, BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobPutOptions, BlobUploadedPart, HandleMPUResponse } from '../../types'
 import { getContentType } from '../utils'
 
 export interface VercelDriverOptions {
@@ -200,7 +200,9 @@ export function createDriver(options: VercelDriverOptions = {}): BlobDriver<Verc
     /**
      * Vercel-specific multipart upload handler using @vercel/blob/client
      */
-    async handleMultipartUpload(event: H3Event, mpuOptions?: BlobMultipartOptions): Promise<HandleMPUResponse> {
+    async handleMultipartUpload(blobEvent: BlobEvent, mpuOptions?: BlobMultipartOptions): Promise<HandleMPUResponse> {
+      // On Nitro 2 the event of a `nuxt/server` handler is a proxy over the h3 event
+      const event = blobEvent as H3Event
       const body = await readBody<HandleUploadBody>(event)
       if (!body || typeof body.type !== 'string') {
         throw createError({ statusCode: 400, message: 'Invalid multipart upload request body' })

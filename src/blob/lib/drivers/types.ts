@@ -1,5 +1,4 @@
-import type { H3Event } from 'h3'
-import type { BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobListOptions, BlobListResult, BlobPutOptions, HandleMPUResponse } from '../../types'
+import type { BlobEvent, BlobMultipartOptions, BlobMultipartUpload, BlobObject, BlobListOptions, BlobListResult, BlobPutOptions, HandleMPUResponse } from '../../types'
 
 export type BlobPutBody = string | ReadableStream<any> | ArrayBuffer | ArrayBufferView | Blob | File
 
@@ -67,5 +66,5 @@ export interface BlobDriver<TOptions> {
    * Optional: Custom handler for multipart uploads (e.g., Vercel Blob client-side uploads)
    * If provided, this will be used instead of the generic multipart upload handler
    */
-  handleMultipartUpload?(event: H3Event, options?: BlobMultipartOptions): Promise<HandleMPUResponse>
+  handleMultipartUpload?(event: BlobEvent, options?: BlobMultipartOptions): Promise<HandleMPUResponse>
 }
