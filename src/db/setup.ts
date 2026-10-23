@@ -5,7 +5,7 @@ import { join, resolve as resolveFs, relative } from 'pathe'
 import { defu } from 'defu'
 import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
 import { resolve, resolvePath, logWhenReady, addWranglerBinding } from '../utils'
-import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib'
+import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib/index'
 import { cloudflareHooks } from '../hosting/cloudflare'
 
 import type { Nuxt } from '@nuxt/schema'
