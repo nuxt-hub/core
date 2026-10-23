@@ -1,6 +1,38 @@
 # Changelog
 
 
+## v0.10.11
+
+[compare changes](https://github.com/nuxt-hub/core/compare/v0.10.9...v0.10.11)
+
+### 🚀 Enhancements
+
+- **blob:** Accept `nuxt/server` events ([#937](https://github.com/nuxt-hub/core/pull/937))
+- **kv:** Add atomic operations ([#927](https://github.com/nuxt-hub/core/pull/927))
+
+### 🩹 Fixes
+
+- **db:** Import db lib by file so the module loads without jiti ([#941](https://github.com/nuxt-hub/core/pull/941))
+- **db:** Support `compatibilityVersion: 5` ([#942](https://github.com/nuxt-hub/core/pull/942))
+
+### 📖 Documentation
+
+- Remove templates page ([#943](https://github.com/nuxt-hub/core/pull/943))
+
+### 🏡 Chore
+
+- **release:** V0.10.10 ([2a8c578](https://github.com/nuxt-hub/core/commit/2a8c578))
+
+### 🤖 CI
+
+- Publish releases to npm from GitHub Actions ([#944](https://github.com/nuxt-hub/core/pull/944))
+
+### ❤️ Contributors
+
+- Sébastien Chopin <atinux@gmail.com>
+- Max <maximogarciamtnez@gmail.com>
+- Benjamin Canac <canacb1@gmail.com>
+
 ## v0.10.10
 
 [compare changes](https://github.com/nuxt-hub/core/compare/v0.10.9...v0.10.10)
