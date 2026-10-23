@@ -54,10 +54,10 @@ export default defineNuxtConfig({
   },
   routeRules: {
     '/': { prerender: true },
-    '/api/templates.json': { prerender: true },
     '/api/changelog.json': { prerender: true },
     '/changelog/rss.xml': { prerender: true },
     // Redirects
+    '/templates': { redirect: { statusCode: 301, to: '/docs/getting-started/installation' } },
     '/docs/getting-started/remote-storage': { redirect: { statusCode: 301, to: '/' } },
     '/docs/features': { redirect: { statusCode: 301, to: '/docs/getting-started#features' } },
     '/docs/features/blob': { redirect: { statusCode: 301, to: '/docs/blob' } },

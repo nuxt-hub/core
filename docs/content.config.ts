@@ -115,16 +115,6 @@ export default defineContentConfig({
         date: z.string().date()
       })
     }),
-    templates: defineCollection({
-      type: 'data',
-      source: 'templates.yml',
-      schema: z.object({
-        title: z.string(),
-        description: z.string(),
-        icon: z.string().editor({ input: 'icon' }),
-        hero: PageHero
-      })
-    }),
     pages: defineCollection({
       type: 'page',
       source: '*.md'
