@@ -2,6 +2,7 @@
   "name": "@nuxthub/core",
   "private": false,
   "version": "0.10.10",
+  "packageManager": "pnpm@11.7.0",
   "description": "Build full-stack Nuxt applications, with zero configuration.",
   "repository": {
     "type": "git",
@@ -66,7 +67,7 @@
     "dev:build": "nuxi build playground",
     "docs": "PORT=4000 nuxi dev docs",
     "docs:build": "nuxi generate docs",
-    "release": "npm run lint && npm run test && changelogen --release && npm publish && git push --follow-tags",
+    "release": "npm run lint && npm run test && changelogen --release --push",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest run --test-timeout=60000",
