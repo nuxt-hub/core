@@ -18,12 +18,6 @@ defineProps({
         label: 'Get started',
         to: '/docs/getting-started/installation',
         trailingIcon: 'i-lucide-arrow-right'
-      },
-      {
-        label: 'Full-stack templates',
-        to: '/templates',
-        variant: 'outline',
-        color: 'neutral'
       }
     ]"
   >

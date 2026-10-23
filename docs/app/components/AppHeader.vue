@@ -11,10 +11,6 @@ const links = computed(() => [
     active: route.path.startsWith('/docs'),
     icon: 'i-lucide-book'
   }, {
-    label: 'Templates',
-    to: '/templates',
-    icon: 'i-lucide-panels-top-left'
-  }, {
     label: 'Changelog',
     to: '/changelog',
     icon: 'i-lucide-megaphone'
