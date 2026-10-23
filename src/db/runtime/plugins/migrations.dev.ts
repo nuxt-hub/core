@@ -1,6 +1,6 @@
 import type { ResolvedHubConfig } from '../../../types'
 import { applyDatabaseMigrations, applyDatabaseQueries } from '../../lib/migrations'
-import { defineNitroPlugin, useRuntimeConfig } from '#imports'
+import { defineNitroPlugin, useRuntimeConfig } from 'nitropack/runtime'
 
 export default defineNitroPlugin(async () => {
   if (!import.meta.dev) return
