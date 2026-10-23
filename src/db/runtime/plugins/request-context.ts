@@ -1,4 +1,4 @@
-import { defineNitroPlugin, useEvent } from '#imports'
+import { defineNitroPlugin, useEvent } from 'nitropack/runtime'
 
 declare global {
   var __nuxthubUseNitroEvent: (() => unknown) | undefined
