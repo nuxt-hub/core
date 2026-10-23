@@ -10,6 +10,8 @@ jobs:
     uses: sxzz/workflows/.github/workflows/release.yml@main
     with:
       publish: true
+      # Upload as a staged release, approved on npmjs.com before it goes live
+      stage: true
       build: pnpm dev:prepare
     permissions:
       contents: write
