@@ -7,8 +7,7 @@ export default defineBuildConfig({
     'nitropack',
     'drizzle-orm',
     'drizzle-kit',
-    './db/lib',
-    'db/lib'
+    /dist[\\/]db[\\/]lib[\\/]/
   ],
   entries: [
     'src/module',
