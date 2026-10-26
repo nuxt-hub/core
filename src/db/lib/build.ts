@@ -1,4 +1,4 @@
-import { cp } from 'node:fs/promises'
+import { copyFile, cp, rm } from 'node:fs/promises'
 import { join, relative, resolve } from 'pathe'
 import type { Nitro } from 'nitropack'
 import type { ResolvedHubConfig } from '@nuxthub/core'
@@ -83,11 +83,14 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubCon
   }
 }
 
-export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias }: { relativeDir?: string, alias?: Record<string, string> } = {}) {
-  const startTime = Date.now()
-  relativeDir = relativeDir || buildDir
+interface BuildDatabaseSchemaOptions {
+  relativeDir?: string
+  alias?: Record<string, string>
+}
+
+function schemaBuildOptions(buildDir: string, alias?: Record<string, string>) {
   const entry = join(buildDir, 'hub/db/schema.entry.ts')
-  await build({
+  return {
     entry: {
       schema: entry
     },
@@ -107,20 +110,64 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias
     // warnings (os/fs/net/tls/crypto/stream/perf_hooks). The generated
     // schema.mjs is only ever consumed by the Node server, so target `node`:
     // builtins become silent externals with no change to runtime output.
-    platform: 'node',
-    format: 'esm',
+    platform: 'node' as const,
+    format: 'esm' as const,
     skipNodeModulesBundle: false,
     tsconfig: false,
-    dts: generateDts
+    clean: false,
+    logLevel: 'warn' as const
+  }
+}
+
+/**
+ * Builds `hub/db/schema.mjs` and, unless `types` is `false`, `hub/db/schema.d.mts`.
+ */
+export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias, types = true }: BuildDatabaseSchemaOptions & { types?: boolean } = {}) {
+  const startTime = Date.now()
+  relativeDir = relativeDir || buildDir
+  await build({
+    ...schemaBuildOptions(buildDir, alias),
+    dts: types && generateDts
       ? {
           build: false,
           tsconfig: false,
           newContext: true
         }
-      : false,
-    clean: false,
-    logLevel: 'warn'
+      : false
   })
   const duration = Date.now() - startTime
   consola.debug(`Database schema built successfully at \`${relative(relativeDir, join(buildDir, 'hub/db/schema.mjs'))}\` (${duration}ms)`)
+}
+
+/**
+ * Builds only `hub/db/schema.d.mts`. TypeScript runs in a child process, so the
+ * caller's event loop is free while the types build.
+ * The build writes to a separate directory, so `schema.mjs`, which the dev server
+ * imports, is not written again. (`emitDtsOnly` would skip the JS output, but it
+ * changes the order of the imports in the declarations.)
+ * Returns `false` when the resolved TypeScript cannot generate declarations.
+ */
+export async function buildDatabaseSchemaTypes(buildDir: string, { relativeDir, alias }: BuildDatabaseSchemaOptions = {}) {
+  if (!generateDts) return false
+  const startTime = Date.now()
+  relativeDir = relativeDir || buildDir
+  const outDir = join(buildDir, 'hub/db/.types')
+  try {
+    await build({
+      ...schemaBuildOptions(buildDir, alias),
+      outDir,
+      dts: {
+        build: false,
+        tsconfig: false,
+        newContext: true,
+        parallel: true
+      }
+    })
+    await copyFile(join(outDir, 'schema.d.mts'), join(buildDir, 'hub/db/schema.d.mts'))
+  } finally {
+    await rm(outDir, { recursive: true, force: true })
+  }
+  const duration = Date.now() - startTime
+  consola.debug(`Database schema types built successfully at \`${relative(relativeDir, join(buildDir, 'hub/db/schema.d.mts'))}\` (${duration}ms)`)
+  return true
 }

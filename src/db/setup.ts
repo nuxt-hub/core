@@ -5,7 +5,7 @@ import { join, resolve as resolveFs, relative } from 'pathe'
 import { defu } from 'defu'
 import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
 import { resolve, resolvePath, logWhenReady, addWranglerBinding } from '../utils'
-import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema } from './lib/index'
+import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, copyDatabaseAssets, applyBuildTimeMigrations, getDatabaseSchemaPathMetadata, buildDatabaseSchema, buildDatabaseSchemaTypes } from './lib/index'
 import { cloudflareHooks } from '../hosting/cloudflare'
 
 import type { Nuxt } from '@nuxt/schema'
@@ -251,8 +251,48 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
 
   let schemaPaths = await getSchemaPaths()
 
+  const buildOptions = { relativeDir: nuxt.options.rootDir, alias: nuxt.options.alias }
+  const physicalDbDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db')
+
+  // Copy the generated .d.mts file to node_modules/@nuxthub/db/ for TypeScript support
+  const copySchemaTypes = async () => {
+    // Try buildDir first, then fall back to .nuxt (for when buildDir is in .cache during build)
+    const buildDirSource = join(nuxt.options.buildDir, 'hub/db/schema.d.mts')
+    const nuxtDirSource = join(nuxt.options.rootDir, '.nuxt/hub/db/schema.d.mts')
+
+    let schemaTypes: string | undefined
+    try {
+      schemaTypes = await readFile(buildDirSource, 'utf-8')
+    } catch {
+      // Fallback to .nuxt directory (types generated during prepare)
+      try {
+        schemaTypes = await readFile(nuxtDirSource, 'utf-8')
+      } catch {
+        // Types not found in either location
+      }
+    }
+
+    if (schemaTypes && schemaTypes.length > 50) {
+      await writeFile(join(physicalDbDir, 'schema.d.mts'), schemaTypes)
+    } else if (!nuxt.options.test) {
+      // Fallback: create a simple re-export if types not available
+      await writeFile(join(physicalDbDir, 'schema.d.mts'), `export * from './schema.mjs'`)
+    }
+  }
+
+  // In dev, the server only needs schema.mjs to start, so schema.d.mts is built after it,
+  // in the background. Type builds run one after another, so the latest schema wins.
+  const deferTypes = nuxt.options.dev && !nuxt.options._prepare
+  let typesBuild = Promise.resolve()
+  const buildTypesInBackground = () => {
+    typesBuild = typesBuild
+      .then(() => buildDatabaseSchemaTypes(nuxt.options.buildDir, buildOptions))
+      .then(copySchemaTypes)
+      .catch(error => log.warn(`Failed to build database schema types: ${error}`))
+  }
+
   // Watch schema files for changes
-  if (nuxt.options.dev && !nuxt.options._prepare) {
+  if (deferTypes) {
     // chokidar doesn't support glob patterns, so we need to watch the server/db directories
     const watchDirs = getLayerDirectories(nuxt).map(layer => resolveFs(layer.server, 'db'))
     const watcher = chokidar.watch(watchDirs, {
@@ -267,16 +307,15 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
       log.info('Make sure to run `npx nuxt db generate` to generate the database migrations.')
       schemaPaths = await getSchemaPaths()
       await updateTemplates({ filter: template => template.filename.includes('hub/db/schema.entry.ts') })
-      await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir, alias: nuxt.options.alias })
+      await buildDatabaseSchema(nuxt.options.buildDir, { ...buildOptions, types: false })
 
       // Also copy to node_modules/@nuxthub/db/ for workflow compatibility
-      const physicalDbDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db')
       try {
         await copyFile(join(nuxt.options.buildDir, 'hub/db/schema.mjs'), join(physicalDbDir, 'schema.mjs'))
-        await copyFile(join(nuxt.options.buildDir, 'hub/db/schema.d.mts'), join(physicalDbDir, 'schema.d.mts'))
       } catch (error) {
         // Ignore errors during watch
       }
+      buildTypesInBackground()
     })
     nuxt.hook('close', () => watcher.close())
   }
@@ -290,41 +329,18 @@ async function generateDatabaseSchema(nuxt: Nuxt, hub: ResolvedHubConfig) {
 
   // Build schema types during prepare/dev/build, then copy to node_modules
   nuxt.hooks.hookOnce('app:templatesGenerated', async () => {
-    await buildDatabaseSchema(nuxt.options.buildDir, { relativeDir: nuxt.options.rootDir, alias: nuxt.options.alias })
+    await buildDatabaseSchema(nuxt.options.buildDir, { ...buildOptions, types: !deferTypes })
 
     // Then copy to node_modules/@nuxthub/db/ for workflow compatibility
-    const physicalDbDir = join(nuxt.options.rootDir, 'node_modules', '@nuxthub', 'db')
     await mkdir(physicalDbDir, { recursive: true })
 
     try {
       await copyFile(join(nuxt.options.buildDir, 'hub/db/schema.mjs'), join(physicalDbDir, 'schema.mjs'))
-
-      // Copy the generated .d.mts file for TypeScript support
-      // Try buildDir first, then fall back to .nuxt (for when buildDir is in .cache during build)
-      const buildDirSource = join(nuxt.options.buildDir, 'hub/db/schema.d.mts')
-      const nuxtDirSource = join(nuxt.options.rootDir, '.nuxt/hub/db/schema.d.mts')
-
-      let schemaTypes: string | undefined
-      try {
-        schemaTypes = await readFile(buildDirSource, 'utf-8')
-      } catch {
-        // Fallback to .nuxt directory (types generated during prepare)
-        try {
-          schemaTypes = await readFile(nuxtDirSource, 'utf-8')
-        } catch {
-          // Types not found in either location
-        }
-      }
-
-      if (schemaTypes && schemaTypes.length > 50) {
-        await writeFile(join(physicalDbDir, 'schema.d.mts'), schemaTypes)
-      } else if (!nuxt.options.test) {
-        // Fallback: create a simple re-export if types not available
-        await writeFile(join(physicalDbDir, 'schema.d.mts'), `export * from './schema.mjs'`)
-      }
+      if (!deferTypes) await copySchemaTypes()
     } catch (error) {
       log.warn(`Failed to copy schema to node_modules/.hub/: ${error}`)
     }
+    if (deferTypes) buildTypesInBackground()
   })
 
   nuxt.options.alias ||= {}
