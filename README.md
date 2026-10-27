@@ -62,6 +62,8 @@ pnpm test
 pnpm test:watch
 ```
 
+Releases are automated with [uppt](https://github.com/danielroe/uppt): every push to `main` opens or updates a draft release PR from conventional commits. Merging it tags the version, creates the GitHub release and stages the npm publish, which is then approved on npmjs.com.
+
 ## 📄 License
 
 [MIT](./LICENSE)

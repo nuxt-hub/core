@@ -61,13 +61,12 @@
     "blob"
   ],
   "scripts": {
-    "prepack": "nuxt-module-build build",
+    "prepack": "nuxt-module-build prepare && nuxt-module-build build",
     "dev:prepare": "nuxt-module-build build --stub && mkdist --src=src/blob/lib --dist=dist/blob/lib -d && mkdist --src=src/db/lib --dist=dist/db/lib -d && nuxt-module-build prepare && nuxi prepare playground",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "docs": "PORT=4000 nuxi dev docs",
     "docs:build": "nuxi generate docs",
-    "release": "npm run lint && npm run test && changelogen --release --push",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest run --test-timeout=60000",
