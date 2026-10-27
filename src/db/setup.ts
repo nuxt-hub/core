@@ -86,7 +86,9 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
         break
       }
       // User explicitly set libsql (e.g. Turso with inline config)
-      if (userExplicitLibsql) {
+      // Without a URL, resolve it from env at runtime (Docker/K8s), except in dev/prepare where we fall back to local SQLite
+      const libsqlEnvUrl = process.env.TURSO_DATABASE_URL || process.env.LIBSQL_URL || process.env.DATABASE_URL
+      if (userExplicitLibsql && (config.connection?.url || libsqlEnvUrl || (!nuxt.options.dev && !nuxt.options._prepare))) {
         config.connection = defu(config.connection, { url: '' })
         break
       }
