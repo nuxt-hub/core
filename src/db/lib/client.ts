@@ -31,7 +31,8 @@ async function createD1HttpClient(accountId: string, databaseId: string, apiToke
  * Creates a Drizzle client for the given configuration
  */
 export async function createDrizzleClient(config: ResolvedDatabaseConfig, hubDir: string) {
-  const { driver, connection, casing } = config
+  const { driver, casing } = config
+  let { connection } = config
   let pkg = ''
   if (driver === 'd1' || driver === 'd1-http') {
     // Get credentials from config or env vars
@@ -55,6 +56,13 @@ export async function createDrizzleClient(config: ResolvedDatabaseConfig, hubDir
     return drizzle(sql, { casing })
   } else if (driver === 'libsql') {
     pkg = 'drizzle-orm/libsql'
+    // Resolve from env like the runtime `hub:db` template when no URL is set (Docker/K8s)
+    if (!connection?.url) {
+      connection = {
+        url: process.env.TURSO_DATABASE_URL || process.env.LIBSQL_URL || process.env.DATABASE_URL,
+        authToken: process.env.TURSO_AUTH_TOKEN || process.env.LIBSQL_AUTH_TOKEN
+      }
+    }
   } else if (driver === 'mysql2') {
     pkg = 'drizzle-orm/mysql2'
   } else if (driver === 'pglite') {

@@ -171,6 +171,40 @@ describe('resolveDatabaseConfig', () => {
         applyMigrationsDuringBuild: false
       })
     })
+
+    it('should default explicit libsql to local SQLite in dev and prepare without env vars', async () => {
+      delete process.env.TURSO_DATABASE_URL
+      delete process.env.LIBSQL_URL
+      delete process.env.DATABASE_URL
+
+      for (const option of ['dev', '_prepare']) {
+        const nuxt = createMockNuxt()
+        nuxt.options[option] = true
+        const hub = createBaseHubConfig({ dialect: 'sqlite', driver: 'libsql' })
+
+        const result = await resolveDatabaseConfig(nuxt, hub)
+
+        expect(result).toMatchObject({
+          driver: 'libsql',
+          connection: { url: 'file:/tmp/test-hub/db/sqlite.db' }
+        })
+      }
+    })
+
+    it('should keep lazy resolution for explicit libsql in dev when env URL is set', async () => {
+      process.env.LIBSQL_URL = 'libsql://my-db.example.com'
+
+      const nuxt = createMockNuxt()
+      nuxt.options.dev = true
+      const hub = createBaseHubConfig({ dialect: 'sqlite', driver: 'libsql' })
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({
+        driver: 'libsql',
+        connection: { url: '' }
+      })
+    })
   })
 
   describe('PostgreSQL dialect', () => {
