@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# Prepares an Amp orb for this repository: dependencies and dev stubs.
+# Runs on fresh orbs and again on stale snapshots, so every step must be idempotent.
+set -euo pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+step() {
+  local name="$1"
+  shift
+  echo "==> $name"
+  local start=$SECONDS
+  "$@"
+  echo "<== $name ($((SECONDS - start))s)"
+}
+
+# CI runs on Node 24. The orb image ships a newer Node that better-sqlite3 cannot compile
+# against, so install the latest Node 24 under ~/.local/share/node and put it first on PATH
+# for login shells (Amp and orb services start from `bash -lc`).
+NODE_MAJOR=24
+NODE_HOME="$HOME/.local/share/node/v$NODE_MAJOR"
+
+install_node() {
+  if [[ -x "$NODE_HOME/bin/node" && "$("$NODE_HOME/bin/node" --version)" == "v$NODE_MAJOR."* ]]; then
+    echo "already installed: $("$NODE_HOME/bin/node" --version)"
+    return
+  fi
+  local base="https://nodejs.org/dist/latest-v$NODE_MAJOR.x"
+  local tmp
+  tmp="$(mktemp -d)"
+  curl -fsSL "$base/SHASUMS256.txt" -o "$tmp/SHASUMS256.txt"
+  local tarball
+  tarball="$(awk '/ node-v[0-9.]+-linux-x64\.tar\.xz$/ { print $2 }' "$tmp/SHASUMS256.txt")"
+  curl -fsSL "$base/$tarball" -o "$tmp/$tarball"
+  (cd "$tmp" && grep " $tarball\$" SHASUMS256.txt | sha256sum -c -)
+  rm -rf "$NODE_HOME"
+  mkdir -p "$NODE_HOME"
+  tar -xJf "$tmp/$tarball" -C "$NODE_HOME" --strip-components=1
+  rm -rf "$tmp"
+  "$NODE_HOME/bin/node" --version
+}
+
+persist_node_path() {
+  local marker="# nuxthub-core: Node $NODE_MAJOR from .agents/setup"
+  if ! grep -Fqx "$marker" "$HOME/.bash_profile" 2>/dev/null; then
+    cat >> "$HOME/.bash_profile" <<EOF
+
+$marker
+case ":\$PATH:" in
+	*":$NODE_HOME/bin:"*) ;;
+	*) export PATH="$NODE_HOME/bin:\$PATH" ;;
+esac
+EOF
+  fi
+}
+
+ensure_pnpm() {
+  # package.json pins pnpm via packageManager; pnpm self-switches to that version.
+  if ! command -v pnpm >/dev/null 2>&1; then
+    corepack enable
+  fi
+  pnpm --version
+}
+
+# Installs workspace dependencies. The playground postinstall runs `pnpm dev:prepare`
+# (module stub build + nuxi prepare) and docs runs `nuxi prepare`, so tests can run directly.
+install_deps() {
+  CI=true pnpm install --frozen-lockfile --prefer-offline
+}
+
+step "node $NODE_MAJOR" install_node
+step "persist node PATH" persist_node_path
+export PATH="$NODE_HOME/bin:$PATH"
+step "pnpm" ensure_pnpm
+step "pnpm install" install_deps

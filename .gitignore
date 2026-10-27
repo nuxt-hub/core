@@ -65,3 +65,5 @@ test/fixtures/wrangler/.data
 test/fixtures/hyperdrive-postgres/.data
 test/fixtures/compat-v5/.data
 test/fixtures/wrangler-jurisdiction/.data
+# Amp orb portals
+.amp/portals/*
