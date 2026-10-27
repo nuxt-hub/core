@@ -110,13 +110,15 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
         break
       }
       // Only error at build time if migrations need to run
-      if (config.applyMigrationsDuringBuild && config.driver && ['neon-http', 'postgres-js'].includes(config.driver) && !config.connection.url) {
+      const hasPostgresConnectionUrl = config.connection.url || (config.driver === 'node-postgres' && config.connection.connectionString)
+      if (config.applyMigrationsDuringBuild && config.driver && ['neon-http', 'postgres-js', 'node-postgres'].includes(config.driver) && !hasPostgresConnectionUrl) {
         throw new Error(`\`${config.driver}\` driver requires \`DATABASE_URL\`, \`POSTGRES_URL\`, or \`POSTGRESQL_URL\` environment variable when \`applyMigrationsDuringBuild\` is enabled`)
       }
-      if (config.connection.url) {
+      if (hasPostgresConnectionUrl) {
         config.driver ||= 'postgres-js'
         break
       }
+      if (config.driver === 'node-postgres') break
       config.driver ||= 'pglite'
       config.connection = defu(config.connection, { dataDir: join(hub.dir, 'db/pglite') })
       await mkdir(join(hub.dir, 'db/pglite'), { recursive: true })
@@ -171,6 +173,8 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   }
   if (driver === 'postgres-js' && !deps['postgres']) {
     logWhenReady(nuxt, 'Please run `npx nypm i postgres` to use PostgreSQL as database.', 'error')
+  } else if (driver === 'node-postgres' && !deps.pg) {
+    logWhenReady(nuxt, 'Please run `npx nypm i pg` to use node-postgres as database.', 'error')
   } else if (driver === 'neon-http' && !deps['@neondatabase/serverless']) {
     logWhenReady(nuxt, 'Please run `npx nypm i @neondatabase/serverless` to use Neon serverless database.', 'error')
   } else if (driver === 'pglite' && !deps['@electric-sql/pglite']) {
@@ -357,6 +361,15 @@ async function setupDatabaseClient(nuxt: Nuxt, hub: ResolvedHubConfig) {
       : '{ onnotice: () => {}, prepare: false }'
   })()
 
+  const nodePostgresConnection = (() => {
+    if (driver !== 'node-postgres' || !connection) return undefined
+    const { url, ...connectionOptions } = connection as Record<string, unknown>
+    return {
+      ...connectionOptions,
+      connectionString: connection.connectionString || url
+    }
+  })()
+
   // For types, d1-http uses sqlite-proxy
   const driverForTypes = driver === 'd1-http' ? 'sqlite-proxy' : driver
 
@@ -465,6 +478,17 @@ export { db, schema }
     if (!url) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
     const sql = neon(url)
     _db = drizzle(sql, { schema${casingOption} })`
+    )
+  }
+  if (driver === 'node-postgres') {
+    const urlExpr = connection.connectionString || connection.url ? JSON.stringify(connection.connectionString || connection.url) : `process.env.POSTGRES_URL || process.env.POSTGRESQL_URL || process.env.DATABASE_URL`
+    const { connectionString: _, ...connectionOptions } = (nodePostgresConnection || {}) as Record<string, unknown>
+    const connectionOptionsExpr = JSON.stringify(connectionOptions)
+    drizzleOrmContent = generateLazyDbTemplate(
+      `import { drizzle } from 'drizzle-orm/node-postgres'`,
+      `    const connectionString = ${urlExpr}
+    if (!connectionString && !process.env.PGHOST && !process.env.PGPORT && !process.env.PGDATABASE && !process.env.PGUSER && !process.env.PGPASSWORD) throw new Error('DATABASE_URL, POSTGRES_URL, or POSTGRESQL_URL required')
+    _db = drizzle({ connection: { ...${connectionOptionsExpr}, connectionString }, schema${casingOption} })`
     )
   }
   if (driver === 'd1') {
