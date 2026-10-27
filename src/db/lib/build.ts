@@ -1,12 +1,16 @@
-import { cp } from 'node:fs/promises'
-import { join, relative, resolve } from 'pathe'
+import { createHash } from 'node:crypto'
+import { existsSync } from 'node:fs'
+import { copyFile, cp, mkdir, readFile, writeFile } from 'node:fs/promises'
+import { isBuiltin } from 'node:module'
+import { isAbsolute, join, relative, resolve } from 'pathe'
+import { readPackageJSON } from 'pkg-types'
 import type { Nitro } from 'nitropack'
 import type { ResolvedHubConfig } from '@nuxthub/core'
 import { consola } from 'consola'
 import { createDrizzleClient } from './client'
 import { applyDatabaseMigrations, applyDatabaseQueries } from './migrations'
 import { resolveTypescriptVersion, supportsDtsGeneration } from './ts-version'
-import { build } from 'tsdown'
+import { build, type Rolldown } from 'tsdown'
 
 const log = consola.withTag('nuxt:hub')
 
@@ -83,10 +87,80 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubCon
   }
 }
 
+// Bump when a change to the build options below changes the generated declarations
+const SCHEMA_TYPES_CACHE_VERSION = 1
+
+interface SchemaTypesInputs {
+  /** Local files that the JS and declaration builds read */
+  files: string[]
+  /** External packages that the builds import */
+  packages: string[]
+  /** Keys of the aliases that the builds import (Nuxt aliases such as `#app-manifest` change on every build, so only these are hashed) */
+  aliases: string[]
+}
+
+async function hashSchemaTypesInputs({ files, packages, aliases }: SchemaTypesInputs, buildDir: string, alias: Record<string, string>) {
+  const hash = createHash('sha256').update(JSON.stringify([SCHEMA_TYPES_CACHE_VERSION, resolveTypescriptVersion(), aliases.map(key => [key, alias[key]])]))
+  for (const name of packages) {
+    // tsc expands types from these packages into the declarations, so an upgrade can change them
+    const version = await readPackageJSON(name, { url: buildDir }).then(pkg => pkg.version, () => undefined)
+    hash.update(`\0${name}@${version}`)
+  }
+  for (const file of files) {
+    hash.update(`\0${file}\0`).update(await readFile(file).catch(() => '\0missing'))
+  }
+  return hash.digest('hex')
+}
+
+/**
+ * Builds `hub/db/schema.mjs` and `hub/db/schema.d.mts`.
+ * Generating the declarations runs `tsc`, which takes most of the build time, so they are
+ * cached in `<buildDir>/cache` (which Nuxt keeps when it clears the build directory) and
+ * only generated again when a file or package that they depend on changes.
+ */
 export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias }: { relativeDir?: string, alias?: Record<string, string> } = {}) {
   const startTime = Date.now()
   relativeDir = relativeDir || buildDir
   const entry = join(buildDir, 'hub/db/schema.entry.ts')
+  const buildAlias: Record<string, string> = {
+    ...alias,
+    'hub:db:schema': entry,
+    '@nuxthub/db/schema': entry
+  }
+  const typesPath = join(buildDir, 'hub/db/schema.d.mts')
+  const cacheDir = join(buildDir, 'cache/nuxthub/db')
+  const cachedTypesPath = join(cacheDir, 'schema.d.mts')
+  const cacheMetaPath = join(cacheDir, 'schema.d.mts.json')
+
+  let typesCached = false
+  if (generateDts) {
+    const cached: (SchemaTypesInputs & { hash: string }) | undefined = await readFile(cacheMetaPath, 'utf8').then(JSON.parse, () => undefined)
+    typesCached = !!cached && existsSync(cachedTypesPath) && cached.hash === await hashSchemaTypesInputs(cached, buildDir, buildAlias)
+  }
+  const buildTypes = generateDts && !typesCached
+
+  const files = new Set<string>()
+  const packages = new Set<string>()
+  const specifiers = new Set<string>()
+  const collectInputs: Rolldown.Plugin = {
+    name: 'nuxthub:schema-types-inputs',
+    // Plugins see import specifiers before aliases are applied
+    resolveId(source) {
+      specifiers.add(source)
+    },
+    buildEnd() {
+      for (const id of this.getModuleIds()) {
+        if (isAbsolute(id)) {
+          // Skips the virtual `.d.ts` modules of the declaration build
+          if (existsSync(id)) files.add(id)
+        } else if (!isBuiltin(id) && !id.startsWith('\0')) {
+          // A bare specifier is an external package import, such as `drizzle-orm/sqlite-core`
+          packages.add(id.split('/').slice(0, id.startsWith('@') ? 2 : 1).join('/'))
+        }
+      }
+    }
+  }
+
   await build({
     entry: {
       schema: entry
@@ -96,11 +170,7 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias
       js: '.mjs',
       dts: '.d.mts'
     }),
-    alias: {
-      ...alias,
-      'hub:db:schema': entry,
-      '@nuxthub/db/schema': entry
-    },
+    alias: buildAlias,
     // Node builtins bundled from the DB driver (e.g. `postgres`) are already
     // externalized here, but under the `neutral` platform rolldown/esbuild
     // cannot resolve them and floods dev/`db:generate` with UNRESOLVED_IMPORT
@@ -111,16 +181,27 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias
     format: 'esm',
     skipNodeModulesBundle: false,
     tsconfig: false,
-    dts: generateDts
+    dts: buildTypes
       ? {
           build: false,
           tsconfig: false,
           newContext: true
         }
       : false,
+    plugins: buildTypes ? [collectInputs] : [],
     clean: false,
     logLevel: 'warn'
   })
+
+  if (typesCached) {
+    await copyFile(cachedTypesPath, typesPath)
+  } else if (buildTypes && existsSync(typesPath)) {
+    const aliases = Object.keys(buildAlias).filter(key => [...specifiers].some(source => source === key || source.startsWith(`${key}/`)))
+    const inputs: SchemaTypesInputs = { files: [...files].sort(), packages: [...packages].sort(), aliases: aliases.sort() }
+    await mkdir(cacheDir, { recursive: true })
+    await copyFile(typesPath, cachedTypesPath)
+    await writeFile(cacheMetaPath, JSON.stringify({ hash: await hashSchemaTypesInputs(inputs, buildDir, buildAlias), ...inputs }))
+  }
   const duration = Date.now() - startTime
-  consola.debug(`Database schema built successfully at \`${relative(relativeDir, join(buildDir, 'hub/db/schema.mjs'))}\` (${duration}ms)`)
+  consola.debug(`Database schema built successfully at \`${relative(relativeDir, join(buildDir, 'hub/db/schema.mjs'))}\`${typesCached ? ' with cached types' : ''} (${duration}ms)`)
 }

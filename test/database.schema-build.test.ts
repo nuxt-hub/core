@@ -71,6 +71,39 @@ describe('buildDatabaseSchema', () => {
     }
   })
 
+  it('reuses cached schema types until a file they depend on changes', async () => {
+    const rootDir = await mkdtemp(join(tmpdir(), 'nuxthub-schema-build-types-cache-'))
+    const buildDir = join(rootDir, '.nuxt')
+    const entryPath = join(buildDir, 'hub/db/schema.entry.ts')
+    const typesPath = join(buildDir, 'hub/db/schema.d.mts')
+    const schemaPath = join(rootDir, 'server/db/schema.ts')
+    // Only imported for its types, so it is not part of the schema.mjs bundle
+    const metaPath = join(rootDir, 'server/db/meta.ts')
+
+    try {
+      await mkdir(dirname(schemaPath), { recursive: true })
+      await mkdir(dirname(entryPath), { recursive: true })
+      await writeFile(metaPath, 'export interface Meta { tags: string[] }\n')
+      await writeFile(schemaPath, 'import type { Meta } from \'./meta\'\nexport const users = { meta: null as unknown as Meta }\n')
+      await writeFile(entryPath, `export * from '${toImportSpecifier(entryPath, schemaPath)}'\n`)
+
+      await buildDatabaseSchema(buildDir, { relativeDir: rootDir })
+      expect(await readFile(typesPath, 'utf8')).toContain('tags: string[]')
+
+      // Nuxt clears the build directory, except `cache`, when it starts
+      await rm(typesPath)
+      await writeFile(join(buildDir, 'cache/nuxthub/db/schema.d.mts'), '// cached types\n')
+      await buildDatabaseSchema(buildDir, { relativeDir: rootDir })
+      expect(await readFile(typesPath, 'utf8')).toBe('// cached types\n')
+
+      await writeFile(metaPath, 'export interface Meta { labels: string[] }\n')
+      await buildDatabaseSchema(buildDir, { relativeDir: rootDir })
+      expect(await readFile(typesPath, 'utf8')).toContain('labels: string[]')
+    } finally {
+      await rm(rootDir, { recursive: true, force: true })
+    }
+  })
+
   it('skips dts generation when TypeScript 7 is resolved', () => {
     // The native TypeScript port has no JS compiler API, so `rolldown-plugin-dts`
     // crashes while emitting `.d.ts` files. `.d.mts` types are optional anyway:
