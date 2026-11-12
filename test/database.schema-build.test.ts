@@ -104,6 +104,42 @@ describe('buildDatabaseSchema', () => {
     }
   })
 
+  it('resolves Nuxt aliases in schema types', async () => {
+    const rootDir = await mkdtemp(join(tmpdir(), 'nuxthub-schema-build-types-alias-'))
+    const buildDir = join(rootDir, '.nuxt')
+    const entryPath = join(buildDir, 'hub/db/schema.entry.ts')
+    const typesPath = join(buildDir, 'hub/db/schema.d.mts')
+    const schemaPath = join(rootDir, 'layers/orders/server/db/schema.ts')
+    // Like `#auth/schema` from `@nuxtjs/better-auth`: a `.mjs` file with its declarations beside it
+    const authSchemaPath = join(buildDir, 'auth/schema.mjs')
+    const sharedDir = join(rootDir, 'shared')
+
+    try {
+      await mkdir(dirname(schemaPath), { recursive: true })
+      await mkdir(dirname(entryPath), { recursive: true })
+      await mkdir(dirname(authSchemaPath), { recursive: true })
+      await mkdir(sharedDir, { recursive: true })
+      await writeFile(authSchemaPath, 'export const user = { id: "" }\n')
+      await writeFile(join(buildDir, 'auth/schema.d.ts'), 'export declare const user: { id: string, authMarker: string }\n')
+      await writeFile(join(sharedDir, 'status.ts'), 'export const status = { sharedMarker: "" as string }\n')
+      await writeFile(schemaPath, [
+        'import { user } from \'#auth/schema\'',
+        'import { status } from \'#shared/status\'',
+        'export const orders = { user, status }',
+        ''
+      ].join('\n'))
+      await writeFile(entryPath, `export * from '${toImportSpecifier(entryPath, schemaPath)}'\n`)
+
+      await buildDatabaseSchema(buildDir, { relativeDir: rootDir, alias: { '#auth/schema': authSchemaPath, '#shared': sharedDir } })
+
+      const types = await readFile(typesPath, 'utf8')
+      expect(types).toContain('authMarker: string')
+      expect(types).toContain('sharedMarker: string')
+    } finally {
+      await rm(rootDir, { recursive: true, force: true })
+    }
+  })
+
   it('skips dts generation when TypeScript 7 is resolved', () => {
     // The native TypeScript port has no JS compiler API, so `rolldown-plugin-dts`
     // crashes while emitting `.d.ts` files. `.d.mts` types are optional anyway:
