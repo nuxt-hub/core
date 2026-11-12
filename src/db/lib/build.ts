@@ -88,7 +88,7 @@ export async function applyBuildTimeMigrations(nitro: Nitro, hub: ResolvedHubCon
 }
 
 // Bump when a change to the build options below changes the generated declarations
-const SCHEMA_TYPES_CACHE_VERSION = 1
+const SCHEMA_TYPES_CACHE_VERSION = 2
 
 interface SchemaTypesInputs {
   /** Local files that the JS and declaration builds read */
@@ -185,6 +185,14 @@ export async function buildDatabaseSchema(buildDir: string, { relativeDir, alias
       ? {
           build: false,
           tsconfig: false,
+          // Without these, tsc types every aliased import as `any`. Like Nuxt's tsconfig, a JS file
+          // target is tried without its extension first, so tsc finds the `.d.ts` beside it.
+          compilerOptions: {
+            paths: Object.fromEntries(Object.entries(buildAlias).flatMap(([key, path]) => [
+              [key, [...new Set([path.replace(/\.[cm]?js$/, ''), path])]],
+              [`${key}/*`, [`${path}/*`]]
+            ]))
+          },
           newContext: true
         }
       : false,
