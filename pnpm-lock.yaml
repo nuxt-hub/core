@@ -90,6 +90,9 @@ importers:
         specifier: ^4.2.1
         version: 4.6.7
     devDependencies:
+      '@electric-sql/pglite':
+        specifier: ^0.3.15
+        version: 0.3.15
       '@nuxt/devtools':
         specifier: ^3.1.1
         version: 3.2.4(@nuxt/schema@4.6.2)(confbox@0.3.1)(dotenv@17.4.2)(giget@3.2.0)(jiti@2.6.1)(magic-string@1.4.3)(mlly@1.8.2)(oxc-parser@0.153.0)(rolldown@1.2.14)(unplugin@3.4.0(esbuild@0.28.0)(rolldown@1.2.14)(rollup@4.60.4)(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.33.0)(terser@5.48.0)(yaml@2.8.2)))(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.33.0)(terser@5.48.0)(yaml@2.8.2))(vue@3.5.44(typescript@5.9.3))
