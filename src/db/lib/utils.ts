@@ -62,6 +62,52 @@ export function getMigrationMetadata(filename: string): { filename: string, name
   }
 }
 
+export const PostgresqlMigrationsLockedMessage = 'nuxthub: migrations are locked by another instance'
+
+const PostgresqlMigrationsLock = `IF NOT pg_try_advisory_xact_lock(hashtext('nuxthub'), hashtext('migrations')) THEN
+    RAISE EXCEPTION '${PostgresqlMigrationsLockedMessage}' USING ERRCODE = 'lock_not_available';
+  END IF;`
+
+export const NoTransactionMigrationDirective = '-- nuxthub:no-transaction'
+
+export function dollarQuote(value: string): string {
+  let tag = '$nuxthub$'
+  while (value.includes(tag)) tag = `${tag.slice(0, -1)}_$`
+  return `${tag}${value}${tag}`
+}
+
+export function isNoTransactionMigration(sqlFileContent: string): boolean {
+  for (const line of sqlFileContent.split('\n')) {
+    const trimmed = line.trim()
+    if (!trimmed) continue
+    if (!trimmed.startsWith('--')) return false
+    if (trimmed === NoTransactionMigrationDirective) return true
+  }
+  return false
+}
+
+export function getAtomicPostgresqlMigrationQuery(name: string, sqlFileContent: string): string {
+  return `DO ${dollarQuote(`
+BEGIN
+  ${PostgresqlMigrationsLock}
+  -- another instance may have applied it while this one waited for the lock
+  IF NOT EXISTS (SELECT 1 FROM _hub_migrations WHERE name = ${dollarQuote(name)}) THEN
+    EXECUTE ${dollarQuote(sqlFileContent)};
+    INSERT INTO _hub_migrations (name) VALUES (${dollarQuote(name)});
+  END IF;
+END
+`)};`
+}
+
+export function getRecordPostgresqlMigrationQuery(name: string): string {
+  return `DO ${dollarQuote(`
+BEGIN
+  ${PostgresqlMigrationsLock}
+  INSERT INTO _hub_migrations (name) VALUES (${dollarQuote(name)}) ON CONFLICT (name) DO NOTHING;
+END
+`)};`
+}
+
 /**
  * Get the appropriate create table query for the migrations table based on the database dialect
  */
@@ -70,7 +116,12 @@ export function getCreateMigrationsTableQuery(db: { dialect: string }): string {
 
   switch (dialect) {
     case 'postgresql':
-      return CreateDatabaseMigrationsTableQueryPostgresql
+      return `DO ${dollarQuote(`
+BEGIN
+  ${PostgresqlMigrationsLock}
+  ${CreateDatabaseMigrationsTableQueryPostgresql}
+END
+`)};`
     case 'mysql':
       return CreateDatabaseMigrationsTableQueryMysql
     case 'sqlite':
