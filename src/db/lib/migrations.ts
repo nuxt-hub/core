@@ -1,11 +1,67 @@
 import { consola } from 'consola'
 import { join, relative } from 'pathe'
 import type { ResolvedHubConfig } from '@nuxthub/core'
-import { AppliedDatabaseMigrationsQuery, NoTransactionMigrationDirective, PostgresqlMigrationsLockedMessage, dollarQuote, getAtomicPostgresqlMigrationQuery, getCreateMigrationsTableQuery, getRecordPostgresqlMigrationQuery, isNoTransactionMigration, splitSqlQueries } from './utils'
+import type { MigrationsTableConfig } from './utils'
+import { NoTransactionMigrationDirective, PostgresqlMigrationsLockedMessage, dollarQuote, getAppliedMigrationsQuery, getAtomicPostgresqlMigrationQuery, getCreateMigrationsTableQuery, getMigrationsHistoryLocationQuery, getMigrationsTableName, getMoveMigrationsHistoryQuery, getRecordPostgresqlMigrationQuery, isNoTransactionMigration, splitSqlQueries } from './utils'
 import { useDatabaseMigrationsStorage, getDatabaseMigrationFiles, useDatabaseQueriesStorage, getDatabaseQueryFiles } from './storage'
 
 function getRelativePath(fullPath: string) {
   return relative(process.cwd(), fullPath)
+}
+
+async function useSql() {
+  const drizzleOrmPkg = 'drizzle-orm'
+  return await import(drizzleOrmPkg).then(m => m.sql)
+}
+
+function getErrorMessage(error: any): string {
+  return error.cause?.message || error.message
+}
+
+// Lock attempts never wait inside a statement: a waiting statement holds a snapshot that `CREATE INDEX CONCURRENTLY` waits for
+async function retryWhileLocked<T>(attempt: () => Promise<T>, log = consola.withTag('nuxt:hub')): Promise<T> {
+  let waiting = false
+  while (true) {
+    try {
+      return await attempt()
+    } catch (error: any) {
+      if (!(error.cause?.message || error.message)?.includes(PostgresqlMigrationsLockedMessage)) throw error
+    }
+    if (!waiting) log.info('Waiting for another instance to finish database migrations...')
+    waiting = true
+    await new Promise(resolve => setTimeout(resolve, 500))
+  }
+}
+
+export async function ensureDatabaseMigrationsTable(dbConfig: MigrationsTableConfig, db: any) {
+  const sql = await useSql()
+  try {
+    await retryWhileLocked(() => db[dbConfig.dialect === 'sqlite' ? 'run' : 'execute'](sql.raw(getCreateMigrationsTableQuery(dbConfig))))
+  } catch (error: any) {
+    throw new Error(getErrorMessage(error), { cause: error })
+  }
+}
+
+export async function moveDatabaseMigrationsHistory(dbConfig: MigrationsTableConfig, db: any, { revert = false } = {}): Promise<{ from: string, to: string } | undefined> {
+  if (dbConfig.dialect !== 'postgresql') throw new Error('Moving the migration history needs a PostgreSQL database.')
+  const migrationsSchema = dbConfig.migrationsSchema
+  if (!migrationsSchema) throw new Error('Set `hub.db.migrationsSchema` to the schema that holds the migration history.')
+  const config = { ...dbConfig, migrationsSchema }
+  const sql = await useSql()
+  const target = getMigrationsTableName(config)
+  try {
+    const result = await db.execute(sql.raw(getMigrationsHistoryLocationQuery(config)))
+    const [location] = result.rows || result
+    await retryWhileLocked(() => db.execute(sql.raw(getMoveMigrationsHistoryQuery(config, { revert }))))
+    if (!revert) {
+      if (!location.search_path_table || location.search_path_is_target) return
+      return { from: location.search_path_table, to: target }
+    }
+    if (!location.target_exists || location.current_schema === migrationsSchema) return
+    return { from: target, to: getMigrationsTableName({ dialect: 'postgresql', migrationsSchema: location.current_schema }) }
+  } catch (error: any) {
+    throw new Error(getErrorMessage(error), { cause: error })
+  }
 }
 
 type PostgresqlSession = {
@@ -30,21 +86,6 @@ async function reservePostgresqlSession(client: any): Promise<PostgresqlSession 
   }
 }
 
-// Lock attempts never wait inside a statement: a waiting statement holds a snapshot that `CREATE INDEX CONCURRENTLY` waits for
-async function retryWhileLocked<T>(attempt: () => Promise<T>, log: ReturnType<typeof consola.withTag>): Promise<T> {
-  let waiting = false
-  while (true) {
-    try {
-      return await attempt()
-    } catch (error: any) {
-      if (!(error.cause?.message || error.message)?.includes(PostgresqlMigrationsLockedMessage)) throw error
-    }
-    if (!waiting) log.info('Waiting for another instance to finish database migrations...')
-    waiting = true
-    await new Promise(resolve => setTimeout(resolve, 500))
-  }
-}
-
 async function acquirePostgresqlMigrationsLock(session: PostgresqlSession, log: ReturnType<typeof consola.withTag>) {
   await retryWhileLocked(async () => {
     const [row] = await session.query(`SELECT pg_try_advisory_lock(hashtext('nuxthub'), hashtext('migrations')) AS locked`)
@@ -62,22 +103,20 @@ export async function applyDatabaseMigrations(hub: ResolvedHubConfig, db: any) {
   const execute = dialect === 'sqlite' ? 'run' : 'execute'
   const getRows = (result: any) => (dialect === 'mysql' ? result[0] : result.results || result.rows || result) || []
 
-  const createMigrationsTableQuery = getCreateMigrationsTableQuery({ dialect: hub.db.dialect })
+  const migrationsTable = getMigrationsTableName(hub.db)
   log.debug('Creating migrations table if not exists...')
-  const drizzleOrmPkg = 'drizzle-orm'
-  const sql = await import(drizzleOrmPkg).then(m => m.sql)
+  const sql = await useSql()
   try {
-    await retryWhileLocked(() => db[execute](sql.raw(createMigrationsTableQuery)), log)
+    await ensureDatabaseMigrationsTable(hub.db, db)
   } catch (error: any) {
-    const message = error.cause?.message || error.message
-    log.error(`Failed to create migrations table\n${message}`)
+    log.error(`Failed to create migrations table\n${error.message}`)
     return false
   }
   log.debug('Successfully created migrations table if not exists')
 
   let appliedRows = []
   try {
-    appliedRows = getRows(await db[execute](sql.raw(AppliedDatabaseMigrationsQuery)))
+    appliedRows = getRows(await db[execute](sql.raw(getAppliedMigrationsQuery(hub.db))))
   } catch (error: any) {
     const message = error.cause?.message || error.message
     log.error(`Failed to fetch applied migrations\n${message}`)
@@ -122,18 +161,18 @@ export async function applyDatabaseMigrations(hub: ResolvedHubConfig, db: any) {
           for (const query of splitSqlQueries(migration.query)) {
             await db[execute](sql.raw(query))
           }
-          await db[execute](sql`INSERT INTO _hub_migrations (name) VALUES (${migration.name})`)
+          await db[execute](sql`INSERT INTO ${sql.raw(migrationsTable)} (name) VALUES (${migration.name})`)
         } else if (!session) {
-          await retryWhileLocked(() => db[execute](sql.raw(getAtomicPostgresqlMigrationQuery(migration.name, migration.query))), log)
+          await retryWhileLocked(() => db[execute](sql.raw(getAtomicPostgresqlMigrationQuery(hub.db, migration.name, migration.query))), log)
         } else if (!isNoTransactionMigration(migration.query)) {
-          await session.query(getAtomicPostgresqlMigrationQuery(migration.name, migration.query))
+          await session.query(getAtomicPostgresqlMigrationQuery(hub.db, migration.name, migration.query))
         } else {
-          const applied = await session.query(`SELECT 1 FROM _hub_migrations WHERE name = ${dollarQuote(migration.name)}`)
+          const applied = await session.query(`SELECT 1 FROM ${migrationsTable} WHERE name = ${dollarQuote(migration.name)}`)
           if (applied.length) continue
           for (const query of splitSqlQueries(migration.query)) {
             await session.query(query)
           }
-          await session.query(getRecordPostgresqlMigrationQuery(migration.name))
+          await session.query(getRecordPostgresqlMigrationQuery(hub.db, migration.name))
         }
       } catch (error: any) {
         const message = error.cause?.message || error.message

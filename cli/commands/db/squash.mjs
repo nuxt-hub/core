@@ -3,7 +3,7 @@ import { consola } from 'consola'
 import { execa } from 'execa'
 import { readFile, writeFile, rm } from 'node:fs/promises'
 import { join, resolve } from 'pathe'
-import { createDrizzleClient } from '@nuxthub/core/db'
+import { createDrizzleClient, ensureDatabaseMigrationsTable, getMigrationsTableName } from '@nuxthub/core/db'
 import { buildDatabaseSchema } from '@nuxthub/core/db/build'
 import { sql } from 'drizzle-orm'
 import { getTsconfigAliases } from '../../utils/db.mjs'
@@ -205,7 +205,15 @@ export default defineCommand({
         const db = await createDrizzleClient(hubConfig.db, hubDir)
         const dialect = hubConfig.db.dialect
         const execute = dialect === 'sqlite' ? 'run' : 'execute'
-        await db[execute](sql`INSERT INTO ${sql.identifier('_hub_migrations')} (name) VALUES (${newMigration.tag})`)
+        try {
+          await ensureDatabaseMigrationsTable(hubConfig.db, db)
+        } catch (error) {
+          consola.error(error.message)
+          consola.info(`Fix the migration history, then run \`npx nuxt db mark-as-migrated ${newMigration.tag}\`.`)
+          await db.$client?.end?.()
+          process.exit(1)
+        }
+        await db[execute](sql`INSERT INTO ${sql.raw(getMigrationsTableName(hubConfig.db))} (name) VALUES (${newMigration.tag})`)
         await db.$client?.end?.()
         consola.success(`Migration \`${newMigration.tag}\` marked as applied.`)
       } else {

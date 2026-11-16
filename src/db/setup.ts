@@ -50,6 +50,15 @@ export async function resolveDatabaseConfig(nuxt: Nuxt, hub: HubConfig): Promise
     applyMigrationsDuringDev: true
   })
 
+  if (config.migrationsSchema !== undefined) {
+    if (config.dialect !== 'postgresql') {
+      throw new Error(`\`hub.db.migrationsSchema\` is only supported with the \`postgresql\` dialect, not \`${config.dialect}\``)
+    }
+    if (typeof config.migrationsSchema !== 'string' || !config.migrationsSchema) {
+      throw new Error('`hub.db.migrationsSchema` must be a non-empty schema name')
+    }
+  }
+
   switch (config.dialect) {
     case 'sqlite': {
       // User explicitly set driver: 'libsql' - track for lazy env resolution
