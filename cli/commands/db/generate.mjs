@@ -2,7 +2,7 @@ import { defineCommand } from 'citty'
 import { consola } from 'consola'
 import { execa } from 'execa'
 import { join, resolve } from 'pathe'
-import { buildDatabaseSchema } from '@nuxthub/core/db'
+import { buildDatabaseSchema } from '@nuxthub/core/db/build'
 import { getTsconfigAliases } from '../../utils/db.mjs'
 
 export default defineCommand({
