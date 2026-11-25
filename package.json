@@ -30,6 +30,10 @@
       "types": "./dist/db/lib/index.d.ts",
       "import": "./dist/db/lib/index.mjs"
     },
+    "./db/build": {
+      "types": "./dist/db/lib/build.d.ts",
+      "import": "./dist/db/lib/build.mjs"
+    },
     "./kv": {
       "types": "./dist/kv/runtime/kv.d.ts"
     },
