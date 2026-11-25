@@ -3,7 +3,7 @@ import chokidar from 'chokidar'
 import { glob } from 'tinyglobby'
 import { join, resolve as resolveFs, relative } from 'pathe'
 import { defu } from 'defu'
-import { addServerImports, addTemplate, addServerPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
+import { addServerImports, addTemplate, addNitroPlugin, addTypeTemplate, getLayerDirectories, updateTemplates, logger, addServerHandler } from '@nuxt/kit'
 import { resolve, resolvePath, logWhenReady, addWranglerBinding } from '../utils'
 import { copyDatabaseMigrationsToHubDir, copyDatabaseQueriesToHubDir, getDatabaseSchemaPathMetadata } from './lib/index'
 import { copyDatabaseAssets, applyBuildTimeMigrations, buildDatabaseSchema } from './lib/build'
@@ -165,7 +165,10 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
     addWranglerBinding(nuxt, 'hyperdrive', { binding, id: connection.hyperdriveId })
   }
   if (driver === 'postgres-js' && hub.hosting.includes('cloudflare') && connection?.hyperdriveId) {
-    addServerPlugin(resolve('db/runtime/plugins/request-context'))
+    addNitroPlugin({
+      nitro2: resolve('db/runtime/plugins/request-context'),
+      nitro3: resolve('db/runtime/plugins/request-context.nitro3')
+    })
   }
 
   // Verify development database dependencies are installed
@@ -187,7 +190,10 @@ export async function setupDatabase(nuxt: Nuxt, hub: HubConfig, deps: Record<str
   }
 
   // Add Server scanning
-  addServerPlugin(resolve('db/runtime/plugins/migrations.dev'))
+  addNitroPlugin({
+    nitro2: resolve('db/runtime/plugins/migrations.dev'),
+    nitro3: resolve('db/runtime/plugins/migrations.dev.nitro3')
+  })
 
   // Handle migrations
   nuxt.hook('modules:done', async () => {
