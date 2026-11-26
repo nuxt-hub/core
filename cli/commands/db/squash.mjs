@@ -6,7 +6,7 @@ import { join, resolve } from 'pathe'
 import { createDrizzleClient } from '@nuxthub/core/db'
 import { buildDatabaseSchema } from '@nuxthub/core/db/build'
 import { sql } from 'drizzle-orm'
-import { getTsconfigAliases, quoteIdentifier } from '../../utils/db.mjs'
+import { getTsconfigAliases } from '../../utils/db.mjs'
 
 export default defineCommand({
   meta: {
@@ -205,7 +205,7 @@ export default defineCommand({
         const db = await createDrizzleClient(hubConfig.db, hubDir)
         const dialect = hubConfig.db.dialect
         const execute = dialect === 'sqlite' ? 'run' : 'execute'
-        await db[execute](sql.raw(`INSERT INTO ${quoteIdentifier('_hub_migrations', dialect)} (name) VALUES ('${newMigration.tag}');`))
+        await db[execute](sql`INSERT INTO ${sql.identifier('_hub_migrations')} (name) VALUES (${newMigration.tag})`)
         await db.$client?.end?.()
         consola.success(`Migration \`${newMigration.tag}\` marked as applied.`)
       } else {
