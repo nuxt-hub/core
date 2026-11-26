@@ -76,12 +76,43 @@ export function useMultipartUpload(
   }
 
   return (file) => {
+    const progress = ref(0)
+    const hub = useRuntimeConfig().public.hub
+
+    if (hub.blobProvider === 'vercel-blob') {
+      const controller = new AbortController()
+      const pathname = prefix
+        ? joinURL(prefix, file.name)
+        : file.name
+
+      const completed = (async () => {
+        const { upload } = await import('@vercel/blob/client')
+
+        return upload(pathname, file, {
+          access: 'public',
+          multipart: true,
+          handleUploadUrl: joinURL(baseURL, 'multipart', pathname),
+          abortSignal: controller.signal,
+          onUploadProgress: (uploadProgress) => {
+            progress.value = uploadProgress.percentage
+          }
+        })
+      })()
+
+      return {
+        completed,
+        progress: readonly(progress),
+        abort: async () => {
+          controller.abort()
+        }
+      }
+    }
+
     const data = create(file)
     const chunks = Math.ceil(file.size / partSize)
 
     const queue = Array.from({ length: chunks }, (_, i) => i + 1)
     const parts: Awaited<ReturnType<typeof upload>>[] = []
-    const progress = ref(0)
     const errors: Error[] = []
     let canceled = false
 
@@ -128,19 +159,6 @@ export function useMultipartUpload(
     }
 
     const start = async () => {
-      const hub = useRuntimeConfig().public.hub
-      if (hub.blobProvider === 'vercel-blob') {
-        const { upload } = await import('@vercel/blob/client')
-        return upload(file.name, file, {
-          access: 'public',
-          multipart: true,
-          handleUploadUrl: joinURL(baseURL, 'multipart', file.name || ''),
-          onUploadProgress: (uploadProgress) => {
-            progress.value = uploadProgress.percentage
-          }
-        })
-      }
-
       try {
         await Promise.all(Array.from({ length: concurrent }).map(() => {
           const partNumber = queue.shift()
