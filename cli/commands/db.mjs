@@ -6,6 +6,7 @@ import markAsMigrated from './db/mark-as-migrated.mjs'
 import drop from './db/drop.mjs'
 import dropAll from './db/drop-all.mjs'
 import squash from './db/squash.mjs'
+import moveMigrationsHistory from './db/move-migrations-history.mjs'
 import sql from './db/sql.mjs'
 
 const { version } = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf-8'))
@@ -23,6 +24,7 @@ export default defineCommand({
     drop,
     'drop-all': dropAll,
     squash,
+    'move-migrations-history': moveMigrationsHistory,
     sql
   }
 })

@@ -208,6 +208,28 @@ describe('resolveDatabaseConfig', () => {
   })
 
   describe('PostgreSQL dialect', () => {
+    it('should keep migrationsSchema', async () => {
+      process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/db'
+
+      const nuxt = createMockNuxt()
+      const hub = createBaseHubConfig({ dialect: 'postgresql', migrationsSchema: 'nuxthub' })
+
+      const result = await resolveDatabaseConfig(nuxt, hub)
+
+      expect(result).toMatchObject({ dialect: 'postgresql', migrationsSchema: 'nuxthub' })
+    })
+
+    it('should reject migrationsSchema with other dialects or an empty name', async () => {
+      const nuxt = createMockNuxt()
+
+      await expect(resolveDatabaseConfig(nuxt, createBaseHubConfig({ dialect: 'sqlite', migrationsSchema: 'nuxthub' }))).rejects.toThrow(
+        '`hub.db.migrationsSchema` is only supported with the `postgresql` dialect, not `sqlite`'
+      )
+      await expect(resolveDatabaseConfig(nuxt, createBaseHubConfig({ dialect: 'postgresql', migrationsSchema: '' }))).rejects.toThrow(
+        '`hub.db.migrationsSchema` must be a non-empty schema name'
+      )
+    })
+
     it('should use postgres-js driver when DATABASE_URL is set', async () => {
       process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/db'
 

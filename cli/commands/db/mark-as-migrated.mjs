@@ -3,10 +3,9 @@ import { consola } from 'consola'
 import { execa } from 'execa'
 import { readFile } from 'node:fs/promises'
 import { join } from 'pathe'
-import { createDrizzleClient, getDatabaseMigrationFiles, AppliedDatabaseMigrationsQuery } from '@nuxthub/core/db'
+import { createDrizzleClient, ensureDatabaseMigrationsTable, getAppliedMigrationsQuery, getDatabaseMigrationFiles, getMigrationsTableName } from '@nuxthub/core/db'
 import { sql } from 'drizzle-orm'
 import { loadDotenv, dotenvArg } from '../../utils/dotenv.mjs'
-import { quoteIdentifier } from '../../utils/db.mjs'
 
 export default defineCommand({
   meta: {
@@ -66,7 +65,15 @@ export default defineCommand({
     const execute = dialect === 'sqlite' ? 'run' : 'execute'
     const getRows = result => (dialect === 'mysql' ? result[0] : result.rows || result)
     const closeDb = async () => await db.$client?.end?.()
-    const appliedMigrations = getRows(await db[execute](sql.raw(AppliedDatabaseMigrationsQuery)))
+    try {
+      await ensureDatabaseMigrationsTable(hubConfig.db, db)
+    } catch (error) {
+      consola.error(error.message)
+      await closeDb()
+      process.exit(1)
+    }
+    const migrationsTable = sql.raw(getMigrationsTableName(hubConfig.db))
+    const appliedMigrations = getRows(await db[execute](sql.raw(getAppliedMigrationsQuery(hubConfig.db))))
     consola.info(`Database has \`${appliedMigrations.length}\` applied migration${appliedMigrations.length === 1 ? '' : 's'}`)
     consola.debug(`Applied migrations:\n${appliedMigrations.map(migration => `- ${migration.name} (\`${migration.applied_at}\`)`).join('\n')}`)
     // If a specific migration is provided, check if it is already applied
@@ -76,8 +83,7 @@ export default defineCommand({
     }
     // If a specific migration is provided, mark it as applied
     if (args.name) {
-      const migrationsTable = quoteIdentifier('_hub_migrations', dialect)
-      await db[execute](sql.raw(`INSERT INTO ${migrationsTable} (name) VALUES ('${args.name}');`))
+      await db[execute](sql`INSERT INTO ${migrationsTable} (name) VALUES (${args.name})`)
       consola.success(`Local migration \`${args.name}\` marked as applied.`)
       return closeDb()
     }
@@ -88,7 +94,6 @@ export default defineCommand({
       return closeDb()
     }
     consola.info(`Found \`${pendingMigrations.length}\` pending migration${pendingMigrations.length === 1 ? '' : 's'}`)
-    const migrationsTable = quoteIdentifier('_hub_migrations', dialect)
     let migrationsMarkedAsApplied = 0
     for (const migration of pendingMigrations) {
       const confirmed = await consola.prompt(`Mark migration \`${migration.name}\` as applied?`, {
@@ -100,7 +105,7 @@ export default defineCommand({
         consola.info(`Migration \`${migration.name}\` skipped.`)
         continue
       }
-      await db[execute](sql.raw(`INSERT INTO ${migrationsTable} (name) VALUES ('${migration.name}');`))
+      await db[execute](sql`INSERT INTO ${migrationsTable} (name) VALUES (${migration.name})`)
       consola.success(`Migration \`${migration.name}\` marked as applied.`)
       migrationsMarkedAsApplied++
     }

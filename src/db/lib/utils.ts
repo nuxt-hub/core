@@ -20,6 +20,28 @@ export const CreateDatabaseMigrationsTableQueryLibsql = CreateDatabaseMigrations
 
 export const AppliedDatabaseMigrationsQuery = 'select id, name, applied_at from _hub_migrations order by id'
 
+export type MigrationsTableConfig = {
+  dialect: string
+  migrationsSchema?: string
+}
+
+const MigrationsTable = '_hub_migrations'
+
+export function quotePostgresqlIdentifier(name: string): string {
+  return `"${name.replace(/"/g, '""')}"`
+}
+
+export function getMigrationsTableName(db: MigrationsTableConfig): string {
+  if (db.dialect === 'postgresql' && db.migrationsSchema) {
+    return `${quotePostgresqlIdentifier(db.migrationsSchema)}.${quotePostgresqlIdentifier(MigrationsTable)}`
+  }
+  return MigrationsTable
+}
+
+export function getAppliedMigrationsQuery(db: MigrationsTableConfig): string {
+  return `select id, name, applied_at from ${getMigrationsTableName(db)} order by id`
+}
+
 /**
  * Get the metadata for a database schema file
  * @param path - The path to the database file
@@ -62,15 +84,88 @@ export function getMigrationMetadata(filename: string): { filename: string, name
   }
 }
 
+export const PostgresqlMigrationsLockedMessage = 'nuxthub: migrations are locked by another instance'
+
+const PostgresqlMigrationsLock = `IF NOT pg_try_advisory_xact_lock(hashtext('nuxthub'), hashtext('migrations')) THEN
+    RAISE EXCEPTION '${PostgresqlMigrationsLockedMessage}' USING ERRCODE = 'lock_not_available';
+  END IF;`
+
+export const NoTransactionMigrationDirective = '-- nuxthub:no-transaction'
+
+export const MoveMigrationsHistoryCommand = 'npx nuxt db move-migrations-history'
+
+export function dollarQuote(value: string): string {
+  let tag = '$nuxthub$'
+  while (value.includes(tag)) tag = `${tag.slice(0, -1)}_$`
+  return `${tag}${value}${tag}`
+}
+
+export function isNoTransactionMigration(sqlFileContent: string): boolean {
+  for (const line of sqlFileContent.split('\n')) {
+    const trimmed = line.trim()
+    if (!trimmed) continue
+    if (!trimmed.startsWith('--')) return false
+    if (trimmed === NoTransactionMigrationDirective) return true
+  }
+  return false
+}
+
+function lockedPostgresqlBlock(statements: string, declarations = ''): string {
+  return `DO ${dollarQuote(`${declarations ? `\nDECLARE\n${declarations}` : ''}
+BEGIN
+  ${PostgresqlMigrationsLock}
+${statements}
+END
+`)};`
+}
+
+function qualifiedTableName(table: string): string {
+  return `(SELECT quote_ident(n.nspname) || '.' || quote_ident(c.relname) FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE c.oid = ${table})`
+}
+
+function getMigrationsHistoryGuard(db: MigrationsTableConfig & { migrationsSchema: string }, { allowMove = false } = {}): string {
+  const schema = quotePostgresqlIdentifier(db.migrationsSchema)
+  const target = getMigrationsTableName(db)
+  return `  IF NOT EXISTS (SELECT 1 FROM pg_namespace WHERE nspname = ${dollarQuote(db.migrationsSchema)}) THEN
+    RAISE EXCEPTION USING MESSAGE = ${dollarQuote(`PostgreSQL schema ${schema} from \`hub.db.migrationsSchema\` does not exist. Create it before migrating, for example with \`CREATE SCHEMA ${schema};\`. Use a schema reserved for the migration history, not one that your migrations create.`)};
+  END IF;
+  existing := to_regclass('${MigrationsTable}');
+  target := to_regclass(${dollarQuote(target)});
+  IF existing IS NOT NULL AND existing IS DISTINCT FROM target THEN
+    IF target IS NOT NULL THEN
+      RAISE EXCEPTION USING MESSAGE = ${dollarQuote('Migration history exists in both ')} || ${qualifiedTableName('existing')} || ${dollarQuote(` and ${target}. Keep the rows you need in one table and drop the other, then try again.`)};
+    END IF;
+${allowMove
+  ? ''
+  : `    RAISE EXCEPTION USING MESSAGE = ${dollarQuote('Migration history exists in ')} || ${qualifiedTableName('existing')} || ${dollarQuote(`, but \`hub.db.migrationsSchema\` expects it in ${target}. Run \`${MoveMigrationsHistoryCommand}\` to move it, once no older version of your app runs migrations on this database.`)};
+`}  END IF;`
+}
+
+const migrationsHistoryDeclarations = `  existing regclass;
+  target regclass;`
+
+export function getAtomicPostgresqlMigrationQuery(db: MigrationsTableConfig, name: string, sqlFileContent: string): string {
+  const table = getMigrationsTableName(db)
+  return lockedPostgresqlBlock(`  IF NOT EXISTS (SELECT 1 FROM ${table} WHERE name = ${dollarQuote(name)}) THEN
+    EXECUTE ${dollarQuote(sqlFileContent)};
+    INSERT INTO ${table} (name) VALUES (${dollarQuote(name)});
+  END IF;`)
+}
+
+export function getRecordPostgresqlMigrationQuery(db: MigrationsTableConfig, name: string): string {
+  return lockedPostgresqlBlock(`  INSERT INTO ${getMigrationsTableName(db)} (name) VALUES (${dollarQuote(name)}) ON CONFLICT (name) DO NOTHING;`)
+}
+
 /**
  * Get the appropriate create table query for the migrations table based on the database dialect
  */
-export function getCreateMigrationsTableQuery(db: { dialect: string }): string {
-  const dialect = db.dialect
-
-  switch (dialect) {
-    case 'postgresql':
-      return CreateDatabaseMigrationsTableQueryPostgresql
+export function getCreateMigrationsTableQuery(db: MigrationsTableConfig): string {
+  switch (db.dialect) {
+    case 'postgresql': {
+      const create = CreateDatabaseMigrationsTableQueryPostgresql.replace(MigrationsTable, () => getMigrationsTableName(db))
+      if (!db.migrationsSchema) return lockedPostgresqlBlock(create)
+      return lockedPostgresqlBlock(`${getMigrationsHistoryGuard({ ...db, migrationsSchema: db.migrationsSchema })}\n${create}`, migrationsHistoryDeclarations)
+    }
     case 'mysql':
       return CreateDatabaseMigrationsTableQueryMysql
     case 'sqlite':
@@ -80,6 +175,44 @@ export function getCreateMigrationsTableQuery(db: { dialect: string }): string {
     default:
       throw new Error('Invalid database dialect')
   }
+}
+
+export function getMigrationsHistoryLocationQuery(db: MigrationsTableConfig & { migrationsSchema: string }): string {
+  const target = dollarQuote(getMigrationsTableName(db))
+  return `SELECT
+  ${qualifiedTableName(`to_regclass('${MigrationsTable}')`)} AS search_path_table,
+  to_regclass('${MigrationsTable}') IS NOT DISTINCT FROM to_regclass(${target}) AS search_path_is_target,
+  to_regclass(${target}) IS NOT NULL AS target_exists,
+  current_schema() AS current_schema`
+}
+
+export function getMoveMigrationsHistoryQuery(db: MigrationsTableConfig & { migrationsSchema: string }, { revert = false } = {}): string {
+  const target = getMigrationsTableName(db)
+  if (!revert) {
+    return lockedPostgresqlBlock(`${getMigrationsHistoryGuard(db, { allowMove: true })}
+  IF existing IS NOT NULL AND existing IS DISTINCT FROM target THEN
+    EXECUTE format('ALTER TABLE %s SET SCHEMA %I', existing, ${dollarQuote(db.migrationsSchema)});
+  ELSIF target IS NULL THEN
+    RAISE EXCEPTION USING MESSAGE = ${dollarQuote(`No migration history found through search_path to move to ${target}.`)};
+  END IF;`, migrationsHistoryDeclarations)
+  }
+  return lockedPostgresqlBlock(`  destination_schema := current_schema();
+  IF destination_schema IS NULL THEN
+    RAISE EXCEPTION USING MESSAGE = ${dollarQuote('The search_path has no existing schema to move the migration history back to.')};
+  END IF;
+  target := to_regclass(${dollarQuote(target)});
+  destination := to_regclass(format('%I.%I', destination_schema, '${MigrationsTable}'));
+  IF target IS NULL THEN
+    IF destination IS NULL THEN
+      RAISE EXCEPTION USING MESSAGE = ${dollarQuote(`No migration history found in ${target}.`)};
+    END IF;
+  ELSIF destination IS NOT NULL AND destination IS DISTINCT FROM target THEN
+    RAISE EXCEPTION USING MESSAGE = ${dollarQuote(`Migration history exists in both ${target} and `)} || ${qualifiedTableName('destination')} || ${dollarQuote('. Keep the rows you need in one table and drop the other, then try again.')};
+  ELSIF destination IS NULL THEN
+    EXECUTE format('ALTER TABLE %s SET SCHEMA %I', target, destination_schema);
+  END IF;`, `  destination_schema text;
+  destination regclass;
+  target regclass;`)
 }
 
 /**

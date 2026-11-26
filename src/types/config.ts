@@ -193,6 +193,16 @@ export type DatabaseConfig = {
    */
   migrationsDirs?: string[]
   /**
+   * PostgreSQL schema that holds the `_hub_migrations` history table. Application tables are not affected.
+   * NuxtHub does not create the schema: create it before migrating, ideally a schema used only for the history (e.g. `nuxthub`).
+   * If the history is still in a `_hub_migrations` table found through the search_path, migrations stop until you move it with `npx nuxt db move-migrations-history`.
+   * Only supported with the `postgresql` dialect; setting it with another dialect throws an error.
+   * Omit it to keep using the table found through the connection's search_path.
+   *
+   * @see https://hub.nuxt.com/docs/database/migrations#migration-history-schema
+   */
+  migrationsSchema?: string
+  /**
    * The paths to the SQL queries to apply after the database migrations complete.
    */
   queriesPaths?: string[]

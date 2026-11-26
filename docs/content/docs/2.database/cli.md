@@ -126,6 +126,30 @@ After squashing, you'll be prompted to mark the new migration as already applied
 When using interactive selection, all migrations after the oldest selected one will automatically be included, since migrations must be squashed sequentially.
 ::
 
+## `nuxt db move-migrations-history`
+
+Move the PostgreSQL `_hub_migrations` table from the `search_path` into the schema set in [`migrationsSchema`](/docs/database/migrations#migration-history-schema), or back with `--revert`.
+
+```bash [Terminal]
+USAGE db move-migrations-history [OPTIONS]
+
+OPTIONS
+       --revert    Move the history from `migrationsSchema` back to the first schema of the search_path.
+       --schema    The schema to use instead of `hub.db.migrationsSchema`.
+          --cwd    The directory to run the command in.
+       --dotenv    Point to another .env file to load.
+  -v, --verbose    Show verbose output.
+```
+
+Example usage:
+
+```bash [Terminal]
+# Move public._hub_migrations to nuxthub._hub_migrations
+npx nuxt db move-migrations-history
+# Move it back before rolling back to a version without migrationsSchema
+npx nuxt db move-migrations-history --revert
+```
+
 ## `nuxt db sql`
 
 Execute a SQL query against the database.
